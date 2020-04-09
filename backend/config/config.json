@@ -1,0 +1,17 @@
+{
+  "development": {
+    "dialect": "sqlite",
+    "storage": "./src/db/databases/dev.sqlite"
+  },
+  "test": {
+    "dialect": "sqlite",
+    "storage": "./src/db/databases/test.sqlite"
+  },
+  "production": {
+    "username": "db1nlp",
+    "password": "db1nlp",
+    "database": "covid19",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
