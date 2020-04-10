@@ -11,7 +11,7 @@
 
 <script>
 import BasePage from '@/components/commons/BasePage.vue';
-import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso.vue';
+import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso/index.vue';
 
 export default {
   components: {
