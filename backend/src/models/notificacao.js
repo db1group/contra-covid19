@@ -6,9 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     notificadorId: DataTypes.UUID,
     bairroId: DataTypes.UUID,
     pessoaId: DataTypes.UUID
-  }, {
-    freezeTableName: false
-  });
+  }, {});
   Notificacao.associate = function (models) {
     Notificacao.hasOne(models.Unidade);
     Notificacao.hasOne(models.User);
