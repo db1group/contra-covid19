@@ -37,24 +37,24 @@ module.exports = {
           key: 'id',
         },
       },
-      pessoaId: {
-        type: Sequelize.UUID,
-        references: {
-          model: 'Pessoa',
-          key: 'id',
-        },
-      },
+      // pessoaId: {
+      //   type: Sequelize.UUID,
+      //   references: {
+      //     model: 'Pessoa',
+      //     key: 'id',
+      //   },
+      // },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('Notificacao');
-  }
+  },
 };

@@ -10,22 +10,22 @@ module.exports = {
         autoIncrement: false,
       },
       nome: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       uf: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('Municipio');
-  }
+  },
 };
