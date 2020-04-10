@@ -10,13 +10,13 @@ module.exports = {
         autoIncrement: false,
       },
       nome: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       profissao: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       unidadesaudeId: {
         type: Sequelize.UUID,
@@ -29,15 +29,15 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('ProfissionalSaude');
-  }
+  },
 };

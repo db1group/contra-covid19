@@ -8,11 +8,11 @@ module.exports = (sequelize, DataTypes) => {
     pessoaId: DataTypes.UUID
   }, {});
   Notificacao.associate = function (models) {
-    Notificacao.hasOne(models.Unidade);
+    Notificacao.hasOne(models.UnidadeSaude);
     Notificacao.hasOne(models.User);
     Notificacao.hasOne(models.ProfissionalSaude, { foreignKey: 'notificadorId' });
     Notificacao.hasOne(models.Bairro);
-    Notificacao.hasOne(models.Pessoa);
+    //Notificacao.hasOne(models.Pessoa);
   };
   return Notificacao;
 };

@@ -17,118 +17,118 @@ module.exports = {
         },
       },
       sintomatico: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       dataInicioDosSintomas: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       dataHoraNotificação: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       coriza: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       tosseSeca: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       dorDeGarganta: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       mialgia: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       tosseProdutiva: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       sibilo: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       desconfortoRespiratorio: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       dispneia: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       taquipneia: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       saturacaoDeOximetriaDePulso: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       cianoseCentral: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       diminuicaoDePulsoPeriferico: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       hipotensao: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       diarreia: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       cefaleia: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       nausea: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       vomito: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       outrosSintomas: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       puerperaAte45DiasDoParto: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       sindromeDeDown: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       diabetesMellitus: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       imunodeficiencia: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       doencaCardioVascularCronica: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       doencaHepaticaCronica: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       doencaNeurologicaCronica: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       doencaRenalCronica: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       doencaHematologicaCronica: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       asma: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       outraPneumopatiaCronica: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       obesidade: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       outrosComorbidades: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('NotificacaoHistorico');
-  }
+  },
 };
