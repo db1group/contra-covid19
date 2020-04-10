@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="covid-app">
     <v-app-bar
       app
       color="primary"
@@ -42,6 +42,10 @@
     </v-content>
   </v-app>
 </template>
+<style lang="sass" scoped>
+  .covid-app
+    background-color: #F3E5F5
+</style>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue';
