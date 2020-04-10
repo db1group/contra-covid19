@@ -29,7 +29,7 @@
         />
         <v-text-field
           class="pl-8"
-          label="Especifique *"
+          label="Especifique"
           :disabled="!existemOutrosSintomas"
         />
       </v-col>
