@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="px-2">
     <h4 class="primary--text title">
       1. IDENTIFICAÇÃO DO CASO SUSPEITO
     </h4>
@@ -21,6 +21,14 @@
             <v-radio label="Masculino" value="M"/>
             <v-radio label="Feminino" value="F"/>
           </v-radio-group>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" sm="8">
+          <v-text-field
+            label="Data de nascimento *"
+            append-icon="mdi-calendar-blank"
+          />
         </v-col>
       </v-row>
     </v-container>
