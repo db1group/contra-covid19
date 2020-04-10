@@ -15,8 +15,3 @@ exports.consultaPorNome = async (req, res) => {
 
   return res.json({data: bairros});
 };
-
-//http://localhost:3000/api/bairros?nome=Lagoa
-//{
-  //"data": []
-//}
