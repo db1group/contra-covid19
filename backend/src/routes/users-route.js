@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const UserResource = require("../resource/user");
+const UserResource = require("../resource/user-resource");
 
 router.get("/users", UserResource.index);
 router.post("/users", UserResource.create);
