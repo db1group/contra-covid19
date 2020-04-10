@@ -5,6 +5,7 @@
     </h3>
     <base-page>
       <identificacao-caso/>
+      <sinais-e-sintomas/>
     </base-page>
   </section>
 </template>
@@ -12,11 +13,13 @@
 <script>
 import BasePage from '@/components/commons/BasePage.vue';
 import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso/index.vue';
+import SinaisESintomas from '@/components/Notificacao/Form/SinaisESintomas/index.vue';
 
 export default {
   components: {
     BasePage,
     IdentificacaoCaso,
+    SinaisESintomas,
   },
 };
 </script>

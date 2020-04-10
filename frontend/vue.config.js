@@ -2,12 +2,13 @@ module.exports = {
   transpileDependencies: [
     'vuetify',
   ],
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     config
       .plugin('html')
-      .tap(args => {
-        args[0].title = 'Covid-19 Notificações'
-        return args
+      .tap((args) => {
+        const argZero = args[0];
+        argZero.title = 'Covid-19 Notificações';
+        return args;
       });
   },
 };

@@ -7,7 +7,7 @@
 </template>
 <style lang="sass" scoped>
   .v-application.covid-app
-    background-color: #F3E5F5
+    background-color: #FBF8FF
 </style>
 
 <script>
