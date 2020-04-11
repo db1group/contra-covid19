@@ -1,0 +1,55 @@
+$bs-xs: 599px
+$bs-sm: 600px
+$bs-sm-max: 959px
+$bs-md: 960px
+$bs-md-max: 1263px
+$bs-lg: 1264px
+$bs-lg-max: 1903px
+$bs-xl: 1904px
+
+/* MOBILE FIRST */
+
+/* Extra small devices (phones, less than 768px) */
+/* No media query since this is the default in Bootstrap */
+
+/* Small devices (tablets, 768px and up) */
+=media-min-sm()
+    @media (min-width: $bs-sm)
+        @content
+
+/* Medium devices (desktops, 992px and up) */
+=media-min-md()
+    @media (min-width: $bs-md)
+        @content
+
+/* Large devices (large desktops, 1200px and up) */
+=media-min-lg()
+    @media (min-width: $bs-lg)
+        @content
+
+/* Extra Large devices (extra large desktops, 1441px and up) */
+=media-min-xl()
+    @media (min-width: $bs-xl)
+        @content
+
+/* SPECIFIC */
+
+/* ONLY Extra Small devices (767px and down) */
+=media-xs()
+    @media (max-width: $bs-xs)
+        @content
+
+/* ONLY Small devices (between 768px and 991) */
+=media-sm()
+    @media (min-width: $bs-sm) and (max-width: $bs-sm-max)
+        @content
+
+/* ONLY Medium devices (between 992 and 1199) */
+=media-md()
+    @media (min-width: $bs-md) and (max-width: $bs-md-max)
+        @content
+
+/* ONLY Medium devices (1200 and up) */
+=media-lg()
+    @media (min-width: $bs-lg)
+        @content
