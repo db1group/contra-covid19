@@ -21,7 +21,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <label class="primary--text body-1">Sexo</label>
+        <label class="primary--text body-1 font-weight-bold">Sexo</label>
         <v-radio-group class="mt-0">
           <v-radio label="Masculino" value="M"/>
           <v-radio label="Feminino" value="F"/>

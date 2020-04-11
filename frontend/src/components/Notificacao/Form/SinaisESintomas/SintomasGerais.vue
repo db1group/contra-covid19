@@ -2,7 +2,7 @@
   <div class="mt-2">
     <v-row no-gutters>
       <v-col cols="12">
-        <label class="primary--text body-1">Sintomas</label>
+        <label class="primary--text body-1 font-weight-bold">Sintomas</label>
         <v-checkbox
           :input-value="existemSintomas"
           label="Sintomático"

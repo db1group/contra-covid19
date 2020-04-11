@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col cols="12">
-        <label class="primary--text body-1">
+        <label class="primary--text body-1 font-weight-bold">
           Sintomas respiratórios GRAVES
         </label>
         <v-checkbox

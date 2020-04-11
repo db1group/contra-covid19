@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col cols="12">
-        <label class="primary--text body-1">
+        <label class="primary--text body-1 font-weight-bold">
           Outros sinais e sintomas apresentados durante o período
         </label>
         <v-checkbox

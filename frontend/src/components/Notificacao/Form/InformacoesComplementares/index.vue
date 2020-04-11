@@ -9,7 +9,7 @@
     >
       <v-row>
         <v-col cols="12">
-          <label class="primary--text body-1">
+          <label class="primary--text body-1 font-weight-bold">
             Uso de medicação antitérmica e/ou analgésica e/ou anti-inflamatório?
           </label>
           <v-checkbox
@@ -24,7 +24,7 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <label class="primary--text body-1">
+          <label class="primary--text body-1 font-weight-bold">
             Uso de medicação Antiviral?
           </label>
           <v-checkbox
@@ -39,7 +39,7 @@
       </v-row>
       <v-row>
         <v-col cols="12" sm="8" md="6">
-          <label class="primary--text body-1">
+          <label class="primary--text body-1 font-weight-bold">
             Histórico de viagem?
           </label>
           <v-checkbox
@@ -61,7 +61,7 @@
       </v-row>
       <v-row>
         <v-col cols="12">
-          <label class="primary--text body-1">
+          <label class="primary--text body-1 font-weight-bold">
             Recebeu vacina contra Gripe nos últimos doze meses?
           </label>
           <v-checkbox
