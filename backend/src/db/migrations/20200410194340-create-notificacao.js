@@ -37,13 +37,13 @@ module.exports = {
           key: 'id',
         },
       },
-      // pessoaId: {
-      //   type: Sequelize.UUID,
-      //   references: {
-      //     model: 'Pessoa',
-      //     key: 'id',
-      //   },
-      // },
+      pessoaId: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'Pessoa',
+          key: 'id',
+        },
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

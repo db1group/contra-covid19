@@ -12,13 +12,20 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Notificacao.associate = function (models) {
-    Notificacao.belongsTo(models.UnidadeSaude);
-    Notificacao.belongsTo(models.User);
-    Notificacao.belongsTo(models.ProfissionalSaude, {
-      foreignKey: "notificadorId",
+    Notificacao.belongsTo(models.UnidadeSaude, {
+      foreignKey: "unidadeId",
     });
+    Notificacao.belongsTo(models.User, {
+      foreignKey: "userId",
+    });
+    Notificacao.belongsTo(models.ProfissionalSaude, {
+       foreignKey: "notificadorId",
+     });
     Notificacao.belongsTo(models.Bairro);
-    Notificacao.belongsTo(models.Pessoa);
+    Notificacao.belongsTo(models.Pessoa, {
+       foreignKey: "pessoaId",
+     });
+    Notificacao.hasMany(models.NotificacaoHistorico);
   };
   return Notificacao;
 };
