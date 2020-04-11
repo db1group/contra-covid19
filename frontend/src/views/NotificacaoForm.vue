@@ -8,6 +8,7 @@
       <sinais-e-sintomas/>
       <comorbidades/>
       <informacoes-complementares/>
+      <vinculo-epidemiologico/>
     </base-page>
   </section>
 </template>
@@ -18,6 +19,7 @@ import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso/i
 import SinaisESintomas from '@/components/Notificacao/Form/SinaisESintomas/index.vue';
 import Comorbidades from '@/components/Notificacao/Form/Comorbidades/index.vue';
 import InformacoesComplementares from '@/components/Notificacao/Form/InformacoesComplementares/index.vue';
+import VinculoEpidemiologico from '@/components/Notificacao/Form/VinculoEpidemiologico/index.vue';
 
 export default {
   components: {
@@ -26,6 +28,7 @@ export default {
     SinaisESintomas,
     Comorbidades,
     InformacoesComplementares,
+    VinculoEpidemiologico,
   },
 };
 </script>
