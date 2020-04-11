@@ -18,6 +18,7 @@ jobs:
           key: contra-covid19/backend-{{ checksum "yarn.lock" }}
       
       - run: curl -o- -L https://yarnpkg.com/install.sh | bash
+      - run: source /home/circleci/.bashrc
       - run: yarn install
 
       - save_cache:
