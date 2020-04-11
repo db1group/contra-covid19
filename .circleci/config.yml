@@ -4,16 +4,16 @@ executors:
   covid19-executor:
     machine:
       image: ubuntu-1604:201903-01
+    working_directory: ~/contra-covid19
 
 jobs:
   build-backend:
     executor: covid19-executor
-    working_directory: ~/contra-covid19
     steps:
       - checkout
       - restore_cache:
           key: contra-covid19/backend-{{ checksum "yarn.lock" }}
-      - run: docker run --rm -it -v ${PWD}:/usr/src/app -w /usr/src/app node:13 yarn install
+      - run: docker run --rm -it -v ${PWD}/backend:/usr/src/app -w /usr/src/app node:13 yarn install
       - save_cache:
           paths:
             - ~/contra-covid19/backend/node_modules
@@ -24,7 +24,6 @@ jobs:
             - contra-covid19/backend
   deploy-backend:
     executor: covid19-executor
-    working_directory: ~/contra-covid19
     steps:
       - run: ls ~
       - run: ls ~/contra-covid19
@@ -41,7 +40,6 @@ jobs:
 
   build-frontend:
     executor: covid19-executor
-    working_directory: ~/contra-covid19/frontend
     steps:
       - checkout
       - restore_cache:
@@ -53,15 +51,14 @@ jobs:
           key: contra-covid19/frontend-{{ checksum "yarn.lock" }}
       - run: docker run --rm -it -v ${PWD}/frontend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 yarn build
       - persist_to_workspace:
-          root: ~/contra-covid19
+          root: ~/
           paths:
-            - frontend
+            - contra-covid19/frontend
   deploy-frontend:
     executor: covid19-executor
-    working_directory: ~/contra-covid19/frontend
     steps:
       - attach_workspace:
-          at: ~/contra-covid19/frontend
+          at: ~/
       - run: docker build -t contra-covid19/frontend -f frontend/Dockerfile .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
       - run: docker tag contra-covid19/frontend registry.heroku.com/covid19-db1-frontend/web
