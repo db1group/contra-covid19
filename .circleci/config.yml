@@ -4,6 +4,7 @@ executors:
   covid19-executor:
     machine:
       image: ubuntu-1604:201903-01
+    working_directory: ~/contra-covid19
 
 jobs:
   build-backend:
@@ -23,8 +24,8 @@ jobs:
     executor: covid19-executor
     working_directory: ~/contra-covid19/backend
     steps:
-      - checkout:
-          path: ~/contra-covid19
+      - attach_workspace:
+          at: ~/contra-covid19/backend
       - run: docker run --rm -it -v ${PWD}:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 npx sequelize-cli db:migrate
       - run: docker build -t contra-covid19/backend .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
@@ -49,15 +50,15 @@ jobs:
     executor: covid19-executor
     working_directory: ~/contra-covid19/frontend
     steps:
-      - checkout:
-          path: ~/contra-covid19
+      - attach_workspace:
+          at: ~/contra-covid19/frontend
       - run: docker build -t contra-covid19/frontend .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
       - run: docker tag contra-covid19/frontend registry.heroku.com/covid19-db1-frontend/web
       - run: docker push registry.heroku.com/covid19-db1-frontend/web
 
 workflows:
-  version: 2.1
+  version: 2.0
   covid19:
     jobs:
       - build-backend
@@ -69,6 +70,7 @@ workflows:
             branches:
               only:
               - master
+              - feature/ci
       - deploy-frontend:
           requires:
             - build-frontend
@@ -76,3 +78,4 @@ workflows:
             branches:
               only:
               - master
+              - feature/ci
