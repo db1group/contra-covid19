@@ -3,10 +3,6 @@ jobs:
   backend:
     working_directory: ~/contra-covid19/backend
 
-    branches:
-      only:
-        feature/ci
-
     machine:
       image: ubuntu-1604:201903-01
 
@@ -33,10 +29,6 @@ jobs:
 
   frontend:
     working_directory: ~/contra-covid19/frontend
-
-    branches:
-      only:
-        feature/ci
 
     machine:
       image: ubuntu-1604:201903-01
