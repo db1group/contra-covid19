@@ -17,14 +17,14 @@ jobs:
       - restore_cache:
           key: contra-covid19/backend-{{ checksum "yarn.lock" }}
       
-      - run: docker run --rm -it -v ${PWD}:/usr/src/project node:13 yarn install
+      - run: docker run --rm -it -v ${PWD}:/usr/src/app -w /usr/src/app node:13 yarn install
 
       - save_cache:
           paths:
             - ~/contra-covid19/backend/node_modules
           key: contra-covid19/backend-{{ checksum "yarn.lock" }}
 
-      - run: docker run --rm -it -v ${PWD}/backend:/usr/src/project node:13 npx sequelize-cli db:migrate
+      - run: docker run --rm -it -v ${PWD}:/usr/src/app -w /usr/src/app node:13 npx sequelize-cli db:migrate
 
       - run: docker build -t contra-covid19/backend .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
