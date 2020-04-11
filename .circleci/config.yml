@@ -19,9 +19,9 @@ jobs:
             - ~/contra-covid19/backend/node_modules
           key: contra-covid19/backend-{{ checksum "yarn.lock" }}
       - persist_to_workspace:
-          root: ~/contra-covid19
+          root: ~/
           paths:
-            - backend
+            - contra-covid19/backend
   deploy-backend:
     executor: covid19-executor
     working_directory: ~/contra-covid19
