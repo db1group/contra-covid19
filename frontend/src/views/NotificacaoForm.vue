@@ -11,6 +11,8 @@
       <vinculo-epidemiologico/>
       <conclusao-atendimento/>
       <realizado-coleta/>
+      <observacoes/>
+      <botao-enviar/>
     </base-page>
   </section>
 </template>
@@ -24,6 +26,8 @@ import InformacoesComplementares from '@/components/Notificacao/Form/Informacoes
 import VinculoEpidemiologico from '@/components/Notificacao/Form/VinculoEpidemiologico/index.vue';
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
 import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
+import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
+import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 
 export default {
   components: {
@@ -35,6 +39,8 @@ export default {
     VinculoEpidemiologico,
     ConclusaoAtendimento,
     RealizadoColeta,
+    Observacoes,
+    BotaoEnviar,
   },
 };
 </script>
