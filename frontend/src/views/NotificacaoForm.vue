@@ -7,6 +7,7 @@
       <identificacao-caso/>
       <sinais-e-sintomas/>
       <comorbidades/>
+      <informacoes-complementares/>
     </base-page>
   </section>
 </template>
@@ -16,6 +17,7 @@ import BasePage from '@/components/commons/BasePage.vue';
 import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso/index.vue';
 import SinaisESintomas from '@/components/Notificacao/Form/SinaisESintomas/index.vue';
 import Comorbidades from '@/components/Notificacao/Form/Comorbidades/index.vue';
+import InformacoesComplementares from '@/components/Notificacao/Form/InformacoesComplementares/index.vue';
 
 export default {
   components: {
@@ -23,6 +25,7 @@ export default {
     IdentificacaoCaso,
     SinaisESintomas,
     Comorbidades,
+    InformacoesComplementares,
   },
 };
 </script>
