@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 executors:
   covid19-executor:
@@ -57,7 +57,7 @@ jobs:
       - run: docker push registry.heroku.com/covid19-db1-frontend/web
 
 workflows:
-  version: 2
+  version: 2.1
   covid19:
     jobs:
       - build-backend
