@@ -61,3 +61,10 @@ jobs:
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
       - run: docker tag contra-covid19/frontend registry.heroku.com/covid19-db1-frontend/web
       - run: docker push registry.heroku.com/covid19-db1-frontend/web
+
+workflows:
+  version: 2
+  covid19:
+    jobs:
+      - backend
+      - frontend
