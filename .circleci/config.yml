@@ -28,9 +28,8 @@ jobs:
     steps:
       - run: ls ~
       - run: ls ~/contra-covid19
-      - run: ls ~/contra-covid19/backend
       - attach_workspace:
-          at: ~/contra-covid19
+          at: ~/
       - run: ls ~
       - run: ls ~/contra-covid19
       - run: ls ~/contra-covid19/backend
