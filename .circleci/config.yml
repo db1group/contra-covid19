@@ -1,54 +1,56 @@
 version: 2
-jobs:
-  backend:
-    working_directory: ~/contra-covid19/backend
 
+executors:
+  covid19-executor:
     machine:
       image: ubuntu-1604:201903-01
 
+jobs:
+  build-backend:
+    executor: covid19-executor
+    working_directory: ~/contra-covid19/backend
     steps:
       - checkout:
           path: ~/contra-covid19
-
       - restore_cache:
           key: contra-covid19/backend-{{ checksum "yarn.lock" }}
-      
       - run: docker run --rm -it -v ${PWD}:/usr/src/app -w /usr/src/app node:13 yarn install
-
       - save_cache:
           paths:
             - ~/contra-covid19/backend/node_modules
           key: contra-covid19/backend-{{ checksum "yarn.lock" }}
-
+  deploy-backend:
+    executor: covid19-executor
+    working_directory: ~/contra-covid19/backend
+    steps:
+      - checkout:
+          path: ~/contra-covid19
       - run: docker run --rm -it -v ${PWD}:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 npx sequelize-cli db:migrate
-
       - run: docker build -t contra-covid19/backend .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
       - run: docker tag contra-covid19/backend registry.heroku.com/covid19-db1-backend/web
       - run: docker push registry.heroku.com/covid19-db1-backend/web
 
-  frontend:
+  build-frontend:
+    executor: covid19-executor
     working_directory: ~/contra-covid19/frontend
-
-    machine:
-      image: ubuntu-1604:201903-01
-
     steps:
       - checkout:
           path: ~/contra-covid19
-
       - restore_cache:
           key: contra-covid19/frontend-{{ checksum "yarn.lock" }}
-      
       - run: docker run --rm -it -v ${PWD}:/usr/src/app -w /usr/src/app node:13 yarn install
-
       - save_cache:
           paths:
             - ~/contra-covid19/frontend/node_modules
           key: contra-covid19/frontend-{{ checksum "yarn.lock" }}
-
       - run: docker run --rm -it -v ${PWD}:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 yarn build
-
+  deploy-frontend:
+    executor: covid19-executor
+    working_directory: ~/contra-covid19/frontend
+    steps:
+      - checkout:
+          path: ~/contra-covid19
       - run: docker build -t contra-covid19/frontend .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
       - run: docker tag contra-covid19/frontend registry.heroku.com/covid19-db1-frontend/web
@@ -58,5 +60,19 @@ workflows:
   version: 2
   covid19:
     jobs:
-      - backend
-      - frontend
+      - build-backend
+      - build-frontend
+      - deploy-backend:
+          requires:
+            - build-backend
+          filters:
+            branches:
+              only:
+              - master
+      - deploy-frontend:
+          requires:
+            - build-frontend
+          filters:
+            branches:
+              only:
+              - master
