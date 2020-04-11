@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('User', {
+    return queryInterface.createTable('UnidadeSaude', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -9,8 +9,17 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4,
         autoIncrement: false,
       },
-      email: {
+      nome: {
         type: Sequelize.STRING,
+      },
+      municipioId: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'Municipio',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       createdAt: {
         allowNull: false,
@@ -23,6 +32,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('User');
+    return queryInterface.dropTable('UnidadeSaude');
   },
 };

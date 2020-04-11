@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('User', {
+    return queryInterface.createTable('Municipio', {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
@@ -9,7 +9,10 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4,
         autoIncrement: false,
       },
-      email: {
+      nome: {
+        type: Sequelize.STRING,
+      },
+      uf: {
         type: Sequelize.STRING,
       },
       createdAt: {
@@ -23,6 +26,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('User');
+    return queryInterface.dropTable('Municipio');
   },
 };
