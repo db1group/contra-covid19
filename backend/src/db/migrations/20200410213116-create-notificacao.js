@@ -16,7 +16,7 @@ module.exports = {
           key: 'id',
         },
       },
-      unidadeId: {
+      unidadeSaudeId: {
         type: Sequelize.UUID,
         references: {
           model: 'UnidadeSaude',

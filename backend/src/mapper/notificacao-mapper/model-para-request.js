@@ -1,9 +1,9 @@
 const notificacaoParaRequest = (notificacao, notificacaoHistorico, request) => {
-    const { unidadeId, notificadorId, userId } = notificacao;
+    const { unidadeSaudeId, notificadorId, userId } = notificacao;
     const { dataHoraNotificacao, dataInicioDosSintomas, sintomatico } = notificacaoHistorico;
     return {
         dataHoraNotificacao,
-        unidadeId,
+        unidadeSaudeId,
         notificadorId,
         sintomatico,
         dataInicioDosSintomas,

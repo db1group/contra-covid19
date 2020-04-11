@@ -48,11 +48,17 @@ exports.consultarPaginado = async (req, res) => {
 
 exports.consultarPorId = async (req, res) => {  
   const { id } = req.params;
-  
-  const notificacao = await models.Notificacao.findAll({
-    include: { model: models.NotificacaoHistorico },
-    where: { id: id }
+  const notificacaoModel = await models.Notificacao.findOne({
+    where: { id },
+    include: [
+      { model: models.Pessoa },
+      { model: models.NotificacaoHistorico }
+    ]
   });
- 
-  return res.json({data: notificacao});
+
+  const { notificacaoHistorico, ...notificacao } = notificacaoModel;
+
+  const retorno = mapearParaRequest(notificacaoModel, notificacaoModel.NotificacaoHistorico);
+
+  return res.json({ data: retorno });
 };

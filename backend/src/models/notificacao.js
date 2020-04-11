@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     "Notificacao",
     {
       userId: DataTypes.UUID,
-      unidadeId: DataTypes.UUID,
+      unidadeSaudeId: DataTypes.UUID,
       notificadorId: DataTypes.UUID,
       bairroId: DataTypes.UUID,
       pessoaId: DataTypes.UUID,
@@ -13,19 +13,24 @@ module.exports = (sequelize, DataTypes) => {
   );
   Notificacao.associate = function (models) {
     Notificacao.belongsTo(models.UnidadeSaude, {
-      foreignKey: "unidadeId",
+      foreignKey: "unidadeSaudeId",
     });
     Notificacao.belongsTo(models.User, {
       foreignKey: "userId",
+    });
+    Notificacao.belongsTo(models.ProfissionalSaude, {
+      foreignKey: "notificadorId",
     });
     Notificacao.belongsTo(models.ProfissionalSaude, {
        foreignKey: "notificadorId",
      });
     Notificacao.belongsTo(models.Bairro);
     Notificacao.belongsTo(models.Pessoa, {
-       foreignKey: "pessoaId",
-     });
-    Notificacao.hasMany(models.NotificacaoHistorico);
+      foreignKey: "pessoaId",
+    });
+    Notificacao.hasOne(models.NotificacaoHistorico, {
+      foreignKey: "notificacaoId",
+    });
   };
   return Notificacao;
 };
