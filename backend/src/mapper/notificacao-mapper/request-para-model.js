@@ -1,13 +1,13 @@
 const uuid = require("uuid/v4");
 
 const requestParaModeloNotificacao = (objetoRequest) => {
-    const { unidadeId, notificadorId, userId, suspeito } = objetoRequest;
+    const { unidadeSaudeId, notificadorId, userId, suspeito } = objetoRequest;
 
     return {
         userId,
-        unidadeId,
+        unidadeSaudeId,
         notificadorId,
-        // pessoaId: suspeito.pessoaId,
+        pessoaId: suspeito.pessoaId,
         bairroId: suspeito.bairroId,
     };
 }
