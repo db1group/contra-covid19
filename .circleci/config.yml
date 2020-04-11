@@ -25,13 +25,8 @@ jobs:
   deploy-backend:
     executor: covid19-executor
     steps:
-      - run: ls ~
-      - run: ls ~/contra-covid19
       - attach_workspace:
           at: ~/
-      - run: ls ~
-      - run: ls ~/contra-covid19
-      - run: ls ~/contra-covid19/backend
       - run: docker run --rm -it -v ${PWD}/backend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 npx sequelize-cli db:migrate
       - run: docker build -t contra-covid19/backend -f backend/Dockerfile .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
@@ -59,6 +54,9 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
+      - run: ls ~/
+      - run: ls ~/contra-covid19
+      - run: ls ~/contra-covid19/frontend
       - run: docker build -t contra-covid19/frontend -f frontend/Dockerfile .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
       - run: docker tag contra-covid19/frontend registry.heroku.com/covid19-db1-frontend/web
