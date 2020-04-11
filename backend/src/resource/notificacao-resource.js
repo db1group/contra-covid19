@@ -79,9 +79,3 @@ const consultarNotificaoesPaginado = async (page, limit) => {
     offset: offset
   });
 }
-
-
-{
-  "count": 12,
-    "data": []
-}
