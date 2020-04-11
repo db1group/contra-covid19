@@ -35,11 +35,8 @@ exports.consultarPaginado = async (req, res) => {
   const limit = 10;
   const offset = (page - 1) * limit;
   const notificacoes = await models.Notificacao.findAndCountAll({  
-    include: [
-      { model: models.User },
-      { model: models.Pessoa },
-      { model: models.UnidadeSaude },
-      { model: models.ProfissionalSaude },
+    include: [      
+      { model: models.Pessoa },      
       { model: models.NotificacaoHistorico },
     ],
     order: [['updatedAt', 'DESC']],
