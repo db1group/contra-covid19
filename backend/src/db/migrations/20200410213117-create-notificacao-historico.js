@@ -22,7 +22,7 @@ module.exports = {
       dataInicioDosSintomas: {
         type: Sequelize.DATE,
       },
-      dataHoraNotificação: {
+      dataHoraNotificacao: {
         type: Sequelize.DATE,
       },
       coriza: {
@@ -116,6 +116,75 @@ module.exports = {
         type: Sequelize.BOOLEAN,
       },
       outrosComorbidades: {
+        type: Sequelize.TEXT,
+      },
+      medicacaoAntitermica: {
+        type: Sequelize.BOOLEAN,
+      },
+      nomeMedicacaoAntitermica: {
+        type: Sequelize.STRING,
+      },
+      medicacaoAnalgesica: {
+        type: Sequelize.BOOLEAN,
+      },
+      nomeMedicacaoAnalgesica: {
+        type: Sequelize.STRING,
+      },
+      medicacaoAntiflamatorio: {
+        type: Sequelize.BOOLEAN,
+      },
+      nomeMedicacaoAntiflamatorio: {
+        type: Sequelize.STRING,
+      },
+      medicacaoAntiviral: {
+        type: Sequelize.BOOLEAN,
+      },
+      nomeMedicacaoAntiviral: {
+        type: Sequelize.STRING,
+      },
+      historicoDeViagem: {
+        type: Sequelize.BOOLEAN,
+      },
+      dataDaViagem: {
+        type: Sequelize.DATE,
+      },
+      localDaViagem: {
+        type: Sequelize.STRING,
+      },
+      recebeuVacinaDaGripeNosUltimosDozeMeses: {
+        type: Sequelize.BOOLEAN,
+      },
+      situacao1: {
+        type: Sequelize.BOOLEAN,
+      },
+      situacao2: {
+        type: Sequelize.BOOLEAN,
+      },
+      nomeTeveContato: {
+        type: Sequelize.STRING,
+      },
+      isolamentoDomiciliar: {
+        type: Sequelize.BOOLEAN,
+      },
+      leitoComum: {
+        type: Sequelize.BOOLEAN,
+      },
+      leitoUti: {
+        type: Sequelize.BOOLEAN,
+      },
+      prontoSocorroOuAtendimento: {
+        type: Sequelize.BOOLEAN,
+      },
+      coletaMaterialParaDiagnostico: {
+        type: Sequelize.BOOLEAN,
+      },
+      laboratorioOficial: {
+        type: Sequelize.BOOLEAN,
+      },
+      laboratorioRedePrivada: {
+        type: Sequelize.BOOLEAN,
+      },
+      observacoes: {
         type: Sequelize.TEXT,
       },
       createdAt: {
