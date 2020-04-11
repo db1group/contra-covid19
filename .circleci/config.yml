@@ -8,7 +8,7 @@ executors:
 jobs:
   build-backend:
     executor: covid19-executor
-    working_directory: ~/contra-covid19/backend
+    working_directory: ~/contra-covid19
     steps:
       - checkout
       - restore_cache:
@@ -19,18 +19,18 @@ jobs:
             - ~/contra-covid19/backend/node_modules
           key: contra-covid19/backend-{{ checksum "yarn.lock" }}
       - persist_to_workspace:
-          root: ~/contra-covid19
+          root: backend
           paths:
             - backend
   deploy-backend:
     executor: covid19-executor
-    working_directory: ~/contra-covid19/backend
+    working_directory: ~/contra-covid19
     steps:
       - run: ls ~
       - run: ls ~/contra-covid19
       - run: ls ~/contra-covid19/backend
       - attach_workspace:
-          at: ~/contra-covid19/backend
+          at: ~/contra-covid19
       - run: ls ~
       - run: ls ~/contra-covid19
       - run: ls ~/contra-covid19/backend
