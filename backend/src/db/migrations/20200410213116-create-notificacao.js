@@ -16,7 +16,7 @@ module.exports = {
           key: 'id',
         },
       },
-      unidadeId: {
+      unidadeSaudeId: {
         type: Sequelize.UUID,
         references: {
           model: 'UnidadeSaude',
@@ -37,13 +37,13 @@ module.exports = {
           key: 'id',
         },
       },
-      // pessoaId: {
-      //   type: Sequelize.UUID,
-      //   references: {
-      //     model: 'Pessoa',
-      //     key: 'id',
-      //   },
-      // },
+      pessoaId: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'Pessoa',
+          key: 'id',
+        },
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
