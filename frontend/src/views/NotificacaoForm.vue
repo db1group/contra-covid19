@@ -10,6 +10,7 @@
       <informacoes-complementares/>
       <vinculo-epidemiologico/>
       <conclusao-atendimento/>
+      <realizado-coleta/>
     </base-page>
   </section>
 </template>
@@ -22,6 +23,7 @@ import Comorbidades from '@/components/Notificacao/Form/Comorbidades/index.vue';
 import InformacoesComplementares from '@/components/Notificacao/Form/InformacoesComplementares/index.vue';
 import VinculoEpidemiologico from '@/components/Notificacao/Form/VinculoEpidemiologico/index.vue';
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
+import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
 
 export default {
   components: {
@@ -32,6 +34,7 @@ export default {
     InformacoesComplementares,
     VinculoEpidemiologico,
     ConclusaoAtendimento,
+    RealizadoColeta,
   },
 };
 </script>
