@@ -22,17 +22,14 @@ exports.salvar = async (req, res) => {
 exports.consultarPaginado = async (req, res) => {
   const { page = 1 } = req.query;
   const limit = 10;
-  const offset = (page - 1) * limit;
-  const notificacoes = await models.Notificacao.findAndCountAll({
-    include: [
-      { model: models.Pessoa },
-      { model: models.NotificacaoHistorico },
-    ],
-    order: [['updatedAt', 'DESC']],
-    limit: limit,
-    offset: offset
-  });
-  return res.json({ data: notificacoes });
+  const notificacoes = await consultarNotificaoesPaginado(page, limit);
+
+  const notificacoesResponse = [];
+  notificacoes.rows.map(notificacao =>
+    notificacoesResponse.push(mapearParaResponse(notificacao, notificacao.NotificacaoHistorico))
+  );
+
+  return res.json({ count: notificacoes.count, data: notificacoesResponse });
 };
 
 exports.consultarPorId = async (req, res) => {
@@ -68,4 +65,23 @@ const salvarNotificacao = async (notificacao) => {
   await models.Notificacao.create(notificacaoComId);
   await models.NotificacaoHistorico.create(notificacaoComId.notificacaoHistorico);
   return await consultarNotificacaoPorId(notificacaoId);
+}
+
+const consultarNotificaoesPaginado = async (page, limit) => {
+  const offset = (page - 1) * limit;
+  return await models.Notificacao.findAndCountAll({
+    include: [
+      { model: models.Pessoa },
+      { model: models.NotificacaoHistorico },
+    ],
+    order: [['updatedAt', 'DESC']],
+    limit: limit,
+    offset: offset
+  });
+}
+
+
+{
+  "count": 12,
+    "data": []
 }
