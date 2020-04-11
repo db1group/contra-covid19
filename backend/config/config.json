@@ -8,10 +8,10 @@
     "storage": "./src/db/databases/test.sqlite"
   },
   "production": {
-    "username": "db1nlp",
-    "password": "db1nlp",
-    "database": "covid19",
-    "host": "127.0.0.1",
+    "username": "artamutj",
+    "password": "r3AAc-798qno4Ba8FT_9DtLqHJyLLQKh",
+    "database": "artamutj",
+    "host": "drona.db.elephantsql.com",
     "dialect": "postgres"
   }
 }
