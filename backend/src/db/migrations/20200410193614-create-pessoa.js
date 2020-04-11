@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       sexo: {
-        type: Sequelize.STRING(18),
+        type: Sequelize.STRING(1),
       },
       idade: {
         type: Sequelize.INTEGER,

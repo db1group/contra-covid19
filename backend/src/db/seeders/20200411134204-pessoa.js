@@ -9,7 +9,7 @@ module.exports = {
           id: "dfc15106-36a4-43ee-9ca6-4ce21c8f98e6",
           nome: "Maykon Capellari",
           dataDeNascimento: new Date(),
-          sexo: "Masculino",
+          sexo: "M",
           idade: 33,
           numeroDocumento: "16857253501",
           tipoDocumento: "CPF",

@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       nome: DataTypes.STRING(150),
       dataDeNascimento: DataTypes.DATE,
-      sexo: DataTypes.ENUM("Masculino", "Feminino"),
+      sexo: DataTypes.ENUM("M", "F"),
       idade: DataTypes.INTEGER,
       numeroDocumento: DataTypes.STRING(18),
       tipoDocumento: DataTypes.ENUM("CPF", "RG", "CNH", "SUS"),
