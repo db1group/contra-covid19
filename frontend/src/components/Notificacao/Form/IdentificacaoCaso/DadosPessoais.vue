@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row>
+    <v-row dense>
       <v-col
         cols="12"
         sm="8"
@@ -12,14 +12,14 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col cols="12">
         <v-text-field
           label="Nome completo *"
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col cols="12">
         <v-radio-group class="mt-0">
           <template v-slot:label>
@@ -30,7 +30,7 @@
         </v-radio-group>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col
         cols="12"
         sm="8"

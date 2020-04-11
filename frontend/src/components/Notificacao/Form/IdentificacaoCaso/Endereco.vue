@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row>
+    <v-row dense>
       <v-col
         cols="12"
         sm="4"
@@ -19,7 +19,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col
         cols="12"
         sm="4"
@@ -37,7 +37,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col cols="3">
         <v-select
           value="PR"

@@ -3,14 +3,9 @@
     <h4 class="primary--text font-weight-medium title">
       1. IDENTIFICAÇÃO DO CASO SUSPEITO
     </h4>
-    <v-container
-      fluid
-      class="pa-0"
-    >
-      <dados-pessoais/>
-      <endereco/>
-      <contato/>
-    </v-container>
+    <dados-pessoais/>
+    <endereco/>
+    <contato/>
   </div>
 </template>
 <script>
@@ -18,16 +13,11 @@ import DadosPessoais from './DadosPessoais.vue';
 import Endereco from './Endereco.vue';
 import Contato from './Contato.vue';
 
-const MUNICIPIOS = ['Maringá', 'Sarandi', 'Paiçandu'];
-
 export default {
   components: {
     DadosPessoais,
     Endereco,
     Contato,
   },
-  data: () => ({
-    municipios: MUNICIPIOS,
-  }),
 };
 </script>
