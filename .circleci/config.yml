@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  backend:
+  build:
     working_directory: ~/contra-covid19/backend
 
     branches:
