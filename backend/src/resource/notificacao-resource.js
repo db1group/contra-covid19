@@ -40,7 +40,17 @@ exports.consultarPorData = async (req, res) => {
 exports.consultarPorId = async (req, res) => {
   console.log(req.params);
   const { id } = req.params;
-  const notificacao = {};
+  const notificacaoModel = await models.Notificacao.findOne({
+    where: { id },
+    include: [
+      { model: models.Pessoa },
+      { model: models.NotificacaoHistorico }
+    ]
+  });
 
-  return res.json({ data: notificacao });
+  const { notificacaoHistorico, ...notificacao } = notificacaoModel;
+
+  const retorno = mapearParaRequest(notificacaoModel, notificacaoModel.NotificacaoHistorico);
+
+  return res.json({ data: retorno });
 };
