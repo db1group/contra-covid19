@@ -24,7 +24,7 @@ jobs:
             - ~/contra-covid19/backend/node_modules
           key: contra-covid19/backend-{{ checksum "yarn.lock" }}
 
-      - run: docker run --rm -it -v ${PWD}:/usr/src/app -w /usr/src/app node:13 npx sequelize-cli db:migrate
+      - run: docker run --rm -it -v ${PWD}:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 npx sequelize-cli db:migrate
 
       - run: docker build -t contra-covid19/backend .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
