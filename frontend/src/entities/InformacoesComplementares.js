@@ -9,7 +9,7 @@ export default class InformacoesComplementares {
     this.medicacaoAntiviral = data.medicacaoAntiviral || false;
     this.nomeMedicacaoAntiviral = data.nomeMedicacaoAntiviral || '';
     this.historicoDeViagem = data.historicoDeViagem || false;
-    this.dataDaViagem = data.dataDaViagem || null;
+    this.dataDaViagem = data.dataDaViagem || '';
     this.localDaViagem = data.localDaViagem || '';
     this.recebeuVacinaDaGripeNosUltimosDozeMeses = data.recebeuVacinaDaGripeNosUltimosDozeMeses || false;
   }

@@ -46,7 +46,23 @@
         @update:obesidade="updateComorbidade('obesidade', $event)"
         @update:outros="updateComorbidade('outros', $event)"
       />
-      <informacoes-complementares/>
+      <informacoes-complementares
+        :informacoes-complementares="notificacao.informacaoComplementar"
+        @update:medicacaoAntitermica="updateInformacaoComplementar('medicacaoAntitermica', $event)"
+        @update:nomeMedicacaoAntitermica="updateInformacaoComplementar('nomeMedicacaoAntitermica', $event)"
+        @update:medicacaoAnalgesica="updateInformacaoComplementar('medicacaoAnalgesica', $event)"
+        @update:nomeMedicacaoAnalgesica="updateInformacaoComplementar('nomeMedicacaoAnalgesica', $event)"
+        @update:medicacaoAntiflamatorio="updateInformacaoComplementar('medicacaoAntiflamatorio', $event)"
+        @update:nomeMedicacaoAntiflamatorio="updateInformacaoComplementar('nomeMedicacaoAntiflamatorio', $event)"
+        @update:medicacaoAntiviral="updateInformacaoComplementar('medicacaoAntiviral', $event)"
+        @update:nomeMedicacaoAntiviral="updateInformacaoComplementar('nomeMedicacaoAntiviral', $event)"
+        @update:historicoDeViagem="updateInformacaoComplementar('historicoDeViagem', $event)"
+        @update:dataDaViagem="updateInformacaoComplementar('dataDaViagem', $event)"
+        @update:localDaViagem="updateInformacaoComplementar('localDaViagem', $event)"
+        @update:recebeuVacinaDaGripeNosUltimosDozeMeses="
+          updateInformacaoComplementar('recebeuVacinaDaGripeNosUltimosDozeMeses', $event)
+        "
+      />
       <vinculo-epidemiologico/>
       <conclusao-atendimento/>
       <realizado-coleta/>
@@ -97,6 +113,9 @@ export default {
     },
     updateComorbidade(tipoComorbidade, valor) {
       this.notificacao.comorbidades[tipoComorbidade] = valor;
+    },
+    updateInformacaoComplementar(tipoInformacaoComplementar, valor) {
+      this.notificacao.informacaoComplementar[tipoInformacaoComplementar] = valor;
     },
   },
 };
