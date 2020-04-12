@@ -32,6 +32,9 @@ jobs:
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
       - run: docker tag contra-covid19/backend registry.heroku.com/covid19-db1-backend/web:latest
       - run: docker push registry.heroku.com/covid19-db1-backend/web:latest
+      - run: sudo snap install --classic heroku
+      - run: heroku container:login
+      - run: heroku container:release web --app covid19-db1-backend
 
   build-frontend:
     executor: covid19-executor
@@ -60,7 +63,7 @@ jobs:
       - run: docker push registry.heroku.com/covid19-db1-frontend/web:latest
       - run: sudo snap install --classic heroku
       - run: heroku container:login
-      - run: heroku container:release web
+      - run: heroku container:release web --app covid19-db1-frontend
 
 workflows:
   version: 2.0
