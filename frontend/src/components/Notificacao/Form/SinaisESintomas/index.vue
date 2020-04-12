@@ -15,6 +15,7 @@
         @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
       />
       <sintomas-respiratorios-leves
+        :sintomatico="sintomatico"
         :sintomas="sintomas"
         @update:coriza="updateCoriza"
         @update:tosseSeca="updateTosseSeca"
@@ -22,6 +23,7 @@
         @update:mialgia="updateMialgia"
       />
       <sintomas-respiratorios-graves
+        :sintomatico="sintomatico"
         :sintomas="sintomas"
         @update:tosseProdutiva="updateTosseProdutiva"
         @update:sibilo="updateSibilo"
@@ -33,7 +35,15 @@
         @update:diminuicaoDePulsoPeriferico="updateDiminuicaoDePulsoPeriferico"
         @update:hipotensao="updateHipotensao"
       />
-      <outros-sintomas/>
+      <outros-sintomas
+        :sintomatico="sintomatico"
+        :sintomas="sintomas"
+        @update:diarreia="updateDiarreia"
+        @update:cefaleia="updateCefaleia"
+        @update:nausea="updateNausea"
+        @update:vomito="updateVomito"
+        @update:outros="updateOutros"
+      />
     </v-container>
   </div>
 </template>
@@ -110,6 +120,21 @@ export default {
     },
     updateHipotensao(hipotensao) {
       this.$emit('update:hipotensao', hipotensao);
+    },
+    updateDiarreia(diarreia) {
+      this.$emit('update:diarreia', diarreia);
+    },
+    updateCefaleia(cefaleia) {
+      this.$emit('update:cefaleia', cefaleia);
+    },
+    updateNausea(nausea) {
+      this.$emit('update:nausea', nausea);
+    },
+    updateVomito(vomito) {
+      this.$emit('update:vomito', vomito);
+    },
+    updateOutros(outros) {
+      this.$emit('update:outrosSintomas', outros);
     },
   },
 };

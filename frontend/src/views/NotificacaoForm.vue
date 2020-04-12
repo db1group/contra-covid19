@@ -25,6 +25,11 @@
         @update:cianoseCentral="updateCianoseCentral"
         @update:diminuicaoDePulsoPeriferico="updateDiminuicaoDePulsoPeriferico"
         @update:hipotensao="updateHipotensao"
+        @update:diarreia="updateDiarreia"
+        @update:cefaleia="updateCefaleia"
+        @update:nausea="updateNausea"
+        @update:vomito="updateVomito"
+        @update:outrosSintomas="updateOutrosSintomas"
       />
       <comorbidades/>
       <informacoes-complementares/>
@@ -111,6 +116,21 @@ export default {
     },
     updateHipotensao(hipotensao) {
       this.notificacao.sintomas.hipotensao = hipotensao;
+    },
+    updateDiarreia(diarreia) {
+      this.notificacao.sintomas.diarreia = diarreia;
+    },
+    updateCefaleia(cefaleia) {
+      this.notificacao.sintomas.cefaleia = cefaleia;
+    },
+    updateNausea(nausea) {
+      this.notificacao.sintomas.nausea = nausea;
+    },
+    updateVomito(vomito) {
+      this.notificacao.sintomas.vomito = vomito;
+    },
+    updateOutrosSintomas(outrosSintomas) {
+      this.notificacao.sintomas.outros = outrosSintomas;
     },
   },
 };

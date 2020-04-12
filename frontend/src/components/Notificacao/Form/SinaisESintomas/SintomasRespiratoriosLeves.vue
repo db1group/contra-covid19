@@ -6,32 +6,37 @@
           Sintomas respiratórios LEVES
         </label>
         <v-checkbox
-          :value="sintomas.coriza"
+          :input-value="sintomas.coriza"
           label="CORIZA"
           hide-details
+          :disabled="!sintomatico"
           @change="updateCoriza"
         />
         <v-checkbox
-          :value="sintomas.tosseSeca"
+          :input-value="sintomas.tosseSeca"
           label="TOSSE SECA"
           hide-details
+          :disabled="!sintomatico"
           @change="updateTosseSeca"
         />
         <v-checkbox
-          :value="sintomas.dorDeGarganta"
+          :input-value="sintomas.dorDeGarganta"
           label="DOR DE GARGANTA"
           hide-details
+          :disabled="!sintomatico"
           @change="updateDorDeGarganta"
         />
         <v-checkbox
-          :value="sintomas.mialgia"
+          :input-value="sintomas.mialgia"
           label="MIALGIA"
           hide-details
+          :disabled="!sintomatico"
           @change="updateMialgia"
         />
         <v-checkbox
           label="FEBRE BAIXA (até 37,8)"
           hide-details
+          :disabled="!sintomatico"
         />
       </v-col>
     </v-row>
@@ -44,6 +49,10 @@ export default {
   props: {
     sintomas: {
       type: Sintomas,
+      required: true,
+    },
+    sintomatico: {
+      type: Boolean,
       required: true,
     },
   },

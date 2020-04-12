@@ -6,57 +6,66 @@
           Sintomas respiratórios GRAVES
         </label>
         <v-checkbox
-          :value="sintomas.tosseProdutiva"
+          :input-value="sintomas.tosseProdutiva"
           label="TOSSE PRODUTIVA"
           hide-details
+          :disabled="!sintomatico"
           @change="updateTosseProdutiva"
         />
         <v-checkbox
-          :value="sintomas.sibilo"
+          :input-value="sintomas.sibilo"
           label="SIBILO / Chiado no peito"
           hide-details
+          :disabled="!sintomatico"
           @change="updateSibilo"
         />
         <v-checkbox
-          :value="sintomas.desconfortoRespiratorio"
+          :input-value="sintomas.desconfortoRespiratorio"
           label="DESCONFORTO RESPIRATÓRIO / Dificuldade para respirar / Falta de ar"
           hide-details
+          :disabled="!sintomatico"
           @change="updateDesconfortoRespiratorio"
         />
         <v-checkbox
-          :value="sintomas.dispneia"
+          :input-value="sintomas.dispneia"
           label="DISPNEIA com batimento das asas nasais E/OU retração intercostal E/OU fúrcula external"
           hide-details
+          :disabled="!sintomatico"
           @change="updateDispneia"
         />
         <v-checkbox
-          :value="sintomas.taquipneia"
+          :input-value="sintomas.taquipneia"
           label="TAQUIPNEIA (>30 IPM)"
           hide-details
+          :disabled="!sintomatico"
           @change="updateTaquipneia"
         />
         <v-checkbox
-          :value="sintomas.saturacaoDeOximetriaDePulso"
+          :input-value="sintomas.saturacaoDeOximetriaDePulso"
           label="SATURAÇÃO DE OXIMETRIA DE PULSO < 95% EM AR AMBIENTE"
           hide-details
+          :disabled="!sintomatico"
           @change="updateSaturacaoDeOximetriaDePulso"
         />
         <v-checkbox
-          :value="sintomas.cianoseCentral"
+          :input-value="sintomas.cianoseCentral"
           label="CIANOSE CENTRAL"
           hide-details
+          :disabled="!sintomatico"
           @change="updateCianoseCentral"
         />
         <v-checkbox
-          :value="sintomas.diminuicaoDePulsoPeriferico"
+          :input-value="sintomas.diminuicaoDePulsoPeriferico"
           label="DIMINUIÇÃO DE PULSO PERIFÉRICO"
           hide-details
+          :disabled="!sintomatico"
           @change="updateDiminuicaoDePulsoPeriferico"
         />
         <v-checkbox
-          :value="sintomas.hipotensao"
+          :input-value="sintomas.hipotensao"
           label="SINAIS DE HIPOTENSÃO (PAS < 90mmHg e/ou PAD < 60mmHg)"
           hide-details
+          :disabled="!sintomatico"
           @change="updateHipotensao"
         />
       </v-col>
@@ -70,6 +79,10 @@ export default {
   props: {
     sintomas: {
       type: Sintomas,
+      required: true,
+    },
+    sintomatico: {
+      type: Boolean,
       required: true,
     },
   },
