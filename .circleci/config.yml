@@ -48,7 +48,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - contra-covid19/frontend/dist
+            - contra-covid19/frontend
   deploy-frontend:
     executor: covid19-executor
     steps:
