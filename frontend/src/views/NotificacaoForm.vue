@@ -63,7 +63,13 @@
           updateInformacaoComplementar('recebeuVacinaDaGripeNosUltimosDozeMeses', $event)
         "
       />
-      <vinculo-epidemiologico/>
+      <pre>{{ notificacao.vinculoEpidemiologico }}</pre>
+      <vinculo-epidemiologico
+        :vinculo-epidemiologico="notificacao.vinculoEpidemiologico"
+        @update:situacao1="updateVinculoEpidemiologico('situacao1', $event)"
+        @update:situacao2="updateVinculoEpidemiologico('situacao2', $event)"
+        @update:nome="updateVinculoEpidemiologico('nome', $event)"
+      />
       <conclusao-atendimento/>
       <realizado-coleta/>
       <observacoes/>
@@ -116,6 +122,9 @@ export default {
     },
     updateInformacaoComplementar(tipoInformacaoComplementar, valor) {
       this.notificacao.informacaoComplementar[tipoInformacaoComplementar] = valor;
+    },
+    updateVinculoEpidemiologico(tipoVinculoEpidemiologico, valor) {
+      this.notificacao.vinculoEpidemiologico[tipoVinculoEpidemiologico] = valor;
     },
   },
 };
