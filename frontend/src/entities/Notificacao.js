@@ -5,22 +5,20 @@ import InformacoesComplementares from './InformacoesComplementares';
 import VinculoEpidemiologico from './VinculoEpidemiologico';
 import ConclusaoAtendimento from './ConclusaoAtendimento';
 
-export default class {
+export default class Notificacao {
   constructor(data = {}) {
-    return {
-      id: data.id || null,
-      dataHoraNotificacao: data.dataHoraNotificacao || null,
-      unidadeSaudeId: data.unidadeSaudeId || null,
-      notificadorId: data.notificadorId || null,
-      sintomatico: data.sintomatico || false,
-      dataInicioDosSintomas: data.dataInicioDosSintomas || null,
-      userId: data.userId || null,
-      suspeito: new Pessoa(data.suspeito || {}),
-      sintomas: new Sintomas(data.sintomas || {}),
-      comorbidades: new Comorbidades(data.comorbidades || {}),
-      informacaoComplementar: new InformacoesComplementares(data.informacaoComplementar || {}),
-      vinculoEpidemiologico: new VinculoEpidemiologico(data.vinculoEpidemiologico || {}),
-      conclusaoAtendimento: new ConclusaoAtendimento(data.conclusaoAtendimento || {}),
-    };
+    this.id = data.id || null;
+    this.dataHoraNotificacao = data.dataHoraNotificacao || null;
+    this.unidadeSaudeId = data.unidadeSaudeId || null;
+    this.notificadorId = data.notificadorId || null;
+    this.sintomatico = data.sintomatico || false;
+    this.dataInicioDosSintomas = data.dataInicioDosSintomas || '';
+    this.userId = data.userId || null;
+    this.suspeito = new Pessoa(data.suspeito || {});
+    this.sintomas = new Sintomas(data.sintomas || {});
+    this.comorbidades = new Comorbidades(data.comorbidades || {});
+    this.informacaoComplementar = new InformacoesComplementares(data.informacaoComplementar || {});
+    this.vinculoEpidemiologico = new VinculoEpidemiologico(data.vinculoEpidemiologico || {});
+    this.conclusaoAtendimento = new ConclusaoAtendimento(data.conclusaoAtendimento || {});
   }
-};
+}

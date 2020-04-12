@@ -4,10 +4,10 @@
       <v-col cols="12">
         <label class="primary--text body-1 font-weight-bold">Sintomas</label>
         <v-checkbox
-          :input-value="existemSintomas"
+          :input-value="sintomatico"
           label="Sintomático"
           hide-details
-          @change="updateExistemSintomas"
+          @change="updateSintomatico"
         />
       </v-col>
       <v-col
@@ -17,10 +17,12 @@
         md="7"
       >
         <v-text-field
+          :value="dataInicioDosSintomas"
           label="Data de início dos sintomas *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
-          :disabled="!existemSintomas"
+          :disabled="!sintomatico"
+          @input="updateDataInicioDosSintomas"
         />
       </v-col>
       <v-col
@@ -33,7 +35,7 @@
           label="Temperatura *"
           suffix="°C"
           v-mask="'##,#'"
-          :disabled="!existemSintomas"
+          :disabled="!sintomatico"
         />
       </v-col>
     </v-row>
@@ -44,12 +46,22 @@ import { mask } from 'vue-the-mask';
 
 export default {
   directives: { mask },
-  data: () => ({
-    existemSintomas: false,
-  }),
+  props: {
+    sintomatico: {
+      type: Boolean,
+      required: true,
+    },
+    dataInicioDosSintomas: {
+      type: String,
+      required: true,
+    },
+  },
   methods: {
-    updateExistemSintomas(existemSintomas) {
-      this.existemSintomas = existemSintomas;
+    updateSintomatico(sintomatico) {
+      this.$emit('update:sintomatico', sintomatico);
+    },
+    updateDataInicioDosSintomas(dataInicioDosSintomas) {
+      this.$emit('update:dataInicioDosSintomas', dataInicioDosSintomas);
     },
   },
 };

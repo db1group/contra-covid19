@@ -1,19 +1,17 @@
-export default class {
+export default class Comorbidades {
   constructor(data = {}) {
-    return {
-      puerperaAte45DiasDoParto: data.puerperaAte45DiasDoParto || false,
-      sindromeDeDown: data.sindromeDeDown || false,
-      diabetesMellitus: data.diabetesMellitus || false,
-      imunodeficiencia: data.imunodeficiencia || false,
-      doencaCardioVascularCronica: data.doencaCardioVascularCronica || false,
-      doencaHepaticaCronica: data.doencaHepaticaCronica || false,
-      doencaNeurologicaCronica: data.doencaNeurologicaCronica || false,
-      doencaRenalCronica: data.doencaRenalCronica || false,
-      doencaHematologicaCronica: data.doencaHematologicaCronica || false,
-      asma: data.asma || false,
-      outraPneumopatiaCronica: data.outraPneumopatiaCronica || false,
-      obesidade: data.obesidade || false,
-      outros: data.outros || '',
-    };
+    this.puerperaAte45DiasDoParto = data.puerperaAte45DiasDoParto || false;
+    this.sindromeDeDown = data.sindromeDeDown || false;
+    this.diabetesMellitus = data.diabetesMellitus || false;
+    this.imunodeficiencia = data.imunodeficiencia || false;
+    this.doencaCardioVascularCronica = data.doencaCardioVascularCronica || false;
+    this.doencaHepaticaCronica = data.doencaHepaticaCronica || false;
+    this.doencaNeurologicaCronica = data.doencaNeurologicaCronica || false;
+    this.doencaRenalCronica = data.doencaRenalCronica || false;
+    this.doencaHematologicaCronica = data.doencaHematologicaCronica || false;
+    this.asma = data.asma || false;
+    this.outraPneumopatiaCronica = data.outraPneumopatiaCronica || false;
+    this.obesidade = data.obesidade || false;
+    this.outros = data.outros || '';
   }
-};
+}

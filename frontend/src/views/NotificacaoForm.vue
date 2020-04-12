@@ -4,8 +4,28 @@
       Cadastro de notificação
     </h3>
     <base-page>
+      <pre>{{ notificacao.sintomas }}</pre>
       <identificacao-caso/>
-      <sinais-e-sintomas/>
+      <sinais-e-sintomas
+        :sintomatico="notificacao.sintomatico"
+        :data-inicio-dos-sintomas="notificacao.dataInicioDosSintomas"
+        :sintomas="notificacao.sintomas"
+        @update:sintomatico="updateSintomatico"
+        @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
+        @update:sintomaCoriza="updateSintomaCoriza"
+        @update:sintomaTosseSeca="updateSintomaTosseSeca"
+        @update:sintomaDorDeGarganta="updateSintomaDorDeGarganta"
+        @update:sintomaMialgia="updateSintomaMialgia"
+        @update:tosseProdutiva="updateTosseProdutiva"
+        @update:sibilo="updateSibilo"
+        @update:desconfortoRespiratorio="updateDesconfortoRespiratorio"
+        @update:dispneia="updateDispneia"
+        @update:taquipneia="updateTaquipneia"
+        @update:saturacaoDeOximetriaDePulso="updateSaturacaoDeOximetriaDePulso"
+        @update:cianoseCentral="updateCianoseCentral"
+        @update:diminuicaoDePulsoPeriferico="updateDiminuicaoDePulsoPeriferico"
+        @update:hipotensao="updateHipotensao"
+      />
       <comorbidades/>
       <informacoes-complementares/>
       <vinculo-epidemiologico/>
@@ -28,6 +48,7 @@ import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendim
 import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
 import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
+import Notificacao from '@/entities/Notificacao';
 
 export default {
   components: {
@@ -41,6 +62,56 @@ export default {
     RealizadoColeta,
     Observacoes,
     BotaoEnviar,
+  },
+  data: () => ({
+    notificacao: new Notificacao(),
+  }),
+  methods: {
+    updateSintomatico(sintomatico) {
+      this.notificacao.sintomatico = sintomatico;
+    },
+    updateDataInicioDosSintomas(dataInicioDosSintomas) {
+      this.notificacao.dataInicioDosSintomas = dataInicioDosSintomas;
+    },
+    updateSintomaCoriza(coriza) {
+      this.notificacao.sintomas.coriza = coriza;
+    },
+    updateSintomaTosseSeca(tosseSeca) {
+      this.notificacao.sintomas.tosseSeca = tosseSeca;
+    },
+    updateSintomaDorDeGarganta(dorDeGarganta) {
+      this.notificacao.sintomas.dorDeGarganta = dorDeGarganta;
+    },
+    updateSintomaMialgia(mialgia) {
+      this.notificacao.sintomas.mialgia = mialgia;
+    },
+    updateTosseProdutiva(tosseProdutiva) {
+      this.notificacao.sintomas.tosseProdutiva = tosseProdutiva;
+    },
+    updateSibilo(sibilo) {
+      this.notificacao.sintomas.sibilo = sibilo;
+    },
+    updateDesconfortoRespiratorio(desconfortoRespiratorio) {
+      this.notificacao.sintomas.desconfortoRespiratorio = desconfortoRespiratorio;
+    },
+    updateDispneia(dispneia) {
+      this.notificacao.sintomas.dispneia = dispneia;
+    },
+    updateTaquipneia(taquipneia) {
+      this.notificacao.sintomas.taquipneia = taquipneia;
+    },
+    updateSaturacaoDeOximetriaDePulso(saturacaoDeOximetriaDePulso) {
+      this.notificacao.sintomas.saturacaoDeOximetriaDePulso = saturacaoDeOximetriaDePulso;
+    },
+    updateCianoseCentral(cianoseCentral) {
+      this.notificacao.sintomas.cianoseCentral = cianoseCentral;
+    },
+    updateDiminuicaoDePulsoPeriferico(diminuicaoDePulsoPeriferico) {
+      this.notificacao.sintomas.diminuicaoDePulsoPeriferico = diminuicaoDePulsoPeriferico;
+    },
+    updateHipotensao(hipotensao) {
+      this.notificacao.sintomas.hipotensao = hipotensao;
+    },
   },
 };
 </script>

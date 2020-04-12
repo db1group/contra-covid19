@@ -1,9 +1,7 @@
-export default class {
+export default class VinculoEpidemologico {
   constructor(data = {}) {
-    return {
-      situacao1: data.situacao1 || false,
-      situacao2: data.situacao2 || false,
-      nome: data.nome || '',
-    };
+    this.situacao1 = data.situacao1 || false;
+    this.situacao2 = data.situacao2 || false;
+    this.nome = data.nome || '';
   }
-};
+}

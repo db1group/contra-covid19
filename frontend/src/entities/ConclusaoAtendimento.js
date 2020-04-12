@@ -1,13 +1,11 @@
-export default class {
+export default class ConclusaoAtendimento {
   constructor(data = {}) {
-    return {
-      isolamentoDomiciliar: data.isolamentoDomiciliar || false,
-      leitoComum: data.leitoComum || false,
-      leitoUti: data.leitoUti || false,
-      prontoSocorroOuAtendimento: data.prontoSocorroOuAtendimento || false,
-      coletaMaterialParaDiagnostico: data.coletaMaterialParaDiagnostico || false,
-      laboratorioOficial: data.laboratorioOficial || false,
-      laboratorioRedePrivada: data.laboratorioRedePrivada || false,
-    };
+    this.isolamentoDomiciliar = data.isolamentoDomiciliar || false;
+    this.leitoComum = data.leitoComum || false;
+    this.leitoUti = data.leitoUti || false;
+    this.prontoSocorroOuAtendimento = data.prontoSocorroOuAtendimento || false;
+    this.coletaMaterialParaDiagnostico = data.coletaMaterialParaDiagnostico || false;
+    this.laboratorioOficial = data.laboratorioOficial || false;
+    this.laboratorioRedePrivada = data.laboratorioRedePrivada || false;
   }
-};
+}

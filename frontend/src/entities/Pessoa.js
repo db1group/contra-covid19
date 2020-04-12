@@ -1,20 +1,17 @@
-export default class {
+export default class Pessoa {
   constructor(data = {}) {
-    return {
-      pessoaId: data.pessoaId || null,
-      nome: data.nome || '',
-      dataDeNascimento: data.dataDeNascimento || null,
-      sexo: data.sexo || null,
-      bairroId: data.bairroId || null,
-      nomeDaMae: data.nomeDaMae || '',
-      ocupacao: data.ocupacao || '',
-      endereco: data.endereco || '',
-      numero: data.numero || '',
-      bairro: data.bairro || null,
-      municipioId: data.municipioId || null,
-      telefoneResidencial: data.telefoneResidencial || '',
-      telefoneContato: data.telefoneContato || '',
-      telefoneCelular: data.telefoneCelular || '',
-    };
+    this.pessoaId = data.pessoaId || null;
+    this.nome = data.nome || '';
+    this.dataDeNascimento = data.dataDeNascimento || null;
+    this.sexo = data.sexo || null;
+    this.bairroId = data.bairroId || null;
+    this.nomeDaMae = data.nomeDaMae || '';
+    this.ocupacao = data.ocupacao || '';
+    this.endereco = data.endereco || '';
+    this.numero = data.numero || '';
+    this.municipioId = data.municipioId || null;
+    this.telefoneResidencial = data.telefoneResidencial || '';
+    this.telefoneContato = data.telefoneContato || '';
+    this.telefoneCelular = data.telefoneCelular || '';
   }
-};
+}
