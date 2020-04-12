@@ -4,7 +4,6 @@
       Cadastro de notificação
     </h3>
     <base-page>
-      <pre>{{ notificacao.sintomas }}</pre>
       <identificacao-caso/>
       <sinais-e-sintomas
         :sintomatico="notificacao.sintomatico"
@@ -31,7 +30,22 @@
         @update:vomito="updateVomito"
         @update:outrosSintomas="updateOutrosSintomas"
       />
-      <comorbidades/>
+      <comorbidades
+        :comorbidades="notificacao.comorbidades"
+        @update:puerperaAte45DiasDoParto="updateComorbidade('puerperaAte45DiasDoParto', $event)"
+        @update:doencaNeurologicaCronica="updateComorbidade('doencaNeurologicaCronica', $event)"
+        @update:sindromeDeDown="updateComorbidade('sindromeDeDown', $event)"
+        @update:doencaRenalCronica="updateComorbidade('doencaRenalCronica', $event)"
+        @update:diabetesMellitus="updateComorbidade('diabetesMellitus', $event)"
+        @update:doencaHematologicaCronica="updateComorbidade('doencaHematologicaCronica', $event)"
+        @update:imunodeficiencia="updateComorbidade('imunodeficiencia', $event)"
+        @update:asma="updateComorbidade('asma', $event)"
+        @update:doencaCardioVascularCronica="updateComorbidade('doencaCardioVascularCronica', $event)"
+        @update:outraPneumopatiaCronica="updateComorbidade('outraPneumopatiaCronica', $event)"
+        @update:doencaHepaticaCronica="updateComorbidade('doencaHepaticaCronica', $event)"
+        @update:obesidade="updateComorbidade('obesidade', $event)"
+        @update:outros="updateComorbidade('outros', $event)"
+      />
       <informacoes-complementares/>
       <vinculo-epidemiologico/>
       <conclusao-atendimento/>
@@ -131,6 +145,9 @@ export default {
     },
     updateOutrosSintomas(outrosSintomas) {
       this.notificacao.sintomas.outros = outrosSintomas;
+    },
+    updateComorbidade(tipoComorbidade, valor) {
+      this.notificacao.comorbidades[tipoComorbidade] = valor;
     },
   },
 };
