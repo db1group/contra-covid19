@@ -25,19 +25,6 @@
           @input="updateDataInicioDosSintomas"
         />
       </v-col>
-      <v-col
-        class="pl-8"
-        cols="12"
-        sm="8"
-        md="7"
-      >
-        <v-text-field
-          label="Temperatura *"
-          suffix="°C"
-          v-mask="'##,#'"
-          :disabled="!sintomatico"
-        />
-      </v-col>
     </v-row>
   </div>
 </template>

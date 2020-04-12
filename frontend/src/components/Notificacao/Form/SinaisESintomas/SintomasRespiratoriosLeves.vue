@@ -33,11 +33,6 @@
           :disabled="!sintomatico"
           @change="updateMialgia"
         />
-        <v-checkbox
-          label="FEBRE BAIXA (até 37,8)"
-          hide-details
-          :disabled="!sintomatico"
-        />
       </v-col>
     </v-row>
   </div>

@@ -11,24 +11,24 @@
         :sintomas="notificacao.sintomas"
         @update:sintomatico="updateSintomatico"
         @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
-        @update:sintomaCoriza="updateSintomaCoriza"
-        @update:sintomaTosseSeca="updateSintomaTosseSeca"
-        @update:sintomaDorDeGarganta="updateSintomaDorDeGarganta"
-        @update:sintomaMialgia="updateSintomaMialgia"
-        @update:tosseProdutiva="updateTosseProdutiva"
-        @update:sibilo="updateSibilo"
-        @update:desconfortoRespiratorio="updateDesconfortoRespiratorio"
-        @update:dispneia="updateDispneia"
-        @update:taquipneia="updateTaquipneia"
-        @update:saturacaoDeOximetriaDePulso="updateSaturacaoDeOximetriaDePulso"
-        @update:cianoseCentral="updateCianoseCentral"
-        @update:diminuicaoDePulsoPeriferico="updateDiminuicaoDePulsoPeriferico"
-        @update:hipotensao="updateHipotensao"
-        @update:diarreia="updateDiarreia"
-        @update:cefaleia="updateCefaleia"
-        @update:nausea="updateNausea"
-        @update:vomito="updateVomito"
-        @update:outrosSintomas="updateOutrosSintomas"
+        @update:sintomaCoriza="updateSintoma('coriza', $event)"
+        @update:sintomaTosseSeca="updateSintoma('tosseSeca', $event)"
+        @update:sintomaDorDeGarganta="updateSintoma('dorDeGarganta', $event)"
+        @update:sintomaMialgia="updateSintoma('mialgia', $event)"
+        @update:tosseProdutiva="updateSintoma('tosseProdutiva', $event)"
+        @update:sibilo="updateSintoma('sibilo', $event)"
+        @update:desconfortoRespiratorio="updateSintoma('desconfortoRespiratorio', $event)"
+        @update:dispneia="updateSintoma('dispneia', $event)"
+        @update:taquipneia="updateSintoma('taquipneia', $event)"
+        @update:saturacaoDeOximetriaDePulso="updateSintoma('saturacaoDeOximetriaDePulso', $event)"
+        @update:cianoseCentral="updateSintoma('cianoseCentral', $event)"
+        @update:diminuicaoDePulsoPeriferico="updateSintoma('diminuicaoDePulsoPeriferico', $event)"
+        @update:hipotensao="updateSintoma('hipotensao', $event)"
+        @update:diarreia="updateSintoma('diarreia', $event)"
+        @update:cefaleia="updateSintoma('cefaleia', $event)"
+        @update:nausea="updateSintoma('nausea', $event)"
+        @update:vomito="updateSintoma('vomito', $event)"
+        @update:outrosSintomas="updateSintoma('outros', $event)"
       />
       <comorbidades
         :comorbidades="notificacao.comorbidades"
@@ -92,59 +92,8 @@ export default {
     updateDataInicioDosSintomas(dataInicioDosSintomas) {
       this.notificacao.dataInicioDosSintomas = dataInicioDosSintomas;
     },
-    updateSintomaCoriza(coriza) {
-      this.notificacao.sintomas.coriza = coriza;
-    },
-    updateSintomaTosseSeca(tosseSeca) {
-      this.notificacao.sintomas.tosseSeca = tosseSeca;
-    },
-    updateSintomaDorDeGarganta(dorDeGarganta) {
-      this.notificacao.sintomas.dorDeGarganta = dorDeGarganta;
-    },
-    updateSintomaMialgia(mialgia) {
-      this.notificacao.sintomas.mialgia = mialgia;
-    },
-    updateTosseProdutiva(tosseProdutiva) {
-      this.notificacao.sintomas.tosseProdutiva = tosseProdutiva;
-    },
-    updateSibilo(sibilo) {
-      this.notificacao.sintomas.sibilo = sibilo;
-    },
-    updateDesconfortoRespiratorio(desconfortoRespiratorio) {
-      this.notificacao.sintomas.desconfortoRespiratorio = desconfortoRespiratorio;
-    },
-    updateDispneia(dispneia) {
-      this.notificacao.sintomas.dispneia = dispneia;
-    },
-    updateTaquipneia(taquipneia) {
-      this.notificacao.sintomas.taquipneia = taquipneia;
-    },
-    updateSaturacaoDeOximetriaDePulso(saturacaoDeOximetriaDePulso) {
-      this.notificacao.sintomas.saturacaoDeOximetriaDePulso = saturacaoDeOximetriaDePulso;
-    },
-    updateCianoseCentral(cianoseCentral) {
-      this.notificacao.sintomas.cianoseCentral = cianoseCentral;
-    },
-    updateDiminuicaoDePulsoPeriferico(diminuicaoDePulsoPeriferico) {
-      this.notificacao.sintomas.diminuicaoDePulsoPeriferico = diminuicaoDePulsoPeriferico;
-    },
-    updateHipotensao(hipotensao) {
-      this.notificacao.sintomas.hipotensao = hipotensao;
-    },
-    updateDiarreia(diarreia) {
-      this.notificacao.sintomas.diarreia = diarreia;
-    },
-    updateCefaleia(cefaleia) {
-      this.notificacao.sintomas.cefaleia = cefaleia;
-    },
-    updateNausea(nausea) {
-      this.notificacao.sintomas.nausea = nausea;
-    },
-    updateVomito(vomito) {
-      this.notificacao.sintomas.vomito = vomito;
-    },
-    updateOutrosSintomas(outrosSintomas) {
-      this.notificacao.sintomas.outros = outrosSintomas;
+    updateSintoma(tipoSintoma, valor) {
+      this.notificacao.sintomas[tipoSintoma] = valor;
     },
     updateComorbidade(tipoComorbidade, valor) {
       this.notificacao.comorbidades[tipoComorbidade] = valor;
