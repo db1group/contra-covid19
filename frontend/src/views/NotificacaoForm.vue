@@ -4,15 +4,96 @@
       Cadastro de notificação
     </h3>
     <base-page>
-      <identificacao-caso/>
-      <sinais-e-sintomas/>
-      <comorbidades/>
-      <informacoes-complementares/>
-      <vinculo-epidemiologico/>
+      <identificacao-caso
+        :suspeito="notificacao.suspeito"
+        @update:nome="updateSuspeito('nome', $event)"
+        @update:sexo="updateSuspeito('sexo', $event)"
+        @update:dataDeNascimento="updateSuspeito('dataDeNascimento', $event)"
+        @update:endereco="updateSuspeito('endereco', $event)"
+        @update:numero="updateSuspeito('numero', $event)"
+        @update:telefoneResidencial="updateSuspeito('telefoneResidencial', $event)"
+        @update:telefoneCelular="updateSuspeito('telefoneCelular', $event)"
+      />
+      <sinais-e-sintomas
+        :sintomatico="notificacao.sintomatico"
+        :data-inicio-dos-sintomas="notificacao.dataInicioDosSintomas"
+        :sintomas="notificacao.sintomas"
+        @update:sintomatico="updateSintomatico"
+        @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
+        @update:sintomaCoriza="updateSintoma('coriza', $event)"
+        @update:sintomaTosseSeca="updateSintoma('tosseSeca', $event)"
+        @update:sintomaDorDeGarganta="updateSintoma('dorDeGarganta', $event)"
+        @update:sintomaMialgia="updateSintoma('mialgia', $event)"
+        @update:tosseProdutiva="updateSintoma('tosseProdutiva', $event)"
+        @update:sibilo="updateSintoma('sibilo', $event)"
+        @update:desconfortoRespiratorio="updateSintoma('desconfortoRespiratorio', $event)"
+        @update:dispneia="updateSintoma('dispneia', $event)"
+        @update:taquipneia="updateSintoma('taquipneia', $event)"
+        @update:saturacaoDeOximetriaDePulso="updateSintoma('saturacaoDeOximetriaDePulso', $event)"
+        @update:cianoseCentral="updateSintoma('cianoseCentral', $event)"
+        @update:diminuicaoDePulsoPeriferico="updateSintoma('diminuicaoDePulsoPeriferico', $event)"
+        @update:hipotensao="updateSintoma('hipotensao', $event)"
+        @update:diarreia="updateSintoma('diarreia', $event)"
+        @update:cefaleia="updateSintoma('cefaleia', $event)"
+        @update:nausea="updateSintoma('nausea', $event)"
+        @update:vomito="updateSintoma('vomito', $event)"
+        @update:outrosSintomas="updateSintoma('outros', $event)"
+      />
+      <comorbidades
+        :comorbidades="notificacao.comorbidades"
+        @update:puerperaAte45DiasDoParto="updateComorbidade('puerperaAte45DiasDoParto', $event)"
+        @update:doencaNeurologicaCronica="updateComorbidade('doencaNeurologicaCronica', $event)"
+        @update:sindromeDeDown="updateComorbidade('sindromeDeDown', $event)"
+        @update:doencaRenalCronica="updateComorbidade('doencaRenalCronica', $event)"
+        @update:diabetesMellitus="updateComorbidade('diabetesMellitus', $event)"
+        @update:doencaHematologicaCronica="updateComorbidade('doencaHematologicaCronica', $event)"
+        @update:imunodeficiencia="updateComorbidade('imunodeficiencia', $event)"
+        @update:asma="updateComorbidade('asma', $event)"
+        @update:doencaCardioVascularCronica="updateComorbidade('doencaCardioVascularCronica', $event)"
+        @update:outraPneumopatiaCronica="updateComorbidade('outraPneumopatiaCronica', $event)"
+        @update:doencaHepaticaCronica="updateComorbidade('doencaHepaticaCronica', $event)"
+        @update:obesidade="updateComorbidade('obesidade', $event)"
+        @update:outros="updateComorbidade('outros', $event)"
+      />
+      <informacoes-complementares
+        :informacoes-complementares="notificacao.informacaoComplementar"
+        @update:medicacaoAntitermica="updateInformacaoComplementar('medicacaoAntitermica', $event)"
+        @update:nomeMedicacaoAntitermica="updateInformacaoComplementar('nomeMedicacaoAntitermica', $event)"
+        @update:medicacaoAnalgesica="updateInformacaoComplementar('medicacaoAnalgesica', $event)"
+        @update:nomeMedicacaoAnalgesica="updateInformacaoComplementar('nomeMedicacaoAnalgesica', $event)"
+        @update:medicacaoAntiflamatorio="updateInformacaoComplementar('medicacaoAntiflamatorio', $event)"
+        @update:nomeMedicacaoAntiflamatorio="updateInformacaoComplementar('nomeMedicacaoAntiflamatorio', $event)"
+        @update:medicacaoAntiviral="updateInformacaoComplementar('medicacaoAntiviral', $event)"
+        @update:nomeMedicacaoAntiviral="updateInformacaoComplementar('nomeMedicacaoAntiviral', $event)"
+        @update:historicoDeViagem="updateInformacaoComplementar('historicoDeViagem', $event)"
+        @update:dataDaViagem="updateInformacaoComplementar('dataDaViagem', $event)"
+        @update:localDaViagem="updateInformacaoComplementar('localDaViagem', $event)"
+        @update:recebeuVacinaDaGripeNosUltimosDozeMeses="
+          updateInformacaoComplementar('recebeuVacinaDaGripeNosUltimosDozeMeses', $event)
+        "
+      />
+      <vinculo-epidemiologico
+        :vinculo-epidemiologico="notificacao.vinculoEpidemiologico"
+        @update:situacao1="updateVinculoEpidemiologico('situacao1', $event)"
+        @update:situacao2="updateVinculoEpidemiologico('situacao2', $event)"
+        @update:nome="updateVinculoEpidemiologico('nome', $event)"
+      />
+      <conclusao-atendimento
+        :conclusao-atendimento="notificacao.conclusaoAtendimento"
+        @update:isolamentoDomiciliar="updateConclusaoAtendimento('isolamentoDomiciliar', $event)"
+        @update:leitoComum="updateConclusaoAtendimento('leitoComum', $event)"
+        @update:leitoUti="updateConclusaoAtendimento('leitoUti', $event)"
+        @update:prontoSocorroOuAtendimento="updateConclusaoAtendimento('prontoSocorroOuAtendimento', $event)"
+      />
+      <realizado-coleta
+        :conclusao-atendimento="notificacao.conclusaoAtendimento"
+        @update:laboratorioOficial="updateConclusaoAtendimento('laboratorioOficial', $event)"
+        @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
+      />
+      <botao-enviar/>
     </base-page>
   </section>
 </template>
-
 <script>
 import BasePage from '@/components/commons/BasePage.vue';
 import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso/index.vue';
@@ -20,6 +101,10 @@ import SinaisESintomas from '@/components/Notificacao/Form/SinaisESintomas/index
 import Comorbidades from '@/components/Notificacao/Form/Comorbidades/index.vue';
 import InformacoesComplementares from '@/components/Notificacao/Form/InformacoesComplementares/index.vue';
 import VinculoEpidemiologico from '@/components/Notificacao/Form/VinculoEpidemiologico/index.vue';
+import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
+import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
+import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
+import Notificacao from '@/entities/Notificacao';
 
 export default {
   components: {
@@ -29,6 +114,38 @@ export default {
     Comorbidades,
     InformacoesComplementares,
     VinculoEpidemiologico,
+    ConclusaoAtendimento,
+    RealizadoColeta,
+    BotaoEnviar,
+  },
+  data: () => ({
+    notificacao: new Notificacao(),
+  }),
+  methods: {
+    updateSintomatico(sintomatico) {
+      this.notificacao.sintomatico = sintomatico;
+    },
+    updateDataInicioDosSintomas(dataInicioDosSintomas) {
+      this.notificacao.dataInicioDosSintomas = dataInicioDosSintomas;
+    },
+    updateSuspeito(campo, valor) {
+      this.notificacao.suspeito[campo] = valor;
+    },
+    updateSintoma(campo, valor) {
+      this.notificacao.sintomas[campo] = valor;
+    },
+    updateComorbidade(campo, valor) {
+      this.notificacao.comorbidades[campo] = valor;
+    },
+    updateInformacaoComplementar(campo, valor) {
+      this.notificacao.informacaoComplementar[campo] = valor;
+    },
+    updateVinculoEpidemiologico(campo, valor) {
+      this.notificacao.vinculoEpidemiologico[campo] = valor;
+    },
+    updateConclusaoAtendimento(campo, valor) {
+      this.notificacao.conclusaoAtendimento[campo] = valor;
+    },
   },
 };
 </script>
