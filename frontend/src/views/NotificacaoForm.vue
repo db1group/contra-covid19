@@ -4,7 +4,6 @@
       Cadastro de notificação
     </h3>
     <base-page>
-      <pre>{{notificacao.suspeito}}</pre>
       <identificacao-caso
         :suspeito="notificacao.suspeito"
         @update:nome="updateSuspeito('nome', $event)"
