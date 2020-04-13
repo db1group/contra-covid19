@@ -76,13 +76,11 @@
         @update:leitoUti="updateConclusaoAtendimento('leitoUti', $event)"
         @update:prontoSocorroOuAtendimento="updateConclusaoAtendimento('prontoSocorroOuAtendimento', $event)"
       />
-      <pre>{{ notificacao.conclusaoAtendimento }}</pre>
       <realizado-coleta
         :conclusao-atendimento="notificacao.conclusaoAtendimento"
         @update:laboratorioOficial="updateConclusaoAtendimento('laboratorioOficial', $event)"
         @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
       />
-      <observacoes/>
       <botao-enviar/>
     </base-page>
   </section>
@@ -96,7 +94,6 @@ import InformacoesComplementares from '@/components/Notificacao/Form/Informacoes
 import VinculoEpidemiologico from '@/components/Notificacao/Form/VinculoEpidemiologico/index.vue';
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
 import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
-import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
 
@@ -110,7 +107,6 @@ export default {
     VinculoEpidemiologico,
     ConclusaoAtendimento,
     RealizadoColeta,
-    Observacoes,
     BotaoEnviar,
   },
   data: () => ({
