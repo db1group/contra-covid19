@@ -76,7 +76,12 @@
         @update:leitoUti="updateConclusaoAtendimento('leitoUti', $event)"
         @update:prontoSocorroOuAtendimento="updateConclusaoAtendimento('prontoSocorroOuAtendimento', $event)"
       />
-      <realizado-coleta/>
+      <pre>{{ notificacao.conclusaoAtendimento }}</pre>
+      <realizado-coleta
+        :conclusao-atendimento="notificacao.conclusaoAtendimento"
+        @update:laboratorioOficial="updateConclusaoAtendimento('laboratorioOficial', $event)"
+        @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
+      />
       <observacoes/>
       <botao-enviar/>
     </base-page>
