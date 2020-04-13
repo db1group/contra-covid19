@@ -15,7 +15,9 @@
         sm="8"
       >
         <v-text-field
+          :value="suspeito.endereco"
           label="Endereço *"
+          @input="updateEndereco"
         />
       </v-col>
     </v-row>
@@ -25,7 +27,9 @@
         sm="4"
       >
         <v-text-field
+          :value="suspeito.numero"
           label="Número *"
+          @input="updateNumero"
         />
       </v-col>
       <v-col
@@ -57,13 +61,28 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
+import Pessoa from '@/entities/Pessoa';
 
 const MUNICIPIOS = ['Maringá', 'Sarandi', 'Paiçandu'];
 
 export default {
   directives: { mask },
+  props: {
+    suspeito: {
+      type: Pessoa,
+      required: true,
+    },
+  },
   data: () => ({
     municipios: MUNICIPIOS,
   }),
+  methods: {
+    updateEndereco(endereco) {
+      this.$emit('update:endereco', endereco);
+    },
+    updateNumero(numero) {
+      this.$emit('update:numero', numero);
+    },
+  },
 };
 </script>

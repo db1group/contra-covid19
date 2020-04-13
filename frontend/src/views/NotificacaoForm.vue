@@ -4,7 +4,17 @@
       Cadastro de notificação
     </h3>
     <base-page>
-      <identificacao-caso/>
+      <pre>{{notificacao.suspeito}}</pre>
+      <identificacao-caso
+        :suspeito="notificacao.suspeito"
+        @update:nome="updateSuspeito('nome', $event)"
+        @update:sexo="updateSuspeito('sexo', $event)"
+        @update:dataDeNascimento="updateSuspeito('dataDeNascimento', $event)"
+        @update:endereco="updateSuspeito('endereco', $event)"
+        @update:numero="updateSuspeito('numero', $event)"
+        @update:telefoneResidencial="updateSuspeito('telefoneResidencial', $event)"
+        @update:telefoneCelular="updateSuspeito('telefoneCelular', $event)"
+      />
       <sinais-e-sintomas
         :sintomatico="notificacao.sintomatico"
         :data-inicio-dos-sintomas="notificacao.dataInicioDosSintomas"
@@ -119,20 +129,23 @@ export default {
     updateDataInicioDosSintomas(dataInicioDosSintomas) {
       this.notificacao.dataInicioDosSintomas = dataInicioDosSintomas;
     },
-    updateSintoma(tipoSintoma, valor) {
-      this.notificacao.sintomas[tipoSintoma] = valor;
+    updateSuspeito(campo, valor) {
+      this.notificacao.suspeito[campo] = valor;
     },
-    updateComorbidade(tipoComorbidade, valor) {
-      this.notificacao.comorbidades[tipoComorbidade] = valor;
+    updateSintoma(campo, valor) {
+      this.notificacao.sintomas[campo] = valor;
     },
-    updateInformacaoComplementar(tipoInformacaoComplementar, valor) {
-      this.notificacao.informacaoComplementar[tipoInformacaoComplementar] = valor;
+    updateComorbidade(campo, valor) {
+      this.notificacao.comorbidades[campo] = valor;
     },
-    updateVinculoEpidemiologico(tipoVinculoEpidemiologico, valor) {
-      this.notificacao.vinculoEpidemiologico[tipoVinculoEpidemiologico] = valor;
+    updateInformacaoComplementar(campo, valor) {
+      this.notificacao.informacaoComplementar[campo] = valor;
     },
-    updateConclusaoAtendimento(tipoConclusaoAtendimento, valor) {
-      this.notificacao.conclusaoAtendimento[tipoConclusaoAtendimento] = valor;
+    updateVinculoEpidemiologico(campo, valor) {
+      this.notificacao.vinculoEpidemiologico[campo] = valor;
+    },
+    updateConclusaoAtendimento(campo, valor) {
+      this.notificacao.conclusaoAtendimento[campo] = valor;
     },
   },
 };
