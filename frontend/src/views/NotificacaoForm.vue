@@ -63,21 +63,25 @@
           updateInformacaoComplementar('recebeuVacinaDaGripeNosUltimosDozeMeses', $event)
         "
       />
-      <pre>{{ notificacao.vinculoEpidemiologico }}</pre>
       <vinculo-epidemiologico
         :vinculo-epidemiologico="notificacao.vinculoEpidemiologico"
         @update:situacao1="updateVinculoEpidemiologico('situacao1', $event)"
         @update:situacao2="updateVinculoEpidemiologico('situacao2', $event)"
         @update:nome="updateVinculoEpidemiologico('nome', $event)"
       />
-      <conclusao-atendimento/>
+      <conclusao-atendimento
+        :conclusao-atendimento="notificacao.conclusaoAtendimento"
+        @update:isolamentoDomiciliar="updateConclusaoAtendimento('isolamentoDomiciliar', $event)"
+        @update:leitoComum="updateConclusaoAtendimento('leitoComum', $event)"
+        @update:leitoUti="updateConclusaoAtendimento('leitoUti', $event)"
+        @update:prontoSocorroOuAtendimento="updateConclusaoAtendimento('prontoSocorroOuAtendimento', $event)"
+      />
       <realizado-coleta/>
       <observacoes/>
       <botao-enviar/>
     </base-page>
   </section>
 </template>
-
 <script>
 import BasePage from '@/components/commons/BasePage.vue';
 import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso/index.vue';
@@ -125,6 +129,9 @@ export default {
     },
     updateVinculoEpidemiologico(tipoVinculoEpidemiologico, valor) {
       this.notificacao.vinculoEpidemiologico[tipoVinculoEpidemiologico] = valor;
+    },
+    updateConclusaoAtendimento(tipoConclusaoAtendimento, valor) {
+      this.notificacao.conclusaoAtendimento[tipoConclusaoAtendimento] = valor;
     },
   },
 };
