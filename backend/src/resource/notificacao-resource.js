@@ -40,6 +40,8 @@ exports.consultarPorId = async (req, res) => {
   const { id } = req.params;
   const notificacaoModel = await consultarNotificacaoPorId(id);
 
+  if (!notificacaoModel) return res.status(204).json();
+
   const retorno = mapearParaResponse(notificacaoModel, notificacaoModel.NotificacaoHistorico);
 
   return res.json({ data: retorno });
