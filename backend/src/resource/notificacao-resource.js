@@ -2,11 +2,15 @@ const models = require("../models");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const { mapearParaNotificacao, mapearParaResponse } = require("../mapper/notificacao-mapper");
+const Mappers = require("../mapper");
 const uuid = require("uuid/v4")
 
 exports.salvar = async (req, res) => {
+  const notificacaoRequest = req.body;
 
-  let notificacao = mapearParaNotificacao(req.body);
+  notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);
+
+  let notificacao = mapearParaNotificacao(notificacaoConsolidada);
 
   const notificacaoSalva = await salvarNotificacao(notificacao);
 
@@ -41,6 +45,45 @@ exports.consultarPorId = async (req, res) => {
   return res.json({ data: retorno });
 };
 
+/*
+  Refatorar para um serviço de Notificação ou outro local apropriado
+*/
+const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
+  const suspeitoConsolidado = await consolidarSuspeito(suspeito);
+
+  return {
+    ...notificacao,
+    suspeito: suspeitoConsolidado,
+  };
+}
+
+const consolidarSuspeito = async (suspeito) => {
+  const { pessoaId, bairroId, MunicipioId, nome, nomeDaMae } = suspeito;
+  const suspeitoPrototipo = { bairroId, MunicipioId };
+
+  if (pessoaId) return { ...suspeitoPrototipo, pessoaId };
+
+  const pessoasLocalizadas = await buscarPessoaDadosBasicos(nome, nomeDaMae);
+  if (pessoasLocalizadas.length === 1) {
+    return { ...suspeitoPrototipo, pessoaId: pessoasLocalizadas[0].id };
+  }
+
+  const novaPessoaCadastrada = await cadastrarSuspeito(suspeito);
+  return await Mappers.Pessoa.mapearParaSuspeito(novaPessoaCadastrada);
+}
+
+const cadastrarSuspeito = async (suspeito) => {
+  const pessoa = Mappers.Pessoa.mapearParaModel(suspeito);
+
+  const pessoaCadastrada = await cadastrarPessoa(pessoa);
+
+  const suspeitoCadastrado = Mappers.Pessoa.mapearParaSuspeito(pessoaCadastrada);
+  return suspeitoCadastrado;
+}
+
+/*
+  Refatorar para Repositório de Notificações ou outro local mais apropriado
+*/
 const consultarNotificacaoPorId = async (id) =>
   await models.Notificacao.findOne({
     where: { id },
@@ -79,3 +122,17 @@ const consultarNotificaoesPaginado = async (page, limit) => {
     offset: offset
   });
 }
+
+/* 
+  Refatorar para repositório de pessoas ou outro local apropriado
+*/
+const cadastrarPessoa = async (pessoa) => {
+  pessoa.id = uuid();
+  const pessoaCadastrada = await models.Pessoa.create(pessoa);
+  return pessoaCadastrada.dataValues;
+}
+
+const buscarPessoaDadosBasicos = async (nome, nomeDaMae) =>
+  await models.Pessoa.findAll({
+    where: { nome, nomeDaMae }
+  });
