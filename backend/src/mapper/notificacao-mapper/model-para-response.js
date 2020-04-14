@@ -1,9 +1,10 @@
-const notificacaoParaRequest = (notificacao, notificacaoHistorico, request) => {
-    const { unidadeId, notificadorId, userId } = notificacao;
+const notificacaoParaResponse = (notificacao, notificacaoHistorico, request) => {
+    const { unidadeSaudeId, notificadorId, userId } = notificacao;
     const { dataHoraNotificacao, dataInicioDosSintomas, sintomatico } = notificacaoHistorico;
     return {
+        id: notificacao.id,
         dataHoraNotificacao,
-        unidadeId,
+        unidadeSaudeId,
         notificadorId,
         sintomatico,
         dataInicioDosSintomas,
@@ -13,24 +14,53 @@ const notificacaoParaRequest = (notificacao, notificacaoHistorico, request) => {
 }
 
 const extrairSuspeito = (notificacao) => {
-    const { pessoaId, bairroId, municipioId } = notificacao;
+    const { Pessoa, Bairro } = notificacao;
+    if (Pessoa)
+        return extrairSuspeitoDaPessoa(Pessoa, Bairro);
+    return extrairSuspeitoDaNotificacao(notificacao);
+}
+
+const extrairSuspeitoDaNotificacao = ({ pessoaId, bairroId, municipioId }) => {
     return {
         pessoaId,
-        // nome,
-        // dataDeNascimento,
-        // sexo,
-        // idade,
         bairroId,
-        // nomeDaMae,
-        // ocupacao,
-        // endereco,
-        // numero,
-        // bairro,
         municipioId,
-        // telefoneResidencial,
-        // telefoneContato,
-        // telefoneCelular,
-    }
+    };
+}
+
+const extrairSuspeitoDaPessoa = ({
+    id,
+    nome,
+    dataDeNascimento,
+    sexo,
+    idade,
+    bairroId,
+    nomeDaMae,
+    ocupacao,
+    endereco,
+    numero,
+    telefoneResidencial,
+    telefoneContato,
+    telefoneCelular,
+}, bairro) => {
+
+    return {
+        pessoaId: id,
+        nome,
+        dataDeNascimento,
+        sexo,
+        idade,
+        bairroId,
+        nomeDaMae,
+        ocupacao,
+        endereco,
+        numero,
+        bairro: bairro ? bairro.nome : null,
+        municipioId: bairro ? bairro.municipioId : null,
+        telefoneResidencial,
+        telefoneContato,
+        telefoneCelular,
+    };
 }
 
 const extrairSintomas = (notificacaoHistorico) => {
@@ -175,7 +205,7 @@ const extrairConclusaoAtendimento = (notificacaoHistorico) => {
 }
 
 module.exports = {
-    notificacaoParaRequest,
+    notificacaoParaResponse,
     extrairSuspeito,
     extrairSintomas,
     extrairComorbidades,

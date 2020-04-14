@@ -1,0 +1,87 @@
+version: 2.1
+
+executors:
+  covid19-executor:
+    machine:
+      image: ubuntu-1604:201903-01
+    working_directory: ~/contra-covid19
+
+jobs:
+  build-backend:
+    executor: covid19-executor
+    steps:
+      - checkout
+      - restore_cache:
+          key: contra-covid19/backend-{{ checksum "yarn.lock" }}
+      - run: docker run --rm -it -v ${PWD}/backend:/usr/src/app -w /usr/src/app node:13 yarn install
+      - save_cache:
+          paths:
+            - ~/contra-covid19/backend/node_modules
+          key: contra-covid19/backend-{{ checksum "yarn.lock" }}
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - contra-covid19/backend
+  deploy-backend:
+    executor: covid19-executor
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: docker run --rm -it -v ${PWD}/backend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 npx sequelize-cli db:migrate
+      - run: cd backend && docker build -t contra-covid19/backend -f Dockerfile .
+      - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
+      - run: docker tag contra-covid19/backend registry.heroku.com/covid19-db1-backend/web:latest
+      - run: docker push registry.heroku.com/covid19-db1-backend/web:latest
+      - run: sudo snap install --classic heroku
+      - run: heroku container:login
+      - run: heroku container:release web --app covid19-db1-backend
+
+  build-frontend:
+    executor: covid19-executor
+    steps:
+      - checkout
+      - restore_cache:
+          key: contra-covid19/frontend-{{ checksum "yarn.lock" }}
+      - run: docker run --rm -it -v ${PWD}/frontend:/usr/src/app -w /usr/src/app node:13 yarn install
+      - save_cache:
+          paths:
+            - ~/contra-covid19/frontend/node_modules
+          key: contra-covid19/frontend-{{ checksum "yarn.lock" }}
+      - run: docker run --rm -it -v ${PWD}/frontend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 yarn build
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - contra-covid19/frontend
+  deploy-frontend:
+    executor: covid19-executor
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: cd frontend && docker build -t contra-covid19/frontend .
+      - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
+      - run: docker tag contra-covid19/frontend registry.heroku.com/covid19-db1-frontend/web:latest
+      - run: docker push registry.heroku.com/covid19-db1-frontend/web:latest
+      - run: sudo snap install --classic heroku
+      - run: heroku container:login
+      - run: heroku container:release web --app covid19-db1-frontend
+
+workflows:
+  version: 2.0
+  covid19:
+    jobs:
+      - build-backend
+      - build-frontend
+      - deploy-backend:
+          requires:
+            - build-backend
+          filters:
+            branches:
+              only:
+              - master
+      - deploy-frontend:
+          requires:
+            - build-frontend
+          filters:
+            branches:
+              only:
+              - master

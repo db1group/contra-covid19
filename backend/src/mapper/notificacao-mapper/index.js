@@ -3,14 +3,14 @@ const {
     requestParaModeloNotificacaoHistorico,
 } = require("./request-para-model");
 const {
-    notificacaoParaRequest,
+    notificacaoParaResponse,
     extrairSuspeito,
     extrairSintomas,
     extrairComorbidades,
     extrairInformacaoComplementar,
     extrairVinculoEpidemiologico,
     extrairConclusaoAtendimento,
-} = require("./model-para-request")
+} = require("./model-para-response")
 
 module.exports = {
     mapearParaNotificacao: (request) => {
@@ -23,7 +23,7 @@ module.exports = {
             }
         }
     },
-    mapearParaRequest: (notificacao, notificacaoHistorico) => {
+    mapearParaResponse: (notificacao, notificacaoHistorico) => {
         let result = {};
         const suspeito = extrairSuspeito(notificacao);
         const sintomas = extrairSintomas(notificacaoHistorico);
@@ -31,7 +31,7 @@ module.exports = {
         const informacaoComplementar = extrairInformacaoComplementar(notificacaoHistorico);
         const vinculoEpidemiologico = extrairVinculoEpidemiologico(notificacaoHistorico);
         const conclusaoAtendimento = extrairConclusaoAtendimento(notificacaoHistorico);
-        result = notificacaoParaRequest(notificacao, notificacaoHistorico, result);
+        result = notificacaoParaResponse(notificacao, notificacaoHistorico, result);
         result = {
             ...result,
             suspeito,
