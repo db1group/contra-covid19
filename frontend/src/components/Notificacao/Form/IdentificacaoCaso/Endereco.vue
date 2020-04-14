@@ -6,8 +6,10 @@
         sm="4"
       >
         <v-text-field
+          :value="suspeito.cep"
           label="CEP"
           v-mask="'##.###-###'"
+          @input="updateCep"
         />
       </v-col>
       <v-col
@@ -36,8 +38,13 @@
         cols="12"
         sm="8"
       >
-        <v-text-field
+        <v-autocomplete
+          :value="suspeito.bairroId"
           label="Bairro *"
+          :items="bairros"
+          item-text="value"
+          item-value="key"
+          @input="updateBairroId"
         />
       </v-col>
     </v-row>
@@ -54,6 +61,7 @@
         <v-select
           label="Município *"
           :items="municipios"
+          disabled
         />
       </v-col>
     </v-row>
@@ -63,7 +71,11 @@
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
 
-const MUNICIPIOS = ['Maringá', 'Sarandi', 'Paiçandu'];
+const MUNICIPIOS = ['Maringá'];
+const BAIRROS = [
+  { key: 'id_do_bairro_1', value: 'Zona 7' },
+  { key: 'id_do_bairro_2', value: 'Zona 5' },
+];
 
 export default {
   directives: { mask },
@@ -75,13 +87,20 @@ export default {
   },
   data: () => ({
     municipios: MUNICIPIOS,
+    bairros: BAIRROS,
   }),
   methods: {
+    updateCep(cep) {
+      this.$emit('update:cep', cep);
+    },
     updateEndereco(endereco) {
       this.$emit('update:endereco', endereco);
     },
     updateNumero(numero) {
       this.$emit('update:numero', numero);
+    },
+    updateBairroId(bairroId) {
+      this.$emit('update:bairroId', bairroId);
     },
   },
 };

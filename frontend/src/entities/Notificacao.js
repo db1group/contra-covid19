@@ -9,11 +9,12 @@ export default class Notificacao {
   constructor(data = {}) {
     this.id = data.id || null;
     this.dataHoraNotificacao = data.dataHoraNotificacao || null;
-    this.unidadeSaudeId = data.unidadeSaudeId || null;
-    this.notificadorId = data.notificadorId || null;
+    this.unidadeSaudeId = data.unidadeSaudeId || 'chico';
+    this.notificadorId = data.notificadorId || 'chico';
     this.sintomatico = data.sintomatico || false;
     this.dataInicioDosSintomas = data.dataInicioDosSintomas || '';
-    this.userId = data.userId || null;
+    this.userId = data.userId || 'chico';
+    this.observacoes = data.observacoes || '';
     this.suspeito = new Pessoa(data.suspeito || {});
     this.sintomas = new Sintomas(data.sintomas || {});
     this.comorbidades = new Comorbidades(data.comorbidades || {});
