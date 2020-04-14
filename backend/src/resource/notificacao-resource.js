@@ -1,7 +1,6 @@
 const models = require("../models");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
-const { mapearParaNotificacao, mapearParaResponse } = require("../mapper/notificacao-mapper");
 const Mappers = require("../mapper");
 const uuid = require("uuid/v4")
 
@@ -10,11 +9,11 @@ exports.salvar = async (req, res) => {
 
   notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);
 
-  let notificacao = mapearParaNotificacao(notificacaoConsolidada);
+  let notificacao = Mappers.Notificacao.mapearParaNotificacao(notificacaoConsolidada);
 
   const notificacaoSalva = await salvarNotificacao(notificacao);
 
-  const retorno = mapearParaResponse(notificacaoSalva, notificacaoSalva.NotificacaoHistorico);
+  const retorno = Mappers.Notificacao.mapearParaResponse(notificacaoSalva, notificacaoSalva.NotificacaoHistorico);
 
   return res.json({
     data: {
@@ -30,7 +29,7 @@ exports.consultarPaginado = async (req, res) => {
 
   const notificacoesResponse = [];
   notificacoes.rows.map(notificacao =>
-    notificacoesResponse.push(mapearParaResponse(notificacao, notificacao.NotificacaoHistorico))
+    notificacoesResponse.push(Mappers.Notificacao.mapearParaResponse(notificacao, notificacao.NotificacaoHistorico))
   );
 
   return res.json({ count: notificacoes.count, data: notificacoesResponse });
@@ -42,7 +41,7 @@ exports.consultarPorId = async (req, res) => {
 
   if (!notificacaoModel) return res.status(204).json();
 
-  const retorno = mapearParaResponse(notificacaoModel, notificacaoModel.NotificacaoHistorico);
+  const retorno = Mappers.Notificacao.mapearParaResponse(notificacaoModel, notificacaoModel.NotificacaoHistorico);
 
   return res.json({ data: retorno });
 };
