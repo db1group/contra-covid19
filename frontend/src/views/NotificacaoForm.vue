@@ -6,13 +6,19 @@
     <base-page>
       <identificacao-caso
         :suspeito="notificacao.suspeito"
+        @update:tipoDocumento="updateSuspeito('tipoDocumento', $event)"
+        @update:numeroDocumento="updateSuspeito('numeroDocumento', $event)"
         @update:nome="updateSuspeito('nome', $event)"
+        @update:nomeDaMae="updateSuspeito('nomeDaMae', $event)"
         @update:sexo="updateSuspeito('sexo', $event)"
         @update:dataDeNascimento="updateSuspeito('dataDeNascimento', $event)"
+        @update:cep="updateSuspeito('cep', $event)"
         @update:endereco="updateSuspeito('endereco', $event)"
         @update:numero="updateSuspeito('numero', $event)"
+        @update:bairroId="updateSuspeito('bairroId', $event)"
         @update:telefoneResidencial="updateSuspeito('telefoneResidencial', $event)"
         @update:telefoneCelular="updateSuspeito('telefoneCelular', $event)"
+        @update:telefoneContato="updateSuspeito('telefoneContato', $event)"
       />
       <sinais-e-sintomas
         :sintomatico="notificacao.sintomatico"
@@ -90,6 +96,7 @@
         @update:laboratorioOficial="updateConclusaoAtendimento('laboratorioOficial', $event)"
         @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
       />
+      <observacoes v-model="notificacao.observacoes"/>
       <botao-enviar/>
     </base-page>
   </section>
@@ -103,6 +110,7 @@ import InformacoesComplementares from '@/components/Notificacao/Form/Informacoes
 import VinculoEpidemiologico from '@/components/Notificacao/Form/VinculoEpidemiologico/index.vue';
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
 import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
+import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
 
@@ -116,6 +124,7 @@ export default {
     VinculoEpidemiologico,
     ConclusaoAtendimento,
     RealizadoColeta,
+    Observacoes,
     BotaoEnviar,
   },
   data: () => ({

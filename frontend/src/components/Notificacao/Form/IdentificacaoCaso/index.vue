@@ -5,19 +5,25 @@
     </h4>
     <dados-pessoais
       :suspeito="suspeito"
+      @update:tipoDocumento="updateTipoDocumento"
+      @update:numeroDocumento="updateNumeroDocumento"
       @update:nome="updateNome"
+      @update:nomeDaMae="updateNomeDaMae"
       @update:sexo="updateSexo"
       @update:dataDeNascimento="updateDataDeNascimento"
     />
     <endereco
       :suspeito="suspeito"
+      @update:cep="updateCep"
       @update:endereco="updateEndereco"
       @update:numero="updateNumero"
+      @update:bairroId="updateBairroId"
     />
     <contato
       :suspeito="suspeito"
       @update:telefoneResidencial="updateTelefoneResidencial"
       @update:telefoneCelular="updateTelefoneCelular"
+      @update:telefoneContato="updateTelefoneContato"
     />
   </div>
 </template>
@@ -40,8 +46,17 @@ export default {
     },
   },
   methods: {
+    updateTipoDocumento(tipoDocumento) {
+      this.$emit('update:tipoDocumento', tipoDocumento);
+    },
+    updateNumeroDocumento(numeroDocumento) {
+      this.$emit('update:numeroDocumento', numeroDocumento);
+    },
     updateNome(nome) {
       this.$emit('update:nome', nome);
+    },
+    updateNomeDaMae(nomeDaMae) {
+      this.$emit('update:nomeDaMae', nomeDaMae);
     },
     updateSexo(sexo) {
       this.$emit('update:sexo', sexo);
@@ -49,17 +64,26 @@ export default {
     updateDataDeNascimento(dataDeNascimento) {
       this.$emit('update:dataDeNascimento', dataDeNascimento);
     },
+    updateCep(cep) {
+      this.$emit('update:cep', cep);
+    },
     updateEndereco(endereco) {
       this.$emit('update:endereco', endereco);
     },
     updateNumero(numero) {
       this.$emit('update:numero', numero);
     },
+    updateBairroId(bairroId) {
+      this.$emit('update:bairroId', bairroId);
+    },
     updateTelefoneResidencial(telefoneResidencial) {
       this.$emit('update:telefoneResidencial', telefoneResidencial);
     },
     updateTelefoneCelular(telefoneCelular) {
       this.$emit('update:telefoneCelular', telefoneCelular);
+    },
+    updateTelefoneContato(telefoneContato) {
+      this.$emit('update:telefoneContato', telefoneContato);
     },
   },
 };

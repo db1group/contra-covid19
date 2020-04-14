@@ -1,9 +1,12 @@
 export default class Pessoa {
   constructor(data = {}) {
     this.pessoaId = data.pessoaId || null;
+    this.tipoDocumento = data.tipoDocumento || 'CPF';
+    this.numeroDocumento = data.numeroDocumento || '';
     this.nome = data.nome || '';
     this.dataDeNascimento = data.dataDeNascimento || '';
     this.sexo = data.sexo || '';
+    this.cep = data.cep || '';
     this.bairroId = data.bairroId || null;
     this.nomeDaMae = data.nomeDaMae || '';
     this.ocupacao = data.ocupacao || '';
