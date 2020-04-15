@@ -13,3 +13,10 @@ exports.consultarPorId = async (req, res) => {
   });
   return res.json({ data: pessoa });
 };
+
+exports.cadastrar = async (req, res) => {
+  const pessoa = req.body;
+  console.log(pessoa);
+  await models.Pessoa.create(pessoa);
+  return res.status(204).send();
+};

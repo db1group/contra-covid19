@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   Bairro.associate = function (models) {
     // Bairro.belongsTo(models.Municipio);
-    // Bairro.hasMany(models.Pessoa);
+    Bairro.hasMany(models.Pessoa);
   };
   return Bairro;
 };

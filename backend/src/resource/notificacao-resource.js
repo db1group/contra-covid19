@@ -2,24 +2,29 @@ const models = require("../models");
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 const Mappers = require("../mapper");
-const uuid = require("uuid/v4")
+const uuid = require("uuid/v4");
 
 exports.salvar = async (req, res) => {
   const notificacaoRequest = req.body;
 
   notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);
 
-  let notificacao = Mappers.Notificacao.mapearParaNotificacao(notificacaoConsolidada);
+  let notificacao = Mappers.Notificacao.mapearParaNotificacao(
+    notificacaoConsolidada
+  );
 
   const notificacaoSalva = await salvarNotificacao(notificacao);
 
-  const retorno = Mappers.Notificacao.mapearParaResponse(notificacaoSalva, notificacaoSalva.NotificacaoHistorico);
+  const retorno = Mappers.Notificacao.mapearParaResponse(
+    notificacaoSalva,
+    notificacaoSalva.NotificacaoHistorico
+  );
 
   return res.json({
     data: {
       ...retorno,
-    }
-  })
+    },
+  });
 };
 
 exports.consultarPaginado = async (req, res) => {
@@ -28,8 +33,13 @@ exports.consultarPaginado = async (req, res) => {
   const notificacoes = await consultarNotificaoesPaginado(page, limit);
 
   const notificacoesResponse = [];
-  notificacoes.rows.map(notificacao =>
-    notificacoesResponse.push(Mappers.Notificacao.mapearParaResponse(notificacao, notificacao.NotificacaoHistorico))
+  notificacoes.rows.map((notificacao) =>
+    notificacoesResponse.push(
+      Mappers.Notificacao.mapearParaResponse(
+        notificacao,
+        notificacao.NotificacaoHistorico
+      )
+    )
   );
 
   return res.json({ count: notificacoes.count, data: notificacoesResponse });
@@ -41,7 +51,10 @@ exports.consultarPorId = async (req, res) => {
 
   if (!notificacaoModel) return res.status(204).json();
 
-  const retorno = Mappers.Notificacao.mapearParaResponse(notificacaoModel, notificacaoModel.NotificacaoHistorico);
+  const retorno = Mappers.Notificacao.mapearParaResponse(
+    notificacaoModel,
+    notificacaoModel.NotificacaoHistorico
+  );
 
   return res.json({ data: retorno });
 };
@@ -56,7 +69,7 @@ const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
     ...notificacao,
     suspeito: suspeitoConsolidado,
   };
-}
+};
 
 const consolidarSuspeito = async (suspeito) => {
   const { pessoaId, bairroId, MunicipioId, nome, nomeDaMae } = suspeito;
@@ -69,18 +82,21 @@ const consolidarSuspeito = async (suspeito) => {
     return { ...suspeitoPrototipo, pessoaId: pessoasLocalizadas[0].id };
   }
 
+  console.log("Cadastrando pessoa");
   const novaPessoaCadastrada = await cadastrarSuspeito(suspeito);
   return await Mappers.Pessoa.mapearParaSuspeito(novaPessoaCadastrada);
-}
+};
 
 const cadastrarSuspeito = async (suspeito) => {
   const pessoa = Mappers.Pessoa.mapearParaModel(suspeito);
 
   const pessoaCadastrada = await cadastrarPessoa(pessoa);
 
-  const suspeitoCadastrado = Mappers.Pessoa.mapearParaSuspeito(pessoaCadastrada);
+  const suspeitoCadastrado = Mappers.Pessoa.mapearParaSuspeito(
+    pessoaCadastrada
+  );
   return suspeitoCadastrado;
-}
+};
 
 /*
   Refatorar para Repositório de Notificações ou outro local mais apropriado
@@ -88,10 +104,7 @@ const cadastrarSuspeito = async (suspeito) => {
 const consultarNotificacaoPorId = async (id) =>
   await models.Notificacao.findOne({
     where: { id },
-    include: [
-      { model: models.Pessoa },
-      { model: models.NotificacaoHistorico }
-    ]
+    include: [{ model: models.Pessoa }, { model: models.NotificacaoHistorico }],
   });
 
 const salvarNotificacao = async (notificacao) => {
@@ -102,27 +115,26 @@ const salvarNotificacao = async (notificacao) => {
     notificacaoHistorico: {
       id: uuid(),
       notificacaoId,
-      ...notificacao.notificacaoHistorico
-    }
+      ...notificacao.notificacaoHistorico,
+    },
   };
 
   await models.Notificacao.create(notificacaoComId);
-  await models.NotificacaoHistorico.create(notificacaoComId.notificacaoHistorico);
+  await models.NotificacaoHistorico.create(
+    notificacaoComId.notificacaoHistorico
+  );
   return await consultarNotificacaoPorId(notificacaoId);
-}
+};
 
 const consultarNotificaoesPaginado = async (page, limit) => {
   const offset = (page - 1) * limit;
   return await models.Notificacao.findAndCountAll({
-    include: [
-      { model: models.Pessoa },
-      { model: models.NotificacaoHistorico },
-    ],
-    order: [['updatedAt', 'DESC']],
+    include: [{ model: models.Pessoa }, { model: models.NotificacaoHistorico }],
+    order: [["updatedAt", "DESC"]],
     limit: limit,
-    offset: offset
+    offset: offset,
   });
-}
+};
 
 /* 
   Refatorar para repositório de pessoas ou outro local apropriado
@@ -131,9 +143,9 @@ const cadastrarPessoa = async (pessoa) => {
   pessoa.id = uuid();
   const pessoaCadastrada = await models.Pessoa.create(pessoa);
   return pessoaCadastrada.dataValues;
-}
+};
 
 const buscarPessoaDadosBasicos = async (nome, nomeDaMae) =>
   await models.Pessoa.findAll({
-    where: { nome, nomeDaMae }
+    where: { nome, nomeDaMae },
   });
