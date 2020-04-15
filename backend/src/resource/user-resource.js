@@ -1,4 +1,5 @@
 const models = require("../models");
+const uuid = require("uuid/v4")
 
 exports.index = async (req, res) => {
   const users = await models.User.findAll();
@@ -6,8 +7,8 @@ exports.index = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-  const { firstName, lastName, email } = req.body;
-  const user = await models.User.create({ firstName, lastName, email });
+  const { email } = req.body;
+  const user = await models.User.create({ id: uuid(), email });
   return res.json(user);
 };
 

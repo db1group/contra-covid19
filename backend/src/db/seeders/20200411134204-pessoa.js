@@ -17,7 +17,7 @@ module.exports = {
           ocupacao: "Desenvolvedor",
           endereco: "Rua Nardina Rodrigues Johansen",
           numero: "152",
-          bairroId: "ac3227a1-8a09-4b5f-93cd-d6ca43b637a2",
+          bairroId: "766c6aa8-d587-4a23-b022-8744009bfd37",
           telefoneResidencial: "44991051563",
           telefoneContato: "44991051563",
           telefoneCelular: "44991051563",

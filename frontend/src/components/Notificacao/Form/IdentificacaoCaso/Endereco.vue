@@ -1,0 +1,131 @@
+<template>
+  <div>
+    <v-row dense>
+      <v-col
+        cols="12"
+        sm="4"
+      >
+        <v-text-field
+          :value="suspeito.cep"
+          label="CEP"
+          v-mask="'##.###-###'"
+          @input="updateCep"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        sm="8"
+      >
+        <v-text-field
+          :value="suspeito.endereco"
+          :rules="rulesEndereco"
+          label="Endereço *"
+          @input="updateEndereco"
+        />
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col
+        cols="12"
+        sm="4"
+      >
+        <v-text-field
+          :value="suspeito.numero"
+          :rules="rulesNumero"
+          label="Número *"
+          @input="updateNumero"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        sm="8"
+      >
+        <v-autocomplete
+          :value="suspeito.bairroId"
+          :rules="rulesBairroId"
+          label="Bairro *"
+          :items="bairros.items"
+          item-text="nome"
+          item-value="id"
+          :loading="bairros.loading"
+          no-data-text="Bairro não encontrado"
+          @input="updateBairroId"
+        />
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="3">
+        <v-select
+          value="PR"
+          label="UF *"
+          :items="['PR']"
+          :rules="rulesUF"
+          disabled
+        />
+      </v-col>
+      <v-col cols="9">
+        <v-select
+          label="Município *"
+          :items="municipios"
+          :rules="rulesMunicipioId"
+          disabled
+        />
+      </v-col>
+    </v-row>
+  </div>
+</template>
+<script>
+import { mask } from 'vue-the-mask';
+import Pessoa from '@/entities/Pessoa';
+import BairroService from '@/services/BairroService';
+
+const MUNICIPIOS = ['Maringá'];
+
+export default {
+  directives: { mask },
+  props: {
+    suspeito: {
+      type: Pessoa,
+      required: true,
+    },
+  },
+  data: () => ({
+    municipios: MUNICIPIOS,
+    bairros: {
+      items: [],
+      loading: true,
+    },
+    rulesEndereco: [(v) => !!v || 'O campo é obrigatório'],
+    rulesNumero: [(v) => !!v || 'O campo é obrigatório'],
+    rulesBairroId: [(v) => !!v || 'O campo é obrigatório'],
+    rulesUF: [(v) => !!v || 'O campo é obrigatório'],
+    rulesMunicipioId: [(v) => !!v || 'O campo é obrigatório'],
+  }),
+  methods: {
+    updateCep(cep) {
+      this.$emit('update:cep', cep);
+    },
+    updateEndereco(endereco) {
+      this.$emit('update:endereco', endereco);
+    },
+    updateNumero(numero) {
+      this.$emit('update:numero', numero);
+    },
+    updateBairroId(bairroId) {
+      this.$emit('update:bairroId', bairroId);
+    },
+    findBairros() {
+      this.bairros.loading = true;
+      BairroService.findAll().then(({ data }) => {
+        this.bairros = {
+          items: data,
+          loading: false,
+        };
+      });
+    },
+  },
+  created() {
+    this.findBairros();
+  },
+};
+</script>
