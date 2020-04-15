@@ -4,8 +4,11 @@
       Cadastro de notificação
     </h3>
     <base-page>
+      <pre>{{notificacao}}</pre>
       <identificacao-caso
+        :data-hora-notificacao="notificacao.dataHoraNotificacao"
         :suspeito="notificacao.suspeito"
+        @update:dataHoraNotificacao="updateDataHoraNotificacao"
         @update:tipoDocumento="updateSuspeito('tipoDocumento', $event)"
         @update:numeroDocumento="updateSuspeito('numeroDocumento', $event)"
         @update:nome="updateSuspeito('nome', $event)"
@@ -131,6 +134,9 @@ export default {
     notificacao: new Notificacao(),
   }),
   methods: {
+    updateDataHoraNotificacao(dataHoraNotificacao) {
+      this.notificacao.dataHoraNotificacao = dataHoraNotificacao;
+    },
     updateSintomatico(sintomatico) {
       this.notificacao.sintomatico = sintomatico;
     },
