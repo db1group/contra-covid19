@@ -5,7 +5,9 @@
     </h3>
     <base-page>
       <identificacao-caso
+        :data-hora-notificacao="notificacao.dataHoraNotificacao"
         :suspeito="notificacao.suspeito"
+        @update:dataHoraNotificacao="updateDataHoraNotificacao"
         @update:tipoDocumento="updateSuspeito('tipoDocumento', $event)"
         @update:numeroDocumento="updateSuspeito('numeroDocumento', $event)"
         @update:nome="updateSuspeito('nome', $event)"
@@ -97,11 +99,12 @@
         @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
       />
       <observacoes v-model="notificacao.observacoes"/>
-      <botao-enviar/>
+      <botao-enviar @click="send"/>
     </base-page>
   </section>
 </template>
 <script>
+import NotificacaoService from '@/services/NotificacaoService';
 import BasePage from '@/components/commons/BasePage.vue';
 import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso/index.vue';
 import SinaisESintomas from '@/components/Notificacao/Form/SinaisESintomas/index.vue';
@@ -131,6 +134,9 @@ export default {
     notificacao: new Notificacao(),
   }),
   methods: {
+    updateDataHoraNotificacao(dataHoraNotificacao) {
+      this.notificacao.dataHoraNotificacao = dataHoraNotificacao;
+    },
     updateSintomatico(sintomatico) {
       this.notificacao.sintomatico = sintomatico;
     },
@@ -154,6 +160,10 @@ export default {
     },
     updateConclusaoAtendimento(campo, valor) {
       this.notificacao.conclusaoAtendimento[campo] = valor;
+    },
+    send() {
+      const requestNotificacao = this.notificacao.toRequestBody();
+      NotificacaoService.save(requestNotificacao);
     },
   },
 };

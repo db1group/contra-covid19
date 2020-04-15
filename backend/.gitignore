@@ -1,4 +1,6 @@
 .env
-node_modules/
+
+node_modules
+
 src/db/databases/dev.sqlite
 src/db/databases/test.sqlite

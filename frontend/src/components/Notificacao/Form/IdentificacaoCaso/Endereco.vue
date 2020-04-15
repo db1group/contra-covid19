@@ -18,6 +18,7 @@
       >
         <v-text-field
           :value="suspeito.endereco"
+          :rules="rulesEndereco"
           label="Endereço *"
           @input="updateEndereco"
         />
@@ -30,6 +31,7 @@
       >
         <v-text-field
           :value="suspeito.numero"
+          :rules="rulesNumero"
           label="Número *"
           @input="updateNumero"
         />
@@ -40,10 +42,13 @@
       >
         <v-autocomplete
           :value="suspeito.bairroId"
+          :rules="rulesBairroId"
           label="Bairro *"
-          :items="bairros"
-          item-text="value"
-          item-value="key"
+          :items="bairros.items"
+          item-text="nome"
+          item-value="id"
+          :loading="bairros.loading"
+          no-data-text="Bairro não encontrado"
           @input="updateBairroId"
         />
       </v-col>
@@ -54,6 +59,7 @@
           value="PR"
           label="UF *"
           :items="['PR']"
+          :rules="rulesUF"
           disabled
         />
       </v-col>
@@ -61,6 +67,7 @@
         <v-select
           label="Município *"
           :items="municipios"
+          :rules="rulesMunicipioId"
           disabled
         />
       </v-col>
@@ -70,12 +77,9 @@
 <script>
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
+import BairroService from '@/services/BairroService';
 
 const MUNICIPIOS = ['Maringá'];
-const BAIRROS = [
-  { key: 'id_do_bairro_1', value: 'Zona 7' },
-  { key: 'id_do_bairro_2', value: 'Zona 5' },
-];
 
 export default {
   directives: { mask },
@@ -87,7 +91,15 @@ export default {
   },
   data: () => ({
     municipios: MUNICIPIOS,
-    bairros: BAIRROS,
+    bairros: {
+      items: [],
+      loading: true,
+    },
+    rulesEndereco: [(v) => !!v || 'O campo é obrigatório'],
+    rulesNumero: [(v) => !!v || 'O campo é obrigatório'],
+    rulesBairroId: [(v) => !!v || 'O campo é obrigatório'],
+    rulesUF: [(v) => !!v || 'O campo é obrigatório'],
+    rulesMunicipioId: [(v) => !!v || 'O campo é obrigatório'],
   }),
   methods: {
     updateCep(cep) {
@@ -102,6 +114,18 @@ export default {
     updateBairroId(bairroId) {
       this.$emit('update:bairroId', bairroId);
     },
+    findBairros() {
+      this.bairros.loading = true;
+      BairroService.findAll().then(({ data }) => {
+        this.bairros = {
+          items: data,
+          loading: false,
+        };
+      });
+    },
+  },
+  created() {
+    this.findBairros();
   },
 };
 </script>

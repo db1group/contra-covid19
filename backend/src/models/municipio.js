@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  const Municipio = sequelize.define('Municipio', {
+  const Municipio = sequelize.define("Municipio", {
     nome: DataTypes.STRING,
-    uf: DataTypes.STRING
+    uf: DataTypes.STRING,
   });
   Municipio.associate = function (models) {
-    //Municipio.hasMany(models.Bairro);
+    Municipio.hasMany(models.Bairro, { foreignKey: "municipioId" });
   };
   return Municipio;
 };
