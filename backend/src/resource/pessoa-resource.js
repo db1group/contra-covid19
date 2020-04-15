@@ -9,7 +9,10 @@ exports.consultarPorId = async (req, res) => {
   const { id } = req.params;
   const pessoa = await models.Pessoa.findOne({
     where: { id },
-    include: models.Bairro,
+    include: {
+      model: models.Bairro,
+      include: models.Municipio,
+    },
   });
   return res.json({ data: pessoa });
 };

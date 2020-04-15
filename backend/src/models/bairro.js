@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     municipioId: DataTypes.UUID,
   });
   Bairro.associate = function (models) {
-    Bairro.belongsTo(models.Municipio);
-    Bairro.hasMany(models.Pessoa);
+    Bairro.belongsTo(models.Municipio, { foreignKey: "municipioId" });
+    Bairro.hasMany(models.Pessoa, { foreignKey: "bairroId" });
   };
   return Bairro;
 };
