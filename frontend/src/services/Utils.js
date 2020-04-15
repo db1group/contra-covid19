@@ -1,5 +1,6 @@
 export default {
   numbersOnly(string) {
-    return string.match(/[0-9]+/g).join([]);
+    const resultado = string.match(/[0-9]+/g);
+    return resultado && resultado.length ? resultado.join([]) : '';
   },
 };
