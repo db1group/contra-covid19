@@ -17,6 +17,7 @@
       >
         <v-select
           :value="suspeito.tipoDocumento"
+          :rules="rulesTipoDocumento"
           label="Tipo de documento *"
           :items="tiposDocumento"
           item-text="value"
@@ -31,6 +32,7 @@
       >
         <v-text-field
           :value="suspeito.numeroDocumento"
+          :rules="rulesNumeroDocumento"
           label="Número do documento *"
           @input="updateNumeroDocumento"
         />
@@ -40,6 +42,7 @@
       <v-col cols="12">
         <v-text-field
           :value="suspeito.nome"
+          :rules="rulesNome"
           label="Nome completo *"
           @input="updateNome"
         />
@@ -77,6 +80,7 @@
       >
         <v-text-field
           :value="suspeito.dataDeNascimento"
+          :rules="rulesDataDeNascimento"
           label="Data de nascimento *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
@@ -111,6 +115,10 @@ export default {
   },
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
+    rulesTipoDocumento: [(v) => !!v || 'Tipo de documento é obrigatório'],
+    rulesNumeroDocumento: [(v) => !!v || 'Número do documento é obrigatório'],
+    rulesNome: [(v) => !!v || 'Nome completo é obrigatório'],
+    rulesDataDeNascimento: [(v) => !!v || 'Data de nascimento é obrigatório'],
   }),
   methods: {
     updateDataHoraNotificacao(dataHoraNotificacao) {
