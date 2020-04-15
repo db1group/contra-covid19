@@ -21,7 +21,7 @@
 </template>
 <script>
 export default {
-  prop: {
+  props: {
     value: {
       type: String,
       default: '',

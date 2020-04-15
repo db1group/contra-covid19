@@ -1,6 +1,16 @@
 <template>
   <div>
     <v-row dense>
+      <v-col cols="5" sm="4">
+        <v-text-field
+          :value="dataHoraNotificacao"
+          label="Data e hora da notificação"
+          v-mask="'##/##/#### ##:##'"
+          @input="updateDataHoraNotificacao"
+        />
+      </v-col>
+    </v-row>
+    <v-row dense>
       <v-col
         cols="12"
         sm="4"
@@ -90,6 +100,10 @@ const TIPOS_DOCUMENTO = [
 export default {
   directives: { mask },
   props: {
+    dataHoraNotificacao: {
+      type: String,
+      default: '',
+    },
     suspeito: {
       type: Pessoa,
       required: true,
@@ -99,6 +113,9 @@ export default {
     tiposDocumento: TIPOS_DOCUMENTO,
   }),
   methods: {
+    updateDataHoraNotificacao(dataHoraNotificacao) {
+      this.$emit('update:dataHoraNotificacao', dataHoraNotificacao);
+    },
     updateTipoDocumento(tipoDocumento) {
       this.$emit('update:tipoDocumento', tipoDocumento);
     },

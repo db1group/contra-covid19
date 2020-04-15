@@ -9,6 +9,7 @@
           <v-btn
             color="primary"
             rounded
+            @click="onClick"
           >
             Enviar
           </v-btn>
@@ -17,3 +18,12 @@
     </v-container>
   </div>
 </template>
+<script>
+export default {
+  methods: {
+    onClick() {
+      this.$emit('click');
+    },
+  },
+};
+</script>
