@@ -21,9 +21,6 @@ module.exports = (sequelize, DataTypes) => {
     Notificacao.belongsTo(models.ProfissionalSaude, {
       foreignKey: "notificadorId",
     });
-    Notificacao.belongsTo(models.ProfissionalSaude, {
-      foreignKey: "notificadorId",
-    });
     Notificacao.belongsTo(models.Bairro, {
       foreignKey: "bairroId",
     });

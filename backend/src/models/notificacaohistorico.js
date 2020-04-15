@@ -61,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
     observacoes: DataTypes.TEXT,
   }, {});
   NotificacaoHistorico.associate = function (models) {
-    NotificacaoHistorico.belongsTo(models.Notificacao);
+    NotificacaoHistorico.belongsTo(models.Notificacao, { foreignKey: 'notificacaoId'});
   };
   return NotificacaoHistorico;
 };
