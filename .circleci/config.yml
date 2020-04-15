@@ -78,7 +78,6 @@ workflows:
             branches:
               only:
               - master
-              - feature/ci
       - deploy-frontend:
           requires:
             - build-frontend
@@ -86,4 +85,3 @@ workflows:
             branches:
               only:
               - master
-              - feature/ci
