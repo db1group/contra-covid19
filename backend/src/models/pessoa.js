@@ -26,9 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Pessoa.associate = function (models) {
-    // Pessoa.hasOne(models.Bairro, {
-    //   foreignKey: "id"
-    // });
+    Pessoa.belongsTo(models.Bairro);
   };
   return Pessoa;
 };
