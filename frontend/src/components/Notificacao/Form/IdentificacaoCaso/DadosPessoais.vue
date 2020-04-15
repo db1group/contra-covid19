@@ -115,10 +115,10 @@ export default {
   },
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
-    rulesTipoDocumento: [(v) => !!v || 'Tipo de documento é obrigatório'],
-    rulesNumeroDocumento: [(v) => !!v || 'Número do documento é obrigatório'],
-    rulesNome: [(v) => !!v || 'Nome completo é obrigatório'],
-    rulesDataDeNascimento: [(v) => !!v || 'Data de nascimento é obrigatório'],
+    rulesTipoDocumento: [(v) => !!v || 'O campo é obrigatório'],
+    rulesNumeroDocumento: [(v) => !!v || 'O campo é obrigatório'],
+    rulesNome: [(v) => !!v || 'O campo é obrigatório'],
+    rulesDataDeNascimento: [(v) => !!v || 'O campo é obrigatório'],
   }),
   methods: {
     updateDataHoraNotificacao(dataHoraNotificacao) {
