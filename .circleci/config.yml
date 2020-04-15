@@ -12,12 +12,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: contra-covid19/backend-{{ checksum "yarn.lock" }}
+          key: contra-covid19/backend-{{ checksum "backend/yarn.lock" }}
       - run: docker run --rm -it -v ${PWD}/backend:/usr/src/app -w /usr/src/app node:13 yarn install
       - save_cache:
           paths:
             - ~/contra-covid19/backend/node_modules
-          key: contra-covid19/backend-{{ checksum "yarn.lock" }}
+          key: contra-covid19/backend-{{ checksum "backend/yarn.lock" }}
       - persist_to_workspace:
           root: ~/
           paths:
@@ -41,12 +41,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: contra-covid19/frontend-{{ checksum "yarn.lock" }}
+          key: contra-covid19/frontend-{{ checksum "frontend/yarn.lock" }}
       - run: docker run --rm -it -v ${PWD}/frontend:/usr/src/app -w /usr/src/app node:13 yarn install
       - save_cache:
           paths:
             - ~/contra-covid19/frontend/node_modules
-          key: contra-covid19/frontend-{{ checksum "yarn.lock" }}
+          key: contra-covid19/frontend-{{ checksum "frontend/yarn.lock" }}
       - run: docker run --rm -it -v ${PWD}/frontend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 yarn build
       - persist_to_workspace:
           root: ~/
