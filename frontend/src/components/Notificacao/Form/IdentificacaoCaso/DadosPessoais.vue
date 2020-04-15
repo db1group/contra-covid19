@@ -1,12 +1,23 @@
 <template>
   <div>
     <v-row dense>
+      <v-col cols="5" sm="4">
+        <v-text-field
+          :value="dataHoraNotificacao"
+          label="Data e hora da notificação"
+          v-mask="'##/##/#### ##:##'"
+          @input="updateDataHoraNotificacao"
+        />
+      </v-col>
+    </v-row>
+    <v-row dense>
       <v-col
         cols="12"
         sm="4"
       >
         <v-select
           :value="suspeito.tipoDocumento"
+          :rules="rulesTipoDocumento"
           label="Tipo de documento *"
           :items="tiposDocumento"
           item-text="value"
@@ -21,6 +32,7 @@
       >
         <v-text-field
           :value="suspeito.numeroDocumento"
+          :rules="rulesNumeroDocumento"
           label="Número do documento *"
           @input="updateNumeroDocumento"
         />
@@ -30,6 +42,7 @@
       <v-col cols="12">
         <v-text-field
           :value="suspeito.nome"
+          :rules="rulesNome"
           label="Nome completo *"
           @input="updateNome"
         />
@@ -67,6 +80,7 @@
       >
         <v-text-field
           :value="suspeito.dataDeNascimento"
+          :rules="rulesDataDeNascimento"
           label="Data de nascimento *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
@@ -90,6 +104,10 @@ const TIPOS_DOCUMENTO = [
 export default {
   directives: { mask },
   props: {
+    dataHoraNotificacao: {
+      type: String,
+      default: '',
+    },
     suspeito: {
       type: Pessoa,
       required: true,
@@ -97,8 +115,15 @@ export default {
   },
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
+    rulesTipoDocumento: [(v) => !!v || 'Tipo de documento é obrigatório'],
+    rulesNumeroDocumento: [(v) => !!v || 'Número do documento é obrigatório'],
+    rulesNome: [(v) => !!v || 'Nome completo é obrigatório'],
+    rulesDataDeNascimento: [(v) => !!v || 'Data de nascimento é obrigatório'],
   }),
   methods: {
+    updateDataHoraNotificacao(dataHoraNotificacao) {
+      this.$emit('update:dataHoraNotificacao', dataHoraNotificacao);
+    },
     updateTipoDocumento(tipoDocumento) {
       this.$emit('update:tipoDocumento', tipoDocumento);
     },

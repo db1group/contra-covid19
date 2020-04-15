@@ -4,7 +4,9 @@
       1. IDENTIFICAÇÃO DO CASO SUSPEITO
     </h4>
     <dados-pessoais
+      :data-hora-notificacao="dataHoraNotificacao"
       :suspeito="suspeito"
+      @update:dataHoraNotificacao="updateDataHoraNotificacao"
       @update:tipoDocumento="updateTipoDocumento"
       @update:numeroDocumento="updateNumeroDocumento"
       @update:nome="updateNome"
@@ -40,12 +42,19 @@ export default {
     Contato,
   },
   props: {
+    dataHoraNotificacao: {
+      type: String,
+      default: '',
+    },
     suspeito: {
       type: Pessoa,
       required: true,
     },
   },
   methods: {
+    updateDataHoraNotificacao(dataHoraNotificacao) {
+      this.$emit('update:dataHoraNotificacao', dataHoraNotificacao);
+    },
     updateTipoDocumento(tipoDocumento) {
       this.$emit('update:tipoDocumento', tipoDocumento);
     },
