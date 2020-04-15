@@ -1,3 +1,5 @@
+import DateService from '@/services/DateService';
+
 export default class InformacoesComplementares {
   constructor(data = {}) {
     this.medicacaoAntitermica = data.medicacaoAntitermica || false;
@@ -12,5 +14,12 @@ export default class InformacoesComplementares {
     this.dataDaViagem = data.dataDaViagem || '';
     this.localDaViagem = data.localDaViagem || '';
     this.recebeuVacinaDaGripeNosUltimosDozeMeses = data.recebeuVacinaDaGripeNosUltimosDozeMeses || false;
+  }
+
+  toRequestBody() {
+    return {
+      ...this,
+      dataDaViagem: DateService.changeFormat(this.dataDaViagem, 'DD/MM/YYYY', 'YYYY-MM-DD'),
+    };
   }
 }

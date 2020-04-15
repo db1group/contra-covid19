@@ -4,7 +4,6 @@
       Cadastro de notificação
     </h3>
     <base-page>
-      <pre>{{notificacao}}</pre>
       <identificacao-caso
         :data-hora-notificacao="notificacao.dataHoraNotificacao"
         :suspeito="notificacao.suspeito"
@@ -100,11 +99,12 @@
         @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
       />
       <observacoes v-model="notificacao.observacoes"/>
-      <botao-enviar/>
+      <botao-enviar @click="send"/>
     </base-page>
   </section>
 </template>
 <script>
+import NotificacaoService from '@/services/NotificacaoService';
 import BasePage from '@/components/commons/BasePage.vue';
 import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso/index.vue';
 import SinaisESintomas from '@/components/Notificacao/Form/SinaisESintomas/index.vue';
@@ -160,6 +160,10 @@ export default {
     },
     updateConclusaoAtendimento(campo, valor) {
       this.notificacao.conclusaoAtendimento[campo] = valor;
+    },
+    send() {
+      const requestNotificacao = this.notificacao.toRequestBody();
+      NotificacaoService.save(requestNotificacao);
     },
   },
 };
