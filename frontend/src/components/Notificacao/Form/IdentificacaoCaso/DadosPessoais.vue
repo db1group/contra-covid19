@@ -91,6 +91,7 @@
   </div>
 </template>
 <script>
+import { required } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
 
@@ -115,10 +116,10 @@ export default {
   },
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
-    rulesTipoDocumento: [(v) => !!v || 'O campo é obrigatório'],
-    rulesNumeroDocumento: [(v) => !!v || 'O campo é obrigatório'],
-    rulesNome: [(v) => !!v || 'O campo é obrigatório'],
-    rulesDataDeNascimento: [(v) => !!v || 'O campo é obrigatório'],
+    rulesTipoDocumento: [required],
+    rulesNumeroDocumento: [required],
+    rulesNome: [required],
+    rulesDataDeNascimento: [required],
   }),
   methods: {
     updateDataHoraNotificacao(dataHoraNotificacao) {

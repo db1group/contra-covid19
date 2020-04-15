@@ -76,6 +76,7 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
+import { required } from '@/validations/CommonValidations';
 import Pessoa from '@/entities/Pessoa';
 import BairroService from '@/services/BairroService';
 
@@ -95,11 +96,11 @@ export default {
       items: [],
       loading: true,
     },
-    rulesEndereco: [(v) => !!v || 'O campo é obrigatório'],
-    rulesNumero: [(v) => !!v || 'O campo é obrigatório'],
-    rulesBairroId: [(v) => !!v || 'O campo é obrigatório'],
-    rulesUF: [(v) => !!v || 'O campo é obrigatório'],
-    rulesMunicipioId: [(v) => !!v || 'O campo é obrigatório'],
+    rulesEndereco: [required],
+    rulesNumero: [required],
+    rulesBairroId: [required],
+    rulesUF: [required],
+    rulesMunicipioId: [required],
   }),
   methods: {
     updateCep(cep) {
