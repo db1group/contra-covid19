@@ -5,6 +5,18 @@
     </h3>
     <base-page>
       <v-form ref="form">
+        <identificacao-notificante
+          :notificacao="notificacao"
+          @update:unidadeSaudeId="updateUnidadeSaude('unidadeSaudeId', $event)"
+          @update:nomeNotificador="updateNomeNotificador($event)"
+          @update:profissaoId="updateProfissaoId('profissaoId', $event)"
+        />
+        <vinculo-epidemiologico
+          :vinculo-epidemiologico="notificacao.vinculoEpidemiologico"
+          @update:situacao1="updateVinculoEpidemiologico('situacao1', $event)"
+          @update:situacao2="updateVinculoEpidemiologico('situacao2', $event)"
+          @update:nome="updateVinculoEpidemiologico('nome', $event)"
+        />
         <identificacao-caso
           :data-hora-notificacao="notificacao.dataHoraNotificacao"
           :suspeito="notificacao.suspeito"
@@ -81,12 +93,6 @@
             updateInformacaoComplementar('recebeuVacinaDaGripeNosUltimosDozeMeses', $event)
           "
         />
-        <vinculo-epidemiologico
-          :vinculo-epidemiologico="notificacao.vinculoEpidemiologico"
-          @update:situacao1="updateVinculoEpidemiologico('situacao1', $event)"
-          @update:situacao2="updateVinculoEpidemiologico('situacao2', $event)"
-          @update:nome="updateVinculoEpidemiologico('nome', $event)"
-        />
         <conclusao-atendimento
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
           @update:isolamentoDomiciliar="updateConclusaoAtendimento('isolamentoDomiciliar', $event)"
@@ -122,11 +128,12 @@
 <script>
 import NotificacaoService from '@/services/NotificacaoService';
 import BasePage from '@/components/commons/BasePage.vue';
+import IdentificacaoNotificante from '@/components/Notificacao/Form/IdentificacaoNotificante/index.vue';
+import VinculoEpidemiologico from '@/components/Notificacao/Form/VinculoEpidemiologico/index.vue';
 import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso/index.vue';
 import SinaisESintomas from '@/components/Notificacao/Form/SinaisESintomas/index.vue';
 import Comorbidades from '@/components/Notificacao/Form/Comorbidades/index.vue';
 import InformacoesComplementares from '@/components/Notificacao/Form/InformacoesComplementares/index.vue';
-import VinculoEpidemiologico from '@/components/Notificacao/Form/VinculoEpidemiologico/index.vue';
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
 import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
 import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
@@ -136,11 +143,12 @@ import Notificacao from '@/entities/Notificacao';
 export default {
   components: {
     BasePage,
+    IdentificacaoNotificante,
+    VinculoEpidemiologico,
     IdentificacaoCaso,
     SinaisESintomas,
     Comorbidades,
     InformacoesComplementares,
-    VinculoEpidemiologico,
     ConclusaoAtendimento,
     RealizadoColeta,
     Observacoes,
@@ -152,6 +160,18 @@ export default {
     showSuccess: false,
   }),
   methods: {
+    updateUnidadeSaude(unidadeSaudeId) {
+      this.notificacao.unidadeSaudeId = unidadeSaudeId;
+    },
+    updateNomeNotificador(nomeNotificador) {
+      this.notificacao.nomeNotificador = nomeNotificador;
+    },
+    updateProfissaoId(profissaoId) {
+      this.notificacao.profissaoId = profissaoId;
+    },
+    updateVinculoEpidemiologico(campo, valor) {
+      this.notificacao.vinculoEpidemiologico[campo] = valor;
+    },
     updateDataHoraNotificacao(dataHoraNotificacao) {
       this.notificacao.dataHoraNotificacao = dataHoraNotificacao;
     },
@@ -172,9 +192,6 @@ export default {
     },
     updateInformacaoComplementar(campo, valor) {
       this.notificacao.informacaoComplementar[campo] = valor;
-    },
-    updateVinculoEpidemiologico(campo, valor) {
-      this.notificacao.vinculoEpidemiologico[campo] = valor;
     },
     updateConclusaoAtendimento(campo, valor) {
       this.notificacao.conclusaoAtendimento[campo] = valor;

@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text title">
-      2. SINAIS E SINTOMAS
+      4. SINAIS E SINTOMAS
     </h4>
     <v-container
       fluid

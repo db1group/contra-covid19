@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text title">
-      7. REALIZADO COLETA DE MATERIAL PARA DIAGNÓSTICO
+      9. REALIZADO COLETA DE MATERIAL PARA DIAGNÓSTICO
     </h4>
     <v-container
       fluid

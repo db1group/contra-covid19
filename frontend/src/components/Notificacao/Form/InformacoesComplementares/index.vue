@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text title">
-      4. INFORMAÇÕES COMPLEMENTARES
+      7. INFORMAÇÕES COMPLEMENTARES
     </h4>
     <v-container
       fluid

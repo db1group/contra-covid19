@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text font-weight-medium title">
-      1. IDENTIFICAÇÃO DO CASO SUSPEITO
+      3. IDENTIFICAÇÃO DO CASO SUSPEITO
     </h4>
     <dados-pessoais
       :data-hora-notificacao="dataHoraNotificacao"
