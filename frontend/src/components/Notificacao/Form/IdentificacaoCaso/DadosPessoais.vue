@@ -4,8 +4,10 @@
       <v-col cols="5" sm="4">
         <v-text-field
           :value="dataHoraNotificacao"
-          label="Data e hora da notificação"
+          label="Data e hora da notificação *"
           v-mask="'##/##/#### ##:##'"
+          validate-on-blur
+          :rules="rules.dataHoraNotificacao"
           @input="updateDataHoraNotificacao"
         />
       </v-col>
@@ -17,7 +19,7 @@
       >
         <v-select
           :value="suspeito.tipoDocumento"
-          :rules="rulesTipoDocumento"
+          :rules="rules.tipoDocumento"
           label="Tipo de documento *"
           :items="tiposDocumento"
           item-text="value"
@@ -32,7 +34,7 @@
       >
         <v-text-field
           :value="suspeito.numeroDocumento"
-          :rules="rulesNumeroDocumento"
+          :rules="rules.numeroDocumento"
           label="Número do documento *"
           @input="updateNumeroDocumento"
         />
@@ -42,7 +44,7 @@
       <v-col cols="12">
         <v-text-field
           :value="suspeito.nome"
-          :rules="rulesNome"
+          :rules="rules.nome"
           label="Nome completo *"
           @input="updateNome"
         />
@@ -80,10 +82,11 @@
       >
         <v-text-field
           :value="suspeito.dataDeNascimento"
-          :rules="rulesDataDeNascimento"
           label="Data de nascimento *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
+          :rules="rules.dataDeNascimento"
+          validate-on-blur
           @input="updateDataDeNascimento"
         />
       </v-col>
@@ -91,6 +94,7 @@
   </div>
 </template>
 <script>
+import { required, dateFormat, dateHourMinuteFormat } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
 
@@ -115,10 +119,13 @@ export default {
   },
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
-    rulesTipoDocumento: [(v) => !!v || 'O campo é obrigatório'],
-    rulesNumeroDocumento: [(v) => !!v || 'O campo é obrigatório'],
-    rulesNome: [(v) => !!v || 'O campo é obrigatório'],
-    rulesDataDeNascimento: [(v) => !!v || 'O campo é obrigatório'],
+    rules: {
+      dataHoraNotificacao: [required, dateHourMinuteFormat],
+      tipoDocumento: [required],
+      numeroDocumento: [required],
+      nome: [required],
+      dataDeNascimento: [required, dateFormat],
+    },
   }),
   methods: {
     updateDataHoraNotificacao(dataHoraNotificacao) {

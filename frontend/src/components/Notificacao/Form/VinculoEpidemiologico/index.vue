@@ -43,6 +43,7 @@
           <v-text-field
             :value="vinculoEpidemiologico.nome"
             label="Nome do caso suspeito ou confirmado que teve contato *"
+            :rules="rules.nome"
             :disabled="!vinculoEpidemiologico.situacao2"
             @input="updateNome"
           />
@@ -52,6 +53,7 @@
   </div>
 </template>
 <script>
+import { required } from '@/validations/CommonValidations';
 import VinculoEpidemiologico from '@/entities/VinculoEpidemiologico';
 
 export default {
@@ -63,6 +65,9 @@ export default {
   },
   data: () => ({
     situacao: null,
+    rules: {
+      nome: [],
+    },
   }),
   methods: {
     updateSituacao(situacao) {
@@ -93,9 +98,16 @@ export default {
         this.situacao = 2;
       }
     },
+    requiredIfContatoComSuspeito(value) {
+      if (!this.vinculoEpidemiologico.situacao2) {
+        return true;
+      }
+      return required(value, 'O campo é obrigatório para a situação 2');
+    },
   },
   created() {
     this.updateStateSituacao();
+    this.rules.nome.push(this.requiredIfContatoComSuspeito);
   },
 };
 </script>
