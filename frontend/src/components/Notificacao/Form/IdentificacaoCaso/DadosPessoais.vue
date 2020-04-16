@@ -74,35 +74,31 @@
         </v-radio-group>
       </v-col>
     </v-row>
-    <v-row dense>
+    <v-row dense v-if="suspeito.sexo === 'F'">
       <v-col cols="12">
         <v-radio-group
+          :value="suspeito.gestante"
           class="mt-0"
+          @change="updateGestante"
         >
           <template v-slot:label>
             <label class="primary--text body-1 font-weight-bold">Gestante</label>
           </template>
-          <v-radio label="Sim" value="1"/>
-          <v-radio label="Não" value="2"/>
-          <v-radio label="Não se aplica" value="3"/>
+          <v-radio label="Sim" value="SIM"/>
+          <v-radio label="Não" value="NAO"/>
         </v-radio-group>
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="12">
-        <v-radio-group
-          class="mt-0"
-        >
-          <template v-slot:label>
-            <label class="primary--text body-1 font-weight-bold">Raça/Cor</label>
-          </template>
-          <v-radio label="Branca" value="1"/>
-          <v-radio label="Preta" value="2"/>
-          <v-radio label="Amarela" value="3"/>
-          <v-radio label="Parda" value="4"/>
-          <v-radio label="Indígena" value="5"/>
-          <v-radio label="Ignorado" value="6"/>
-        </v-radio-group>
+      <v-col cols="12" sm="8" md="6">
+        <v-select
+          :value="suspeito.racaCor"
+          label="Raça/Cor"
+          :items="racasCores"
+          item-text="value"
+          item-value="key"
+          @input="updateRacaCor"
+        />
       </v-col>
     </v-row>
     <v-row dense>
@@ -136,6 +132,15 @@ const TIPOS_DOCUMENTO = [
   { key: 'SUS', value: 'Carteira do SUS' },
 ];
 
+const RACAS_CORES = [
+  { key: 'BRANCA', value: 'Branca' },
+  { key: 'PRETA', value: 'Preta' },
+  { key: 'AMARELA', value: 'Amarela' },
+  { key: 'PARDA', value: 'Parda' },
+  { key: 'INDIGENA', value: 'Indígena' },
+  { key: 'IGNORADO', value: 'Ignorado' },
+];
+
 export default {
   directives: { mask },
   props: {
@@ -150,6 +155,7 @@ export default {
   },
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
+    racasCores: RACAS_CORES,
     rules: {
       dataHoraNotificacao: [required, dateHourMinuteFormat],
       tipoDocumento: [required],
@@ -176,6 +182,12 @@ export default {
     },
     updateSexo(sexo) {
       this.$emit('update:sexo', sexo);
+    },
+    updateGestante(gestante) {
+      this.$emit('update:gestante', gestante);
+    },
+    updateRacaCor(racaCor) {
+      this.$emit('update:racaCor', racaCor);
     },
     updateDataDeNascimento(dataDeNascimento) {
       this.$emit('update:dataDeNascimento', dataDeNascimento);

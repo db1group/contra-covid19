@@ -19,6 +19,8 @@ export default class Pessoa {
     this.telefoneResidencial = data.telefoneResidencial || '';
     this.telefoneContato = data.telefoneContato || '';
     this.telefoneCelular = data.telefoneCelular || '';
+    this.gestante = data.gestante || '';
+    this.racaCor = data.racaCor || 'IGNORADO';
   }
 
   toRequestBody() {
