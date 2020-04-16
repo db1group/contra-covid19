@@ -26,6 +26,8 @@
           @update:nome="updateSuspeito('nome', $event)"
           @update:nomeDaMae="updateSuspeito('nomeDaMae', $event)"
           @update:sexo="updateSuspeito('sexo', $event)"
+          @update:gestante="updateSuspeito('gestante', $event)"
+          @update:racaCor="updateSuspeito('racaCor', $event)"
           @update:dataDeNascimento="updateSuspeito('dataDeNascimento', $event)"
           @update:cep="updateSuspeito('cep', $event)"
           @update:endereco="updateSuspeito('endereco', $event)"
