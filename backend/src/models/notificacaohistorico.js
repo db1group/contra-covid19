@@ -1,6 +1,10 @@
-'use strict';
 module.exports = (sequelize, DataTypes) => {
   const NotificacaoHistorico = sequelize.define('NotificacaoHistorico', {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
     notificacaoId: DataTypes.INTEGER,
     sintomatico: DataTypes.BOOLEAN,
     dataInicioDosSintomas: DataTypes.DATE,
@@ -60,8 +64,8 @@ module.exports = (sequelize, DataTypes) => {
     laboratorioRedePrivada: DataTypes.BOOLEAN,
     observacoes: DataTypes.TEXT,
   }, {});
-  NotificacaoHistorico.associate = function (models) {
-    NotificacaoHistorico.belongsTo(models.Notificacao, { foreignKey: 'notificacaoId'});
+  NotificacaoHistorico.associate = (models) => {
+    NotificacaoHistorico.belongsTo(models.Notificacao, { foreignKey: 'notificacaoId' });
   };
   return NotificacaoHistorico;
 };

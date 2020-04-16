@@ -1,6 +1,5 @@
-"use strict";
 module.exports = (sequelize, DataTypes) => {
-  const Pessoa = sequelize.define("Pessoa", {
+  const Pessoa = sequelize.define('Pessoa', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -9,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
     nome: {
       type: DataTypes.STRING(150),
       validate: {
-        isAlpha: true,
         notEmpty: true,
         len: [3, 150],
       },
@@ -18,24 +16,24 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       validate: {
         isDate: true,
-        isNotGreaterTomorrow: function (value) {
+        isNotGreaterTomorrow(value) {
           const actualValue = new Date(value);
           let tomorrow = new Date();
           tomorrow = new Date(
             tomorrow.getFullYear(),
             tomorrow.getMonth(),
-            tomorrow.getDate()
+            tomorrow.getDate(),
           );
           if (actualValue >= tomorrow) {
-            throw new Error("Não pode informar uma data futura");
+            throw new Error('Não pode informar uma data futura');
           }
         },
       },
     },
-    sexo: DataTypes.ENUM("M", "F"),
+    sexo: DataTypes.ENUM('M', 'F'),
     idade: DataTypes.INTEGER,
     numeroDocumento: DataTypes.STRING(18),
-    tipoDocumento: DataTypes.ENUM("CPF", "RG", "CNH", "SUS"),
+    tipoDocumento: DataTypes.ENUM('CPF', 'RG', 'CNH', 'SUS'),
     nomeDaMae: DataTypes.STRING(150),
     ocupacao: DataTypes.STRING(60),
     endereco: DataTypes.STRING(150),
@@ -45,8 +43,8 @@ module.exports = (sequelize, DataTypes) => {
     telefoneContato: DataTypes.STRING(12),
     telefoneCelular: DataTypes.STRING(12),
   });
-  Pessoa.associate = function (models) {
-    Pessoa.belongsTo(models.Bairro, { foreignKey: "bairroId" });
+  Pessoa.associate = (models) => {
+    Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });
   };
   return Pessoa;
 };

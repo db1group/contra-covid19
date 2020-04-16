@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon --inspect src/server.js",
+    "lint": "npx eslint src/**/*.js",
+    "prepush": "yarn lint",
     "build:db": "cross-env NODE_ENV=production npx sequelize-cli db:migrate",
     "build": "cross-env NODE_ENV=production node src/server.js"
   },
@@ -21,6 +23,11 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "nodemon": "^2.0.3"
+    "eslint": "5.16.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "2.20.1",
+    "husky": "^4.2.5",
+    "nodemon": "^2.0.3",
+    "prettier": "^2.0.4"
   }
 }

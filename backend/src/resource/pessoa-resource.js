@@ -1,4 +1,4 @@
-const models = require("../models");
+const models = require('../models');
 
 exports.listar = async (req, res) => {
   const pessoas = await models.Pessoa.findAll({ include: models.Bairro });
@@ -19,7 +19,6 @@ exports.consultarPorId = async (req, res) => {
 
 exports.cadastrar = async (req, res) => {
   const pessoa = req.body;
-  console.log(pessoa);
   await models.Pessoa.create(pessoa);
   return res.status(204).send();
 };

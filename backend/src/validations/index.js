@@ -1,4 +1,4 @@
-const validate = require("./validate");
-const schemas = require("./schemas");
+const validate = require('./validate');
+const schemas = require('./schemas');
 
 module.exports = { validate, schemas };
