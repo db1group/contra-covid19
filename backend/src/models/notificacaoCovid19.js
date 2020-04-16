@@ -18,8 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     desconfortoRespiratorio: DataTypes.BOOLEAN,
     dispneia: DataTypes.BOOLEAN,
     taquipneia: DataTypes.BOOLEAN,
+    tiragemIntercostal: DataTypes.BOOLEAN,
     saturacaoDeOximetriaDePulso: DataTypes.BOOLEAN,
     cianoseCentral: DataTypes.BOOLEAN,
+    congestaoNasal: DataTypes.BOOLEAN,
     diminuicaoDePulsoPeriferico: DataTypes.BOOLEAN,
     hipotensao: DataTypes.BOOLEAN,
     diarreia: DataTypes.BOOLEAN,
@@ -62,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
     coletaMaterialParaDiagnostico: DataTypes.BOOLEAN,
     laboratorioOficial: DataTypes.BOOLEAN,
     laboratorioRedePrivada: DataTypes.BOOLEAN,
-    observacoes: DataTypes.TEXT,
+    observacoes: DataTypes.TEXT
   }, {});
   NotificacaoCovid19.associate = (models) => {
     NotificacaoCovid19.belongsTo(models.Notificacao, { foreignKey: 'notificacaoId' });
