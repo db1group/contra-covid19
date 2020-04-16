@@ -12,7 +12,8 @@ const schemas = {
             .required(),
     }),
     delete: Joi.object().keys({
-        id: Joi.number().integer()
+        id: Joi.string()
+            .guid({ version: "uuidv4" })
             .required(),
     }),
     update: Joi.object().keys({
