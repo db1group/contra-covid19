@@ -33,17 +33,7 @@ const consolidarSuspeito = async (suspeito) => {
 
   if (pessoaId) return { ...suspeitoPrototipo, pessoaId };
 
-  if (sexo == "M") {
-    gestante = "NAO_APLICADO";
-  } else {
-    if (gestante) {
-      gestante = "SIM";
-    } else {
-      gestante = "NAO";
-    }
-  }
-
-  suspeito.gestante = gestante;
+  suspeito.gestante = obterGestante(sexo, gestante);
   suspeitoPrototipo = { ...suspeitoPrototipo, gestante }
 
   const pessoasLocalizadas = await buscarPessoaDadosBasicos(nome, nomeDaMae);
@@ -54,6 +44,18 @@ const consolidarSuspeito = async (suspeito) => {
   const novaPessoaCadastrada = await cadastrarSuspeito(suspeito);
   return Mappers.Pessoa.mapearParaSuspeito(novaPessoaCadastrada);
 };
+
+const obterGestante = (sexo, gestante) => {
+  if (sexo == "M") {
+    return "NAO_APLICADO";
+  } else {
+    if (gestante) {
+      return "SIM";
+    } else {
+      return "NAO";
+    }
+  }
+}
 
 /*
   Refatorar para um serviço de Notificação ou outro local apropriado
