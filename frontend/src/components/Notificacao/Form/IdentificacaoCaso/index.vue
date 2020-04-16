@@ -12,6 +12,8 @@
       @update:nome="updateNome"
       @update:nomeDaMae="updateNomeDaMae"
       @update:sexo="updateSexo"
+      @update:gestante="updateGestante"
+      @update:racaCor="updateRacaCor"
       @update:dataDeNascimento="updateDataDeNascimento"
     />
     <endereco
@@ -69,6 +71,12 @@ export default {
     },
     updateSexo(sexo) {
       this.$emit('update:sexo', sexo);
+    },
+    updateGestante(gestante) {
+      this.$emit('update:gestante', gestante);
+    },
+    updateRacaCor(racaCor) {
+      this.$emit('update:racaCor', racaCor);
     },
     updateDataDeNascimento(dataDeNascimento) {
       this.$emit('update:dataDeNascimento', dataDeNascimento);

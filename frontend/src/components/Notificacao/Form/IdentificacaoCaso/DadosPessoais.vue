@@ -84,8 +84,8 @@
           <template v-slot:label>
             <label class="primary--text body-1 font-weight-bold">Gestante</label>
           </template>
-          <v-radio label="Sim" value="SIM"/>
-          <v-radio label="Não" value="NAO"/>
+          <v-radio label="Sim" :value="true"/>
+          <v-radio label="Não" :value="false"/>
         </v-radio-group>
       </v-col>
     </v-row>
@@ -182,6 +182,9 @@ export default {
     },
     updateSexo(sexo) {
       this.$emit('update:sexo', sexo);
+      if (sexo === 'M') {
+        this.updateGestante();
+      }
     },
     updateGestante(gestante) {
       this.$emit('update:gestante', gestante);
