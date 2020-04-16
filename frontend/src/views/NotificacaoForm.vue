@@ -102,6 +102,13 @@
         <observacoes v-model="notificacao.observacoes"/>
       </v-form>
       <botao-enviar @click="send"/>
+      <v-snackbar
+        v-model="showError"
+        color="error"
+        bottom
+      >
+        Ops! Ocorreu um erro ao tentar enviar a notificação.
+      </v-snackbar>
     </base-page>
   </section>
 </template>
@@ -134,6 +141,7 @@ export default {
   },
   data: () => ({
     notificacao: new Notificacao(),
+    showError: false,
   }),
   methods: {
     updateDataHoraNotificacao(dataHoraNotificacao) {
@@ -166,7 +174,13 @@ export default {
     send() {
       if (this.$refs.form.validate()) {
         const requestNotificacao = this.notificacao.toRequestBody();
-        NotificacaoService.save(requestNotificacao);
+        NotificacaoService.save(requestNotificacao).then(() => {
+          this.$refs.form.reset();
+          this.notificacao = new Notificacao();
+        }).catch((err) => {
+          this.showError = true;
+          console.log(err);
+        });
       }
     },
   },
