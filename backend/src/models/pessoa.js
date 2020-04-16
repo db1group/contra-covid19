@@ -6,8 +6,32 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    nome: DataTypes.STRING(150),
-    dataDeNascimento: DataTypes.DATE,
+    nome: {
+      type: DataTypes.STRING(150),
+      validate: {
+        isAlpha: true,
+        notEmpty: true,
+        len: [3, 150],
+      },
+    },
+    dataDeNascimento: {
+      type: DataTypes.DATE,
+      validate: {
+        isDate: true,
+        isNotGreaterTomorrow: function (value) {
+          const actualValue = new Date(value);
+          let tomorrow = new Date();
+          tomorrow = new Date(
+            tomorrow.getFullYear(),
+            tomorrow.getMonth(),
+            tomorrow.getDate()
+          );
+          if (actualValue >= tomorrow) {
+            throw new Error("Não pode informar uma data futura");
+          }
+        },
+      },
+    },
     sexo: DataTypes.ENUM("M", "F"),
     idade: DataTypes.INTEGER,
     numeroDocumento: DataTypes.STRING(18),
