@@ -9,5 +9,6 @@ module.exports = ({ context }) => ({
     "string.pattern.base": `"${context.label}" não possui o formato válido ${context.regex}`,
     "number.base": `"${context.label}" deve ser  um número`,
     "string.guid": `"${context.label}" deve ser uma GUID válida`,
+    "object.base": `"${context.label}" deve ser um objeto`,
   },
 });
