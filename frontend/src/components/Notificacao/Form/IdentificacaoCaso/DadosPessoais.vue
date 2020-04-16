@@ -6,6 +6,7 @@
           :value="dataHoraNotificacao"
           label="Data e hora da notificação *"
           v-mask="'##/##/#### ##:##'"
+          validate-on-blur
           :rules="rules.dataHoraNotificacao"
           @input="updateDataHoraNotificacao"
         />
@@ -81,10 +82,11 @@
       >
         <v-text-field
           :value="suspeito.dataDeNascimento"
-          :rules="rules.dataDeNascimento"
           label="Data de nascimento *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
+          :rules="rules.dataDeNascimento"
+          validate-on-blur
           @input="updateDataDeNascimento"
         />
       </v-col>
@@ -92,7 +94,7 @@
   </div>
 </template>
 <script>
-import { required } from '@/validations/CommonValidations';
+import { required, dateFormat, dateHourMinuteFormat } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
 
@@ -118,11 +120,11 @@ export default {
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
     rules: {
-      dataHoraNotificacao: [required],
+      dataHoraNotificacao: [required, dateHourMinuteFormat],
       tipoDocumento: [required],
       numeroDocumento: [required],
       nome: [required],
-      dataDeNascimento: [required],
+      dataDeNascimento: [required, dateFormat],
     },
   }),
   methods: {
