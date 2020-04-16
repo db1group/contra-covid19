@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     "Profissao",
     {
       nome: DataTypes.STRING(60),
+      allowNull: false,
     },
     {}
   );
