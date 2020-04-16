@@ -9,6 +9,7 @@
         :value="suspeito.telefoneResidencial"
         label="Telefone residencial"
         v-mask="'(##) ####-####'"
+        :rules="rules.telefoneResidencial"
         @input="updateTelefoneResidencial"
       />
     </v-col>
@@ -21,6 +22,7 @@
         :value="suspeito.telefoneCelular"
         label="Telefone celular"
         v-mask="'(##) #####-####'"
+        :rules="rules.telefoneCelular"
         @input="updateTelefoneCelular"
       />
     </v-col>
@@ -33,6 +35,7 @@
         :value="suspeito.telefoneContato"
         label="Telefone contato"
         v-mask="'(##) #########'"
+        :rules="rules.telefoneContato"
         @input="updateTelefoneContato"
       />
     </v-col>
@@ -50,6 +53,13 @@ export default {
       required: true,
     },
   },
+  data: () => ({
+    rules: {
+      telefoneResidencial: [],
+      telefoneCelular: [],
+      telefoneContato: [],
+    },
+  }),
   methods: {
     updateTelefoneResidencial(telefoneResidencial) {
       this.$emit('update:telefoneResidencial', telefoneResidencial);
@@ -60,6 +70,23 @@ export default {
     updateTelefoneContato(telefoneContato) {
       this.$emit('update:telefoneContato', telefoneContato);
     },
+    requiredAtLeastOnePhoneNumber() {
+      if (this.suspeito.telefoneResidencial) {
+        return true;
+      }
+      if (this.suspeito.telefoneCelular) {
+        return true;
+      }
+      if (this.suspeito.telefoneContato) {
+        return true;
+      }
+      return 'Pelo menos um telefone é obrigatório';
+    },
+  },
+  created() {
+    this.rules.telefoneResidencial.push(this.requiredAtLeastOnePhoneNumber);
+    this.rules.telefoneCelular.push(this.requiredAtLeastOnePhoneNumber);
+    this.rules.telefoneContato.push(this.requiredAtLeastOnePhoneNumber);
   },
 };
 </script>
