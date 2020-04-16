@@ -7,9 +7,9 @@
       <v-form ref="form">
         <identificacao-notificante
           :notificacao="notificacao"
-          @update:unidadeSaudeId="updateUnidadeSaude('unidadeSaudeId', $event)"
-          @update:nomeNotificador="updateNomeNotificador($event)"
-          @update:profissaoId="updateProfissaoId('profissaoId', $event)"
+          @update:unidadeSaudeId="updateUnidadeSaude"
+          @update:nomeNotificador="updateNomeNotificador"
+          @update:profissaoId="updateProfissaoId"
         />
         <vinculo-epidemiologico
           :vinculo-epidemiologico="notificacao.vinculoEpidemiologico"

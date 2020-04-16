@@ -54,7 +54,6 @@ const PROFISSOES = [
 ];
 
 export default {
-  components: {},
   props: {
     notificacao: {
       type: Notificacao,
