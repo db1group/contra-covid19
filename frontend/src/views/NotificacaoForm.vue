@@ -109,6 +109,13 @@
       >
         Ops! Ocorreu um erro ao tentar enviar a notificação.
       </v-snackbar>
+      <v-snackbar
+        v-model="showSuccess"
+        color="success"
+        bottom
+      >
+        Notificação enviada com sucesso.
+      </v-snackbar>
     </base-page>
   </section>
 </template>
@@ -142,6 +149,7 @@ export default {
   data: () => ({
     notificacao: new Notificacao(),
     showError: false,
+    showSuccess: false,
   }),
   methods: {
     updateDataHoraNotificacao(dataHoraNotificacao) {
@@ -176,6 +184,7 @@ export default {
         const requestNotificacao = this.notificacao.toRequestBody();
         NotificacaoService.save(requestNotificacao).then(() => {
           this.$refs.form.reset();
+          this.showSuccess = true;
           this.notificacao = new Notificacao();
         }).catch((err) => {
           this.showError = true;
