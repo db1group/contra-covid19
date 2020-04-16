@@ -79,26 +79,31 @@ const consultarNotificaoesPaginado = async (page, limit) => {
 };
 
 exports.salvar = async (req, res) => {
-  const notificacaoRequest = req.body;
+  try {
+    const notificacaoRequest = req.body;
 
-  const notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);
+    const notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);
 
-  const notificacao = Mappers.Notificacao.mapearParaNotificacao(
-    notificacaoConsolidada,
-  );
+    const notificacao = Mappers.Notificacao.mapearParaNotificacao(
+      notificacaoConsolidada,
+    );
 
-  const notificacaoSalva = await salvarNotificacao(notificacao);
+    const notificacaoSalva = await salvarNotificacao(notificacao);
 
-  const retorno = Mappers.Notificacao.mapearParaResponse(
-    notificacaoSalva,
-    notificacaoSalva.NotificacaoCovid19,
-  );
+    const retorno = Mappers.Notificacao.mapearParaResponse(
+      notificacaoSalva,
+      notificacaoSalva.NotificacaoCovid19,
+    );
 
-  return res.json({
-    data: {
-      ...retorno,
-    },
-  });
+    return res.json({
+      data: {
+        ...retorno,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json({ error: err.message });
+  }
 };
 
 exports.consultarPaginado = async (req, res) => {

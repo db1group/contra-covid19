@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
   const NotificacaoCovid19 = sequelize.define('NotificacaoCovid19', {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
     notificacaoId: DataTypes.INTEGER,
     sintomatico: DataTypes.BOOLEAN,
     dataInicioDosSintomas: DataTypes.DATE,

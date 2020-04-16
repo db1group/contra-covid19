@@ -2,6 +2,11 @@ module.exports = (sequelize, DataTypes) => {
   const Notificacao = sequelize.define(
     'Notificacao',
     {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
       userId: DataTypes.UUID,
       unidadeSaudeId: DataTypes.UUID,
       notificadorId: DataTypes.UUID,
