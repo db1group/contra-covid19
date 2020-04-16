@@ -1,4 +1,4 @@
-const Joi = require("@hapi/joi");
+const Joi = require('@hapi/joi');
 
 const schemas = {
   cadastrar: Joi.object().keys({
@@ -16,13 +16,13 @@ const schemas = {
     ocupacao: Joi.string().max(60),
     endereco: Joi.string().max(150),
     numero: Joi.string().max(18),
-    bairroId: Joi.string().guid({ version: "uuidv4" }),
+    bairroId: Joi.string().guid({ version: 'uuidv4' }),
     telefoneResidencial: Joi.string().max(18),
     telefoneContato: Joi.string().max(18),
     telefoneCelular: Joi.string().max(18),
   }),
   consultarId: Joi.object().keys({
-    id: Joi.string().guid({ version: "uuidv4" }),
+    id: Joi.string().guid({ version: 'uuidv4' }),
   }),
   consultarCPF: Joi.object().keys({
     numeroDocumento: Joi.string()

@@ -1,5 +1,5 @@
-const models = require("../models");
-const uuid = require("uuid/v4")
+const uuid = require('uuid/v4');
+const models = require('../models');
 
 exports.index = async (req, res) => {
   const users = await models.User.findAll();
@@ -13,11 +13,11 @@ exports.create = async (req, res) => {
 };
 
 exports.get = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   const user = await models.User.findOne({
     where: { id },
   });
-  if (user === null) return res.status(404).json({ error: "User not found!" });
+  if (user === null) return res.status(404).json({ error: 'User not found!' });
   return res.json(user);
 };
 
@@ -30,7 +30,7 @@ exports.update = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   await models.User.destroy({
     where: { id },
   });

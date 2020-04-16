@@ -1,34 +1,38 @@
-"use strict";
 module.exports = (sequelize, DataTypes) => {
   const Notificacao = sequelize.define(
-    "Notificacao",
+    'Notificacao',
     {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
       userId: DataTypes.UUID,
       unidadeSaudeId: DataTypes.UUID,
       notificadorId: DataTypes.UUID,
       bairroId: DataTypes.UUID,
       pessoaId: DataTypes.UUID,
     },
-    {}
+    {},
   );
-  Notificacao.associate = function (models) {
+  Notificacao.associate = (models) => {
     Notificacao.belongsTo(models.UnidadeSaude, {
-      foreignKey: "unidadeSaudeId",
+      foreignKey: 'unidadeSaudeId',
     });
     Notificacao.belongsTo(models.User, {
-      foreignKey: "userId",
+      foreignKey: 'userId',
     });
     Notificacao.belongsTo(models.ProfissionalSaude, {
-      foreignKey: "notificadorId",
+      foreignKey: 'notificadorId',
     });
     Notificacao.belongsTo(models.Bairro, {
-      foreignKey: "bairroId",
+      foreignKey: 'bairroId',
     });
     Notificacao.belongsTo(models.Pessoa, {
-      foreignKey: "pessoaId",
+      foreignKey: 'pessoaId',
     });
     Notificacao.hasOne(models.NotificacaoCovid19, {
-      foreignKey: "notificacaoId",
+      foreignKey: 'notificacaoId',
     });
   };
   return Notificacao;

@@ -1,10 +1,14 @@
-'use strict';
 module.exports = (sequelize, DataTypes) => {
   const UnidadeSaude = sequelize.define('UnidadeSaude', {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
     nome: DataTypes.STRING,
-    municipioId: DataTypes.UUID
+    municipioId: DataTypes.UUID,
   });
-  UnidadeSaude.associate = function(models) {
+  UnidadeSaude.associate = (_) => {
     // associations can be defined here
   };
   return UnidadeSaude;

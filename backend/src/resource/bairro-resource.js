@@ -1,6 +1,7 @@
-const models = require("../models");
-const Sequelize = require("sequelize");
-const Op = Sequelize.Op;
+const Sequelize = require('sequelize');
+const models = require('../models');
+
+const { Op } = Sequelize;
 
 exports.consultaPorNome = async (req, res) => {
   const { nome } = req.query;
