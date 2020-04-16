@@ -10,10 +10,15 @@ const validate = (schema, property = "body") => {
       next();
     } else {
       const { details } = error;
-      const message = details.map((i) => i18n(i).ptbr[i.type]).join(",");
-      console.log("error", message);
+      const mensagem = details.map((detalhe) => {
+        const mensagemErro = i18n(detalhe).ptbr[detalhe.type]
+        if (mensagemErro)
+          return mensagemErro;
+        return detalhe.message;
+      }).join(",");
+      console.log("error", mensagem);
       console.log(details);
-      res.status(400).json({ error: message });
+      res.status(400).json({ error: mensagem });
     }
   };
 };
