@@ -17,7 +17,7 @@ exports.salvar = async (req, res) => {
 
   const retorno = Mappers.Notificacao.mapearParaResponse(
     notificacaoSalva,
-    notificacaoSalva.NotificacaoHistorico
+    notificacaoSalva.NotificacaoCovid19
   );
 
   return res.json({
@@ -37,7 +37,7 @@ exports.consultarPaginado = async (req, res) => {
     notificacoesResponse.push(
       Mappers.Notificacao.mapearParaResponse(
         notificacao,
-        notificacao.NotificacaoHistorico
+        notificacao.NotificacaoCovid19
       )
     )
   );
@@ -53,7 +53,7 @@ exports.consultarPorId = async (req, res) => {
 
   const retorno = Mappers.Notificacao.mapearParaResponse(
     notificacaoModel,
-    notificacaoModel.NotificacaoHistorico
+    notificacaoModel.NotificacaoCovid19
   );
 
   return res.json({ data: retorno });
@@ -104,7 +104,7 @@ const cadastrarSuspeito = async (suspeito) => {
 const consultarNotificacaoPorId = async (id) =>
   await models.Notificacao.findOne({
     where: { id },
-    include: [{ model: models.Pessoa }, { model: models.NotificacaoHistorico }],
+    include: [{ model: models.Pessoa }, { model: models.NotificacaoCovid19 }],
   });
 
 const salvarNotificacao = async (notificacao) => {
@@ -112,16 +112,16 @@ const salvarNotificacao = async (notificacao) => {
   const notificacaoComId = {
     id: notificacaoId,
     ...notificacao,
-    notificacaoHistorico: {
+    notificacaoCovid19: {
       id: uuid(),
       notificacaoId,
-      ...notificacao.notificacaoHistorico,
+      ...notificacao.notificacaoCovid19,
     },
   };
 
   await models.Notificacao.create(notificacaoComId);
-  await models.NotificacaoHistorico.create(
-    notificacaoComId.notificacaoHistorico
+  await models.NotificacaoCovid19.create(
+    notificacaoComId.notificacaoCovid19
   );
   return await consultarNotificacaoPorId(notificacaoId);
 };
@@ -129,7 +129,7 @@ const salvarNotificacao = async (notificacao) => {
 const consultarNotificaoesPaginado = async (page, limit) => {
   const offset = (page - 1) * limit;
   return await models.Notificacao.findAndCountAll({
-    include: [{ model: models.Pessoa }, { model: models.NotificacaoHistorico }],
+    include: [{ model: models.Pessoa }, { model: models.NotificacaoCovid19 }],
     order: [["updatedAt", "DESC"]],
     limit: limit,
     offset: offset,

@@ -1,6 +1,6 @@
-const notificacaoParaResponse = (notificacao, notificacaoHistorico, request) => {
+const notificacaoParaResponse = (notificacao, notificacaoCovid19, request) => {
     const { unidadeSaudeId, notificadorId, userId } = notificacao;
-    const { dataHoraNotificacao, dataInicioDosSintomas, sintomatico } = notificacaoHistorico;
+    const { dataHoraNotificacao, dataInicioDosSintomas, sintomatico } = notificacaoCovid19;
     return {
         id: notificacao.id,
         dataHoraNotificacao,
@@ -63,7 +63,7 @@ const extrairSuspeitoDaPessoa = ({
     };
 }
 
-const extrairSintomas = (notificacaoHistorico) => {
+const extrairSintomas = (notificacaoCovid19) => {
     const {
         coriza,
         tosseSeca,
@@ -83,7 +83,7 @@ const extrairSintomas = (notificacaoHistorico) => {
         nausea,
         vomito,
         outrosSintomas,
-    } = notificacaoHistorico;
+    } = notificacaoCovid19;
     return {
         coriza,
         tosseSeca,
@@ -106,7 +106,7 @@ const extrairSintomas = (notificacaoHistorico) => {
     };
 }
 
-const extrairComorbidades = (notificacaoHistorico) => {
+const extrairComorbidades = (notificacaoCovid19) => {
     const {
         puerperaAte45DiasDoParto,
         sindromeDeDown,
@@ -121,7 +121,7 @@ const extrairComorbidades = (notificacaoHistorico) => {
         outraPneumopatiaCronica,
         obesidade,
         outrosComorbidades,
-    } = notificacaoHistorico;
+    } = notificacaoCovid19;
     return {
         puerperaAte45DiasDoParto,
         sindromeDeDown,
@@ -139,7 +139,7 @@ const extrairComorbidades = (notificacaoHistorico) => {
     };
 }
 
-const extrairInformacaoComplementar = (notificacaoHistorico) => {
+const extrairInformacaoComplementar = (notificacaoCovid19) => {
     const {
         medicacaoAntitermica,
         nomeMedicacaoAntitermica,
@@ -153,7 +153,7 @@ const extrairInformacaoComplementar = (notificacaoHistorico) => {
         dataDaViagem,
         localDaViagem,
         recebeuVacinaDaGripeNosUltimosDozeMeses,
-    } = notificacaoHistorico;
+    } = notificacaoCovid19;
     return {
         medicacaoAntitermica,
         nomeMedicacaoAntitermica,
@@ -170,12 +170,12 @@ const extrairInformacaoComplementar = (notificacaoHistorico) => {
     };
 }
 
-const extrairVinculoEpidemiologico = (notificacaoHistorico) => {
+const extrairVinculoEpidemiologico = (notificacaoCovid19) => {
     const {
         situacao1,
         situacao2,
         nomeTeveContato,
-    } = notificacaoHistorico;
+    } = notificacaoCovid19;
     return {
         situacao1,
         situacao2,
@@ -183,7 +183,7 @@ const extrairVinculoEpidemiologico = (notificacaoHistorico) => {
     };
 }
 
-const extrairConclusaoAtendimento = (notificacaoHistorico) => {
+const extrairConclusaoAtendimento = (notificacaoCovid19) => {
     const {
         isolamentoDomiciliar,
         leitoComum,
@@ -192,7 +192,7 @@ const extrairConclusaoAtendimento = (notificacaoHistorico) => {
         coletaMaterialParaDiagnostico,
         laboratorioOficial,
         laboratorioRedePrivada,
-    } = notificacaoHistorico;
+    } = notificacaoCovid19;
     return {
         isolamentoDomiciliar,
         leitoComum,
