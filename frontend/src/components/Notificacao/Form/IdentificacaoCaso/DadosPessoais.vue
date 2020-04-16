@@ -75,6 +75,37 @@
       </v-col>
     </v-row>
     <v-row dense>
+      <v-col cols="12">
+        <v-radio-group
+          class="mt-0"
+        >
+          <template v-slot:label>
+            <label class="primary--text body-1 font-weight-bold">Gestante</label>
+          </template>
+          <v-radio label="Sim" value="1"/>
+          <v-radio label="Não" value="2"/>
+          <v-radio label="Não se aplica" value="3"/>
+        </v-radio-group>
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="12">
+        <v-radio-group
+          class="mt-0"
+        >
+          <template v-slot:label>
+            <label class="primary--text body-1 font-weight-bold">Raça/Cor</label>
+          </template>
+          <v-radio label="Branca" value="1"/>
+          <v-radio label="Preta" value="2"/>
+          <v-radio label="Amarela" value="3"/>
+          <v-radio label="Parda" value="4"/>
+          <v-radio label="Indígena" value="5"/>
+          <v-radio label="Ignorado" value="6"/>
+        </v-radio-group>
+      </v-col>
+    </v-row>
+    <v-row dense>
       <v-col
         cols="12"
         sm="8"
