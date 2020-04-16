@@ -1,7 +1,7 @@
 <template>
   <div class="px-2 mt-3">
     <h4 class="primary--text title">
-      5. VÍNCULO EPIDEMIOLÓGICO
+      2. VÍNCULO EPIDEMIOLÓGICO
     </h4>
     <v-container
       fluid

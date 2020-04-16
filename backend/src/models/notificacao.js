@@ -2,11 +2,6 @@ module.exports = (sequelize, DataTypes) => {
   const Notificacao = sequelize.define(
     'Notificacao',
     {
-      id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-      },
       userId: DataTypes.UUID,
       unidadeSaudeId: DataTypes.UUID,
       notificadorId: DataTypes.UUID,
@@ -31,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     Notificacao.belongsTo(models.Pessoa, {
       foreignKey: 'pessoaId',
     });
-    Notificacao.hasOne(models.NotificacaoHistorico, {
+    Notificacao.hasOne(models.NotificacaoCovid19, {
       foreignKey: 'notificacaoId',
     });
   };

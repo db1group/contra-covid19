@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text title">
-      3. COMORBIDADES
+      6. COMORBIDADES
     </h4>
     <v-container
       fluid

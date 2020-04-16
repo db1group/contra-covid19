@@ -36,7 +36,7 @@ const mapearVinculoEpidemiologico = (vinculoEpidemiologico) => {
   };
 };
 
-const requestParaModeloNotificacaoHistorico = (objetoRequest) => {
+const requestParaModeloNotificacaoCovid19 = (objetoRequest) => {
   const {
     sintomas, comorbidades, informacaoComplementar,
     vinculoEpidemiologico, conclusaoAtendimento,
@@ -59,4 +59,4 @@ const requestParaModeloNotificacaoHistorico = (objetoRequest) => {
   };
 };
 
-module.exports = { requestParaModeloNotificacao, requestParaModeloNotificacaoHistorico };
+module.exports = { requestParaModeloNotificacao, requestParaModeloNotificacaoCovid19 };
