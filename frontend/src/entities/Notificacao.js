@@ -14,6 +14,8 @@ export default class Notificacao {
     this.sintomatico = data.sintomatico || false;
     this.dataInicioDosSintomas = data.dataInicioDosSintomas || '';
     this.userId = data.userId || '2e439917-3f2a-45b2-9143-aac3bea760d6';
+    this.nomeNotificador = data.nomeNotificador || '';
+    this.profissaoId = data.profissaoId || null;
     this.observacoes = data.observacoes || '';
     this.suspeito = new Pessoa(data.suspeito || {});
     this.sintomas = new Sintomas(data.sintomas || {});
