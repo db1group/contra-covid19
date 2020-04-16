@@ -25,12 +25,26 @@ const buscarPessoaDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findAl
 });
 
 const consolidarSuspeito = async (suspeito) => {
-  const {
+  var {
     pessoaId, bairroId, MunicipioId, nome, nomeDaMae,
+    sexo, gestante, corRaca
   } = suspeito;
-  const suspeitoPrototipo = { bairroId, MunicipioId };
+  var suspeitoPrototipo = { bairroId, MunicipioId };
 
   if (pessoaId) return { ...suspeitoPrototipo, pessoaId };
+
+  if (sexo == "M") {
+    gestante = "NAO_APLICADO";
+  } else {
+    if (gestante) {
+      gestante = "SIM";
+    } else {
+      gestante = "NAO";
+    }
+  }
+
+  suspeito.gestante = gestante;
+  suspeitoPrototipo = { ...suspeitoPrototipo, gestante }
 
   const pessoasLocalizadas = await buscarPessoaDadosBasicos(nome, nomeDaMae);
   if (pessoasLocalizadas.length === 1) {
