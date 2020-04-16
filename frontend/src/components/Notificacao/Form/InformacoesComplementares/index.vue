@@ -105,6 +105,7 @@
             append-icon="mdi-calendar-blank"
             v-mask="'##/##/####'"
             :rules="rules.dataDaViagem"
+            validate-on-blur
             :disabled="!informacoesComplementares.historicoDeViagem"
             @input="updateDataDaViagem"
           />
@@ -137,7 +138,7 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
-import { required } from '@/validations/CommonValidations';
+import { required, dateFormat } from '@/validations/CommonValidations';
 import InformacoesComplementares from '@/entities/InformacoesComplementares';
 
 export default {
@@ -197,9 +198,16 @@ export default {
       }
       return required(value, 'O campo é obrigatório quando há histórico de viagem.');
     },
+    formatDateIfHistoricoDeViagem(value) {
+      if (!this.informacoesComplementares.historicoDeViagem) {
+        return true;
+      }
+      return dateFormat(value);
+    },
   },
   created() {
     this.rules.dataDaViagem.push(this.requiredIfHistoricoDeViagem);
+    this.rules.dataDaViagem.push(this.formatDateIfHistoricoDeViagem);
     this.rules.localDaViagem.push(this.requiredIfHistoricoDeViagem);
   },
 };

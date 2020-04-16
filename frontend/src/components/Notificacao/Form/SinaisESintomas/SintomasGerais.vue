@@ -23,6 +23,7 @@
           v-mask="'##/##/####'"
           :disabled="!sintomatico"
           :rules="rules.dataInicioDosSintomas"
+          validate-on-blur
           @input="updateDataInicioDosSintomas"
         />
       </v-col>
@@ -31,7 +32,7 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
-import { required } from '@/validations/CommonValidations';
+import { required, dateFormat } from '@/validations/CommonValidations';
 
 export default {
   directives: { mask },
@@ -63,9 +64,16 @@ export default {
       }
       return required(value, 'O campo é obrigatório para casos sintomáticos');
     },
+    dateFormatIfSintomatico(value) {
+      if (!this.sintomatico) {
+        return true;
+      }
+      return dateFormat(value);
+    },
   },
   created() {
     this.rules.dataInicioDosSintomas.push(this.requiredIfSintomatico);
+    this.rules.dataInicioDosSintomas.push(this.dateFormatIfSintomatico);
   },
 };
 </script>
