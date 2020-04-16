@@ -4,8 +4,9 @@
       <v-col cols="5" sm="4">
         <v-text-field
           :value="dataHoraNotificacao"
-          label="Data e hora da notificação"
+          label="Data e hora da notificação *"
           v-mask="'##/##/#### ##:##'"
+          :rules="rules.dataHoraNotificacao"
           @input="updateDataHoraNotificacao"
         />
       </v-col>
@@ -17,7 +18,7 @@
       >
         <v-select
           :value="suspeito.tipoDocumento"
-          :rules="rulesTipoDocumento"
+          :rules="rules.tipoDocumento"
           label="Tipo de documento *"
           :items="tiposDocumento"
           item-text="value"
@@ -32,7 +33,7 @@
       >
         <v-text-field
           :value="suspeito.numeroDocumento"
-          :rules="rulesNumeroDocumento"
+          :rules="rules.numeroDocumento"
           label="Número do documento *"
           @input="updateNumeroDocumento"
         />
@@ -42,7 +43,7 @@
       <v-col cols="12">
         <v-text-field
           :value="suspeito.nome"
-          :rules="rulesNome"
+          :rules="rules.nome"
           label="Nome completo *"
           @input="updateNome"
         />
@@ -80,7 +81,7 @@
       >
         <v-text-field
           :value="suspeito.dataDeNascimento"
-          :rules="rulesDataDeNascimento"
+          :rules="rules.dataDeNascimento"
           label="Data de nascimento *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
@@ -116,10 +117,13 @@ export default {
   },
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
-    rulesTipoDocumento: [required],
-    rulesNumeroDocumento: [required],
-    rulesNome: [required],
-    rulesDataDeNascimento: [required],
+    rules: {
+      dataHoraNotificacao: [required],
+      tipoDocumento: [required],
+      numeroDocumento: [required],
+      nome: [required],
+      dataDeNascimento: [required],
+    },
   }),
   methods: {
     updateDataHoraNotificacao(dataHoraNotificacao) {

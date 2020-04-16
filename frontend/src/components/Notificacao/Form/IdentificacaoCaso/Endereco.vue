@@ -18,7 +18,7 @@
       >
         <v-text-field
           :value="suspeito.endereco"
-          :rules="rulesEndereco"
+          :rules="rules.endereco"
           label="Endereço *"
           @input="updateEndereco"
         />
@@ -31,7 +31,7 @@
       >
         <v-text-field
           :value="suspeito.numero"
-          :rules="rulesNumero"
+          :rules="rules.numero"
           label="Número *"
           @input="updateNumero"
         />
@@ -42,7 +42,7 @@
       >
         <v-autocomplete
           :value="suspeito.bairroId"
-          :rules="rulesBairroId"
+          :rules="rules.bairroId"
           label="Bairro *"
           :items="bairros.items"
           item-text="nome"
@@ -59,7 +59,6 @@
           value="PR"
           label="UF *"
           :items="['PR']"
-          :rules="rulesUF"
           disabled
         />
       </v-col>
@@ -67,7 +66,6 @@
         <v-select
           label="Município *"
           :items="municipios"
-          :rules="rulesMunicipioId"
           disabled
         />
       </v-col>
@@ -96,11 +94,11 @@ export default {
       items: [],
       loading: true,
     },
-    rulesEndereco: [required],
-    rulesNumero: [required],
-    rulesBairroId: [required],
-    rulesUF: [required],
-    rulesMunicipioId: [required],
+    rules: {
+      endereco: [required],
+      numero: [required],
+      bairroId: [required],
+    },
   }),
   methods: {
     updateCep(cep) {

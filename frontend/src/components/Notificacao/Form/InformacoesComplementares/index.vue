@@ -104,6 +104,7 @@
             label="Data da viagem *"
             append-icon="mdi-calendar-blank"
             v-mask="'##/##/####'"
+            :rules="rules.dataDaViagem"
             :disabled="!informacoesComplementares.historicoDeViagem"
             @input="updateDataDaViagem"
           />
@@ -112,6 +113,7 @@
             class="pl-8"
             label="Local da viagem *"
             append-icon="mdi-map-marker"
+            :rules="rules.localDaViagem"
             :disabled="!informacoesComplementares.historicoDeViagem"
             @input="updateLocalDaViagem"
           />
@@ -135,6 +137,7 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
+import { required } from '@/validations/CommonValidations';
 import InformacoesComplementares from '@/entities/InformacoesComplementares';
 
 export default {
@@ -145,6 +148,12 @@ export default {
       required: true,
     },
   },
+  data: () => ({
+    rules: {
+      dataDaViagem: [],
+      localDaViagem: [],
+    },
+  }),
   methods: {
     updateMedicacaoAntitermica(medicacaoAntitermica) {
       this.$emit('update:medicacaoAntitermica', medicacaoAntitermica);
@@ -182,6 +191,16 @@ export default {
     updateLocalDaViagem(localDaViagem) {
       this.$emit('update:localDaViagem', localDaViagem);
     },
+    requiredIfHistoricoDeViagem(value) {
+      if (!this.informacoesComplementares.historicoDeViagem) {
+        return true;
+      }
+      return required(value, 'O campo é obrigatório quando há histórico de viagem.');
+    },
+  },
+  created() {
+    this.rules.dataDaViagem.push(this.requiredIfHistoricoDeViagem);
+    this.rules.localDaViagem.push(this.requiredIfHistoricoDeViagem);
   },
 };
 </script>

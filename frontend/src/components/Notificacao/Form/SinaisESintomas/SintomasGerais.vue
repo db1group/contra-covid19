@@ -22,6 +22,7 @@
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
           :disabled="!sintomatico"
+          :rules="rules.dataInicioDosSintomas"
           @input="updateDataInicioDosSintomas"
         />
       </v-col>
@@ -30,6 +31,7 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
+import { required } from '@/validations/CommonValidations';
 
 export default {
   directives: { mask },
@@ -43,6 +45,11 @@ export default {
       required: true,
     },
   },
+  data: () => ({
+    rules: {
+      dataInicioDosSintomas: [],
+    },
+  }),
   methods: {
     updateSintomatico(sintomatico) {
       this.$emit('update:sintomatico', sintomatico);
@@ -50,6 +57,15 @@ export default {
     updateDataInicioDosSintomas(dataInicioDosSintomas) {
       this.$emit('update:dataInicioDosSintomas', dataInicioDosSintomas);
     },
+    requiredIfSintomatico(value) {
+      if (!this.sintomatico) {
+        return true;
+      }
+      return required(value, 'O campo é obrigatório para casos sintomáticos');
+    },
+  },
+  created() {
+    this.rules.dataInicioDosSintomas.push(this.requiredIfSintomatico);
   },
 };
 </script>
