@@ -21,6 +21,11 @@ describe('Testes para validador de campo obrigatório', () => {
     expect(result).toBe('O campo é obrigatório.');
   });
 
+  test('Campo obrigatório com espaços em branco não pode ser válido', () => {
+    const result = required('   ');
+    expect(result).toBe('O campo é obrigatório.');
+  });
+
   test('Campo obrigatório informado é válido', () => {
     const result = required('a');
     expect(result).toBeTruthy();
