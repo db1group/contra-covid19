@@ -42,8 +42,8 @@ module.exports = (sequelize, DataTypes) => {
     telefoneResidencial: DataTypes.STRING(12),
     telefoneContato: DataTypes.STRING(12),
     telefoneCelular: DataTypes.STRING(12),
-    gestante: DataTypes.ENUM("SIM", "NAO", "NAO_APLICADO"),
-    racaCor: DataTypes.ENUM("BRANCA", "PRETA", "AMARELA", "PARDA", "INDIGENA", "IGNORADO")
+    gestante: DataTypes.ENUM('SIM', 'NAO', 'NAO_APLICADO'),
+    racaCor: DataTypes.ENUM('BRANCA', 'PRETA', 'AMARELA', 'PARDA', 'INDIGENA', 'IGNORADO'),
   });
   Pessoa.associate = (models) => {
     Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });

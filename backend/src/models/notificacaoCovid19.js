@@ -88,7 +88,7 @@ module.exports = (sequelize, DataTypes) => {
     raioXOutro: DataTypes.TEXT,
     tomografiaNormal: DataTypes.BOOLEAN,
     tomografiaVitro: DataTypes.BOOLEAN,
-    tomografiaDerrame:DataTypes.BOOLEAN,
+    tomografiaDerrame: DataTypes.BOOLEAN,
     tomografiaLinfonodo: DataTypes.BOOLEAN,
     tomografiaOutro: DataTypes.TEXT,
     observacoes: DataTypes.TEXT,
@@ -96,7 +96,7 @@ module.exports = (sequelize, DataTypes) => {
     localDoContatoComSuspeito: DataTypes.ENUM('DOMICILIO', 'UNIDADE_SAUDE', 'LOCAL_TRABALHO'),
     localDoContatoComSuspeitoOutro: DataTypes.TEXT,
     nomeSuspeito: DataTypes.TEXT,
-    situacaoNoMomentoDaNotificacao: DataTypes.ENUM('ALTA_ISOLAMENTO_DOMICILIAR', 'INTERNAMENTO_LEITO_COMUM', 'INTERNAMENTO_LEITO_UTI', 'EVOLUCAO_OBITO')
+    situacaoNoMomentoDaNotificacao: DataTypes.ENUM('ALTA_ISOLAMENTO_DOMICILIAR', 'INTERNAMENTO_LEITO_COMUM', 'INTERNAMENTO_LEITO_UTI', 'EVOLUCAO_OBITO'),
   }, {});
   NotificacaoCovid19.associate = (models) => {
     NotificacaoCovid19.belongsTo(models.Notificacao, { foreignKey: 'notificacaoId' });
