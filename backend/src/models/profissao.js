@@ -1,13 +1,13 @@
-"use strict";
+
 module.exports = (sequelize, DataTypes) => {
   const Profissao = sequelize.define(
-    "Profissao",
+    'Profissao',
     {
       nome: DataTypes.STRING(60),
       allowNull: false,
     },
-    {}
+    {},
   );
-  Profissao.associate = function (models) {};
+  Profissao.associate = (_) => {};
   return Profissao;
 };

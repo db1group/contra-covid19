@@ -24,37 +24,39 @@ const buscarPessoaDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findAl
   where: { nome, nomeDaMae },
 });
 
+
+const obterGestante = (sexo, gestante) => {
+  if (sexo === 'M') {
+    return 'NAO_APLICADO';
+  }
+  if (gestante) {
+    return 'SIM';
+  }
+  return 'NAO';
+};
+
 const consolidarSuspeito = async (suspeito) => {
-  let {
+  const {
     pessoaId, bairroId, MunicipioId, nome, nomeDaMae,
-    sexo, gestante, corRaca
+    sexo, gestante,
   } = suspeito;
 
   let suspeitoPrototipo = { bairroId, MunicipioId };
 
   if (pessoaId) return { ...suspeitoPrototipo, pessoaId };
 
-  suspeito.gestante = obterGestante(sexo, gestante);
-  suspeitoPrototipo = { ...suspeitoPrototipo, gestante }
+  const suspeitoAlterado = { ...suspeito };
+  suspeitoAlterado.gestante = obterGestante(sexo, gestante);
+  suspeitoPrototipo = { ...suspeitoPrototipo, gestante };
 
   const pessoasLocalizadas = await buscarPessoaDadosBasicos(nome, nomeDaMae);
   if (pessoasLocalizadas.length === 1) {
     return { ...suspeitoPrototipo, pessoaId: pessoasLocalizadas[0].id };
   }
 
-  const novaPessoaCadastrada = await cadastrarSuspeito(suspeito);
+  const novaPessoaCadastrada = await cadastrarSuspeito(suspeitoAlterado);
   return Mappers.Pessoa.mapearParaSuspeito(novaPessoaCadastrada);
 };
-
-const obterGestante = (sexo, gestante) => {
-  if (sexo == "M") {
-    return "NAO_APLICADO";
-  }
-  if (gestante) {
-      return "SIM";
-  }
-  return "NAO";
-}
 
 /*
   Refatorar para um serviço de Notificação ou outro local apropriado
