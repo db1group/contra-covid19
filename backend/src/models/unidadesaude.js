@@ -5,8 +5,12 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    nome: DataTypes.STRING,
+    nome: DataTypes.STRING(60),
     municipioId: DataTypes.UUID,
+    cnes: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+    },
   });
   UnidadeSaude.associate = (_) => {
     // associations can be defined here
