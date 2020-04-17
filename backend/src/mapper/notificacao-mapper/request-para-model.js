@@ -9,6 +9,7 @@ const requestParaModeloNotificacao = (objetoRequest) => {
     notificadorId,
     pessoaId: suspeito.pessoaId,
     bairroId: suspeito.bairroId,
+    profissaoId: suspeito.profissaoId,
   };
 };
 
