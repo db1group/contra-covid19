@@ -107,7 +107,6 @@ export default {
       this.selected = [];
       NotificacaoService.deleteLote(ids).then(() => {
         const left = this.notificacoes.length - ids.length;
-        console.log(left);
         const page = left <= 0 ? 1 : this.options.page;
         this.options = { ...this.options, page };
       });
