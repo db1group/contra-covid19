@@ -11,5 +11,5 @@ export const dateFormat = (value) => !value
   || (DATE_FORMAT.test(value) && DateService.isDateValid(value, 'DD/MM/YYYY'))
   || 'O formato precisa ser dd/mm/aaaa';
 export const dateHourMinuteFormat = (value) => !value
-  || DATE_HOUR_MINUTE_FORMAT.test(value)
+  || (DATE_HOUR_MINUTE_FORMAT.test(value) && DateService.isDateValid(value, 'DD/MM/YYYY HH:mm'))
   || 'O formato precisa ser dd/mm/aaaa hh:mm';
