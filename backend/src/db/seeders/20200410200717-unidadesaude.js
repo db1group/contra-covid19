@@ -6,6 +6,7 @@ module.exports = {
         id: 'ac3227a1-8a09-4b5f-93cd-d6ca43b637a3',
         nome: 'UPA jardim das flores',
         municipioId: 'ac3227a1-8a09-4b5f-93cd-d6ca43b637a2',
+        cnes: '12345678901234567890',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
