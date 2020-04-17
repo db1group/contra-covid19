@@ -1,6 +1,5 @@
 <template>
   <div class="px-2">
-    <pre>{{sintomas}}</pre>
     <h4 class="primary--text title">
       4. SINAIS E SINTOMAS
     </h4>
