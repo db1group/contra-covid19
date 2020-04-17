@@ -11,7 +11,6 @@ export default {
     return moment(stringDate, format);
   },
   isDateValid(stringDate, format) {
-    debugger;
     return moment(stringDate, format).isValid();
   },
 };
