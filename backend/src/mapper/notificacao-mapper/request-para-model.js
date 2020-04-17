@@ -1,6 +1,7 @@
 const requestParaModeloNotificacao = (objetoRequest) => {
   const {
-    unidadeSaudeId, notificadorId, userId, suspeito,
+    unidadeSaudeId, notificadorId, userId, profissaoId, suspeito,
+    nomeNotificador, status,
   } = objetoRequest;
 
   return {
@@ -9,6 +10,9 @@ const requestParaModeloNotificacao = (objetoRequest) => {
     notificadorId,
     pessoaId: suspeito.pessoaId,
     bairroId: suspeito.bairroId,
+    profissaoId,
+    nomeNotificador,
+    status,
   };
 };
 

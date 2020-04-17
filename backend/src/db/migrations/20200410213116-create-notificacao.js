@@ -13,6 +13,7 @@ module.exports = {
         model: 'User',
         key: 'id',
       },
+      allowNull: false,
     },
     unidadeSaudeId: {
       type: Sequelize.UUID,
@@ -20,6 +21,7 @@ module.exports = {
         model: 'UnidadeSaude',
         key: 'id',
       },
+      allowNull: false,
     },
     notificadorId: {
       type: Sequelize.UUID,
@@ -27,6 +29,7 @@ module.exports = {
         model: 'ProfissionalSaude',
         key: 'id',
       },
+      allowNull: false,
     },
     bairroId: {
       type: Sequelize.UUID,
@@ -34,6 +37,7 @@ module.exports = {
         model: 'Bairro',
         key: 'id',
       },
+      allowNull: false,
     },
     pessoaId: {
       type: Sequelize.UUID,
@@ -41,6 +45,7 @@ module.exports = {
         model: 'Pessoa',
         key: 'id',
       },
+      allowNull: false,
     },
     createdAt: {
       allowNull: false,

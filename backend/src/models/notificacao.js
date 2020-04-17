@@ -7,11 +7,30 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      userId: DataTypes.UUID,
-      unidadeSaudeId: DataTypes.UUID,
-      notificadorId: DataTypes.UUID,
-      bairroId: DataTypes.UUID,
-      pessoaId: DataTypes.UUID,
+      userId: {
+        type: DataTypes.UUID,
+      },
+      unidadeSaudeId: {
+        type: DataTypes.UUID,
+      },
+      notificadorId: {
+        type: DataTypes.UUID,
+      },
+      bairroId: {
+        type: DataTypes.UUID,
+      },
+      pessoaId: {
+        type: DataTypes.UUID,
+      },
+      profissaoId: {
+        type: DataTypes.UUID,
+      },
+      nomeNotificador: {
+        type: DataTypes.STRING,
+      },
+      status: {
+        type: DataTypes.ENUM('ABERTA', 'ENCERRADA', 'EXCLUIDA'),
+      },
     },
     {},
   );
@@ -33,6 +52,9 @@ module.exports = (sequelize, DataTypes) => {
     });
     Notificacao.hasOne(models.NotificacaoCovid19, {
       foreignKey: 'notificacaoId',
+    });
+    Notificacao.belongsTo(models.Profissao, {
+      foreignKey: 'profissaoId',
     });
   };
   return Notificacao;

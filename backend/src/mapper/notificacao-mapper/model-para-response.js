@@ -13,10 +13,13 @@ const notificacaoParaResponse = (notificacao, notificacaoCovid19, request) => {
   };
 };
 
-const extrairSuspeitoDaNotificacao = ({ pessoaId, bairroId, municipioId }) => ({
+const extrairSuspeitoDaNotificacao = ({
+  pessoaId, bairroId, municipioId, profissaoId,
+}) => ({
   pessoaId,
   bairroId,
   municipioId,
+  profissaoId,
 });
 
 const extrairSuspeitoDaPessoa = ({
