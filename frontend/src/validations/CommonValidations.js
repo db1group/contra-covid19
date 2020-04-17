@@ -4,7 +4,8 @@ const DATE_FORMAT = /^[0-3]{1}[0-9]{1}\/[0-1]{1}[0-9]{1}\/[0-9]{4}$/;
 const DATE_HOUR_MINUTE_FORMAT = /^[0-3]{1}[0-9]{1}\/[0-1]{1}[0-9]{1}\/[0-9]{4} [0-2]{1}[0-9]{1}:[0-5]{1}[0-9]{1}$/;
 
 export const required = (value, message = 'O campo é obrigatório.') => (
-  value && typeof value === 'string' && value.trim().length > 0
+  (value && typeof value === 'string' && value.trim().length > 0)
+  || (value && typeof value === 'number' && value > 0)
 ) || message;
 export const minLength = (length) => (value) => !value
   || value.length >= length

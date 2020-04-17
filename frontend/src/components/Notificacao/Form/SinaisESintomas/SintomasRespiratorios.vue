@@ -2,26 +2,11 @@
   <div class="mt-2">
     <v-row no-gutters>
       <v-col cols="12">
-        <v-checkbox
-          :input-value="sintomatico"
-          label="Sintomático"
-          hide-details
-          @change="updateSintomatico"
-        />
+        <label class="primary--text body-1 font-weight-bold">
+          Sintomas respiratórios
+        </label>
       </v-col>
-      <v-col class="pl-8" cols="12" sm="8" md="7">
-        <v-text-field
-          :value="dataInicioDosSintomas"
-          label="Data de início dos sintomas *"
-          append-icon="mdi-calendar-blank"
-          v-mask="'##/##/####'"
-          :disabled="!sintomatico"
-          :rules="rules.dataInicioDosSintomas"
-          validate-on-blur
-          @input="updateDataInicioDosSintomas"
-        />
-      </v-col>
-      <v-col cols="12">
+      <v-col cols="6">
         <v-checkbox
           :input-value="sintomas.cianoseCentral"
           label="CIANOSE CENTRAL"
@@ -51,13 +36,6 @@
           @change="updateDesconfortoRespiratorio"
         />
         <v-checkbox
-          :input-value="sintomas.diminuicaoDePulsoPeriferico"
-          label="DIMINUIÇÃO DE PULSO PERIFÉRICO"
-          hide-details
-          :disabled="!sintomatico"
-          @change="updateDiminuicaoDePulsoPeriferico"
-        />
-        <v-checkbox
           :input-value="sintomas.dispneia"
           label="DISPNEIA com batimento das asas nasais E/OU retração intercostal E/OU fúrcula external"
           hide-details
@@ -71,13 +49,8 @@
           :disabled="!sintomatico"
           @change="updateDorDeGarganta"
         />
-        <v-checkbox
-          :input-value="sintomas.mialgia"
-          label="MIALGIA"
-          hide-details
-          :disabled="!sintomatico"
-          @change="updateMialgia"
-        />
+      </v-col>
+      <v-col cols="6">
         <v-checkbox
           :input-value="sintomas.saturacaoDeOximetriaDePulso"
           label="SATURAÇÃO DE OXIMETRIA DE PULSO < 95% EM AR AMBIENTE"
@@ -126,7 +99,6 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
-import { required, dateFormat } from '@/validations/CommonValidations';
 import Sintomas from '@/entities/Sintomas';
 
 export default {
@@ -140,24 +112,11 @@ export default {
       type: Boolean,
       required: true,
     },
-    dataInicioDosSintomas: {
-      type: String,
-      required: true,
-    },
   },
   data: () => ({
     existemOutrosSintomas: false,
-    rules: {
-      dataInicioDosSintomas: [],
-    },
   }),
   methods: {
-    updateSintomatico(sintomatico) {
-      this.$emit('update:sintomatico', sintomatico);
-    },
-    updateDataInicioDosSintomas(dataInicioDosSintomas) {
-      this.$emit('update:dataInicioDosSintomas', dataInicioDosSintomas);
-    },
     updateCianoseCentral(cianoseCentral) {
       this.$emit('update:cianoseCentral', cianoseCentral);
     },
@@ -170,17 +129,11 @@ export default {
     updateDesconfortoRespiratorio(desconfortoRespiratorio) {
       this.$emit('update:desconfortoRespiratorio', desconfortoRespiratorio);
     },
-    updateDiminuicaoDePulsoPeriferico(diminuicaoDePulsoPeriferico) {
-      this.$emit('update:diminuicaoDePulsoPeriferico', diminuicaoDePulsoPeriferico);
-    },
     updateDispneia(dispneia) {
       this.$emit('update:dispneia', dispneia);
     },
     updateDorDeGarganta(dorDeGarganta) {
       this.$emit('update:dorDeGarganta', dorDeGarganta);
-    },
-    updateMialgia(mialgia) {
-      this.$emit('update:mialgia', mialgia);
     },
     updateSaturacaoDeOximetriaDePulso(saturacaoDeOximetriaDePulso) {
       this.$emit('update:saturacaoDeOximetriaDePulso', saturacaoDeOximetriaDePulso);
@@ -200,22 +153,6 @@ export default {
     updateTiragemIntercostal(tiragemIntercostal) {
       this.$emit('update:tiragemIntercostal', tiragemIntercostal);
     },
-    requiredIfSintomatico(value) {
-      if (!this.sintomatico) {
-        return true;
-      }
-      return required(value, 'O campo é obrigatório para casos sintomáticos');
-    },
-    dateFormatIfSintomatico(value) {
-      if (!this.sintomatico) {
-        return true;
-      }
-      return dateFormat(value);
-    },
-  },
-  created() {
-    this.rules.dataInicioDosSintomas.push(this.requiredIfSintomatico);
-    this.rules.dataInicioDosSintomas.push(this.dateFormatIfSintomatico);
   },
 };
 </script>

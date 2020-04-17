@@ -72,6 +72,23 @@
           @update:manchasVermelhas="updateSintoma('manchasVermelhas', $event)"
           @update:outrosSintomas="updateSintoma('outros', $event)"
         />
+        <exames-imagem
+          :realizouExamesImagem="notificacao.realizouExamesImagem"
+          :examesImagem="notificacao.examesImagem"
+          @update:realizouExamesImagem="updateRealizouExamesImagem"
+          @update:raioNormal="updateExameImagem('raioNormal', $event)"
+          @update:raioInfiltradoIntersticial="updateExameImagem('raioInfiltradoIntersticial', $event)"
+          @update:raioConsolidacao="updateExameImagem('raioConsolidacao', $event)"
+          @update:raioMisto="updateExameImagem('raioMisto', $event)"
+          @update:raioOutro="updateExameImagem('raioOutro', $event)"
+          @update:tomografiaNormal="updateExameImagem('tomografiaNormal', $event)"
+          @update:tomografiaVidroFoscoPredominioPerifericoBasal=
+            "updateExameImagem('tomografiaVidroFoscoPredominioPerifericoBasal', $event)"
+          @update:tomografiaAusenciaDerramePleural="updateExameImagem('tomografiaAusenciaDerramePleural', $event)"
+          @update:tomografiaAusenciaLinfonodoMediastenal=
+            "updateExameImagem('tomografiaAusenciaLinfonodoMediastenal', $event)"
+          @update:tomografiaOutro="updateExameImagem('tomografiaOutro', $event)"
+        />
         <comorbidades
           :comorbidades="notificacao.comorbidades"
           @update:puerperaAte45DiasDoParto="updateComorbidade('puerperaAte45DiasDoParto', $event)"
@@ -144,6 +161,7 @@ import IdentificacaoNotificante from '@/components/Notificacao/Form/Identificaca
 import VinculoEpidemiologico from '@/components/Notificacao/Form/VinculoEpidemiologico/index.vue';
 import IdentificacaoCaso from '@/components/Notificacao/Form/IdentificacaoCaso/index.vue';
 import SinaisESintomas from '@/components/Notificacao/Form/SinaisESintomas/index.vue';
+import ExamesImagem from '@/components/Notificacao/Form/ExamesImagem/index.vue';
 import Comorbidades from '@/components/Notificacao/Form/Comorbidades/index.vue';
 import InformacoesComplementares from '@/components/Notificacao/Form/InformacoesComplementares/index.vue';
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
@@ -159,6 +177,7 @@ export default {
     VinculoEpidemiologico,
     IdentificacaoCaso,
     SinaisESintomas,
+    ExamesImagem,
     Comorbidades,
     InformacoesComplementares,
     ConclusaoAtendimento,
@@ -190,6 +209,9 @@ export default {
     updateSintomatico(sintomatico) {
       this.notificacao.sintomatico = sintomatico;
     },
+    updateRealizouExamesImagem(realizouExamesImagem) {
+      this.notificacao.realizouExamesImagem = realizouExamesImagem;
+    },
     updateDataInicioDosSintomas(dataInicioDosSintomas) {
       this.notificacao.dataInicioDosSintomas = dataInicioDosSintomas;
     },
@@ -198,6 +220,9 @@ export default {
     },
     updateSintoma(campo, valor) {
       this.notificacao.sintomas[campo] = valor;
+    },
+    updateExameImagem(campo, valor) {
+      this.notificacao.examesImagem[campo] = valor;
     },
     updateComorbidade(campo, valor) {
       this.notificacao.comorbidades[campo] = valor;

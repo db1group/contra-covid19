@@ -1,10 +1,12 @@
 <template>
   <div>
     <v-row>
-      <v-col cols="12">
+      <v-col cols="12" class="mt-5 pb-0">
         <label class="primary--text body-1 font-weight-bold">
           Outros sinais e sintomas apresentados durante o período
         </label>
+      </v-col>
+      <v-col cols="6">
         <v-checkbox
           :input-value="sintomas.adiamiaOuFraqueza"
           label="ADIAMIA / FRAQUEZA"
@@ -55,6 +57,15 @@
           @change="updateDificuldadeDeglutir"
         />
         <v-checkbox
+          :input-value="sintomas.diminuicaoDePulsoPeriferico"
+          label="DIMINUIÇÃO DE PULSO PERIFÉRICO"
+          hide-details
+          :disabled="!sintomatico"
+          @change="updateDiminuicaoDePulsoPeriferico"
+        />
+      </v-col>
+      <v-col cols="6">
+        <v-checkbox
           :input-value="sintomas.gangliosLinfaticos"
           label="GÂNGLIOS LINFÁTICOS"
           hide-details
@@ -74,6 +85,13 @@
           hide-details
           :disabled="!sintomatico"
           @change="updateManchasVermelhas"
+        />
+        <v-checkbox
+          :input-value="sintomas.mialgia"
+          label="MIALGIA"
+          hide-details
+          :disabled="!sintomatico"
+          @change="updateMialgia"
         />
         <v-checkbox
           :input-value="sintomas.nausea"
@@ -96,6 +114,8 @@
           :disabled="!sintomatico"
           @change="updateVomito"
         />
+      </v-col>
+      <v-col cols="12">
         <v-checkbox
           :input-value="existemOutrosSintomas"
           label="Outros sintomas"
@@ -156,6 +176,9 @@ export default {
     updateDificuldadeDeglutir(dificuldadeDeglutir) {
       this.$emit('update:dificuldadeDeglutir', dificuldadeDeglutir);
     },
+    updateDiminuicaoDePulsoPeriferico(diminuicaoDePulsoPeriferico) {
+      this.$emit('update:diminuicaoDePulsoPeriferico', diminuicaoDePulsoPeriferico);
+    },
     updateGangliosLinfaticos(gangliosLinfaticos) {
       this.$emit('update:gangliosLinfaticos', gangliosLinfaticos);
     },
@@ -164,6 +187,9 @@ export default {
     },
     updateManchasVermelhas(manchasVermelhas) {
       this.$emit('update:manchasVermelhas', manchasVermelhas);
+    },
+    updateMialgia(mialgia) {
+      this.$emit('update:mialgia', mialgia);
     },
     updateNausea(nausea) {
       this.$emit('update:nausea', nausea);
