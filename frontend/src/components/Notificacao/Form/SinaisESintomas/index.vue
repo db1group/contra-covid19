@@ -4,27 +4,28 @@
       4. SINAIS E SINTOMAS
     </h4>
     <v-container fluid class="pa-0">
-      <sinais-sintomas
+      <sintomas-gerais
         :sintomatico="sintomatico"
         :data-inicio-dos-sintomas="dataInicioDosSintomas"
-        :sintomas="sintomas"
         @update:sintomatico="updateSintomatico"
-        @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
+        @update:dataInicioDosSintomas="updateDataInicioDosSintomas">
+      </sintomas-gerais>
+      <sintomas-respiratorios
+        :sintomatico="sintomatico"
+        :sintomas="sintomas"
         @update:cianoseCentral="updateCianoseCentral"
         @update:congestaoNasal="updateCongestaoNasal"
         @update:coriza="updateCoriza"
         @update:desconfortoRespiratorio="updateDesconfortoRespiratorio"
-        @update:diminuicaoDePulsoPeriferico="updateDiminuicaoDePulsoPeriferico"
         @update:dispneia="updateDispneia"
         @update:dorDeGarganta="updateDorDeGarganta"
-        @update:mialgia="updateMialgia"
         @update:saturacaoDeOximetriaDePulso="updateSaturacaoDeOximetriaDePulso"
         @update:sibilo="updateSibilo"
         @update:taquipneia="updateTaquipneia"
         @update:tosseProdutiva="updateTosseProdutiva"
         @update:tosseSeca="updateTosseSeca"
         @update:tiragemIntercostal="updateTiragemIntercostal">
-      </sinais-sintomas>
+      </sintomas-respiratorios>
       <outros-sintomas
         :sintomatico="sintomatico"
         :sintomas="sintomas"
@@ -35,9 +36,11 @@
         @update:conjuntivite="updateConjuntivite"
         @update:diarreia="updateDiarreia"
         @update:dificuldadeDeglutir="updateDificuldadeDeglutir"
+        @update:diminuicaoDePulsoPeriferico="updateDiminuicaoDePulsoPeriferico"
         @update:gangliosLinfaticos="updateGangliosLinfaticos"
         @update:irritabilidadeOuConfusao="updateIrritabilidadeOuConfusao"
         @update:manchasVermelhas="updateManchasVermelhas"
+        @update:mialgia="updateMialgia"
         @update:nausea="updateNausea"
         @update:hipotensao="updateHipotensao"
         @update:vomito="updateVomito"
@@ -49,12 +52,14 @@
 </template>
 <script>
 import Sintomas from '@/entities/Sintomas';
-import SinaisSintomas from './SinaisSintomas.vue';
+import SintomasGerais from './SintomasGerais.vue';
+import SintomasRespiratorios from './SintomasRespiratorios.vue';
 import OutrosSintomas from './OutrosSintomas.vue';
 
 export default {
   components: {
-    SinaisSintomas,
+    SintomasGerais,
+    SintomasRespiratorios,
     OutrosSintomas,
   },
   props: {
@@ -90,17 +95,11 @@ export default {
     updateDesconfortoRespiratorio(desconfortoRespiratorio) {
       this.$emit('update:desconfortoRespiratorio', desconfortoRespiratorio);
     },
-    updateDiminuicaoDePulsoPeriferico(diminuicaoDePulsoPeriferico) {
-      this.$emit('update:diminuicaoDePulsoPeriferico', diminuicaoDePulsoPeriferico);
-    },
     updateDispneia(dispneia) {
       this.$emit('update:dispneia', dispneia);
     },
     updateDorDeGarganta(dorDeGarganta) {
       this.$emit('update:sintomaDorDeGarganta', dorDeGarganta);
-    },
-    updateMialgia(mialgia) {
-      this.$emit('update:sintomaMialgia', mialgia);
     },
     updateSibilo(sibilo) {
       this.$emit('update:sibilo', sibilo);
@@ -142,6 +141,9 @@ export default {
     updateDificuldadeDeglutir(dificuldadeDeglutir) {
       this.$emit('update:dificuldadeDeglutir', dificuldadeDeglutir);
     },
+    updateDiminuicaoDePulsoPeriferico(diminuicaoDePulsoPeriferico) {
+      this.$emit('update:diminuicaoDePulsoPeriferico', diminuicaoDePulsoPeriferico);
+    },
     updateGangliosLinfaticos(gangliosLinfaticos) {
       this.$emit('update:gangliosLinfaticos', gangliosLinfaticos);
     },
@@ -150,6 +152,9 @@ export default {
     },
     updateManchasVermelhas(manchasVermelhas) {
       this.$emit('update:manchasVermelhas', manchasVermelhas);
+    },
+    updateMialgia(mialgia) {
+      this.$emit('update:sintomaMialgia', mialgia);
     },
     updateNausea(nausea) {
       this.$emit('update:nausea', nausea);

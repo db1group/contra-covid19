@@ -26,13 +26,15 @@
           />
         </v-col>
         <v-col cols="12" sm="6">
-          <v-select
-            :value="profissaoId"
+          <v-autocomplete
+            :value="notificacao.profissaoId"
             :rules="rules.profissaoId"
             label="Profissão do notificador *"
-            :items="profissoes"
+            :items="profissoes.items"
             item-text="value"
             item-value="key"
+            :loading="profissoes.loading"
+            no-data-text="Profissão não encontrada"
             @input="updateProfissaoId"
           />
         </v-col>
@@ -43,10 +45,12 @@
 <script>
 import { required } from '@/validations/CommonValidations';
 import Notificacao from '@/entities/Notificacao';
+// import ProfissaoService from '@/services/ProfissaoService';
 
 const UNIDADES_SAUDE = [
   { key: 1, value: 'Unidade Notificante de Teste - 1' },
 ];
+// TODO: Após criação do endpoint no back, remover esses dados mockados
 const PROFISSOES = [
   { key: 1, value: 'Profissão de Teste - 1' },
   { key: 2, value: 'Profissão de Teste - 2' },
@@ -62,9 +66,11 @@ export default {
   },
   data: () => ({
     unidadesSaude: UNIDADES_SAUDE,
-    profissoes: PROFISSOES,
     unidadeSaudeId: 1,
-    profissaoId: 1,
+    profissoes: {
+      items: [],
+      loading: true,
+    },
     rules: {
       unidadeSaude: [required],
       profissaoId: [required],
@@ -81,6 +87,25 @@ export default {
     updateProfissaoId(profissaoId) {
       this.$emit('update:profissaoId', profissaoId);
     },
+    findProfissoes() {
+      this.profissoes.loading = true;
+      // TODO: Após criação do endpoint no back, descomentar essa parte do código
+      // ProfissaoService.findAll().then(({ data }) => {
+      //   this.profissoes = {
+      //     items: data,
+      //     loading: false,
+      //   };
+      // });
+
+      // TODO: Após criação do endpoint no back, remover esses dados mockados
+      this.profissoes = {
+        items: PROFISSOES,
+        loading: false,
+      };
+    },
+  },
+  created() {
+    this.findProfissoes();
   },
 };
 </script>
