@@ -139,6 +139,21 @@ exports.consultarPaginado = async (req, res) => {
   return res.json({ count: notificacoes.count, data: notificacoesResponse });
 };
 
+exports.consultarTudo = async (req, res) => {
+  const notificacoes = await models.Notificacao.findAll({
+    include: [{ model: models.Pessoa }, { model: models.NotificacaoCovid19 }],
+  });
+  const mapped = notificacoes.map((n) => ({
+    id: n.id,
+    nome: n.Pessoa.nome,
+    documento: n.Pessoa.numeroDocumento,
+    dataNotificacao: n.NotificacaoCovid19.dataHoraNotificacao,
+    telefone: n.Pessoa.telefoneContato,
+    situacao: n.NotificacaoCovid19.situacaoNoMomentoDaNotificacao || 'ALTA_ISOLAMENTO_DOMICILIAR',
+  }));
+  return res.json({ data: mapped });
+};
+
 exports.consultarPorId = async (req, res) => {
   const { id } = req.params;
   const notificacaoModel = await consultarNotificacaoPorId(id);

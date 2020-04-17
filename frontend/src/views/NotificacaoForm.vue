@@ -1,6 +1,6 @@
 <template>
-  <section>
-    <h3 class="primary--text my-7 display-1 text-center">
+  <section style="margin-top: 75px;">
+    <h3 class="primary--text my-7 display-1">
       Cadastro de notificação
     </h3>
     <base-page>

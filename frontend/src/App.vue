@@ -6,7 +6,7 @@
 
          <v-tabs>
           <v-spacer></v-spacer>
-          <v-tab> Notificações</v-tab>
+          <v-tab to="/">Notificações</v-tab>
           <v-tab>Relatório</v-tab>
         </v-tabs>
 
@@ -16,6 +16,7 @@
           Sair
         </v-btn>
       </v-app-bar>
+      <v-spacer></v-spacer>
       <router-view/>
     </v-content>
   </v-app>
