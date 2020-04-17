@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       notificadorId: DataTypes.UUID,
       bairroId: DataTypes.UUID,
       pessoaId: DataTypes.UUID,
+      profissaoId: DataTypes.UUID,
     },
     {},
   );
@@ -33,6 +34,9 @@ module.exports = (sequelize, DataTypes) => {
     });
     Notificacao.hasOne(models.NotificacaoCovid19, {
       foreignKey: 'notificacaoId',
+    });
+    Notificacao.belongsTo(models.Profissao, {
+      foreignKey: 'profissaoId',
     });
   };
   return Notificacao;
