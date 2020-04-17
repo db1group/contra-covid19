@@ -10,35 +10,52 @@
         :sintomas="sintomas"
         @update:sintomatico="updateSintomatico"
         @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
+        @update:cianoseCentral="updateCianoseCentral"
+        @update:congestaoNasal="updateCongestaoNasal"
         @update:coriza="updateCoriza"
-        @update:tosseSeca="updateTosseSeca"
+        @update:desconfortoRespiratorio="updateDesconfortoRespiratorio"
+        @update:diminuicaoDePulsoPeriferico="updateDiminuicaoDePulsoPeriferico"
+        @update:dispneia="updateDispneia"
         @update:dorDeGarganta="updateDorDeGarganta"
         @update:mialgia="updateMialgia"
-        @update:tosseProdutiva="updateTosseProdutiva"
-        @update:sibilo="updateSibilo"
-        @update:desconfortoRespiratorio="updateDesconfortoRespiratorio"
-        @update:dispneia="updateDispneia"
-        @update:taquipneia="updateTaquipneia"
         @update:saturacaoDeOximetriaDePulso="updateSaturacaoDeOximetriaDePulso"
-        @update:cianoseCentral="updateCianoseCentral"
-        @update:diminuicaoDePulsoPeriferico="updateDiminuicaoDePulsoPeriferico"
-        @update:hipotensao="updateHipotensao"
-        @update:diarreia="updateDiarreia"
+        @update:sibilo="updateSibilo"
+        @update:taquipneia="updateTaquipneia"
+        @update:tosseProdutiva="updateTosseProdutiva"
+        @update:tosseSeca="updateTosseSeca"
+        @update:tiragemIntercostal="updateTiragemIntercostal">
+      </sinais-sintomas>
+      <outros-sintomas
+        :sintomatico="sintomatico"
+        :sintomas="sintomas"
+        @update:adiamiaOuFraqueza="updateAdiamiaOuFraqueza"
+        @update:artralgia="updateArtralgia"
+        @update:calafrios="updateCalafrios"
         @update:cefaleia="updateCefaleia"
+        @update:conjuntivite="updateConjuntivite"
+        @update:diarreia="updateDiarreia"
+        @update:dificuldadeDeglutir="updateDificuldadeDeglutir"
+        @update:gangliosLinfaticos="updateGangliosLinfaticos"
+        @update:irritabilidadeOuConfusao="updateIrritabilidadeOuConfusao"
+        @update:manchasVermelhas="updateManchasVermelhas"
         @update:nausea="updateNausea"
+        @update:hipotensao="updateHipotensao"
         @update:vomito="updateVomito"
         @update:outros="updateOutros">
-      </sinais-sintomas>
+      </outros-sintomas>
+
     </v-container>
   </div>
 </template>
 <script>
 import Sintomas from '@/entities/Sintomas';
 import SinaisSintomas from './SinaisSintomas.vue';
+import OutrosSintomas from './OutrosSintomas.vue';
 
 export default {
   components: {
     SinaisSintomas,
+    OutrosSintomas,
   },
   props: {
     sintomatico: {
@@ -61,11 +78,23 @@ export default {
     updateDataInicioDosSintomas(dataInicioDosSintomas) {
       this.$emit('update:dataInicioDosSintomas', dataInicioDosSintomas);
     },
+    updateCianoseCentral(cianoseCentral) {
+      this.$emit('update:cianoseCentral', cianoseCentral);
+    },
+    updateCongestaoNasal(congestaoNasal) {
+      this.$emit('update:congestaoNasal', congestaoNasal);
+    },
     updateCoriza(coriza) {
       this.$emit('update:sintomaCoriza', coriza);
     },
-    updateTosseSeca(tosseSeca) {
-      this.$emit('update:sintomaTosseSeca', tosseSeca);
+    updateDesconfortoRespiratorio(desconfortoRespiratorio) {
+      this.$emit('update:desconfortoRespiratorio', desconfortoRespiratorio);
+    },
+    updateDiminuicaoDePulsoPeriferico(diminuicaoDePulsoPeriferico) {
+      this.$emit('update:diminuicaoDePulsoPeriferico', diminuicaoDePulsoPeriferico);
+    },
+    updateDispneia(dispneia) {
+      this.$emit('update:dispneia', dispneia);
     },
     updateDorDeGarganta(dorDeGarganta) {
       this.$emit('update:sintomaDorDeGarganta', dorDeGarganta);
@@ -73,17 +102,8 @@ export default {
     updateMialgia(mialgia) {
       this.$emit('update:sintomaMialgia', mialgia);
     },
-    updateTosseProdutiva(tosseProdutiva) {
-      this.$emit('update:tosseProdutiva', tosseProdutiva);
-    },
     updateSibilo(sibilo) {
       this.$emit('update:sibilo', sibilo);
-    },
-    updateDesconfortoRespiratorio(desconfortoRespiratorio) {
-      this.$emit('update:desconfortoRespiratorio', desconfortoRespiratorio);
-    },
-    updateDispneia(dispneia) {
-      this.$emit('update:dispneia', dispneia);
     },
     updateTaquipneia(taquipneia) {
       this.$emit('update:taquipneia', taquipneia);
@@ -91,23 +111,51 @@ export default {
     updateSaturacaoDeOximetriaDePulso(saturacaoDeOximetriaDePulso) {
       this.$emit('update:saturacaoDeOximetriaDePulso', saturacaoDeOximetriaDePulso);
     },
-    updateCianoseCentral(cianoseCentral) {
-      this.$emit('update:cianoseCentral', cianoseCentral);
+    updateTosseProdutiva(tosseProdutiva) {
+      this.$emit('update:tosseProdutiva', tosseProdutiva);
     },
-    updateDiminuicaoDePulsoPeriferico(diminuicaoDePulsoPeriferico) {
-      this.$emit('update:diminuicaoDePulsoPeriferico', diminuicaoDePulsoPeriferico);
+    updateTosseSeca(tosseSeca) {
+      this.$emit('update:sintomaTosseSeca', tosseSeca);
     },
-    updateHipotensao(hipotensao) {
-      this.$emit('update:hipotensao', hipotensao);
+    updateTiragemIntercostal(tiragemIntercostal) {
+      this.$emit('update:tiragemIntercostal', tiragemIntercostal);
     },
-    updateDiarreia(diarreia) {
-      this.$emit('update:diarreia', diarreia);
+
+    updateAdiamiaOuFraqueza(adiamiaOuFraqueza) {
+      this.$emit('update:adiamiaOuFraqueza', adiamiaOuFraqueza);
+    },
+    updateArtralgia(artralgia) {
+      this.$emit('update:artralgia', artralgia);
+    },
+    updateCalafrios(calafrios) {
+      this.$emit('update:calafrios', calafrios);
     },
     updateCefaleia(cefaleia) {
       this.$emit('update:cefaleia', cefaleia);
     },
+    updateConjuntivite(conjuntivite) {
+      this.$emit('update:conjuntivite', conjuntivite);
+    },
+    updateDiarreia(diarreia) {
+      this.$emit('update:diarreia', diarreia);
+    },
+    updateDificuldadeDeglutir(dificuldadeDeglutir) {
+      this.$emit('update:dificuldadeDeglutir', dificuldadeDeglutir);
+    },
+    updateGangliosLinfaticos(gangliosLinfaticos) {
+      this.$emit('update:gangliosLinfaticos', gangliosLinfaticos);
+    },
+    updateIrritabilidadeOuConfusao(irritabilidadeOuConfusao) {
+      this.$emit('update:irritabilidadeOuConfusao', irritabilidadeOuConfusao);
+    },
+    updateManchasVermelhas(manchasVermelhas) {
+      this.$emit('update:manchasVermelhas', manchasVermelhas);
+    },
     updateNausea(nausea) {
       this.$emit('update:nausea', nausea);
+    },
+    updateHipotensao(hipotensao) {
+      this.$emit('update:hipotensao', hipotensao);
     },
     updateVomito(vomito) {
       this.$emit('update:vomito', vomito);

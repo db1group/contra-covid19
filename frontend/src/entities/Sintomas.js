@@ -1,6 +1,15 @@
 export default class Sintomas {
   constructor(data = {}) {
+    this.adiamiaOuFraqueza = data.adiamiaOuFraqueza || false;
+    this.artralgia = data.artralgia || false;
+    this.calafrios = data.calafrios || false;
+    this.conjuntivite = data.conjuntivite || false;
     this.coriza = data.coriza || false;
+    this.congestaoNasal = data.congestaoNasal || false;
+    this.dificuldadeDeglutir = data.dificuldadeDeglutir || false;
+    this.gangliosLinfaticos = data.gangliosLinfaticos || false;
+    this.irritabilidadeOuConfusao = data.irritabilidadeOuConfusao || false;
+    this.manchasVermelhas = data.manchasVermelhas || false;
     this.tosseSeca = data.tosseSeca || false;
     this.dorDeGarganta = data.dorDeGarganta || false;
     this.mialgia = data.mialgia || false;
@@ -17,6 +26,7 @@ export default class Sintomas {
     this.cefaleia = data.cefaleia || false;
     this.nausea = data.nausea || false;
     this.vomito = data.vomito || false;
+    this.tiragemIntercostal = data.tiragemIntercostal || false;
     this.outros = data.outros || '';
   }
 }
