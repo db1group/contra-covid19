@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     tiragemIntercostal: DataTypes.BOOLEAN,
     saturacaoDeOximetriaDePulso: DataTypes.BOOLEAN,
     cianoseCentral: DataTypes.BOOLEAN,
-    feberAferidaReferida: DataTypes.BOOLEAN,
+    febreAferidaReferida: DataTypes.BOOLEAN,
     temperaturaFebre: DataTypes.TEXT,
     congestaoNasal: DataTypes.BOOLEAN,
     diminuicaoDePulsoPeriferico: DataTypes.BOOLEAN,

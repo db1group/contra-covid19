@@ -99,7 +99,7 @@ module.exports = {
       queryInterface.addColumn('NotificacaoCovid19', 'situacaoNoMomentoDaNotificacao', {
         type: Sequelize.STRING(26)
       }),
-      queryInterface.addColumn('NotificacaoCovid19', 'feberAferidaReferida', {
+      queryInterface.addColumn('NotificacaoCovid19', 'febreAferidaReferida', {
         type: Sequelize.BOOLEAN
       }),
       queryInterface.addColumn('NotificacaoCovid19', 'temperaturaFebre', {
