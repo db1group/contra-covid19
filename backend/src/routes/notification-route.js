@@ -9,7 +9,9 @@ router.post('/notificacoes',
   NotificacaoResource.salvar);
 
 router.get('/notificacoes', NotificacaoResource.consultarPaginado);
-router.get('/notificacoes/consulta', NotificacaoResource.consultarTudo);
+router.get('/notificacoes/consulta', NotificacaoResource.consultarNotificacoesWeb);
 router.get('/notificacoes/:id', NotificacaoResource.consultarPorId);
+router.delete('/notificacoes/:id', NotificacaoResource.excluirLogicamenteNotificacao);
+router.delete('/notificacoes', NotificacaoResource.excluirLoteLogicamenteNotificacao);
 
 module.exports = router;

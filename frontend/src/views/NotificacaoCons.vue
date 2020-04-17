@@ -1,5 +1,5 @@
 <template>
-  <section style="margin-top: 30px;">
+  <section style="margin-top: 45px;">
     <header-cons></header-cons>
     <notificacao-table></notificacao-table>
     <v-snackbar

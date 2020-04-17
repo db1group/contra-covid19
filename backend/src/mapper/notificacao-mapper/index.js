@@ -11,6 +11,7 @@ const {
   extrairVinculoEpidemiologico,
   extrairConclusaoAtendimento,
 } = require('./model-para-response');
+const mapearParaConsulta = require('./consulta');
 
 module.exports = {
   mapearParaNotificacao: (request) => {
@@ -44,4 +45,5 @@ module.exports = {
     };
     return result;
   },
+  mapearParaConsulta,
 };

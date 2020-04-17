@@ -3,11 +3,14 @@
     <v-data-table
       v-model="selected"
       :single-select="false"
+      show-select
       :headers="headers"
       :items="notificacoes"
-      item-key="nome"
-      :search="search"
-      show-select
+      item-key="id"
+      :options.sync="options"
+      :server-items-length="totalNotif"
+      :loading="loading"
+      loading-text="Carregando as notificações."
       no-data-text="Não há notificações até o momento."
       no-results-text="Não há notificações com estes dados."
       :footer-props="{
@@ -20,7 +23,7 @@
           Cadastros
           <v-spacer></v-spacer>
           <v-text-field
-            v-model="search"
+            @input="filterSearch"
             append-icon="mdi-magnify"
             label="Pesquisar por Documento ou Nome"
             single-line
@@ -29,7 +32,6 @@
         </v-card-title>
         <v-card-title>
           Ações em lote:
-          <v-btn text small color="primary" @click="alterarLote()">EDITAR</v-btn>
           <v-btn text small color="primary" @click="excluirLote()">EXCLUIR</v-btn>
         </v-card-title>
       </template>
@@ -37,8 +39,7 @@
         <v-chip class="d-block text-center" :color="getColor(item.situacao)" dark>{{ item.situacao }}</v-chip>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-btn text small color="primary" @click="editItem(item)">EDITAR</v-btn>
-        <v-btn text small color="red" @click="deleteItem(item)">EXCLUIR</v-btn>
+        <v-btn text small color="red" @click="excluirItem(item)">EXCLUIR</v-btn>
       </template>
     </v-data-table>
   </v-container>
@@ -48,22 +49,35 @@ import NotificacaoService from '@/services/NotificacaoService';
 import NotificacaoConsulta from '@/entities/NotificacaoConsulta';
 
 export default {
-  data() {
-    return {
-      singleSelect: false,
-      selected: [],
-      search: '',
-      headers: [
-        { text: 'Paciente', value: 'nome' },
-        { text: 'Documento', value: 'documento' },
-        { text: 'Notificação', value: 'dataNotificacao' },
-        { text: 'Telefone', value: 'telefone' },
-        { text: 'Situação', value: 'situacao', width: '185px' },
-        { sortable: false, value: 'actions', width: '185px' },
-      ],
-      loading: false,
-      notificacoes: [],
-    };
+  data: () => ({
+    singleSelect: false,
+    selected: [],
+    items: [],
+    loading: true,
+    options: {},
+    totalNotif: 0,
+    notificacoes: [],
+    filter: '',
+    filterCons: null,
+    headers: [
+      { text: 'Paciente', value: 'nome' },
+      { text: 'Documento', value: 'documento' },
+      { text: 'Notificação', value: 'dataNotificacao' },
+      { text: 'Telefone', value: 'telefone' },
+      { text: 'Situação', value: 'situacao', width: '185px' },
+      { sortable: false, value: 'actions' },
+    ],
+  }),
+  watch: {
+    options: {
+      handler() {
+        this.consultarNotificacoes();
+      },
+      deep: true,
+    },
+  },
+  mounted() {
+    this.consultarNotificacoes();
   },
   methods: {
     getColor(situacao) {
@@ -73,7 +87,7 @@ export default {
           break;
         case 'Óbito': color = 'black';
           break;
-        case 'Hospitalização': color = '#FFB300';
+        case 'Leito comun': color = '#FFB300';
           break;
         case 'Isolamento domiciliar': color = '#64FFDA';
           break;
@@ -81,112 +95,47 @@ export default {
       }
       return color;
     },
-    editItem(item) {
-      alert(item.name);
-    },
-    deleteItem(item) {
-      alert(item.name);
-    },
-    alterarLote() {
-      alert(this.selected.length);
-    },
-    excluirLote() {
-      alert(this.selected);
-    },
-    consultarNotificacoes() {
-      this.loading = true;
-      /*
-      setTimeout(() => {
-        this.notificacoes = [
-          {
-            nome: 'Livia Dias',
-            documento: '123.456.789-00',
-            dataNotificacao: '01/02/2020 - 08:00',
-            telefone: '(44) 91234-4321',
-            situacao: 'UTI',
-          },
-          {
-            nome: 'Kianna Levin',
-            documento: '123.456.789-00',
-            dataNotificacao: '01/02/2020 - 08:00',
-            telefone: '(44) 91234-4321',
-            situacao: 'UTI',
-          },
-          {
-            nome: 'Kierra Dias',
-            documento: '123.456.789-00',
-            dataNotificacao: '01/02/2020 - 08:00',
-            telefone: '(44) 91234-4321',
-            situacao: 'Óbito',
-          },
-          {
-            nome: 'Livia Press',
-            documento: '123.456.789-00',
-            dataNotificacao: '01/02/2020 - 08:00',
-            telefone: '(44) 91234-4321',
-            situacao: 'Hospitalização',
-          },
-          {
-            nome: 'James Baptista',
-            documento: '123.456.789-00',
-            dataNotificacao: '01/02/2020 - 08:00',
-            telefone: '(44) 91234-4321',
-            situacao: 'UTI',
-          },
-          {
-            nome: 'Corey Ekstrom Bothman',
-            documento: '046.800.119-04',
-            dataNotificacao: '16/04/2020 - 18:30',
-            telefone: '(44) 99105-1563',
-            situacao: 'Isolamento domiciliar',
-          },
-          {
-            nome: 'Jaylon Press',
-            documento: '123.456.789-00',
-            dataNotificacao: '01/02/2020 - 08:00',
-            telefone: '(44) 91234-4321',
-            situacao: 'UTI',
-          },
-          {
-            nome: 'Rayna Press',
-            documento: '123.456.789-00',
-            dataNotificacao: '01/02/2020 - 08:00',
-            telefone: '(44) 91234-4321',
-            situacao: 'UTI',
-          },
-          {
-            nome: 'Ryan Lubian',
-            documento: '123.456.789-00',
-            dataNotificacao: '01/02/2020 - 08:00',
-            telefone: '(44) 91234-4321',
-            situacao: 'Isolamento domiciliar',
-          },
-          {
-            nome: 'Kierra Baptista',
-            documento: '123.456.789-00',
-            dataNotificacao: '01/02/2020 - 08:00',
-            telefone: '(44) 91234-4321',
-            situacao: 'Óbito',
-          },
-          {
-            nome: 'Ryan Press',
-            documento: '123.456.789-00',
-            dataNotificacao: '01/02/2020 - 08:00',
-            telefone: '(44) 91234-4321',
-            situacao: 'Isolamento domiciliar',
-          },
-        ];
-        this.loading = false;
-      }, 2000);
-      */
-      NotificacaoService.findAll().then(({ data }) => {
-        this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());
-        this.loading = false;
+    excluirItem({ id }) {
+      NotificacaoService.delete(id).then(() => {
+        this.selected = this.selected.filter((n) => n.id !== id);
+        const page = this.notificacoes.length === 1 ? 1 : this.options.page;
+        this.options = { ...this.options, page };
       });
     },
-  },
-  created() {
-    this.consultarNotificacoes();
+    excluirLote() {
+      const ids = this.selected.map((n) => n.id);
+      this.selected = [];
+      NotificacaoService.deleteLote(ids).then(() => {
+        const left = this.notificacoes.length - ids.length;
+        console.log(left);
+        const page = left <= 0 ? 1 : this.options.page;
+        this.options = { ...this.options, page };
+      });
+    },
+    consultarNotificacoes({ page, itemsPerPage } = this.options) {
+      this.loading = true;
+      setTimeout(() => {
+        const search = this.filter;
+        NotificacaoService.findAll({ page, itemsPerPage, search }).then(({ count, data }) => {
+          this.totalNotif = count;
+          this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());
+          this.loading = false;
+        });
+      }, 2000);
+    },
+    filterNotificacoes() {
+      clearTimeout(this.filterCons);
+      this.filterCons = setTimeout(() => {
+        this.consultarNotificacoes({
+          page: 1,
+          itemsPerPage: this.options.itemsPerPage,
+        });
+      }, 500);
+    },
+    filterSearch(search) {
+      this.filter = search;
+      this.filterNotificacoes();
+    },
   },
 };
 </script>
