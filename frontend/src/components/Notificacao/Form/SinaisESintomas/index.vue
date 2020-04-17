@@ -3,28 +3,17 @@
     <h4 class="primary--text title">
       4. SINAIS E SINTOMAS
     </h4>
-    <v-container
-      fluid
-      class="pa-0"
-    >
-      <sintomas-gerais
+    <v-container fluid class="pa-0">
+      <sinais-sintomas
         :sintomatico="sintomatico"
         :data-inicio-dos-sintomas="dataInicioDosSintomas"
         :sintomas="sintomas"
         @update:sintomatico="updateSintomatico"
         @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
-      />
-      <sintomas-respiratorios-leves
-        :sintomatico="sintomatico"
-        :sintomas="sintomas"
         @update:coriza="updateCoriza"
         @update:tosseSeca="updateTosseSeca"
         @update:dorDeGarganta="updateDorDeGarganta"
         @update:mialgia="updateMialgia"
-      />
-      <sintomas-respiratorios-graves
-        :sintomatico="sintomatico"
-        :sintomas="sintomas"
         @update:tosseProdutiva="updateTosseProdutiva"
         @update:sibilo="updateSibilo"
         @update:desconfortoRespiratorio="updateDesconfortoRespiratorio"
@@ -34,32 +23,22 @@
         @update:cianoseCentral="updateCianoseCentral"
         @update:diminuicaoDePulsoPeriferico="updateDiminuicaoDePulsoPeriferico"
         @update:hipotensao="updateHipotensao"
-      />
-      <outros-sintomas
-        :sintomatico="sintomatico"
-        :sintomas="sintomas"
         @update:diarreia="updateDiarreia"
         @update:cefaleia="updateCefaleia"
         @update:nausea="updateNausea"
         @update:vomito="updateVomito"
-        @update:outros="updateOutros"
-      />
+        @update:outros="updateOutros">
+      </sinais-sintomas>
     </v-container>
   </div>
 </template>
 <script>
 import Sintomas from '@/entities/Sintomas';
-import SintomasGerais from './SintomasGerais.vue';
-import SintomasRespiratoriosLeves from './SintomasRespiratoriosLeves.vue';
-import SintomasRespiratoriosGraves from './SintomasRespiratoriosGraves.vue';
-import OutrosSintomas from './OutrosSintomas.vue';
+import SinaisSintomas from './SinaisSintomas.vue';
 
 export default {
   components: {
-    SintomasGerais,
-    SintomasRespiratoriosLeves,
-    SintomasRespiratoriosGraves,
-    OutrosSintomas,
+    SinaisSintomas,
   },
   props: {
     sintomatico: {

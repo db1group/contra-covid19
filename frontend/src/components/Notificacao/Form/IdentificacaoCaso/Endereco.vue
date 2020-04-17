@@ -8,7 +8,8 @@
         <v-text-field
           :value="suspeito.cep"
           label="CEP"
-          v-mask="'##.###-###'"
+          v-mask="'########'"
+          :rules="rules.cep"
           @input="updateCep"
         />
       </v-col>
@@ -74,7 +75,7 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
-import { required } from '@/validations/CommonValidations';
+import { required, minLength } from '@/validations/CommonValidations';
 import Pessoa from '@/entities/Pessoa';
 import BairroService from '@/services/BairroService';
 
@@ -95,6 +96,7 @@ export default {
       loading: true,
     },
     rules: {
+      cep: [minLength(8)],
       endereco: [required],
       numero: [required],
       bairroId: [required],

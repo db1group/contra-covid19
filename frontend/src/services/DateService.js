@@ -10,4 +10,7 @@ export default {
   toMomentObject(stringDate, format) {
     return moment(stringDate, format);
   },
+  isDateValid(stringDate, format) {
+    return moment(stringDate, format).isValid();
+  },
 };
