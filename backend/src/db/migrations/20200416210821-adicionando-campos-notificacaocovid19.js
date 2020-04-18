@@ -108,44 +108,51 @@ module.exports = {
     }),
   ]),
 
-  down: (queryInterface, Sequelize) => Promise.all([
-    queryInterface.removeColumn('NotificacaoCovid19', 'congestaoNasal'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'tiragemIntercostal'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'adiamiaFraqueza'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'artralgia'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'calafrios'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'conjuntivite'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'dificuldadeDeglutir'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'gangliosLinfaticos'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'irritabilidadeConfusao'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'manchasVermelhar'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'tabagismo'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'hipertensao'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'infeccaoHIV'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'neoplasia'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'diminuicaoDePulsoPeriferico'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'realizouExameDeImagem'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'raioXNormal'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'raioXInfiltrado'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'raioxXConsolidacao'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'raioXMisto'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'raioXOutro'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'tomografiaNormal'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'tomografiaVitro'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'tomografiaDerrame'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'tomografiaLinfonodo'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'tomografiaOutro'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'dataDaColeta'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'metodoDeExame'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'contatoComSuspeito'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'localDoContatoComSuspeito'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'localDoContatoComSuspeitoOutro'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'nomeSuspeito'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'situacaoNoMomentoDaNotificacao'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'feberAferidaReferida'),
-    queryInterface.removeColumn('NotificacaoCovid19', 'temperaturaFebre'),
-    queryInterface.changeColumn('NotificacaoCovid19', 'recebeuVacinaDaGripeNosUltimosDozeMeses', {
-      type: Sequelize.BOOLEAN,
-    }),
-  ]),
+  async down(queryInterface, Sequelize) {
+    const transaction = await queryInterface.sequelize.transaction();
+    try {
+      await queryInterface.removeColumn('NotificacaoCovid19', 'congestaoNasal', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'tiragemIntercostal', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'adiamiaFraqueza', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'artralgia', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'calafrios', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'conjuntivite', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'dificuldadeDeglutir', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'gangliosLinfaticos', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'irritabilidadeConfusao', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'manchasVermelhar', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'tabagismo', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'hipertensao', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'infeccaoHIV', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'neoplasia', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'diminuicaoDePulsoPeriferico', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'realizouExameDeImagem', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'raioXNormal', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'raioXInfiltrado', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'raioxXConsolidacao', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'raioXMisto', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'raioXOutro', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'tomografiaNormal', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'tomografiaVitro', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'tomografiaDerrame', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'tomografiaLinfonodo', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'tomografiaOutro', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'dataDaColeta', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'metodoDeExame', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'contatoComSuspeito', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'localDoContatoComSuspeito', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'localDoContatoComSuspeitoOutro', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'nomeSuspeito', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'situacaoNoMomentoDaNotificacao', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'feberAferidaReferida', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'temperaturaFebre', { transaction });
+      await queryInterface.changeColumn('NotificacaoCovid19', 'recebeuVacinaDaGripeNosUltimosDozeMeses', {
+        type: Sequelize.BOOLEAN,
+      }, { transaction });
+      await transaction.commit();
+    } catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  },
 };

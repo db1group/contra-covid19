@@ -1,7 +1,10 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.addColumn('Notificacao', 'status', {
+  up: (queryInterface, Sequelize) => queryInterface.changeColumn('Notificacao', 'status', {
     type: Sequelize.STRING(18),
     defaultValue: 'ABERTO',
   }),
-  down: (queryInterface) => queryInterface.removeColumn('Notificacao', 'status'),
+  down: (queryInterface, Sequelize) => queryInterface.changeColumn('Notificacao', 'status', {
+    type: Sequelize.STRING(9),
+    defaultValue: 'ABERTA',
+  }),
 };
