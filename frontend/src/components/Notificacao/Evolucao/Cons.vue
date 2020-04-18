@@ -9,7 +9,7 @@
             <p>{{notificacao.nome}}</p>
           </v-col>
           <v-col>
-            <strong>Documento</strong>
+            <span class="font-weight-bold">Documento</span>
             <p>{{notificacao.documento}}</p>
           </v-col>
           <v-col>
