@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import NotificacaoForm from '../views/NotificacaoForm.vue';
 import NotificacaoCons from '../views/NotificacaoCons.vue';
+import EvolucaoForm from '../views/EvolucaoForm.vue';
 
 Vue.use(VueRouter);
 
@@ -15,6 +16,11 @@ const routes = [
     path: '/notificacao/cadastro',
     name: 'notificacao-form',
     component: NotificacaoForm,
+  },
+  {
+    path: '/evolucao/:id',
+    name: 'evolucao-form',
+    component: EvolucaoForm,
   },
 ];
 
