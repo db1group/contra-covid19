@@ -77,6 +77,12 @@ const SITUACOES = [
 
 export default {
   directives: { mask },
+  props: {
+    notificacaoId: {
+      type: String,
+      required: true,
+    },
+  },
   data: () => ({
     valid: true,
     dataHoraNotificacao: '',
@@ -112,7 +118,7 @@ export default {
       }, 2000);
     },
   },
-  mounted() {
+  created() {
     this.loadLocais();
     this.loadSituacoes();
   },

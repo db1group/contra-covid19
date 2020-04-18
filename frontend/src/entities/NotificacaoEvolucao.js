@@ -3,6 +3,7 @@ import DateService from '@/services/DateService';
 export default class NotificacaoEvolucao {
   constructor(data = {}) {
     this.id = data.id || null;
+    this.notificacaoId = data.notificacaoId || '';
     this.dataHoraAtualizacao = data.dtEvolucao || '';
     this.local = data.tpLocal || '';
     this.situacao = data.tpEvolucao || '';

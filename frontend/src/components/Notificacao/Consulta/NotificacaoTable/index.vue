@@ -9,6 +9,7 @@
       item-key="id"
       :options.sync="options"
       :server-items-length="totalNotif"
+      @update:options="consultarNotificacoes"
       :loading="loading"
       loading-text="Carregando as notificações."
       no-data-text="Não há notificações até o momento."
@@ -69,15 +70,7 @@ export default {
       { sortable: false, value: 'actions', width: '210px' },
     ],
   }),
-  watch: {
-    options: {
-      handler() {
-        this.consultarNotificacoes();
-      },
-      deep: true,
-    },
-  },
-  mounted() {
+  created() {
     this.consultarNotificacoes();
   },
   methods: {
