@@ -112,7 +112,7 @@ export default {
       }, 2000);
     },
   },
-  mounted() {
+  created() {
     this.loadLocais();
     this.loadSituacoes();
   },
