@@ -35,6 +35,7 @@ export default class Notificacao {
       dataHoraNotificacao: DateService.toMomentObject(this.dataHoraNotificacao, 'DD/MM/YYYY HH:mm').toISOString(),
       suspeito: this.suspeito.toRequestBody(),
       informacaoComplementar: this.informacaoComplementar.toRequestBody(),
+      conclusaoAtendimento: this.conclusaoAtendimento.toRequestBody(),
     };
   }
 }

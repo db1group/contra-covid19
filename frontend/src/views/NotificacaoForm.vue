@@ -133,10 +133,13 @@
           @update:leitoUti="updateConclusaoAtendimento('leitoUti', $event)"
           @update:prontoSocorroOuAtendimento="updateConclusaoAtendimento('prontoSocorroOuAtendimento', $event)"
         />
+        <pre>{{notificacao.conclusaoAtendimento}}</pre>
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
           @update:laboratorioOficial="updateConclusaoAtendimento('laboratorioOficial', $event)"
           @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
+          @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"
+          @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
         />
         <observacoes v-model="notificacao.observacoes"/>
       </v-form>
