@@ -56,6 +56,9 @@ module.exports = (sequelize, DataTypes) => {
     Notificacao.belongsTo(models.Profissao, {
       foreignKey: 'profissaoId',
     });
+    Notificacao.hasMany(models.NotificacaoEvolucao, {
+      foreignKey: 'notificacaoId',
+    });
   };
   return Notificacao;
 };
