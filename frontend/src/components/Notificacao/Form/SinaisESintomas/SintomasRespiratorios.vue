@@ -16,9 +16,11 @@
         />
         <v-text-field
           :input-value="sintomas.temperaturaFebre"
-          class="pl-8 pr-2"
+          class="px-8"
           label="Informar temperatura"
+          suffix="°C"
           :disabled="!sintomatico || !sintomas.febreAferidaReferida"
+          v-mask="'##,#'"
           @input="updateTemperaturaFebre"
         />
         <v-checkbox
@@ -133,6 +135,9 @@ export default {
   methods: {
     updateFebreAferidaReferida(febreAferidaReferida) {
       this.$emit('update:febreAferidaReferida', febreAferidaReferida);
+      if (!febreAferidaReferida) {
+        this.updateTemperaturaFebre('');
+      }
     },
     updateTemperaturaFebre(temperaturaFebre) {
       this.$emit('update:temperaturaFebre', temperaturaFebre);
