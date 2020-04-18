@@ -125,12 +125,16 @@
           <label class="primary--text body-1 font-weight-bold">
             Recebeu vacina contra Gripe nos últimos doze meses?
           </label>
-          <v-checkbox
+          <v-radio-group
             :input-value="informacoesComplementares.recebeuVacinaDaGripeNosUltimosDozeMeses"
-            label="Sim"
-            hide-details
+            row
+            :rules="rules.recebeuVacinaDaGripeNosUltimosDozeMeses"
             @change="updateRecebeuVacinaDaGripeNosUltimosDozeMeses"
-          />
+          >
+            <v-radio value="NAO" label="Não"/>
+            <v-radio value="SIM" label="Sim"/>
+            <v-radio value="NAO_SABE" label="Não Sabe"/>
+          </v-radio-group>
         </v-col>
       </v-row>
     </v-container>
@@ -151,6 +155,7 @@ export default {
   },
   data: () => ({
     rules: {
+      recebeuVacinaDaGripeNosUltimosDozeMeses: [required],
       dataDaViagem: [],
       localDaViagem: [],
     },
