@@ -43,6 +43,8 @@
           :sintomas="notificacao.sintomas"
           @update:sintomatico="updateSintomatico"
           @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
+          @update:febreAferidaReferida="updateSintoma('febreAferidaReferida', $event)"
+          @update:temperaturaFebre="updateSintoma('temperaturaFebre', $event)"
           @update:congestaoNasal="updateSintoma('congestaoNasal', $event)"
           @update:sintomaCoriza="updateSintoma('coriza', $event)"
           @update:sintomaTosseSeca="updateSintoma('tosseSeca', $event)"
@@ -133,7 +135,6 @@
           @update:leitoUti="updateConclusaoAtendimento('leitoUti', $event)"
           @update:prontoSocorroOuAtendimento="updateConclusaoAtendimento('prontoSocorroOuAtendimento', $event)"
         />
-        <pre>{{notificacao.conclusaoAtendimento}}</pre>
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
           @update:laboratorioOficial="updateConclusaoAtendimento('laboratorioOficial', $event)"

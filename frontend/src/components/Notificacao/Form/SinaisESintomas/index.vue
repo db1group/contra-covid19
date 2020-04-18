@@ -8,11 +8,13 @@
         :sintomatico="sintomatico"
         :data-inicio-dos-sintomas="dataInicioDosSintomas"
         @update:sintomatico="updateSintomatico"
-        @update:dataInicioDosSintomas="updateDataInicioDosSintomas">
-      </sintomas-gerais>
+        @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
+      />
       <sintomas-respiratorios
         :sintomatico="sintomatico"
         :sintomas="sintomas"
+        @update:febreAferidaReferida="updateFebreAferidaReferida"
+        @update:temperaturaFebre="updateTemperaturaFebre"
         @update:cianoseCentral="updateCianoseCentral"
         @update:congestaoNasal="updateCongestaoNasal"
         @update:coriza="updateCoriza"
@@ -24,8 +26,8 @@
         @update:taquipneia="updateTaquipneia"
         @update:tosseProdutiva="updateTosseProdutiva"
         @update:tosseSeca="updateTosseSeca"
-        @update:tiragemIntercostal="updateTiragemIntercostal">
-      </sintomas-respiratorios>
+        @update:tiragemIntercostal="updateTiragemIntercostal"
+      />
       <outros-sintomas
         :sintomatico="sintomatico"
         :sintomas="sintomas"
@@ -44,9 +46,8 @@
         @update:nausea="updateNausea"
         @update:hipotensao="updateHipotensao"
         @update:vomito="updateVomito"
-        @update:outros="updateOutros">
-      </outros-sintomas>
-
+        @update:outros="updateOutros"
+      />
     </v-container>
   </div>
 </template>
@@ -82,6 +83,12 @@ export default {
     },
     updateDataInicioDosSintomas(dataInicioDosSintomas) {
       this.$emit('update:dataInicioDosSintomas', dataInicioDosSintomas);
+    },
+    updateFebreAferidaReferida(febreAferidaReferida) {
+      this.$emit('update:febreAferidaReferida', febreAferidaReferida);
+    },
+    updateTemperaturaFebre(temperaturaFebre) {
+      this.$emit('update:temperaturaFebre', temperaturaFebre);
     },
     updateCianoseCentral(cianoseCentral) {
       this.$emit('update:cianoseCentral', cianoseCentral);
