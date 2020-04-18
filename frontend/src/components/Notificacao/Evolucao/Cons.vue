@@ -42,8 +42,8 @@
   </div>
 </template>
 <script>
-import Evolucao from '@/entities/Evolucao';
 import NotificacaoEvolucao from '@/entities/NotificacaoEvolucao';
+import Evolucao from '@/entities/Evolucao';
 
 export default {
   props: {

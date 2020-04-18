@@ -14,11 +14,10 @@
  </section>
 </template>
 <script>
-// import NotificacaoService from '@/services/NotificacaoService';
 import HeaderTitle from '@/components/commons/HeaderTitle.vue';
-import Evolucao from '@/entities/Evolucao';
 import EvolucaoForm from '@/components/Notificacao/Evolucao/Form.vue';
 import EvolucaoConsulta from '@/components/Notificacao/Evolucao/Cons.vue';
+import Evolucao from '@/entities/Evolucao';
 
 export default {
   components: {
