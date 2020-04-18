@@ -51,39 +51,39 @@ import NotificacaoEvolucao from '@/entities/NotificacaoEvolucao';
 const EVOLUCOES = [
   {
     id: '1',
-    dataHoraAtualizacao: '01/04/2020 10:00',
-    local: 'Alta com isolamento domiciliar',
-    situacao: 'Suspeito',
+    dtEvolucao: '2020-04-18T15:53:01.553Z',
+    tpLocal: 'Alta com isolamento domiciliar',
+    tpEvolucao: 'Suspeito',
   },
   {
     id: '2',
-    dataHoraAtualizacao: '05/04/2020 10:00',
-    local: 'Hospitalizado – Leito comum',
-    situacao: 'Confirmado',
+    dtEvolucao: '2020-04-18T15:53:01.553Z',
+    tpLocal: 'Hospitalizado – Leito comum',
+    tpEvolucao: 'Confirmado',
   },
   {
     id: '3',
-    dataHoraAtualizacao: '01/04/2020 10:00',
-    local: 'Hospitalizado – Leito comum',
-    situacao: 'Curado',
+    dtEvolucao: '2020-04-18T15:53:01.553Z',
+    tpLocal: 'Hospitalizado – Leito comum',
+    tpEvolucao: 'Curado',
   },
   {
     id: '4',
-    dataHoraAtualizacao: '01/04/2020 10:00',
-    local: 'Alta com isolamento domiciliar',
-    situacao: 'Encerrado',
+    dtEvolucao: '2020-04-18T15:53:01.553Z',
+    tpLocal: 'Alta com isolamento domiciliar',
+    tpEvolucao: 'Encerrado',
   },
   {
     id: '5',
-    dataHoraAtualizacao: '01/04/2020 10:00',
-    local: 'Alta com isolamento domiciliar',
-    situacao: 'Descartado',
+    dtEvolucao: '2020-04-18T15:53:01.553Z',
+    tpLocal: 'Alta com isolamento domiciliar',
+    tpEvolucao: 'Descartado',
   },
   {
     id: '6',
-    dataHoraAtualizacao: '01/04/2020 10:00',
-    local: 'Hospitalizado - Leito UTI',
-    situacao: 'Óbito',
+    dtEvolucao: '2020-04-18T15:53:01.553Z',
+    tpLocal: 'Hospitalizado - Leito UTI',
+    tpEvolucao: 'Óbito',
   },
 ];
 
@@ -114,16 +114,16 @@ export default {
   },
   methods: {
     consultarNotificacoes({ page, itemsPerPage } = this.options) {
-      console.log(EVOLUCOES);
       this.loading = true;
-      const { id } = this.route.params;
-      console.log(id);
+      const { id } = this.$route.params;
       NotificacaoService.findEvolucao({ id, page, itemsPerPage }).then(({ count, data }) => {
+        console.log(count, data);
+        /*
         this.totalEvolucoes = count;
         this.evolucoes = data.map((e) => new NotificacaoEvolucao(e).toRequestBody());
         this.loading = false;
+        */
       });
-      /*
       setTimeout(() => {
         this.notificacao = {
           nome: 'Corey Ekstrom Bothman',
@@ -134,7 +134,6 @@ export default {
         this.totalEvolucoes = this.evolucoes.length;
         this.loading = false;
       }, 2000);
-      */
     },
   },
 };
