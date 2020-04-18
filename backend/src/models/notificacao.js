@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       status: {
-        type: DataTypes.ENUM('ABERTA', 'ENCERRADA', 'EXCLUIDA'),
+        type: DataTypes.ENUM('ABERTO', 'ENCERRADA', 'EXCLUIDA'),
       },
     },
     {},

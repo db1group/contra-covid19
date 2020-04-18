@@ -1,6 +1,8 @@
+const Sequelize = require('sequelize');
 const models = require('../models');
 const Mappers = require('../mapper');
 
+const { Op } = Sequelize;
 /*
   Refatorar para repositório de pessoas ou outro local apropriado
 */
@@ -139,6 +141,45 @@ exports.consultarPaginado = async (req, res) => {
   return res.json({ count: notificacoes.count, data: notificacoesResponse });
 };
 
+const consultarNotificaoesWeb = async (page, limit, search = '') => {
+  const offset = (page - 1) * limit;
+  const optionsConsulta = {
+    where: {
+      status: {
+        [Op.ne]: 'EXCLUIDA',
+      },
+    },
+    attributes: ['id'],
+    include: [{ model: models.Pessoa, attributes: ['nome', 'numeroDocumento', 'telefoneContato'] }, {
+      model: models.NotificacaoCovid19,
+      attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao'],
+    }],
+    order: [['updatedAt', 'DESC']],
+    limit,
+    offset,
+  };
+  if (search !== '') {
+    optionsConsulta.where = {
+      [Op.and]: [
+        { ...optionsConsulta.where },
+        {
+          [Op.or]: [
+            { '$Pessoa.nome$': { [Op.like]: `%${search}%` } },
+            { '$Pessoa.numeroDocumento$': { [Op.like]: `%${search}%` } },
+          ],
+        }],
+    };
+  }
+  return models.Notificacao.findAndCountAll(optionsConsulta);
+};
+
+exports.consultarNotificacoesWeb = async (req, res) => {
+  const { page = 1, itemsPerPage = 10, search = '' } = req.query;
+  const notificacoes = await consultarNotificaoesWeb(page, itemsPerPage, search);
+  const notificacaoConsulta = Mappers.Notificacao.mapearParaConsulta(notificacoes.rows);
+  return res.json({ count: notificacoes.count, data: notificacaoConsulta });
+};
+
 exports.consultarPorId = async (req, res) => {
   const { id } = req.params;
   const notificacaoModel = await consultarNotificacaoPorId(id);
@@ -151,4 +192,22 @@ exports.consultarPorId = async (req, res) => {
   );
 
   return res.json({ data: retorno });
+};
+
+exports.excluirLogicamenteNotificacao = async (req, res) => {
+  const { id } = req.params;
+  await models.Notificacao.update(
+    { status: 'EXCLUIDA' },
+    { where: { id } },
+  );
+  return res.status(204).json();
+};
+
+exports.excluirLoteLogicamenteNotificacao = async (req, res) => {
+  const ids = req.body;
+  await models.Notificacao.update(
+    { status: 'EXCLUIDA' },
+    { where: { id: { [Op.in]: ids } } },
+  );
+  return res.status(204).json();
 };
