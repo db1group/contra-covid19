@@ -109,7 +109,7 @@ export default {
       deep: true,
     },
   },
-  mounted() {
+  created() {
     this.consultarNotificacoes();
   },
   methods: {
