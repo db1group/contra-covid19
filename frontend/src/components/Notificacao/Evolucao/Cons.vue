@@ -5,7 +5,7 @@
         <h4 class="primary--text font-weight-medium title">IDENTIFICAÇÃO DO NOTIFICANTE</h4>
         <v-row dense>
           <v-col>
-            <strong>Nome</strong>
+            <span class="font-weight-bold">Nome</span>
             <p>{{notificacao.nome}}</p>
           </v-col>
           <v-col>
