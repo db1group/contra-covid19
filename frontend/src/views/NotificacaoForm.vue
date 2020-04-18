@@ -130,10 +130,7 @@
         />
         <conclusao-atendimento
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
-          @update:isolamentoDomiciliar="updateConclusaoAtendimento('isolamentoDomiciliar', $event)"
-          @update:leitoComum="updateConclusaoAtendimento('leitoComum', $event)"
-          @update:leitoUti="updateConclusaoAtendimento('leitoUti', $event)"
-          @update:prontoSocorroOuAtendimento="updateConclusaoAtendimento('prontoSocorroOuAtendimento', $event)"
+          @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
         />
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
