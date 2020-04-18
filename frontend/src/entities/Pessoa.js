@@ -15,7 +15,7 @@ export default class Pessoa {
     this.ocupacao = data.ocupacao || '';
     this.endereco = data.endereco || '';
     this.numero = data.numero || '';
-    this.municipioId = data.municipioId || 'ac3227a1-8a09-4b5f-93cd-d6ca43b637a2';
+    this.municipioId = data.municipioId || 'fcf83c0a-8de6-43a5-9845-907f597f56ce';
     this.telefoneResidencial = data.telefoneResidencial || '';
     this.telefoneContato = data.telefoneContato || '';
     this.telefoneCelular = data.telefoneCelular || '';
