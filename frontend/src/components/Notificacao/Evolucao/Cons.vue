@@ -13,7 +13,7 @@
             <p>{{notificacao.documento}}</p>
           </v-col>
           <v-col>
-            <strong>Telefone</strong>
+            <span class="font-weight-bold">Telefone</span>
             <p>{{notificacao.telefone}}</p>
           </v-col>
         </v-row>
