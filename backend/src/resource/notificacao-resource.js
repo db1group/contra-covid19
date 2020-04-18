@@ -211,3 +211,22 @@ exports.excluirLoteLogicamenteNotificacao = async (req, res) => {
   );
   return res.status(204).json();
 };
+
+exports.consultarNotificacaoEvolucao = async (req, res) => {
+  const { id } = req.params;
+  const { page = 1, itemsPerPage = 10 } = req.query;
+  const offset = (page - 1) * itemsPerPage;
+
+  const notificacaoEvolucao = await models.Notificacao.findAndCountAll({
+    where: { id },
+    attributes: ['id', 'status'],
+    include: [{
+      model: models.Pessoa,
+      attributes: ['id', 'nome', 'numeroDocumento', 'telefoneContato'],
+    },
+    { model: models.NotificacaoEvolucao, limit: itemsPerPage, offset },
+    ],
+  });
+
+  return res.json({ data: notificacaoEvolucao });
+};
