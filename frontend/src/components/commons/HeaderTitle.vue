@@ -9,6 +9,11 @@
 </template>
 <script>
 export default {
-  props: ['title'],
+  props: {
+    title: {
+      type: String,
+      required: true, // ou default: '', é importante sempre obrigar a passar um valor, ou informar um default
+    },
+  },
 };
 </script>
