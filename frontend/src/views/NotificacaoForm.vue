@@ -140,6 +140,7 @@
           @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
         />
         <contato-com-suspeito/>
+        <contato-com-caso-confirmado/>
         <observacoes v-model="notificacao.observacoes"/>
       </v-form>
       <botao-enviar @click="send"/>
@@ -173,6 +174,7 @@ import InformacoesComplementares from '@/components/Notificacao/Form/Informacoes
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
 import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
 import ContatoComSuspeito from '@/components/Notificacao/Form/ContatoComSuspeito/index.vue';
+import ContatoComCasoConfirmado from '@/components/Notificacao/Form/ContatoComCasoConfirmado/index.vue';
 import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
@@ -190,6 +192,7 @@ export default {
     ConclusaoAtendimento,
     RealizadoColeta,
     ContatoComSuspeito,
+    ContatoComCasoConfirmado,
     Observacoes,
     BotaoEnviar,
   },
