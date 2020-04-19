@@ -1,8 +1,8 @@
 ---
-name: "\U0001F680 Pedido de nova implementação"
-about: "Eu tenho uma sugestão \U0001F642)!"
+name: "\U0001F680 Pedido de nova implementação [Backend]"
+about: "Eu tenho uma sugestão \U0001F642!"
 title: ''
-labels: enhancement, needs triage
+labels: enhancement, needs triage, Back
 assignees: ''
 
 ---
