@@ -11,9 +11,11 @@ router.post('/notificacoes',
 router.get('/notificacoes', NotificacaoResource.consultarPaginado);
 router.get('/notificacoes/consulta', NotificacaoResource.consultarNotificacoesWeb);
 router.get('/notificacoes/:id', NotificacaoResource.consultarPorId);
-router.get('/notificacoes/evolucao/:id', NotificacaoResource.consultarNotificacaoEvolucao);
 
 router.delete('/notificacoes/:id', NotificacaoResource.excluirLogicamenteNotificacao);
 router.delete('/notificacoes', NotificacaoResource.excluirLoteLogicamenteNotificacao);
+
+router.get('/notificacoes/evolucao/:id', NotificacaoResource.consultarNotificacaoEvolucao);
+router.post('/notificacoes/evolucao', NotificacaoResource.salvarEvolucao);
 
 module.exports = router;
