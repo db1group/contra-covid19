@@ -4,10 +4,10 @@
       <v-col cols="12">
         <label class="primary--text body-1 font-weight-bold">Sintomas</label>
         <v-checkbox
-          :input-value="existemSintomas"
+          :input-value="sintomatico"
           label="Sintomático"
           hide-details
-          @change="updateExistemSintomas"
+          @change="updateSintomatico"
         />
       </v-col>
       <v-col
@@ -17,23 +17,14 @@
         md="7"
       >
         <v-text-field
+          :value="dataInicioDosSintomas"
           label="Data de início dos sintomas *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
-          :disabled="!existemSintomas"
-        />
-      </v-col>
-      <v-col
-        class="pl-8"
-        cols="12"
-        sm="8"
-        md="7"
-      >
-        <v-text-field
-          label="Temperatura *"
-          suffix="°C"
-          v-mask="'##,#'"
-          :disabled="!existemSintomas"
+          :disabled="!sintomatico"
+          :rules="rules.dataInicioDosSintomas"
+          validate-on-blur
+          @input="updateDataInicioDosSintomas"
         />
       </v-col>
     </v-row>
@@ -41,16 +32,48 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
+import { required, dateFormat } from '@/validations/CommonValidations';
 
 export default {
   directives: { mask },
+  props: {
+    sintomatico: {
+      type: Boolean,
+      required: true,
+    },
+    dataInicioDosSintomas: {
+      type: String,
+      required: true,
+    },
+  },
   data: () => ({
-    existemSintomas: false,
+    rules: {
+      dataInicioDosSintomas: [],
+    },
   }),
   methods: {
-    updateExistemSintomas(existemSintomas) {
-      this.existemSintomas = existemSintomas;
+    updateSintomatico(sintomatico) {
+      this.$emit('update:sintomatico', sintomatico);
     },
+    updateDataInicioDosSintomas(dataInicioDosSintomas) {
+      this.$emit('update:dataInicioDosSintomas', dataInicioDosSintomas);
+    },
+    requiredIfSintomatico(value) {
+      if (!this.sintomatico) {
+        return true;
+      }
+      return required(value, 'O campo é obrigatório para casos sintomáticos');
+    },
+    dateFormatIfSintomatico(value) {
+      if (!this.sintomatico) {
+        return true;
+      }
+      return dateFormat(value);
+    },
+  },
+  created() {
+    this.rules.dataInicioDosSintomas.push(this.requiredIfSintomatico);
+    this.rules.dataInicioDosSintomas.push(this.dateFormatIfSintomatico);
   },
 };
 </script>

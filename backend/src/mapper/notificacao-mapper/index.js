@@ -1,47 +1,49 @@
 const {
-    requestParaModeloNotificacao,
-    requestParaModeloNotificacaoHistorico,
-} = require("./request-para-model");
+  requestParaModeloNotificacao,
+  requestParaModeloNotificacaoCovid19,
+} = require('./request-para-model');
 const {
-    notificacaoParaResponse,
-    extrairSuspeito,
-    extrairSintomas,
-    extrairComorbidades,
-    extrairInformacaoComplementar,
-    extrairVinculoEpidemiologico,
-    extrairConclusaoAtendimento,
-} = require("./model-para-response")
+  notificacaoParaResponse,
+  extrairSuspeito,
+  extrairSintomas,
+  extrairComorbidades,
+  extrairInformacaoComplementar,
+  extrairVinculoEpidemiologico,
+  extrairConclusaoAtendimento,
+} = require('./model-para-response');
+const mapearParaConsulta = require('./consulta');
 
 module.exports = {
-    mapearParaNotificacao: (request) => {
-        const notificacao = requestParaModeloNotificacao(request);
-        const notificacaoHistorico = requestParaModeloNotificacaoHistorico(request);
-        return {
-            ...notificacao,
-            notificacaoHistorico: {
-                ...notificacaoHistorico
-            }
-        }
-    },
-    mapearParaResponse: (notificacao, notificacaoHistorico) => {
-        let result = {};
-        const suspeito = extrairSuspeito(notificacao);
-        const sintomas = extrairSintomas(notificacaoHistorico);
-        const comorbidades = extrairComorbidades(notificacaoHistorico);
-        const informacaoComplementar = extrairInformacaoComplementar(notificacaoHistorico);
-        const vinculoEpidemiologico = extrairVinculoEpidemiologico(notificacaoHistorico);
-        const conclusaoAtendimento = extrairConclusaoAtendimento(notificacaoHistorico);
-        result = notificacaoParaResponse(notificacao, notificacaoHistorico, result);
-        result = {
-            ...result,
-            suspeito,
-            sintomas,
-            comorbidades,
-            informacaoComplementar,
-            vinculoEpidemiologico,
-            conclusaoAtendimento,
-            observacoes: notificacao.observacoes,
-        }
-        return result;
-    }
-}
+  mapearParaNotificacao: (request) => {
+    const notificacao = requestParaModeloNotificacao(request);
+    const notificacaoCovid19 = requestParaModeloNotificacaoCovid19(request);
+    return {
+      ...notificacao,
+      notificacaoCovid19: {
+        ...notificacaoCovid19,
+      },
+    };
+  },
+  mapearParaResponse: (notificacao, notificacaoCovid19) => {
+    let result = {};
+    const suspeito = extrairSuspeito(notificacao);
+    const sintomas = extrairSintomas(notificacaoCovid19);
+    const comorbidades = extrairComorbidades(notificacaoCovid19);
+    const informacaoComplementar = extrairInformacaoComplementar(notificacaoCovid19);
+    const vinculoEpidemiologico = extrairVinculoEpidemiologico(notificacaoCovid19);
+    const conclusaoAtendimento = extrairConclusaoAtendimento(notificacaoCovid19);
+    result = notificacaoParaResponse(notificacao, notificacaoCovid19, result);
+    result = {
+      ...result,
+      suspeito,
+      sintomas,
+      comorbidades,
+      informacaoComplementar,
+      vinculoEpidemiologico,
+      conclusaoAtendimento,
+      observacoes: notificacao.observacoes,
+    };
+    return result;
+  },
+  mapearParaConsulta,
+};

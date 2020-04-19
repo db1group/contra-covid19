@@ -1,35 +1,63 @@
-"use strict";
 module.exports = (sequelize, DataTypes) => {
   const Notificacao = sequelize.define(
-    "Notificacao",
+    'Notificacao',
     {
-      userId: DataTypes.UUID,
-      unidadeSaudeId: DataTypes.UUID,
-      notificadorId: DataTypes.UUID,
-      bairroId: DataTypes.UUID,
-      pessoaId: DataTypes.UUID,
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
+      userId: {
+        type: DataTypes.UUID,
+      },
+      unidadeSaudeId: {
+        type: DataTypes.UUID,
+      },
+      notificadorId: {
+        type: DataTypes.UUID,
+      },
+      bairroId: {
+        type: DataTypes.UUID,
+      },
+      pessoaId: {
+        type: DataTypes.UUID,
+      },
+      profissaoId: {
+        type: DataTypes.UUID,
+      },
+      nomeNotificador: {
+        type: DataTypes.STRING,
+      },
+      status: {
+        type: DataTypes.ENUM('ABERTO', 'ENCERRADA', 'EXCLUIDA'),
+      },
     },
-    {}
+    {},
   );
-  Notificacao.associate = function (models) {
+  Notificacao.associate = (models) => {
     Notificacao.belongsTo(models.UnidadeSaude, {
-      foreignKey: "unidadeSaudeId",
+      foreignKey: 'unidadeSaudeId',
     });
     Notificacao.belongsTo(models.User, {
-      foreignKey: "userId",
+      foreignKey: 'userId',
     });
     Notificacao.belongsTo(models.ProfissionalSaude, {
-      foreignKey: "notificadorId",
+      foreignKey: 'notificadorId',
     });
-    Notificacao.belongsTo(models.ProfissionalSaude, {
-       foreignKey: "notificadorId",
-     });
-    Notificacao.belongsTo(models.Bairro);
+    Notificacao.belongsTo(models.Bairro, {
+      foreignKey: 'bairroId',
+    });
     Notificacao.belongsTo(models.Pessoa, {
-      foreignKey: "pessoaId",
+      foreignKey: 'pessoaId',
     });
-    Notificacao.hasOne(models.NotificacaoHistorico, {
-      foreignKey: "notificacaoId",
+    Notificacao.hasOne(models.NotificacaoCovid19, {
+      foreignKey: 'notificacaoId',
+    });
+    Notificacao.belongsTo(models.Profissao, {
+      foreignKey: 'profissaoId',
+    });
+    Notificacao.hasMany(models.NotificacaoEvolucao, {
+      foreignKey: 'notificacaoId',
     });
   };
   return Notificacao;

@@ -1,9 +1,14 @@
-'use strict';
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    email: DataTypes.STRING
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    email: DataTypes.STRING,
   }, {});
-  User.associate = function(models) {
+  User.associate = (_) => {
     // associations can be defined here
   };
   return User;
