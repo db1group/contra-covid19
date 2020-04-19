@@ -1,5 +1,5 @@
 ---
-name: "\U0001F680 Pedido de nova implementação"
+name: "\U0001f519 Pedido de nova implementação"
 about: "Eu tenho uma sugestão \U0001F642)!"
 title: ''
 labels: enhancement, needs triage

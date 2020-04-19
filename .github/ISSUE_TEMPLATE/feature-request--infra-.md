@@ -1,20 +1,23 @@
 ---
-name: Feature request [Infra]
-about: Suggest an idea for this project
+name: "\U0001f527 Pedido de nova implementação [Infra]"
+about: "Eu tenho uma sugestão \U0001F642)!"
 title: ''
-labels: ''
+labels: Infra, enhancement, needs triage
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## Feature Request
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**O seu pedido de nova implementação está ligado a algum problema? Por favor, descreva.**
+Uma descrição clara e concisa de qual problema é: Ex.: Eu tenho um problema quando [...]
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**Descreva a solução que você gostaria**
+Uma descrição clara e concisa de como você gostaria que as coisas acontecessem. Considere as desvantagens também.
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**Descreva qualquer alternativa considerada**
+Existe uma outra forma de fazer a mesma coisa no sistema? Existe outro sistema que faz essa tarefa? Descreva.
+
+**Documentação, Adoção, Estratégia de migração**
+Se você puder, explique como os usuários poderão utilizar a sua feature e se possível, adicione documentação.
+Protótipos, screenshots e requisitos e etc.
