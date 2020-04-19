@@ -2,7 +2,7 @@
 name: "\U0001f519 Pedido de nova implementação"
 about: "Eu tenho uma sugestão \U0001F642)!"
 title: ''
-labels: enhancement, needs triage
+labels: Back, enhancement, needs triage
 assignees: ''
 
 ---
