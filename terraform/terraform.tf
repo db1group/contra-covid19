@@ -14,19 +14,19 @@ data "aws_caller_identity" "current" {}
 provider "aws" {
   profile    = "default"
   region     = "us-east-1"
-#  access_key = var.aws_access_key_id
-#  secret_key = var.aws_secret_access_key
 }
 
 variable "project" {
   description = "Project"
 }
 
-
 variable "environment" {
   description = "Environment"
 }
 
+variable "is_production" {
+  description = "Define if is production environment"
+}
 
 ############# Network #############
 
@@ -49,7 +49,7 @@ resource "aws_vpc" "main" {
 
   tags = {
     Name = "${var.project}-${var.environment}"
-  }  
+  }
 }
 
 resource "aws_subnet" "subnet_a" {
@@ -298,6 +298,35 @@ resource "aws_autoscaling_group" "ecs_autoscaling_group" {
   health_check_type           = "EC2"
 }
 
+############ ECR ############
+
+resource "aws_ecr_repository" "keycloak" {
+  name                 = "${var.project}/keycloak"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+resource "aws_ecr_repository" "backend" {
+  name                 = "${var.project}/backend"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+resource "aws_ecr_repository" "frontend" {
+  name                 = "${var.project}/frontend"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
 ############ ECS ############
 
 resource "aws_ecs_cluster" "ecs_cluster" {
@@ -316,7 +345,7 @@ resource "aws_route53_zone" "hosted_zone" {
 
 resource "aws_route53_record" "www" {
   zone_id = "${aws_route53_zone.hosted_zone.zone_id}"
-  name    = "www.${aws_route53_zone.hosted_zone.name}"
+  name    = "${var.is_production == true ? "www.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-www.${aws_route53_zone.hosted_zone.name}"}"
   type    = "CNAME"
   ttl     = "300"
   records = ["${aws_alb.ecs_load_balancer.dns_name}"]
@@ -324,7 +353,7 @@ resource "aws_route53_record" "www" {
 
 resource "aws_route53_record" "auth" {
   zone_id = "${aws_route53_zone.hosted_zone.zone_id}"
-  name    = "auth.${aws_route53_zone.hosted_zone.name}"
+  name    = "${var.is_production == true ? "auth.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-auth.${aws_route53_zone.hosted_zone.name}"}"
   type    = "CNAME"
   ttl     = "300"
   records = ["${aws_alb.ecs_load_balancer.dns_name}"]
@@ -332,7 +361,7 @@ resource "aws_route53_record" "auth" {
 
 resource "aws_route53_record" "api" {
   zone_id = "${aws_route53_zone.hosted_zone.zone_id}"
-  name    = "api.${aws_route53_zone.hosted_zone.name}"
+  name    = "${var.is_production == true ? "api.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-api.${aws_route53_zone.hosted_zone.name}"}"
   type    = "CNAME"
   ttl     = "300"
   records = ["${aws_alb.ecs_load_balancer.dns_name}"]
@@ -340,17 +369,13 @@ resource "aws_route53_record" "api" {
 
 resource "aws_route53_record" "database" {
   zone_id = "${aws_route53_zone.hosted_zone.zone_id}"
-  name    = "database.${aws_route53_zone.hosted_zone.name}"
+  name    = "${var.is_production == true ? "database.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-database.${aws_route53_zone.hosted_zone.name}"}"
   type    = "CNAME"
   ttl     = "300"
   records = ["${aws_db_instance.database.address}"]
 }
 
 ############# Keycloak #############
-
-variable "pg_keycloak_url" {
-  description = "Keycloak Database URL"
-}
 
 variable "pg_keycloak_username" {
   description = "Keycloak Database Username"
@@ -395,7 +420,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_http" {
 
   condition {
     field  = "host-header"
-    values = ["auth.${var.hosted_zone}"]
+    values = ["${var.is_production == true ? "auth.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-auth.${aws_route53_zone.hosted_zone.name}"}"]
   }
 }
 
@@ -410,7 +435,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_http_keycloak" {
 
   condition {
     field  = "host-header"
-    values = ["auth.${var.hosted_zone}"]
+    values = ["${var.is_production == true ? "auth.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-auth.${aws_route53_zone.hosted_zone.name}"}"]
   }
 }
 
@@ -425,7 +450,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_https_keycloak" {
 
   condition {
     field  = "host-header"
-    values = ["auth.${var.hosted_zone}"]
+    values = ["${var.is_production == true ? "auth.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-auth.${aws_route53_zone.hosted_zone.name}"}"]
   }
 }
 
@@ -469,15 +494,15 @@ resource "aws_ecs_task_definition" "keycloak" {
     "cpu": 10,
     "environment" : [
       { 
-        "name" : "PG_URL", 
-        "value" : "${var.pg_keycloak_url}" 
+        "name" : "PG_DATABASE_URL", 
+        "value" : "jdbc:postgresql://${aws_db_instance.database.address}:5432/${var.project}-keycloak" 
       },
       { 
-        "name" : "PG_USERNAME", 
+        "name" : "PG_DATABASE_USERNAME", 
         "value" : "${var.pg_keycloak_username}" 
       },
       { 
-        "name" : "PG_PASSWORD", 
+        "name" : "PG_DATABASE_PASSWORD", 
         "value" : "${var.pg_keycloak_password}" 
       },
       { 
@@ -513,10 +538,6 @@ resource "aws_ecs_service" "ecs_service_keycloak" {
 }
 
 ############# Backend #############
-
-variable "pg_backend_url" {
-  description = "Backend Database URL"
-}
 
 variable "pg_backend_username" {
   description = "Backend Database Username"
@@ -556,7 +577,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_http_backend" {
 
   condition {
     field  = "host-header"
-    values = ["api.${var.hosted_zone}"]
+    values = ["${var.is_production == true ? "api.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-api.${aws_route53_zone.hosted_zone.name}"}"]
   }
 }
 
@@ -571,7 +592,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_https_backend" {
 
   condition {
     field  = "host-header"
-    values = ["api.${var.hosted_zone}"]
+    values = ["${var.is_production == true ? "api.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-api.${aws_route53_zone.hosted_zone.name}"}"]
   }
 }
 
@@ -595,15 +616,15 @@ resource "aws_ecs_task_definition" "backend" {
     "cpu": 10,
     "environment" : [
       { 
-        "name" : "PG_BACKEND_URL", 
-        "value" : "${var.pg_backend_url}" 
+        "name" : "PG_DATABASE_URL", 
+        "value" : "jdbc:postgresql://${aws_db_instance.database.address}:5432/${var.project}-backend" 
       },
       { 
-        "name" : "PG_USERNAME", 
+        "name" : "PG_DATABASE_USERNAME", 
         "value" : "${var.pg_backend_username}" 
       },
       { 
-        "name" : "PG_PASSWORD", 
+        "name" : "PG_DATABASE_PASSWORD", 
         "value" : "${var.pg_backend_password}" 
       }
     ],
@@ -656,10 +677,6 @@ resource "aws_ecs_service" "ecs_service_backend" {
 
 ############# Frontend #############
 
-variable "backend_url" {
-  description = "Backend URL"
-}
-
 resource "aws_alb_target_group" "ecs_target_group_frontend" {
     name                = "${var.project}-${var.environment}-frontend"
     port                = "8282"
@@ -690,7 +707,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_http_frontend" {
 
   condition {
     field  = "host-header"
-    values = ["www.${var.hosted_zone}"]
+    values = ["${var.is_production == true ? "www.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-www.${aws_route53_zone.hosted_zone.name}"}"]
   }
 }
 
@@ -705,7 +722,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_https_frontend" {
 
   condition {
     field  = "host-header"
-    values = ["www.${var.hosted_zone}"]
+    values = ["${var.is_production == true ? "www.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-www.${aws_route53_zone.hosted_zone.name}"}"]
   }
 }
 
@@ -729,8 +746,12 @@ resource "aws_ecs_task_definition" "frontend" {
     "cpu": 10,
     "environment" : [
       { 
-        "name" : "BACKEND_URL", 
-        "value" : "${var.backend_url}" 
+        "name" : "BACKEND_URL",
+        "value" : "${var.is_production == true ? "api.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-api.${aws_route53_zone.hosted_zone.name}"}"
+      },
+      { 
+        "name" : "AUTH_URL",
+        "value" : "${var.is_production == true ? "auth.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-auth.${aws_route53_zone.hosted_zone.name}"}"
       }
     ],
     "requiresAttributes": [
