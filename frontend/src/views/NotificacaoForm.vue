@@ -139,6 +139,7 @@
           @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"
           @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
         />
+        <contato-com-suspeito/>
         <observacoes v-model="notificacao.observacoes"/>
       </v-form>
       <botao-enviar @click="send"/>
@@ -171,6 +172,7 @@ import Comorbidades from '@/components/Notificacao/Form/Comorbidades/index.vue';
 import InformacoesComplementares from '@/components/Notificacao/Form/InformacoesComplementares/index.vue';
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
 import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
+import ContatoComSuspeito from '@/components/Notificacao/Form/ContatoComSuspeito/index.vue';
 import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
@@ -187,6 +189,7 @@ export default {
     InformacoesComplementares,
     ConclusaoAtendimento,
     RealizadoColeta,
+    ContatoComSuspeito,
     Observacoes,
     BotaoEnviar,
   },
