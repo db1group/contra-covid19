@@ -13,7 +13,7 @@ export default class InformacoesComplementares {
     this.historicoDeViagem = data.historicoDeViagem || false;
     this.dataDaViagem = data.dataDaViagem || '';
     this.localDaViagem = data.localDaViagem || '';
-    this.recebeuVacinaDaGripeNosUltimosDozeMeses = data.recebeuVacinaDaGripeNosUltimosDozeMeses || false;
+    this.recebeuVacinaDaGripeNosUltimosDozeMeses = data.recebeuVacinaDaGripeNosUltimosDozeMeses || '';
   }
 
   toRequestBody() {

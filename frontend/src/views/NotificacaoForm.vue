@@ -43,6 +43,8 @@
           :sintomas="notificacao.sintomas"
           @update:sintomatico="updateSintomatico"
           @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
+          @update:febreAferidaReferida="updateSintoma('febreAferidaReferida', $event)"
+          @update:temperaturaFebre="updateSintoma('temperaturaFebre', $event)"
           @update:congestaoNasal="updateSintoma('congestaoNasal', $event)"
           @update:sintomaCoriza="updateSintoma('coriza', $event)"
           @update:sintomaTosseSeca="updateSintoma('tosseSeca', $event)"
@@ -103,6 +105,10 @@
           @update:outraPneumopatiaCronica="updateComorbidade('outraPneumopatiaCronica', $event)"
           @update:doencaHepaticaCronica="updateComorbidade('doencaHepaticaCronica', $event)"
           @update:obesidade="updateComorbidade('obesidade', $event)"
+          @update:hipertensao="updateComorbidade('hipertensao', $event)"
+          @update:infeccaoHIV="updateComorbidade('infeccaoHIV', $event)"
+          @update:neoplasia="updateComorbidade('neoplasia', $event)"
+          @update:tabagismo="updateComorbidade('tabagismo', $event)"
           @update:outros="updateComorbidade('outros', $event)"
         />
         <informacoes-complementares
@@ -124,15 +130,14 @@
         />
         <conclusao-atendimento
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
-          @update:isolamentoDomiciliar="updateConclusaoAtendimento('isolamentoDomiciliar', $event)"
-          @update:leitoComum="updateConclusaoAtendimento('leitoComum', $event)"
-          @update:leitoUti="updateConclusaoAtendimento('leitoUti', $event)"
-          @update:prontoSocorroOuAtendimento="updateConclusaoAtendimento('prontoSocorroOuAtendimento', $event)"
+          @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
         />
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
           @update:laboratorioOficial="updateConclusaoAtendimento('laboratorioOficial', $event)"
           @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
+          @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"
+          @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
         />
         <observacoes v-model="notificacao.observacoes"/>
       </v-form>

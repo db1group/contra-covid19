@@ -12,6 +12,10 @@ export default class Comorbidades {
     this.asma = data.asma || false;
     this.outraPneumopatiaCronica = data.outraPneumopatiaCronica || false;
     this.obesidade = data.obesidade || false;
+    this.hipertensao = data.hipertensao || false;
+    this.infeccaoHIV = data.infeccaoHIV || false;
+    this.neoplasia = data.neoplasia || false;
+    this.tabagismo = data.tabagismo || false;
     this.outros = data.outros || '';
   }
 }

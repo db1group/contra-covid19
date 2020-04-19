@@ -9,7 +9,7 @@
       <v-col cols="6">
         <v-checkbox
           :input-value="sintomas.adiamiaOuFraqueza"
-          label="ADIAMIA / FRAQUEZA"
+          label="ADINAMIA / FRAQUEZA"
           hide-details
           :disabled="!sintomatico"
           @change="updateAdiamiaOuFraqueza"
@@ -51,7 +51,7 @@
         />
         <v-checkbox
           :input-value="sintomas.dificuldadeDeglutir"
-          label="DIFICULDADE DEGLUTIR"
+          label="DIFICULDADE DE DEGLUTIR"
           hide-details
           :disabled="!sintomatico"
           @change="updateDificuldadeDeglutir"
