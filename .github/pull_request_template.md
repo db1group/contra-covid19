@@ -1,5 +1,9 @@
 ### Qualquer submissão:
-* [ ] Você criou uma [Issue](https://github.com/db1group/contra-covid19/issues) para esta alteração?
+Você está subindo o código de uma Issue?
+* [ ] Você vinculou sua issue ao PR?
+Se você não está subindo código de uma issue:
+* [ ] Você chegou a criar a issue antes de fazer o PR?
+
 * [ ] Verificou se não há outro [Pull Requests](../../../pulls) aberto para a mesma alteração?
 * [ ] Adicionou esse PR ao projeto de [evolução](https://github.com/db1group/contra-covid19/projects/1) ou [bug](https://github.com/db1group/contra-covid19/projects/2)?
 * [ ] Vinculou este PR a uma Issue ([ou está seguindo os padrões para fechamento automático](https://help.github.com/pt/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue))?
