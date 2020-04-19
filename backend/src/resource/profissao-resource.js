@@ -8,7 +8,7 @@ exports.consultaPorNome = async (req, res) => {
   const profissoes = await models.Profissao.findAll({
     where: {
       nome: {
-        [Op.like]: `%${nome}%`,
+        [Op.like]: `%${nome || '%'}%`,
       },
     },
     limit: 10,
