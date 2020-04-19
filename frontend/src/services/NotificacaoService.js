@@ -14,4 +14,13 @@ export default {
   deleteLote(ids) {
     return http.delete('/notificacoes', { data: ids });
   },
+  findEvolucao({ id, page, itemsPerPage }) {
+    /*
+    return http.get(`/notificacoes/evolucao/${id}?page=${page}&itemsPerPage=${itemsPerPage}`)
+      .then(({ data }) => data);
+    */
+    console.log(id);
+    return http.get(`/notificacoes/consulta?page=${page}&itemsPerPage=${itemsPerPage}`)
+      .then(({ data }) => data);
+  },
 };

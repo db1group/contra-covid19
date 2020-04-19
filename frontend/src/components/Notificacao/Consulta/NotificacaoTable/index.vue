@@ -9,6 +9,7 @@
       item-key="id"
       :options.sync="options"
       :server-items-length="totalNotif"
+      @update:options="consultarNotificacoes"
       :loading="loading"
       loading-text="Carregando as notificações."
       no-data-text="Não há notificações até o momento."
@@ -39,6 +40,7 @@
         <v-chip class="d-block text-center" :color="getColor(item.situacao)" dark>{{ item.situacao }}</v-chip>
       </template>
       <template v-slot:item.actions="{ item }">
+        <v-btn text small color="primary" :to="'/evolucao/' + item.id">EVOLUÇÃO</v-btn>
         <v-btn text small color="red" @click="excluirItem(item)">EXCLUIR</v-btn>
       </template>
     </v-data-table>
@@ -65,18 +67,10 @@ export default {
       { text: 'Notificação', value: 'dataNotificacao' },
       { text: 'Telefone', value: 'telefone' },
       { text: 'Situação', value: 'situacao', width: '185px' },
-      { sortable: false, value: 'actions' },
+      { sortable: false, value: 'actions', width: '210px' },
     ],
   }),
-  watch: {
-    options: {
-      handler() {
-        this.consultarNotificacoes();
-      },
-      deep: true,
-    },
-  },
-  mounted() {
+  created() {
     this.consultarNotificacoes();
   },
   methods: {
