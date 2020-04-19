@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text title">
-      10. CONTATO COM SUSPEITO
+      11. CONTATO COM CASO CONFIRMADO LABORATORIALMENTE PARA SARS-CoV2
     </h4>
     <v-container
       fluid
@@ -31,7 +31,7 @@
         </v-col>
         <v-col cols="12">
           <v-text-field
-            label="Nome da pessoa suspeita"
+            label="Nome do caso fonte"
           />
         </v-col>
       </v-row>

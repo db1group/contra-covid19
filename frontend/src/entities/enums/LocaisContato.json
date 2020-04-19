@@ -1,0 +1,14 @@
+[
+  {
+    "value": "DOMICILIO",
+    "label": "Domicílio"
+  },
+  {
+    "value": "UNIDADE_SAUDE",
+    "label": "Unidade de saúde"
+  },
+  {
+    "value": "LOCAL_TRABALHO",
+    "label": "Local de trabalho"
+  }
+]
