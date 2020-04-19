@@ -84,6 +84,14 @@ const salvarNotificacao = async (notificacao) => {
   const novaNotificacao = await models.Notificacao.create(notificacao);
   const { id: notificacaoId } = novaNotificacao;
   await models.NotificacaoCovid19.create({ notificacaoId, ...notificacao.notificacaoCovid19 });
+
+  await models.NotificacaoEvolucao.create({
+    notificacaoId,
+    dtEvolucao: new Date(),
+    tpEvolucao: 'SUSPEITO',
+    tpLocal: 'Alta com isolamento domiciliar',
+  });
+
   return consultarNotificacaoPorId(notificacaoId);
 };
 
@@ -219,14 +227,88 @@ exports.consultarNotificacaoEvolucao = async (req, res) => {
 
   const notificacaoEvolucao = await models.Notificacao.findAndCountAll({
     where: { id },
-    attributes: ['id', 'status'],
+    attributes: ['status'],
     include: [{
       model: models.Pessoa,
-      attributes: ['id', 'nome', 'numeroDocumento', 'telefoneContato'],
+      attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
     },
     { model: models.NotificacaoEvolucao, limit: itemsPerPage, offset },
     ],
   });
 
   return res.json({ data: notificacaoEvolucao });
+};
+
+const validarNotificacaoFinalizada = async (evolucao) => {
+  const notificacaoFinalizada = await models.Notificacao.findOne({
+    attributes: ['status'],
+    where: {
+      id: evolucao.notificacaoId,
+      [Op.or]: [{ status: 'ENCERRADA' }, { status: 'EXCLUIDA' }],
+    },
+  });
+
+  if (notificacaoFinalizada) {
+    throw new Error(`Não é possivel adicionar nova evolução pois a notificação está ${
+      notificacaoFinalizada.status}.`);
+  }
+};
+
+const validarPossuiConfirmacao = async (evolucao) => {
+  if (!(evolucao.tpEvolucao === 'CURA' || evolucao.tpEvolucao === 'OBITO')) {
+    return;
+  }
+
+  const evolucaoConfirmado = await models.NotificacaoEvolucao.findOne({
+    attributes: ['tpEvolucao'],
+    where: {
+      notificacaoId: evolucao.notificacaoId,
+      tpEvolucao: 'CONFIRMADO',
+    },
+  });
+
+  if (!evolucaoConfirmado) {
+    throw new Error(`Não é possivel atualizar para ${evolucao.tpEvolucao
+    } pois não existe atualização de confirmação.`);
+  }
+};
+
+const encerrarNotificacao = async (evolucao, t) => {
+  const deveEncerrar = (evolucao.tpEvolucao === 'CURA'
+        || evolucao.tpEvolucao === 'DESCARTADO'
+        || evolucao.tpEvolucao === 'ENCERRADO'
+        || evolucao.tpEvolucao === 'OBITO');
+
+  if (!deveEncerrar) {
+    return;
+  }
+
+  await models.Notificacao.update(
+    { status: 'ENCERRADA' },
+    {
+      where: { id: evolucao.notificacaoId },
+      transaction: t,
+    },
+  );
+};
+
+exports.salvarEvolucao = async (req, res) => {
+  try {
+    const result = await models.sequelize.transaction(async (t) => {
+      const evolucaoReq = req.body;
+
+      await validarNotificacaoFinalizada(evolucaoReq);
+      await validarPossuiConfirmacao(evolucaoReq);
+
+      const evolucao = await models.NotificacaoEvolucao.create(evolucaoReq, { transaction: t });
+
+      await encerrarNotificacao(evolucaoReq, t);
+      return evolucao;
+    });
+
+    return res.json({ data: result });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json({ error: err.message });
+  }
 };
