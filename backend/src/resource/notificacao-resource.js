@@ -89,6 +89,7 @@ const salvarNotificacao = async (notificacao) => {
     notificacaoId,
     dtEvolucao: new Date(),
     tpEvolucao: 'SUSPEITO',
+    tpLocal: 'Alta com isolamento domiciliar',
   });
 
   return consultarNotificacaoPorId(notificacaoId);
@@ -240,6 +241,7 @@ exports.consultarNotificacaoEvolucao = async (req, res) => {
 
 const validarNotificacaoFinalizada = async (evolucao) => {
   const notificacaoFinalizada = await models.Notificacao.findOne({
+    attributes: ['status'],
     where: {
       id: evolucao.notificacaoId,
       [Op.or]: [{ status: 'ENCERRADA' }, { status: 'EXCLUIDA' }],
@@ -258,6 +260,7 @@ const validarPossuiConfirmacao = async (evolucao) => {
   }
 
   const evolucaoConfirmado = await models.NotificacaoEvolucao.findOne({
+    attributes: ['tpEvolucao'],
     where: {
       notificacaoId: evolucao.notificacaoId,
       tpEvolucao: 'CONFIRMADO',
@@ -270,16 +273,40 @@ const validarPossuiConfirmacao = async (evolucao) => {
   }
 };
 
+const encerrarNotificacao = async (evolucao, t) => {
+  const deveEncerrar = (evolucao.tpEvolucao === 'CURA'
+        || evolucao.tpEvolucao === 'DESCARTADO'
+        || evolucao.tpEvolucao === 'ENCERRADO'
+        || evolucao.tpEvolucao === 'OBITO');
+
+  if (!deveEncerrar) {
+    return;
+  }
+
+  await models.Notificacao.update(
+    { status: 'ENCERRADA' },
+    {
+      where: { id: evolucao.notificacaoId },
+      transaction: t,
+    },
+  );
+};
+
 exports.salvarEvolucao = async (req, res) => {
   try {
-    const evolucaoReq = req.body;
+    const result = await models.sequelize.transaction(async (t) => {
+      const evolucaoReq = req.body;
 
-    await validarNotificacaoFinalizada(evolucaoReq);
-    await validarPossuiConfirmacao(evolucaoReq);
+      await validarNotificacaoFinalizada(evolucaoReq);
+      await validarPossuiConfirmacao(evolucaoReq);
 
-    const evolucao = await models.NotificacaoEvolucao.create(evolucaoReq);
+      const evolucao = await models.NotificacaoEvolucao.create(evolucaoReq, { transaction: t });
 
-    return res.json({ data: evolucao });
+      await encerrarNotificacao(evolucaoReq, t);
+      return evolucao;
+    });
+
+    return res.json({ data: result });
   } catch (err) {
     console.error(err);
     return res.status(400).json({ error: err.message });
