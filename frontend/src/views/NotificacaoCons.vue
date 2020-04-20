@@ -1,7 +1,13 @@
 <template>
   <section style="margin-top: 45px;">
-    <header-cons></header-cons>
-    <notificacao-table></notificacao-table>
+    <header-cons />
+    <notificacao-table
+      @erro:consultaNotificacao="mostrarMensagemErro"
+      @delete:notificacao="mostrarMensagemSucesso"
+      @erro:deleteNotificacao="mostrarMensagemErro"
+      @delete:notificacaoLote="mostrarMensagemSucesso"
+      @erro:deleteNotificacaoLote="mostrarMensagemErro"
+    />
     <v-snackbar
       v-model="showError"
       color="error"
@@ -31,13 +37,17 @@ export default {
     notificacao: new Notificacao(),
     showError: false,
     showSuccess: false,
-    mensagemSucesso: 'Notificações editadas com sucesso!',
-    mensagemErro: 'Ops! Ocorreu um erro ao consultar as notificações.',
+    mensagemSucesso: '',
+    mensagemErro: '',
   }),
   methods: {
-    atualizarMensagemErro() {
+    mostrarMensagemErro(msg) {
+      this.showError = true;
+      this.mensagemErro = msg;
     },
-    atualizarMensagemSucesso() {
+    mostrarMensagemSucesso(msg) {
+      this.showSuccess = true;
+      this.mensagemSucesso = msg;
     },
   },
 };
