@@ -15,6 +15,7 @@
               :rules="rules.dataHoraAtualizacao"
               @input="updateDataHoraAtualizacao"
               required
+              append-icon="mdi-calendar-blank"
             />
           </v-col>
         </v-row>
