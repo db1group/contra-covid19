@@ -18,7 +18,7 @@ const routes = [
     component: NotificacaoForm,
   },
   {
-    path: '/evolucao/:id',
+    path: '/notificacao/:id/evolucoes',
     name: 'evolucao-form',
     component: EvolucaoForm,
   },

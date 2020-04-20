@@ -7,8 +7,8 @@
       :headers="headers"
       :items="notificacoes"
       item-key="id"
-      :options.sync="options"
       :server-items-length="totalNotif"
+      :options.sync="options"
       @update:options="consultarNotificacoes"
       :loading="loading"
       loading-text="Carregando as notificações."
@@ -40,7 +40,7 @@
         <v-chip class="d-block text-center" :color="getColor(item.situacao)" dark>{{ item.situacao }}</v-chip>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-btn text small color="primary" :to="'/evolucao/' + item.id">EVOLUÇÃO</v-btn>
+        <v-btn text small color="primary" :to="'/notificacao/' + item.id + '/evolucoes'">EVOLUÇÃO</v-btn>
         <v-btn text small color="red" @click="excluirItem(item)">EXCLUIR</v-btn>
       </template>
     </v-data-table>
@@ -89,32 +89,53 @@ export default {
       }
       return color;
     },
+    consultarNotificacoes({ page, itemsPerPage } = this.options) {
+      this.loading = true;
+      const search = this.filter;
+      NotificacaoService.findAll({ page, itemsPerPage, search })
+        .then(({ count, data }) => {
+          this.totalNotif = count;
+          this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());
+          this.loading = false;
+        })
+        .catch((error) => {
+          const { data } = error.response || {};
+          this.$emit('erro:consultaNotificacao', data.error);
+        });
+    },
     excluirItem({ id }) {
-      NotificacaoService.delete(id).then(() => {
-        this.selected = this.selected.filter((n) => n.id !== id);
-        const page = this.notificacoes.length === 1 ? 1 : this.options.page;
-        this.options = { ...this.options, page };
-      });
+      NotificacaoService.delete(id)
+        .then(() => {
+          this.selected = this.selected.filter((n) => n.id !== id);
+          const page = this.notificacoes.length === 1 ? 1 : this.options.page;
+          this.options = { ...this.options, page };
+          this.$emit('delete:notificacao', 'Notificação excluída com sucesso.');
+        })
+        .then(() => {
+          this.consultarNotificacoes();
+        })
+        .catch((error) => {
+          const { data } = error.response;
+          this.$emit('erro:deleteNotificacao', data.error);
+        });
     },
     excluirLote() {
       const ids = this.selected.map((n) => n.id);
       this.selected = [];
-      NotificacaoService.deleteLote(ids).then(() => {
-        const left = this.notificacoes.length - ids.length;
-        const page = left <= 0 ? 1 : this.options.page;
-        this.options = { ...this.options, page };
-      });
-    },
-    consultarNotificacoes({ page, itemsPerPage } = this.options) {
-      this.loading = true;
-      setTimeout(() => {
-        const search = this.filter;
-        NotificacaoService.findAll({ page, itemsPerPage, search }).then(({ count, data }) => {
-          this.totalNotif = count;
-          this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());
-          this.loading = false;
+      NotificacaoService.deleteLote(ids)
+        .then(() => {
+          const left = this.notificacoes.length - ids.length;
+          const page = left <= 0 ? 1 : this.options.page;
+          this.options = { ...this.options, page };
+          this.$emit('delete:notificacaoLote', 'Notificação em lote excluída com sucesso.');
+        })
+        .then(() => {
+          this.consultarNotificacoes();
+        })
+        .catch((error) => {
+          const { data } = error.response;
+          this.$emit('erro:deleteNotificacaoLote', data.error);
         });
-      }, 2000);
     },
     filterNotificacoes() {
       clearTimeout(this.filterCons);

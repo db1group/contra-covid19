@@ -15,7 +15,7 @@ router.get('/notificacoes/:id', NotificacaoResource.consultarPorId);
 router.delete('/notificacoes/:id', NotificacaoResource.excluirLogicamenteNotificacao);
 router.delete('/notificacoes', NotificacaoResource.excluirLoteLogicamenteNotificacao);
 
-router.get('/notificacoes/evolucao/:id', NotificacaoResource.consultarNotificacaoEvolucao);
-router.post('/notificacoes/evolucao', NotificacaoResource.salvarEvolucao);
+router.get('/notificacoes/:id/evolucoes', NotificacaoResource.consultarNotificacaoEvolucao);
+router.post('/notificacoes/:id/evolucoes', NotificacaoResource.salvarEvolucao);
 
 module.exports = router;
