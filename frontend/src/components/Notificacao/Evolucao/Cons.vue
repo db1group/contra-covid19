@@ -42,13 +42,11 @@
   </div>
 </template>
 <script>
-import NotificacaoEvolucao from '@/entities/NotificacaoEvolucao';
-import Evolucao from '@/entities/Evolucao';
 
 export default {
   props: {
     evolucao: {
-      type: Evolucao,
+      type: Object,
       required: true,
     },
   },
@@ -62,7 +60,7 @@ export default {
   }),
   computed: {
     evolucoes() {
-      return this.evolucao.items.map((e) => new NotificacaoEvolucao(e).toRequestBody());
+      return this.evolucao.items;
     },
   },
 };

@@ -154,7 +154,7 @@ const consultarNotificaoesWeb = async (page, limit, search = '') => {
   const optionsConsulta = {
     where: {
       status: {
-        [Op.ne]: 'EXCLUIDA',
+        [Op.eq]: 'ABERTA',
       },
     },
     attributes: ['id'],
@@ -222,19 +222,18 @@ exports.excluirLoteLogicamenteNotificacao = async (req, res) => {
 
 exports.consultarNotificacaoEvolucao = async (req, res) => {
   const { id } = req.params;
-  const { page = 1, itemsPerPage = 10 } = req.query;
-  const offset = (page - 1) * itemsPerPage;
-
-  const notificacaoEvolucao = await models.Notificacao.findAndCountAll({
+  const notificacaoEvolucao = await models.Notificacao.findOne({
     where: { id },
     attributes: ['status'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
     },
-    { model: models.NotificacaoEvolucao, limit: itemsPerPage, offset },
+    { model: models.NotificacaoEvolucao },
     ],
   });
+  if (!notificacaoEvolucao) res.status(404).json({ error: 'Notificação não encontrada.' });
+  if (notificacaoEvolucao.status !== 'ABERTA') res.status(400).json({ error: 'Notificação não está mais aberta.' });
 
   return res.json({ data: notificacaoEvolucao });
 };

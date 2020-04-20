@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
   const NotificacaoEvolucao = sequelize.define('NotificacaoEvolucao', {
     id: {
@@ -12,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     tpEvolucao: DataTypes.ENUM('SUSPEITO', 'CONFIRMADO', 'DESCARTADO', 'CURA', 'ENCERRADO', 'OBITO'),
     tpLocal: DataTypes.ENUM('Alta com isolamento domiciliar', 'Hospitalizado – Leito comum', 'Hospitalizado - Leito UTI'),
   }, {});
-  NotificacaoEvolucao.associate = function (models) {
+  NotificacaoEvolucao.associate = (models) => {
     NotificacaoEvolucao.belongsTo(models.Notificacao, { foreignKey: 'notificacaoId' });
   };
   return NotificacaoEvolucao;

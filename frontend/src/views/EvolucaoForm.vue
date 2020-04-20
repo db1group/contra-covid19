@@ -4,19 +4,35 @@
     <v-container fluid>
       <v-row justify="space-around" align="center">
         <v-col cols="auto">
-          <evolucao-form :notificacao-id="notificacaoId" />
+          <evolucao-form
+            :notificacao-id="notificacaoId"
+            @sucess:cadastroEvolucao="atualizarEvolucao"
+            @error:cadastroEvolucao="mostrarMensagemErro" />
         </v-col>
         <v-col cols="auto">
           <evolucao-consulta v-if="evolucao !== null" :evolucao="evolucao" />
         </v-col>
       </v-row>
     </v-container>
+    <v-snackbar
+      v-model="showError"
+      color="error"
+      bottom>
+      {{ this.mensagemErro }}
+    </v-snackbar>
+    <v-snackbar
+      v-model="showSuccess"
+      color="success"
+      bottom>
+      {{ this.mensagemSucesso }}
+    </v-snackbar>
  </section>
 </template>
 <script>
 import HeaderTitle from '@/components/commons/HeaderTitle.vue';
 import EvolucaoForm from '@/components/Notificacao/Evolucao/Form.vue';
 import EvolucaoConsulta from '@/components/Notificacao/Evolucao/Cons.vue';
+import EvolucaoService from '@/services/EvolucaoService';
 import Evolucao from '@/entities/Evolucao';
 
 export default {
@@ -28,72 +44,34 @@ export default {
   data: () => ({
     evolucao: null,
     notificacaoId: '',
+    showError: false,
+    mensagemErro: '',
+    showSuccess: false,
+    mensagemSucesso: '',
   }),
   created() {
-    const { id } = this.$route.params;
-    this.notificacaoId = id;
+    this.notificacaoId = this.$route.params.id;
     this.consultarEvolucao();
   },
   methods: {
     consultarEvolucao() {
-      // setTimeout(() => this.$router.push('/'), 1500);
-      /*
-        NotificacaoService.findEvolucao({ id }).then(({ count, data }) => {
-          console.log(count, data);
-          this.totalEvolucoes = count;
-          this.evolucoes = data.map((e) => new NotificacaoEvolucao(e).toRequestBody());
-          this.loading = false;
-        });
-      */
-      setTimeout(() => {
-        this.evolucao = new Evolucao({
-          notificacaoId: this.notificacaoId,
-          status: 'ABERTA',
-          Pessoa: {
-            nome: 'Corey Ekstrom Bothman',
-            numeroDocumento: '123.456.789-00',
-            telefoneContato: '(44) 12345-6789',
-          },
-          NotificacaoEvolucaos: [
-            {
-              id: '1',
-              dtEvolucao: '2020-04-18T15:53:01.553Z',
-              tpLocal: 'Alta com isolamento domiciliar',
-              tpEvolucao: 'Suspeito',
-            },
-            {
-              id: '2',
-              dtEvolucao: '2020-04-18T15:53:01.553Z',
-              tpLocal: 'Hospitalizado – Leito comum',
-              tpEvolucao: 'Confirmado',
-            },
-            {
-              id: '3',
-              dtEvolucao: '2020-04-18T15:53:01.553Z',
-              tpLocal: 'Hospitalizado – Leito comum',
-              tpEvolucao: 'Curado',
-            },
-            {
-              id: '4',
-              dtEvolucao: '2020-04-18T15:53:01.553Z',
-              tpLocal: 'Alta com isolamento domiciliar',
-              tpEvolucao: 'Encerrado',
-            },
-            {
-              id: '5',
-              dtEvolucao: '2020-04-18T15:53:01.553Z',
-              tpLocal: 'Alta com isolamento domiciliar',
-              tpEvolucao: 'Descartado',
-            },
-            {
-              id: '6',
-              dtEvolucao: '2020-04-18T15:53:01.553Z',
-              tpLocal: 'Hospitalizado - Leito UTI',
-              tpEvolucao: 'Óbito',
-            },
-          ],
-        });
-      }, 1500);
+      EvolucaoService.findByNotificacaoId(this.notificacaoId)
+        .then(({ data }) => {
+          this.evolucao = new Evolucao(data).toRequestBody();
+        })
+        .catch(() => this.$router.push('/'));
+    },
+    atualizarEvolucao(msg) {
+      this.mostrarMensagemSucesso(msg);
+      this.consultarEvolucao();
+    },
+    mostrarMensagemSucesso(msg) {
+      this.showSuccess = true;
+      this.mensagemSucesso = msg;
+    },
+    mostrarMensagemErro(msg) {
+      this.showError = true;
+      this.mensagemErro = msg;
     },
   },
 };
