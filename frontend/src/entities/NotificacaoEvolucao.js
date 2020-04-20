@@ -33,7 +33,11 @@ export default class NotificacaoEvolucao {
   toRequestBody() {
     return {
       ...this,
-      dataHoraAtualizacao: DateService.parseZone(this.dataHoraAtualizacao, 'YYYY-MM-DDTHH:mm:ss.SSSZ', 'DD/MM/YYYY HH:mm'),
+      dataHoraAtualizacao: DateService.parseZone(
+        this.dataHoraAtualizacao,
+        'YYYY-MM-DDTHH:mm:ss.SSSZ',
+        'DD/MM/YYYY HH:mm',
+      ),
       local: findItem(locaisList, this.local),
       situacao: findItem(situacoesList, this.situacao),
     };
