@@ -1,9 +1,9 @@
 <template>
   <section style="margin-top: 75px;">
-    <h3 class="primary--text my-7 display-1">
-      Cadastro de notificação
-    </h3>
     <base-page>
+      <h3 class="primary--text my-7 display-1">
+        Cadastro de notificação
+      </h3>
       <v-form ref="form">
         <identificacao-notificante
           :notificacao="notificacao"
@@ -36,6 +36,7 @@
           @update:telefoneResidencial="updateSuspeito('telefoneResidencial', $event)"
           @update:telefoneCelular="updateSuspeito('telefoneCelular', $event)"
           @update:telefoneContato="updateSuspeito('telefoneContato', $event)"
+          @update:ocupacao="updateSuspeito('ocupacao', $event)"
         />
         <sinais-e-sintomas
           :sintomatico="notificacao.sintomatico"
