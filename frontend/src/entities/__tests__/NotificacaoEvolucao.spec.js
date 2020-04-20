@@ -55,7 +55,7 @@ describe('Testes para entidade NotificacaoEvolucao', () => {
 
   test('Criando nova Notificação Evolução com request', () => {
     const dataRequest = { ...dataNotifEvolucao };
-    dataRequest.dtEvolucao = '18/04/2020 15:53';
+    dataRequest.dtEvolucao = '18/04/2020 18:53';
     const result = new NotificacaoEvolucao(dataRequest).toRequest();
     expect(result).toEqual(notifEvolucaoRequestValida);
   });
