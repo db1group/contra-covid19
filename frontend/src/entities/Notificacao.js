@@ -18,6 +18,10 @@ export default class Notificacao {
     this.userId = data.userId || '2e439917-3f2a-45b2-9143-aac3bea760d6';
     this.nomeNotificador = data.nomeNotificador || '';
     this.profissaoId = data.profissaoId || null;
+    this.tipoDeContatoComCaso = data.tipoDeContatoComCaso || null;
+    this.tipoDeLocalDoCaso = data.tipoDeLocalDoCaso || null;
+    this.descricaoDoLocalDoCaso = data.descricaoDoLocalDoCaso || '';
+    this.nomeDoCaso = data.nomeDoCaso || '';
     this.observacoes = data.observacoes || '';
     this.suspeito = new Pessoa(data.suspeito || {});
     this.sintomas = new Sintomas(data.sintomas || {});
@@ -35,6 +39,7 @@ export default class Notificacao {
       dataHoraNotificacao: DateService.toMomentObject(this.dataHoraNotificacao, 'DD/MM/YYYY HH:mm').toISOString(),
       suspeito: this.suspeito.toRequestBody(),
       informacaoComplementar: this.informacaoComplementar.toRequestBody(),
+      conclusaoAtendimento: this.conclusaoAtendimento.toRequestBody(),
     };
   }
 }

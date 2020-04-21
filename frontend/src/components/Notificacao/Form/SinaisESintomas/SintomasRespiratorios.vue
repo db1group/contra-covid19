@@ -8,6 +8,22 @@
       </v-col>
       <v-col cols="6">
         <v-checkbox
+          :input-value="sintomas.febreAferidaReferida"
+          label="Febre (aferida/referida)"
+          hide-details
+          :disabled="!sintomatico"
+          @change="updateFebreAferidaReferida"
+        />
+        <v-text-field
+          :input-value="sintomas.temperaturaFebre"
+          class="px-8"
+          label="Informar temperatura"
+          suffix="°C"
+          :disabled="!sintomatico || !sintomas.febreAferidaReferida"
+          v-mask="'##,#'"
+          @input="updateTemperaturaFebre"
+        />
+        <v-checkbox
           :input-value="sintomas.cianoseCentral"
           label="CIANOSE CENTRAL"
           hide-details
@@ -117,6 +133,15 @@ export default {
     existemOutrosSintomas: false,
   }),
   methods: {
+    updateFebreAferidaReferida(febreAferidaReferida) {
+      this.$emit('update:febreAferidaReferida', febreAferidaReferida);
+      if (!febreAferidaReferida) {
+        this.updateTemperaturaFebre('');
+      }
+    },
+    updateTemperaturaFebre(temperaturaFebre) {
+      this.$emit('update:temperaturaFebre', temperaturaFebre);
+    },
     updateCianoseCentral(cianoseCentral) {
       this.$emit('update:cianoseCentral', cianoseCentral);
     },

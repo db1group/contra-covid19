@@ -13,10 +13,7 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col
-        cols="12"
-        sm="4"
-      >
+      <v-col cols="12" sm="3" md="3">
         <v-select
           :value="suspeito.tipoDocumento"
           :rules="rules.tipoDocumento"
@@ -27,17 +24,41 @@
           @input="updateTipoDocumento"
         />
       </v-col>
-      <v-col
-        cols="12"
-        sm="8"
-        md="6"
-      >
+      <v-col cols="12" sm="5" md="5">
         <v-text-field
           :value="suspeito.numeroDocumento"
           :rules="rules.numeroDocumento"
           label="Número do documento *"
           @input="updateNumeroDocumento"
         />
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="12" sm="6" md="5">
+        <label class="primary--text body-1 font-weight-bold">Sexo *</label>
+        <v-radio-group
+          :value="suspeito.sexo"
+          class="mt-0"
+          @change="updateSexo"
+          :rules="rules.sexo"
+          row
+        >
+          <v-radio label="Masculino" value="M"/>
+          <v-radio label="Feminino" value="F"/>
+        </v-radio-group>
+      </v-col>
+      <v-col v-show="suspeito.sexo === 'F'" cols="12" sm="6">
+        <label class="primary--text body-1 font-weight-bold">Gestante *</label>
+        <v-radio-group
+          :value="suspeito.gestante"
+          class="mt-0"
+          @change="updateGestante"
+          :rules="rules.gestante"
+          row
+        >
+          <v-radio label="Sim" value="true"/>
+          <v-radio label="Não" value="false"/>
+        </v-radio-group>
       </v-col>
     </v-row>
     <v-row dense>
@@ -54,59 +75,14 @@
       <v-col cols="12">
         <v-text-field
           :value="suspeito.nomeDaMae"
-          label="Nome da mãe"
+          label="Nome da mãe *"
           @input="updateNomeDaMae"
+          :rules="rules.nomeDaMae"
         />
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="12">
-        <v-radio-group
-          :value="suspeito.sexo"
-          class="mt-0"
-          @change="updateSexo"
-        >
-          <template v-slot:label>
-            <label class="primary--text body-1 font-weight-bold">Sexo</label>
-          </template>
-          <v-radio label="Masculino" value="M"/>
-          <v-radio label="Feminino" value="F"/>
-        </v-radio-group>
-      </v-col>
-    </v-row>
-    <v-row dense v-if="suspeito.sexo === 'F'">
-      <v-col cols="12">
-        <v-radio-group
-          :value="suspeito.gestante"
-          class="mt-0"
-          @change="updateGestante"
-        >
-          <template v-slot:label>
-            <label class="primary--text body-1 font-weight-bold">Gestante</label>
-          </template>
-          <v-radio label="Sim" :value="true"/>
-          <v-radio label="Não" :value="false"/>
-        </v-radio-group>
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col cols="12" sm="8" md="6">
-        <v-select
-          :value="suspeito.racaCor"
-          label="Raça/Cor"
-          :items="racasCores"
-          item-text="value"
-          item-value="key"
-          @input="updateRacaCor"
-        />
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col
-        cols="12"
-        sm="8"
-        md="6"
-      >
+      <v-col cols="12" sm="5" md="5">
         <v-text-field
           :value="suspeito.dataDeNascimento"
           label="Data de nascimento *"
@@ -117,11 +93,25 @@
           @input="updateDataDeNascimento"
         />
       </v-col>
+      <v-spacer/>
+      <v-col cols="12" sm="5" md="5">
+        <v-select
+          :value="suspeito.racaCor"
+          :rules="rules.racaCor"
+          label="Raça/Cor"
+          :items="racasCores"
+          item-text="value"
+          item-value="key"
+          @input="updateRacaCor"
+        />
+      </v-col>
     </v-row>
   </div>
 </template>
 <script>
-import { required, dateFormat, dateHourMinuteFormat } from '@/validations/CommonValidations';
+import {
+  required, dateFormat, dateHourMinuteFormat, exactLength,
+} from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
 
@@ -161,7 +151,11 @@ export default {
       tipoDocumento: [required],
       numeroDocumento: [required],
       nome: [required],
+      nomeDaMae: [required],
       dataDeNascimento: [required, dateFormat],
+      sexo: [required],
+      gestante: [],
+      racaCor: [required],
     },
   }),
   methods: {
@@ -182,9 +176,7 @@ export default {
     },
     updateSexo(sexo) {
       this.$emit('update:sexo', sexo);
-      if (sexo === 'M') {
-        this.updateGestante();
-      }
+      this.updateGestante();
     },
     updateGestante(gestante) {
       this.$emit('update:gestante', gestante);
@@ -195,6 +187,22 @@ export default {
     updateDataDeNascimento(dataDeNascimento) {
       this.$emit('update:dataDeNascimento', dataDeNascimento);
     },
+    requiredIfSexoForFeminino(value) {
+      if (this.suspeito.sexo === 'M') {
+        return true;
+      }
+      return required(value);
+    },
+    maxLengthIfCPF(value) {
+      if (this.suspeito.tipoDocumento !== 'CPF') {
+        return true;
+      }
+      return exactLength(11)(value);
+    },
+  },
+  created() {
+    this.rules.gestante.push(this.requiredIfSexoForFeminino);
+    this.rules.numeroDocumento.push(this.maxLengthIfCPF);
   },
 };
 </script>

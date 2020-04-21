@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
   const Profissao = sequelize.define(
     'Profissao',
@@ -10,6 +9,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {},
   );
-  Profissao.associate = (_) => {};
+  Profissao.associate = (_) => { };
   return Profissao;
 };

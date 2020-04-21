@@ -3,6 +3,7 @@ module.exports = ({ context }) => ({
     'number.min': `"${context.label}" deve ser maior ou igual que ${context.limit}`,
     'number.max': `"${context.label}" deve ser menor ou igual que ${context.limit}`,
     'date.format': `"${context.label}" deve estar no formato de data ISO 8601`,
+    'string.base': `"${context.label}" deve ser um alfanumérico`,
     'string.min': `"${context.label}" deve conter pelo menos ${context.limit} caracteres`,
     'string.max': `"${context.label}" deve conter no máximo ${context.limit} caracteres`,
     'string.empty': `"${context.label}" não pode ser vazio`,

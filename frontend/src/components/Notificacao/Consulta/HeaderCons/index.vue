@@ -8,7 +8,7 @@
       <v-btn
         color="primary"
         rounded
-        to="/notificacao/cadastro"
+        :to="{ name: 'notificacao-form' }"
       >
       <v-icon>mdi-plus</v-icon> Cadastrar
       </v-btn>
@@ -16,4 +16,3 @@
   </v-row>
 </v-container>
 </template>
-<script>

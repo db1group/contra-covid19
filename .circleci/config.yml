@@ -65,6 +65,7 @@ jobs:
           paths:
             - ~/contra-covid19/frontend/node_modules
           key: contra-covid19/frontend-{{ checksum "frontend/yarn.lock" }}
+      - run: docker run --rm -it -v ${PWD}/frontend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 yarn test:unit
       - run: docker run --rm -it -v ${PWD}/frontend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 yarn build
       - persist_to_workspace:
           root: ~/

@@ -65,6 +65,7 @@
       </v-col>
       <v-col cols="9">
         <v-select
+          value="Maringá"
           label="Município *"
           :items="municipios"
           disabled

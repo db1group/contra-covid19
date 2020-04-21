@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text font-weight-medium title">
-      3. IDENTIFICAÇÃO DO CASO SUSPEITO
+      3. IDENTIFICAÇÃO DO PACIENTE
     </h4>
     <dados-pessoais
       :data-hora-notificacao="dataHoraNotificacao"
@@ -29,6 +29,10 @@
       @update:telefoneCelular="updateTelefoneCelular"
       @update:telefoneContato="updateTelefoneContato"
     />
+    <ocupacao
+      :suspeito="suspeito"
+      @update:ocupacao="updateOcupacao"
+    />
   </div>
 </template>
 <script>
@@ -36,12 +40,14 @@ import Pessoa from '@/entities/Pessoa';
 import DadosPessoais from './DadosPessoais.vue';
 import Endereco from './Endereco.vue';
 import Contato from './Contato.vue';
+import Ocupacao from './Ocupacao.vue';
 
 export default {
   components: {
     DadosPessoais,
     Endereco,
     Contato,
+    Ocupacao,
   },
   props: {
     dataHoraNotificacao: {
@@ -101,6 +107,9 @@ export default {
     },
     updateTelefoneContato(telefoneContato) {
       this.$emit('update:telefoneContato', telefoneContato);
+    },
+    updateOcupacao(ocupacao) {
+      this.$emit('update:ocupacao', ocupacao);
     },
   },
 };

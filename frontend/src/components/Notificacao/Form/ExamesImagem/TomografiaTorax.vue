@@ -38,8 +38,10 @@
     />
     <v-text-field
       :value="examesImagem.tomografiaOutro"
+      :rules="rules.tomografiaOutro"
       class="pl-8"
       label="Especifique"
+      validate-on-blur
       :disabled="!realizouOutraTomografiaTorax || !realizouExamesImagem"
       @input="updateTomografiaOutro"
     />
@@ -47,6 +49,7 @@
 </template>
 <script>
 import ExamesImagem from '@/entities/ExamesImagem';
+import { required } from '@/validations/CommonValidations';
 
 export default {
   props: {
@@ -61,26 +64,48 @@ export default {
   },
   data: () => ({
     realizouOutraTomografiaTorax: false,
+    rules: {
+      tomografiaOutro: [],
+    },
   }),
   methods: {
     updateRealizouOutraTomografiaTorax(realizouOutraTomografiaTorax) {
       this.realizouOutraTomografiaTorax = realizouOutraTomografiaTorax;
+      this.$emit('update:tomografiaNormal', false);
     },
     updateTomografiaNormal(tomografiaNormal) {
       this.$emit('update:tomografiaNormal', tomografiaNormal);
+      this.$emit('update:tomografiaVidroFoscoPredominioPerifericoBasal', false);
+      this.$emit('update:tomografiaAusenciaDerramePleural', false);
+      this.$emit('update:tomografiaAusenciaLinfonodoMediastenal', false);
+      this.$emit('update:tomografiaOutro', '');
+      this.realizouOutraTomografiaTorax = false;
     },
     updateTomografiaVidroFoscoPredominioPerifericoBasal(tomografiaVidroFoscoPredominioPerifericoBasal) {
       this.$emit('update:tomografiaVidroFoscoPredominioPerifericoBasal', tomografiaVidroFoscoPredominioPerifericoBasal);
+      this.$emit('update:tomografiaNormal', false);
     },
     updateTomografiaAusenciaDerramePleural(tomografiaAusenciaDerramePleural) {
       this.$emit('update:tomografiaAusenciaDerramePleural', tomografiaAusenciaDerramePleural);
+      this.$emit('update:tomografiaNormal', false);
     },
     updateTomografiaAusenciaLinfonodoMediastenal(tomografiaAusenciaLinfonodoMediastenal) {
       this.$emit('update:tomografiaAusenciaLinfonodoMediastenal', tomografiaAusenciaLinfonodoMediastenal);
+      this.$emit('update:tomografiaNormal', false);
     },
     updateTomografiaOutro(tomografiaOutro) {
       this.$emit('update:tomografiaOutro', tomografiaOutro);
+      this.$emit('update:tomografiaNormal', false);
     },
+    requiredIfRealizouOutraTomografiaTorax(value) {
+      if (!this.realizouOutraTomografiaTorax) {
+        return true;
+      }
+      return required(value);
+    },
+  },
+  created() {
+    this.rules.tomografiaOutro.push(this.requiredIfRealizouOutraTomografiaTorax);
   },
 };
 </script>

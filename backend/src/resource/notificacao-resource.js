@@ -65,10 +65,14 @@ const consolidarSuspeito = async (suspeito) => {
 */
 const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
   const suspeitoConsolidado = await consolidarSuspeito(suspeito);
+  const { municipioId } = suspeito;
 
   return {
     ...notificacao,
-    suspeito: suspeitoConsolidado,
+    suspeito: {
+      municipioId,
+      ...suspeitoConsolidado,
+    },
   };
 };
 
@@ -77,17 +81,27 @@ const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
 */
 const consultarNotificacaoPorId = async (id) => models.Notificacao.findOne({
   where: { id },
-  include: [{ model: models.Pessoa }, { model: models.NotificacaoCovid19 }],
+  include: [
+    {
+      model: models.Pessoa,
+      include: {
+        model: models.Bairro,
+        include: {
+          model: models.Municipio,
+        },
+      },
+    },
+    { model: models.NotificacaoCovid19 },
+  ],
 });
 
 const salvarNotificacao = async (notificacao) => {
   const novaNotificacao = await models.Notificacao.create(notificacao);
   const { id: notificacaoId } = novaNotificacao;
   await models.NotificacaoCovid19.create({ notificacaoId, ...notificacao.notificacaoCovid19 });
-
   await models.NotificacaoEvolucao.create({
     notificacaoId,
-    dtEvolucao: new Date(),
+    dtEvolucao: notificacao.notificacaoCovid19.dataHoraNotificacao,
     tpEvolucao: 'SUSPEITO',
     tpLocal: 'Alta com isolamento domiciliar',
   });
@@ -114,6 +128,7 @@ exports.salvar = async (req, res) => {
     const notificacao = Mappers.Notificacao.mapearParaNotificacao(
       notificacaoConsolidada,
     );
+    notificacao.status = 'ABERTA';
 
     const notificacaoSalva = await salvarNotificacao(notificacao);
 
@@ -154,7 +169,7 @@ const consultarNotificaoesWeb = async (page, limit, search = '') => {
   const optionsConsulta = {
     where: {
       status: {
-        [Op.ne]: 'EXCLUIDA',
+        [Op.eq]: 'ABERTA',
       },
     },
     attributes: ['id'],
@@ -181,9 +196,15 @@ const consultarNotificaoesWeb = async (page, limit, search = '') => {
   return models.Notificacao.findAndCountAll(optionsConsulta);
 };
 
+const consultarNotificacoesWebVazia = {
+  count: 0,
+  data: [],
+};
+
 exports.consultarNotificacoesWeb = async (req, res) => {
   const { page = 1, itemsPerPage = 10, search = '' } = req.query;
   const notificacoes = await consultarNotificaoesWeb(page, itemsPerPage, search);
+  if (!notificacoes) return res.json(consultarNotificacoesWebVazia);
   const notificacaoConsulta = Mappers.Notificacao.mapearParaConsulta(notificacoes.rows);
   return res.json({ count: notificacoes.count, data: notificacaoConsulta });
 };
@@ -222,19 +243,18 @@ exports.excluirLoteLogicamenteNotificacao = async (req, res) => {
 
 exports.consultarNotificacaoEvolucao = async (req, res) => {
   const { id } = req.params;
-  const { page = 1, itemsPerPage = 10 } = req.query;
-  const offset = (page - 1) * itemsPerPage;
-
-  const notificacaoEvolucao = await models.Notificacao.findAndCountAll({
+  const notificacaoEvolucao = await models.Notificacao.findOne({
     where: { id },
     attributes: ['status'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
     },
-    { model: models.NotificacaoEvolucao, limit: itemsPerPage, offset },
+    { model: models.NotificacaoEvolucao },
     ],
   });
+  if (!notificacaoEvolucao) res.status(404).json({ error: 'Notificação não encontrada.' });
+  if (notificacaoEvolucao.status !== 'ABERTA') res.status(400).json({ error: 'Notificação não está mais aberta.' });
 
   return res.json({ data: notificacaoEvolucao });
 };

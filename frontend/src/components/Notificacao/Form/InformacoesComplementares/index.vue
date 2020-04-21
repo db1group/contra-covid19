@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text title">
-      7. INFORMAÇÕES COMPLEMENTARES
+      7. OUTRAS INFORMAÇÕES
     </h4>
     <v-container
       fluid
@@ -87,74 +87,19 @@
           />
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="12" sm="8" md="6">
-          <label class="primary--text body-1 font-weight-bold">
-            Histórico de viagem?
-          </label>
-          <v-checkbox
-            :input-value="informacoesComplementares.historicoDeViagem"
-            label="Sim"
-            hide-details
-            @change="updateHistoricoDeViagem"
-          />
-          <v-text-field
-            :value="informacoesComplementares.dataDaViagem"
-            class="pl-8"
-            label="Data da viagem *"
-            append-icon="mdi-calendar-blank"
-            v-mask="'##/##/####'"
-            :rules="rules.dataDaViagem"
-            validate-on-blur
-            :disabled="!informacoesComplementares.historicoDeViagem"
-            @input="updateDataDaViagem"
-          />
-          <v-text-field
-            :value="informacoesComplementares.localDaViagem"
-            class="pl-8"
-            label="Local da viagem *"
-            append-icon="mdi-map-marker"
-            :rules="rules.localDaViagem"
-            :disabled="!informacoesComplementares.historicoDeViagem"
-            @input="updateLocalDaViagem"
-          />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12">
-          <label class="primary--text body-1 font-weight-bold">
-            Recebeu vacina contra Gripe nos últimos doze meses?
-          </label>
-          <v-checkbox
-            :input-value="informacoesComplementares.recebeuVacinaDaGripeNosUltimosDozeMeses"
-            label="Sim"
-            hide-details
-            @change="updateRecebeuVacinaDaGripeNosUltimosDozeMeses"
-          />
-        </v-col>
-      </v-row>
     </v-container>
   </div>
 </template>
 <script>
-import { mask } from 'vue-the-mask';
-import { required, dateFormat } from '@/validations/CommonValidations';
 import InformacoesComplementares from '@/entities/InformacoesComplementares';
 
 export default {
-  directives: { mask },
   props: {
     informacoesComplementares: {
       type: InformacoesComplementares,
       required: true,
     },
   },
-  data: () => ({
-    rules: {
-      dataDaViagem: [],
-      localDaViagem: [],
-    },
-  }),
   methods: {
     updateMedicacaoAntitermica(medicacaoAntitermica) {
       this.$emit('update:medicacaoAntitermica', medicacaoAntitermica);
@@ -168,12 +113,6 @@ export default {
     updateMedicacaoAntiviral(medicacaoAntiviral) {
       this.$emit('update:medicacaoAntiviral', medicacaoAntiviral);
     },
-    updateHistoricoDeViagem(historicoDeViagem) {
-      this.$emit('update:historicoDeViagem', historicoDeViagem);
-    },
-    updateRecebeuVacinaDaGripeNosUltimosDozeMeses(recebeuVacinaDaGripeNosUltimosDozeMeses) {
-      this.$emit('update:recebeuVacinaDaGripeNosUltimosDozeMeses', recebeuVacinaDaGripeNosUltimosDozeMeses);
-    },
     updateNomeMedicacaoAntitermica(nomeMedicacaoAntitermica) {
       this.$emit('update:nomeMedicacaoAntitermica', nomeMedicacaoAntitermica);
     },
@@ -186,29 +125,6 @@ export default {
     updateNomeMedicacaoAntiviral(nomeMedicacaoAntiviral) {
       this.$emit('update:nomeMedicacaoAntiviral', nomeMedicacaoAntiviral);
     },
-    updateDataDaViagem(dataDaViagem) {
-      this.$emit('update:dataDaViagem', dataDaViagem);
-    },
-    updateLocalDaViagem(localDaViagem) {
-      this.$emit('update:localDaViagem', localDaViagem);
-    },
-    requiredIfHistoricoDeViagem(value) {
-      if (!this.informacoesComplementares.historicoDeViagem) {
-        return true;
-      }
-      return required(value, 'O campo é obrigatório quando há histórico de viagem.');
-    },
-    formatDateIfHistoricoDeViagem(value) {
-      if (!this.informacoesComplementares.historicoDeViagem) {
-        return true;
-      }
-      return dateFormat(value);
-    },
-  },
-  created() {
-    this.rules.dataDaViagem.push(this.requiredIfHistoricoDeViagem);
-    this.rules.dataDaViagem.push(this.formatDateIfHistoricoDeViagem);
-    this.rules.localDaViagem.push(this.requiredIfHistoricoDeViagem);
   },
 };
 </script>

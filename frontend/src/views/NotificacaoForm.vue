@@ -1,9 +1,9 @@
 <template>
   <section style="margin-top: 75px;">
-    <h3 class="primary--text my-7 display-1">
-      Cadastro de notificação
-    </h3>
     <base-page>
+      <h3 class="primary--text my-7 display-1">
+        Cadastro de notificação
+      </h3>
       <v-form ref="form">
         <identificacao-notificante
           :notificacao="notificacao"
@@ -36,6 +36,7 @@
           @update:telefoneResidencial="updateSuspeito('telefoneResidencial', $event)"
           @update:telefoneCelular="updateSuspeito('telefoneCelular', $event)"
           @update:telefoneContato="updateSuspeito('telefoneContato', $event)"
+          @update:ocupacao="updateSuspeito('ocupacao', $event)"
         />
         <sinais-e-sintomas
           :sintomatico="notificacao.sintomatico"
@@ -43,6 +44,8 @@
           :sintomas="notificacao.sintomas"
           @update:sintomatico="updateSintomatico"
           @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
+          @update:febreAferidaReferida="updateSintoma('febreAferidaReferida', $event)"
+          @update:temperaturaFebre="updateSintoma('temperaturaFebre', $event)"
           @update:congestaoNasal="updateSintoma('congestaoNasal', $event)"
           @update:sintomaCoriza="updateSintoma('coriza', $event)"
           @update:sintomaTosseSeca="updateSintoma('tosseSeca', $event)"
@@ -103,6 +106,10 @@
           @update:outraPneumopatiaCronica="updateComorbidade('outraPneumopatiaCronica', $event)"
           @update:doencaHepaticaCronica="updateComorbidade('doencaHepaticaCronica', $event)"
           @update:obesidade="updateComorbidade('obesidade', $event)"
+          @update:hipertensao="updateComorbidade('hipertensao', $event)"
+          @update:infeccaoHIV="updateComorbidade('infeccaoHIV', $event)"
+          @update:neoplasia="updateComorbidade('neoplasia', $event)"
+          @update:tabagismo="updateComorbidade('tabagismo', $event)"
           @update:outros="updateComorbidade('outros', $event)"
         />
         <informacoes-complementares
@@ -115,24 +122,35 @@
           @update:nomeMedicacaoAntiflamatorio="updateInformacaoComplementar('nomeMedicacaoAntiflamatorio', $event)"
           @update:medicacaoAntiviral="updateInformacaoComplementar('medicacaoAntiviral', $event)"
           @update:nomeMedicacaoAntiviral="updateInformacaoComplementar('nomeMedicacaoAntiviral', $event)"
+        />
+        <realizado-coleta
+          :conclusao-atendimento="notificacao.conclusaoAtendimento"
+          @update:laboratorioOficial="updateConclusaoAtendimento('laboratorioOficial', $event)"
+          @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
+          @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"
+          @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
+        />
+        <historico-de-viagem
+          :informacoes-complementares="notificacao.informacaoComplementar"
           @update:historicoDeViagem="updateInformacaoComplementar('historicoDeViagem', $event)"
           @update:dataDaViagem="updateInformacaoComplementar('dataDaViagem', $event)"
           @update:localDaViagem="updateInformacaoComplementar('localDaViagem', $event)"
+        />
+        <contato-com-suspeito-ou-confirmado
+          :notificacao="notificacao"
+          @update:tipoDeContatoComCaso="updateTipoDeContatoComCaso"
+          @update:tipoDeLocalDoCaso="updateTipoDeLocalDoCaso"
+          @update:nomeDoCaso="updateNomeDoCaso"
+        />
+        <outras-informacoes
+          :informacoes-complementares="notificacao.informacaoComplementar"
           @update:recebeuVacinaDaGripeNosUltimosDozeMeses="
             updateInformacaoComplementar('recebeuVacinaDaGripeNosUltimosDozeMeses', $event)
           "
         />
         <conclusao-atendimento
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
-          @update:isolamentoDomiciliar="updateConclusaoAtendimento('isolamentoDomiciliar', $event)"
-          @update:leitoComum="updateConclusaoAtendimento('leitoComum', $event)"
-          @update:leitoUti="updateConclusaoAtendimento('leitoUti', $event)"
-          @update:prontoSocorroOuAtendimento="updateConclusaoAtendimento('prontoSocorroOuAtendimento', $event)"
-        />
-        <realizado-coleta
-          :conclusao-atendimento="notificacao.conclusaoAtendimento"
-          @update:laboratorioOficial="updateConclusaoAtendimento('laboratorioOficial', $event)"
-          @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
+          @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
         />
         <observacoes v-model="notificacao.observacoes"/>
       </v-form>
@@ -142,7 +160,14 @@
         color="error"
         bottom
       >
-        Ops! Ocorreu um erro ao tentar enviar a notificação.
+        {{ errorMessage }}
+      </v-snackbar>
+      <v-snackbar
+        v-model="showAlert"
+        color="warning"
+        bottom
+      >
+        Algum dos campos do formulário possui alguma pendência
       </v-snackbar>
       <v-snackbar
         v-model="showSuccess"
@@ -166,6 +191,9 @@ import Comorbidades from '@/components/Notificacao/Form/Comorbidades/index.vue';
 import InformacoesComplementares from '@/components/Notificacao/Form/InformacoesComplementares/index.vue';
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
 import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
+import ContatoComSuspeitoOuConfirmado from '@/components/Notificacao/Form/ContatoComSuspeitoOuConfirmado/index.vue';
+import HistoricoDeViagem from '@/components/Notificacao/Form/HistoricoDeViagem/index.vue';
+import OutrasInformacoes from '@/components/Notificacao/Form/OutrasInformacoes/index.vue';
 import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
@@ -182,13 +210,18 @@ export default {
     InformacoesComplementares,
     ConclusaoAtendimento,
     RealizadoColeta,
+    ContatoComSuspeitoOuConfirmado,
+    HistoricoDeViagem,
+    OutrasInformacoes,
     Observacoes,
     BotaoEnviar,
   },
   data: () => ({
     notificacao: new Notificacao(),
     showError: false,
+    showAlert: false,
     showSuccess: false,
+    errorMessage: '',
   }),
   methods: {
     updateUnidadeSaude(unidadeSaudeId) {
@@ -215,6 +248,15 @@ export default {
     updateDataInicioDosSintomas(dataInicioDosSintomas) {
       this.notificacao.dataInicioDosSintomas = dataInicioDosSintomas;
     },
+    updateTipoDeContatoComCaso(tipoDeContatoComCaso) {
+      this.notificacao.tipoDeContatoComCaso = tipoDeContatoComCaso;
+    },
+    updateTipoDeLocalDoCaso(tipoDeLocalDoCaso) {
+      this.notificacao.tipoDeLocalDoCaso = tipoDeLocalDoCaso;
+    },
+    updateNomeDoCaso(nomeDoCaso) {
+      this.notificacao.nomeDoCaso = nomeDoCaso;
+    },
     updateSuspeito(campo, valor) {
       this.notificacao.suspeito[campo] = valor;
     },
@@ -240,10 +282,12 @@ export default {
           this.$refs.form.reset();
           this.showSuccess = true;
           this.notificacao = new Notificacao();
-        }).catch((err) => {
+        }).catch(({ response }) => {
           this.showError = true;
-          console.log(err);
+          this.errorMessage = response.data.error;
         });
+      } else {
+        this.showAlert = true;
       }
     },
   },

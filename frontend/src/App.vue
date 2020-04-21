@@ -1,18 +1,25 @@
 <template>
   <v-app class="covid-app">
-    <v-content>
+    <v-content fluid>
       <v-app-bar color="white" absolute>
-        <v-spacer></v-spacer>
-
-         <v-tabs>
-          <v-spacer></v-spacer>
-          <v-tab to="/">Notificações</v-tab>
-          <v-tab>Relatório</v-tab>
+        <unidade-header />
+        <v-container fluid>
+          <v-row
+            class="covid-app__logo-container"
+            justify="center"
+            align="center"
+            @click="goToHomePage"
+          >
+            <v-col cols="auto">
+              <img src="@/assets/notifica-saude.png" alt="Notifica saúde" />
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-tabs fixed-tabs>
+          <v-tab :to="{ name: 'notificacao-cons' }">Notificações</v-tab>
+          <!-- <v-tab>Relatório</v-tab> -->
         </v-tabs>
-
-        <v-spacer></v-spacer>
-
-        <v-btn text>
+        <v-btn text @click="executeLogout">
           Sair
         </v-btn>
       </v-app-bar>
@@ -22,20 +29,27 @@
   </v-app>
 </template>
 <style lang="sass" scoped>
-  .v-application.covid-app
-    background-color: #FBF8FF
+  .covid-app
+    &.v-application
+      background-color: #FAFAFA
+    &__logo-container
+      cursor: pointer
 </style>
-
 <script>
+import UnidadeHeader from '@/components/commons/UnidadeHeader.vue';
 
 export default {
   name: 'App',
-
   components: {
+    UnidadeHeader,
   },
-
-  data: () => ({
-    //
-  }),
+  methods: {
+    executeLogout() {
+      this.$keycloak.logoutFn();
+    },
+    goToHomePage() {
+      this.$router.push({ name: 'home-page' });
+    },
+  },
 };
 </script>

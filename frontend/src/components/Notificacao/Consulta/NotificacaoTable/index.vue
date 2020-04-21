@@ -7,14 +7,16 @@
       :headers="headers"
       :items="notificacoes"
       item-key="id"
-      :options.sync="options"
       :server-items-length="totalNotif"
+      :options.sync="options"
+      @update:options="consultarNotificacoes"
       :loading="loading"
       loading-text="Carregando as notificações."
       no-data-text="Não há notificações até o momento."
       no-results-text="Não há notificações com estes dados."
       :footer-props="{
-        itemsPerPageText: 'Linhas por página'
+        itemsPerPageText: 'Linhas por página',
+        itemsPerPageOptions: [10, 30, 50, 100],
       }"
       class="elevation-1"
     >
@@ -36,9 +38,23 @@
         </v-card-title>
       </template>
       <template v-slot:item.situacao="{ item }">
-        <v-chip class="d-block text-center" :color="getColor(item.situacao)" dark>{{ item.situacao }}</v-chip>
+        <v-chip
+          class="d-block text-center"
+          :color="getColor(item.situacao)"
+          :text-color="getTextColor(item.situacao)"
+        >
+          {{ item.situacao }}
+        </v-chip>
       </template>
       <template v-slot:item.actions="{ item }">
+        <v-btn v-if="isSecretariaSaude"
+          text
+          small
+          color="primary"
+          :to="{ name: 'evolucao-form', params: { id: item.id } }"
+        >
+          EVOLUÇÃO
+        </v-btn>
         <v-btn text small color="red" @click="excluirItem(item)">EXCLUIR</v-btn>
       </template>
     </v-data-table>
@@ -47,6 +63,7 @@
 <script>
 import NotificacaoService from '@/services/NotificacaoService';
 import NotificacaoConsulta from '@/entities/NotificacaoConsulta';
+import { isSecretariaSaude } from '@/validations/KeycloakValidations';
 
 export default {
   data: () => ({
@@ -54,7 +71,10 @@ export default {
     selected: [],
     items: [],
     loading: true,
-    options: {},
+    options: {
+      page: 1,
+      itemsPerPage: 10,
+    },
     totalNotif: 0,
     notificacoes: [],
     filter: '',
@@ -65,62 +85,88 @@ export default {
       { text: 'Notificação', value: 'dataNotificacao' },
       { text: 'Telefone', value: 'telefone' },
       { text: 'Situação', value: 'situacao', width: '185px' },
-      { sortable: false, value: 'actions' },
+      { sortable: false, value: 'actions', width: '210px' },
     ],
   }),
-  watch: {
-    options: {
-      handler() {
-        this.consultarNotificacoes();
-      },
-      deep: true,
-    },
-  },
-  mounted() {
+  created() {
     this.consultarNotificacoes();
+  },
+  computed: {
+    isSecretariaSaude() {
+      return isSecretariaSaude(this);
+    },
   },
   methods: {
     getColor(situacao) {
-      let color;
       switch (situacao) {
-        case 'UTI': color = '#FD3A5C';
-          break;
-        case 'Óbito': color = 'black';
-          break;
-        case 'Leito comun': color = '#FFB300';
-          break;
-        case 'Isolamento domiciliar': color = '#64FFDA';
-          break;
-        default: color = 'red';
+        case 'UTI':
+          return '#FD3A5C';
+        case 'Óbito':
+          return 'black';
+        case 'Leito comun':
+          return '#FFB300';
+        case 'Isolamento domiciliar':
+          return '#64FFDA';
+        default:
+          return 'red';
       }
-      return color;
+    },
+    getTextColor(situacao) {
+      switch (situacao) {
+        case 'UTI':
+        case 'Óbito':
+          return 'white';
+        default:
+          return 'black';
+      }
+    },
+    consultarNotificacoes({ page, itemsPerPage } = this.options) {
+      this.loading = true;
+      const search = this.filter;
+      NotificacaoService.findAll({ page, itemsPerPage, search })
+        .then(({ count, data }) => {
+          this.totalNotif = count;
+          this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());
+          this.loading = false;
+        })
+        .catch((error) => {
+          const { data } = error.response || {};
+          this.$emit('erro:consultaNotificacao', data.error);
+        });
     },
     excluirItem({ id }) {
-      NotificacaoService.delete(id).then(() => {
-        this.selected = this.selected.filter((n) => n.id !== id);
-        const page = this.notificacoes.length === 1 ? 1 : this.options.page;
-        this.options = { ...this.options, page };
-      });
+      NotificacaoService.delete(id)
+        .then(() => {
+          this.selected = this.selected.filter((n) => n.id !== id);
+          const page = this.notificacoes.length === 1 ? 1 : this.options.page;
+          this.options = { ...this.options, page };
+          this.$emit('delete:notificacao', 'Notificação excluída com sucesso.');
+        })
+        .then(() => {
+          this.consultarNotificacoes();
+        })
+        .catch((error) => {
+          const { data } = error.response;
+          this.$emit('erro:deleteNotificacao', data.error);
+        });
     },
     excluirLote() {
       const ids = this.selected.map((n) => n.id);
       this.selected = [];
-      NotificacaoService.deleteLote(ids).then(() => {
-        const left = this.notificacoes.length - ids.length;
-        const page = left <= 0 ? 1 : this.options.page;
-        this.options = { ...this.options, page };
-      });
-    },
-    consultarNotificacoes({ page, itemsPerPage } = this.options) {
-      this.loading = true;
-      setTimeout(() => {
-        const search = this.filter;
-        NotificacaoService.findAll({ page, itemsPerPage, search }).then(({ count, data }) => {
-          this.totalNotif = count;
-          this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());
-          this.loading = false;
+      NotificacaoService.deleteLote(ids)
+        .then(() => {
+          const left = this.notificacoes.length - ids.length;
+          const page = left <= 0 ? 1 : this.options.page;
+          this.options = { ...this.options, page };
+          this.$emit('delete:notificacaoLote', 'Notificação em lote excluída com sucesso.');
+        })
+        .then(() => {
+          this.consultarNotificacoes();
+        })
+        .catch((error) => {
+          const { data } = error.response;
+          this.$emit('erro:deleteNotificacaoLote', data.error);
         });
-      }, 2000);
     },
     filterNotificacoes() {
       clearTimeout(this.filterCons);

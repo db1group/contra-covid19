@@ -1,6 +1,7 @@
 import {
   required,
   minLength,
+  exactLength,
   dateFormat,
   dateHourMinuteFormat,
 } from '../CommonValidations';
@@ -24,6 +25,16 @@ describe('Testes para validador de campo obrigatório', () => {
   test('Campo obrigatório com espaços em branco não pode ser válido', () => {
     const result = required('   ');
     expect(result).toBe('O campo é obrigatório.');
+  });
+
+  test('Campo obrigatório com inteiro deve pode ser válido', () => {
+    const result = required(5);
+    expect(result).toBeTruthy();
+  });
+
+  test('Campo obrigatório com zero inteiro deve pode ser válido', () => {
+    const result = required(0);
+    expect(result).toBeTruthy();
   });
 
   test('Campo obrigatório informado é válido', () => {
@@ -56,6 +67,28 @@ describe('Testes para validador de tamanho mínimo', () => {
   test('Campo com o tamanho maior que o necessário deve ser válido', () => {
     const result = minLength(11)('uuddlrlrbasssss');
     expect(result).toBeTruthy();
+  });
+});
+
+describe('Testes para validador de tamanho exato', () => {
+  test('Campo vazio deve ser válido', () => {
+    const result = exactLength(11)('');
+    expect(result).toBeTruthy();
+  });
+
+  test('Campo com menos caracteres que o necessário deve ser inválido', () => {
+    const result = exactLength(11)('uuddlrlrba');
+    expect(result).toBe('O campo deve possuir 11 caracteres.');
+  });
+
+  test('Campo com o tamanho exigido deve ser válido', () => {
+    const result = exactLength(11)('uuddlrlrbas');
+    expect(result).toBeTruthy();
+  });
+
+  test('Campo com o tamanho maior que o necessário deve ser inválido', () => {
+    const result = exactLength(11)('uuddlrlrbasssss');
+    expect(result).toBe('O campo deve possuir 11 caracteres.');
   });
 });
 

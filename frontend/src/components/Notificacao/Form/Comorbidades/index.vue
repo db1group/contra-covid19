@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text title">
-      6. COMORBIDADES
+      6. COMORBIDADES PRÉVIAS / FATORES DE RISCO
     </h4>
     <v-container
       fluid
@@ -104,6 +104,38 @@
             @change="updateObesidade"
           />
         </v-col>
+        <v-col cols="12" md="6">
+          <v-checkbox
+            :input-value="comorbidades.hipertensao"
+            label="Hipertensão"
+            hide-details
+            @change="updateHipertensao"
+          />
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-checkbox
+            :input-value="comorbidades.infeccaoHIV"
+            label="Infecção HIV"
+            hide-details
+            @change="updateInfeccaoHIV"
+          />
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-checkbox
+            :input-value="comorbidades.neoplasia"
+            label="Neoplasia"
+            hide-details
+            @change="updateNeoplasia"
+          />
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-checkbox
+            :input-value="comorbidades.tabagismo"
+            label="Tabagismo"
+            hide-details
+            @change="updateTabagismo"
+          />
+        </v-col>
         <v-col
           cols="12"
           md="6"
@@ -178,6 +210,18 @@ export default {
     },
     updateOutros(outros) {
       this.$emit('update:outros', outros);
+    },
+    updateHipertensao(hipertensao) {
+      this.$emit('update:hipertensao', hipertensao);
+    },
+    updateInfeccaoHIV(infeccaoHIV) {
+      this.$emit('update:infeccaoHIV', infeccaoHIV);
+    },
+    updateNeoplasia(neoplasia) {
+      this.$emit('update:neoplasia', neoplasia);
+    },
+    updateTabagismo(tabagismo) {
+      this.$emit('update:tabagismo', tabagismo);
     },
     updateOutrasComorbidades(outrasComorbidades) {
       this.outrasComorbidades = outrasComorbidades;

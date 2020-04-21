@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text title">
-      9. REALIZADO COLETA DE MATERIAL PARA DIAGNÓSTICO
+      8. REALIZADO COLETA DE MATERIAL PARA DIAGNÓSTICO
     </h4>
     <v-container
       fluid
@@ -15,6 +15,15 @@
             hide-details
             @change="updateRealizadaColeta"
           />
+          <v-text-field
+            :value="conclusaoAtendimento.dataDaColeta"
+            class="pl-8"
+            label="Data da Coleta"
+            v-mask="'##/##/####'"
+            :disabled="!realizadaColeta"
+            :rules="rules.dataDaColeta"
+            @input="updateDataDaColeta"
+          />
           <v-radio-group
             :value="tipoLaboratorio"
             class="pl-8"
@@ -24,15 +33,28 @@
             <v-radio :value="1" label="Laboratório Oficial/LACEN"/>
             <v-radio :value="2" label="Laboratório da rede PRIVADA"/>
           </v-radio-group>
+          <v-radio-group
+            :value="conclusaoAtendimento.metodoDeExame"
+            class="pl-8"
+            label="Método do exame"
+            :disabled="!realizadaColeta"
+            @change="updateMetodoDeExame"
+          >
+            <v-radio value="RT-PCR" label="RT-PCR"/>
+            <v-radio value="TESTE_RAPIDO" label="Teste rápido"/>
+          </v-radio-group>
         </v-col>
       </v-row>
     </v-container>
   </div>
 </template>
 <script>
+import { mask } from 'vue-the-mask';
+import { dateFormat } from '@/validations/CommonValidations';
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
 
 export default {
+  directives: { mask },
   props: {
     conclusaoAtendimento: {
       type: ConclusaoAtendimento,
@@ -42,12 +64,17 @@ export default {
   data: () => ({
     realizadaColeta: false,
     tipoLaboratorio: null,
+    rules: {
+      dataDaColeta: [dateFormat],
+    },
   }),
   methods: {
     updateRealizadaColeta(realizadaColeta) {
       this.realizadaColeta = realizadaColeta;
       if (!this.realizadaColeta) {
         this.unselectTipoLaboratorio();
+        this.updateDataDaColeta('');
+        this.updateMetodoDeExame(null);
       }
     },
     changeTipoLaboratorio(tipoLaboratorio) {
@@ -72,6 +99,12 @@ export default {
       this.tipoLaboratorio = null;
       this.$emit('update:laboratorioOficial', false);
       this.$emit('update:laboratorioRedePrivada', false);
+    },
+    updateDataDaColeta(dataDaColeta) {
+      this.$emit('update:dataDaColeta', dataDaColeta);
+    },
+    updateMetodoDeExame(metodoDeExame) {
+      this.$emit('update:metodoDeExame', metodoDeExame);
     },
   },
 };

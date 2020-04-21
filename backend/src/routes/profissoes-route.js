@@ -8,4 +8,8 @@ router.get('/profissoes',
   validate(schemas.profissao.consultaPorNome, 'query'),
   ProfissaoResource.consultaPorNome);
 
+router.post('/profissoes',
+  validate(schemas.profissao.cadastrar),
+  ProfissaoResource.cadastrar);
+
 module.exports = router;

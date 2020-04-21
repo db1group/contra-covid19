@@ -1,11 +1,11 @@
 ---
-name: "\U0001F680 Pedido de nova implementação"
+name: "\U0001f4f1 Pedido de nova implementação [Front]"
 about: "Eu tenho uma sugestão \U0001F642)!"
 title: ''
-labels: enhancement, needs triage
+labels: Front, enhancement, needs triage
 assignees: ''
----
 
+---
 ## Feature Request
 
 **O seu pedido de nova implementação está ligado a algum problema? Por favor, descreva.**

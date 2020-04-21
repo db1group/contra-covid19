@@ -6,10 +6,14 @@ const DATE_HOUR_MINUTE_FORMAT = /^[0-3]{1}[0-9]{1}\/[0-1]{1}[0-9]{1}\/[0-9]{4} [
 export const required = (value, message = 'O campo é obrigatório.') => (
   (value && typeof value === 'string' && value.trim().length > 0)
   || (value && typeof value === 'number' && value > 0)
+  || (value && typeof value === 'boolean')
 ) || message;
 export const minLength = (length) => (value) => !value
   || value.length >= length
   || `O campo precisa de pelo menos ${length} caracteres.`;
+export const exactLength = (length) => (value) => !value
+  || value.length === length
+  || `O campo deve possuir ${length} caracteres.`;
 export const dateFormat = (value) => !value
   || (DATE_FORMAT.test(value) && DateService.isDateValid(value, 'DD/MM/YYYY'))
   || 'O formato precisa ser dd/mm/aaaa';

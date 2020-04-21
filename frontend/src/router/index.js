@@ -1,20 +1,32 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import Home from '../views/Home.vue';
 import NotificacaoForm from '../views/NotificacaoForm.vue';
 import NotificacaoCons from '../views/NotificacaoCons.vue';
+import EvolucaoForm from '../views/EvolucaoForm.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
+    name: 'home-page',
+    component: Home,
+  },
+  {
+    path: '/notificacoes',
     name: 'notificacao-cons',
     component: NotificacaoCons,
   },
   {
-    path: '/notificacao/cadastro',
+    path: '/notificacoes/cadastro',
     name: 'notificacao-form',
     component: NotificacaoForm,
+  },
+  {
+    path: '/notificacoes/:id/evolucoes',
+    name: 'evolucao-form',
+    component: EvolucaoForm,
   },
 ];
 
