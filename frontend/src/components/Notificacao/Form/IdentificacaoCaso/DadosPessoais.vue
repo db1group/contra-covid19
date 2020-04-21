@@ -109,7 +109,9 @@
   </div>
 </template>
 <script>
-import { required, dateFormat, dateHourMinuteFormat } from '@/validations/CommonValidations';
+import {
+  required, dateFormat, dateHourMinuteFormat, exactLength,
+} from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
 
@@ -191,9 +193,16 @@ export default {
       }
       return required(value);
     },
+    maxLengthIfCPF(value) {
+      if (this.suspeito.tipoDocumento !== 'CPF') {
+        return true;
+      }
+      return exactLength(11)(value);
+    },
   },
   created() {
     this.rules.gestante.push(this.requiredIfSexoForFeminino);
+    this.rules.numeroDocumento.push(this.maxLengthIfCPF);
   },
 };
 </script>
