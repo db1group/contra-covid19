@@ -13,14 +13,9 @@ module.exports = (sequelize, DataTypes) => {
         isDate: true,
         isNotGreaterTomorrow(value) {
           const actualValue = new Date(value);
-          let tomorrow = new Date();
-          tomorrow = new Date(
-            tomorrow.getFullYear(),
-            tomorrow.getMonth(),
-            tomorrow.getDate(),
-          );
+          const tomorrow = new Date();
           if (actualValue >= tomorrow) {
-            throw new Error('A notificação não pode possuir data futura');
+            throw new Error(`A evolução não pode possuir data futura ${value}]`);
           }
         },
       },
