@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket               = "notificasaude"
-    workspace_key_prefix = "terraform"
+    workspace_key_prefix = "notificasaude"
     key                  = "terraform.tfstate"
     region               = "us-east-1"
     encrypt              = true
@@ -16,7 +16,6 @@ data "aws_caller_identity" "current" {
 
 provider "aws" {
   profile = "default"
-  region  = "us-east-1"
 }
 
 variable "project" {
@@ -56,8 +55,9 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "subnet_a" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.vpc_subnet_a_cidr_block
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.vpc_subnet_a_cidr_block
+  availability_zone = "${data.aws_region.current.name}a"
 
   tags = {
     Name = "${var.project}-${var.environment}"
@@ -65,8 +65,9 @@ resource "aws_subnet" "subnet_a" {
 }
 
 resource "aws_subnet" "subnet_b" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = var.vpc_subnet_b_cidr_block
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = var.vpc_subnet_b_cidr_block
+  availability_zone = "${data.aws_region.current.name}b"
 
   tags = {
     Name = "${var.project}-${var.environment}"
@@ -94,7 +95,17 @@ resource "aws_route_table" "route_table" {
   }
 }
 
-resource "aws_security_group" "public_sg" {
+resource "aws_route_table_association" "a" {
+  subnet_id      = aws_subnet.subnet_a.id
+  route_table_id = aws_route_table.route_table.id
+}
+
+resource "aws_route_table_association" "b" {
+  subnet_id      = aws_subnet.subnet_b.id
+  route_table_id = aws_route_table.route_table.id
+}
+
+resource "aws_security_group" "security_group" {
   name   = "${var.project}-${var.environment}"
   vpc_id = aws_vpc.main.id
 
@@ -139,7 +150,7 @@ resource "aws_db_instance" "database" {
   identifier             = "${var.project}${var.environment}"
   username               = var.pg_database_username
   password               = var.pg_database_password
-  vpc_security_group_ids = [aws_security_group.public_sg.id]
+  vpc_security_group_ids = [aws_security_group.security_group.id]
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.id
   publicly_accessible    = true
 }
@@ -224,7 +235,7 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_attachment" {
 
 resource "aws_alb" "ecs_load_balancer" {
   name            = "${var.project}-${var.environment}"
-  security_groups = [aws_security_group.public_sg.id]
+  security_groups = [aws_security_group.security_group.id]
   subnets         = [aws_subnet.subnet_a.id, aws_subnet.subnet_b.id]
 }
 
@@ -235,8 +246,13 @@ resource "aws_alb_listener" "alb_listener_http" {
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.ecs_target_group_keycloak.arn
-    type             = "forward"
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "application/json"
+      message_body = "{status: 'unmapped service'}"
+      status_code  = "500"
+    }
   }
 }
 
@@ -245,11 +261,36 @@ resource "aws_alb_listener" "alb_listener_https" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:acm:us-east-1:032230612239:certificate/01513521-3ae4-41f2-9840-b61db610a003"
+  certificate_arn   = aws_acm_certificate.certificate.arn
 
   default_action {
-    target_group_arn = aws_alb_target_group.ecs_target_group_keycloak.arn
-    type             = "forward"
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "application/json"
+      message_body = "{status: 'unmapped service'}"
+      status_code  = "500"
+    }
+  }
+}
+
+resource "aws_alb_listener_rule" "aws_alb_listener_rule_http" {
+  listener_arn = aws_alb_listener.alb_listener_http.arn
+  priority     = 1
+
+  action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    field  = "host-header"
+    values = ["*.${var.hosted_zone}"]
   }
 }
 
@@ -288,15 +329,15 @@ resource "aws_launch_configuration" "ecs_launch_configuration" {
   }
 
   lifecycle {
-    create_before_destroy = false
+    create_before_destroy = true
   }
 
-  security_groups             = [aws_security_group.public_sg.id]
+  security_groups             = [aws_security_group.security_group.id]
   associate_public_ip_address = "true"
   key_name                    = var.project
   user_data                   = <<EOF
                                   #!/bin/bash
-                                  echo ECS_CLUSTER=${var.project}-${var.environment} >> /etc/ecs/ecs.config
+                                  echo ECS_CLUSTER="${var.project}-${var.environment}" >> /etc/ecs/ecs.config
                                   
 EOF
 
@@ -359,7 +400,7 @@ resource "aws_route53_zone" "hosted_zone" {
 
 resource "aws_route53_record" "www" {
   zone_id = aws_route53_zone.hosted_zone.zone_id
-  name    = var.is_production == true ? "www.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-www.${aws_route53_zone.hosted_zone.name}"
+  name    = var.is_production == true ? "www.${var.hosted_zone}" : "${var.environment}-www.${var.hosted_zone}"
   type    = "CNAME"
   ttl     = "300"
   records = [aws_alb.ecs_load_balancer.dns_name]
@@ -367,7 +408,7 @@ resource "aws_route53_record" "www" {
 
 resource "aws_route53_record" "auth" {
   zone_id = aws_route53_zone.hosted_zone.zone_id
-  name    = var.is_production == true ? "auth.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-auth.${aws_route53_zone.hosted_zone.name}"
+  name    = var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"
   type    = "CNAME"
   ttl     = "300"
   records = [aws_alb.ecs_load_balancer.dns_name]
@@ -375,7 +416,7 @@ resource "aws_route53_record" "auth" {
 
 resource "aws_route53_record" "api" {
   zone_id = aws_route53_zone.hosted_zone.zone_id
-  name    = var.is_production == true ? "api.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-api.${aws_route53_zone.hosted_zone.name}"
+  name    = var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"
   type    = "CNAME"
   ttl     = "300"
   records = [aws_alb.ecs_load_balancer.dns_name]
@@ -383,10 +424,25 @@ resource "aws_route53_record" "api" {
 
 resource "aws_route53_record" "database" {
   zone_id = aws_route53_zone.hosted_zone.zone_id
-  name    = var.is_production == true ? "database.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-database.${aws_route53_zone.hosted_zone.name}"
+  name    = var.is_production == true ? "database.${var.hosted_zone}" : "${var.environment}-database.${var.hosted_zone}"
   type    = "CNAME"
   ttl     = "300"
   records = [aws_db_instance.database.address]
+}
+
+############# Certificate #############
+
+resource "aws_acm_certificate" "certificate" {
+  domain_name       = "*.${var.hosted_zone}"
+  validation_method = "DNS"
+
+  tags = {
+    Environment = var.environment
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 ############# Keycloak #############
@@ -410,26 +466,6 @@ resource "aws_alb_target_group" "ecs_target_group_keycloak" {
   }
 }
 
-resource "aws_alb_listener_rule" "aws_alb_listener_rule_http" {
-  listener_arn = aws_alb_listener.alb_listener_http.arn
-  priority     = 1
-
-  action {
-    type = "redirect"
-
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
-  }
-
-  condition {
-    field  = "host-header"
-    values = [var.is_production == true ? "auth.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-auth.${aws_route53_zone.hosted_zone.name}"]
-  }
-}
-
 resource "aws_alb_listener_rule" "aws_alb_listener_rule_http_keycloak" {
   listener_arn = aws_alb_listener.alb_listener_http.arn
   priority     = 10
@@ -441,7 +477,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_http_keycloak" {
 
   condition {
     field  = "host-header"
-    values = [var.is_production == true ? "auth.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-auth.${aws_route53_zone.hosted_zone.name}"]
+    values = [var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"]
   }
 }
 
@@ -456,7 +492,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_https_keycloak" {
 
   condition {
     field  = "host-header"
-    values = [var.is_production == true ? "auth.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-auth.${aws_route53_zone.hosted_zone.name}"]
+    values = [var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"]
   }
 }
 
@@ -579,7 +615,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_http_backend" {
 
   condition {
     field  = "host-header"
-    values = [var.is_production == true ? "api.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-api.${aws_route53_zone.hosted_zone.name}"]
+    values = [var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"]
   }
 }
 
@@ -594,7 +630,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_https_backend" {
 
   condition {
     field  = "host-header"
-    values = [var.is_production == true ? "api.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-api.${aws_route53_zone.hosted_zone.name}"]
+    values = [var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"]
   }
 }
 
@@ -713,7 +749,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_http_frontend" {
 
   condition {
     field  = "host-header"
-    values = [var.is_production == true ? "www.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-www.${aws_route53_zone.hosted_zone.name}"]
+    values = [var.is_production == true ? "www.${var.hosted_zone}" : "${var.environment}-www.${var.hosted_zone}"]
   }
 }
 
@@ -728,7 +764,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_https_frontend" {
 
   condition {
     field  = "host-header"
-    values = [var.is_production == true ? "www.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-www.${aws_route53_zone.hosted_zone.name}"]
+    values = [var.is_production == true ? "www.${var.hosted_zone}" : "${var.environment}-www.${var.hosted_zone}"]
   }
 }
 
@@ -753,11 +789,11 @@ resource "aws_ecs_task_definition" "frontend" {
     "environment" : [
       { 
         "name" : "BACKEND_URL",
-        "value" : "${var.is_production == true ? "api.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-api.${aws_route53_zone.hosted_zone.name}"}"
+        "value" : "${var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"}"
       },
       { 
         "name" : "AUTH_URL",
-        "value" : "${var.is_production == true ? "auth.${aws_route53_zone.hosted_zone.name}" : "${var.environment}-auth.${aws_route53_zone.hosted_zone.name}"}"
+        "value" : "${var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"}"
       }
     ],
     "requiresAttributes": [
