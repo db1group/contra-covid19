@@ -58,7 +58,6 @@ const TIPOS_DE_CONTATO = [
 ];
 
 export default {
-  components: {
   },
   props: {
     notificacao: {
