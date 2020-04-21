@@ -48,7 +48,7 @@
       </v-col>
       <v-col v-show="suspeito.sexo === 'F'" cols="12" sm="2" md="2" class="pl-5">
         <v-radio-group
-          :value="gestanteEmString"
+          :value="suspeito.gestante"
           class="mt-0"
           @change="updateGestante"
           :rules="rules.gestante"
@@ -140,7 +140,6 @@ export default {
       type: Pessoa,
       required: true,
     },
-    gestanteEmString: null,
   },
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
@@ -153,7 +152,7 @@ export default {
       nomeDaMae: [required],
       dataDeNascimento: [required, dateFormat],
       sexo: [required],
-      gestante: [required],
+      gestante: [],
       racaCor: [required],
     },
   }),
@@ -175,9 +174,9 @@ export default {
     },
     updateSexo(sexo) {
       this.$emit('update:sexo', sexo);
+      this.updateGestante();
     },
-    updateGestante(gestanteEmString) {
-      const gestante = (gestanteEmString === 'true');
+    updateGestante(gestante) {
       this.$emit('update:gestante', gestante);
     },
     updateRacaCor(racaCor) {
@@ -186,6 +185,15 @@ export default {
     updateDataDeNascimento(dataDeNascimento) {
       this.$emit('update:dataDeNascimento', dataDeNascimento);
     },
+    requiredIfSexoForFeminino(value) {
+      if (this.suspeito.sexo === 'M') {
+        return true;
+      }
+      return required(value);
+    },
+  },
+  created() {
+    this.rules.gestante.push(this.requiredIfSexoForFeminino);
   },
 };
 </script>
