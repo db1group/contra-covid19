@@ -1,12 +1,20 @@
 import Vue from 'vue';
+import VueKeyCloak from '@dsb-norge/vue-keycloak-js';
 import App from './App.vue';
 import router from './router';
 import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false;
 
-new Vue({
-  router,
-  vuetify,
-  render: (h) => h(App),
-}).$mount('#app');
+Vue.use(VueKeyCloak, {
+  config: {
+    url: `${process.env.VUE_APP_KEYCLOAK_URL}`,
+    realm: `${process.env.VUE_APP_REALM}`,
+    clientId: `${process.env.VUE_APP_CLIENT_ID}`,
+  },
+  onReady: () => new Vue({
+    router,
+    vuetify,
+    render: (h) => h(App),
+  }).$mount('#app'),
+});
