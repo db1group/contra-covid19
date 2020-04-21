@@ -160,7 +160,7 @@
         color="error"
         bottom
       >
-        Ops! Ocorreu um erro ao tentar enviar a notificação.
+        {{ errorMessage }}
       </v-snackbar>
       <v-snackbar
         v-model="showAlert"
@@ -221,6 +221,7 @@ export default {
     showError: false,
     showAlert: false,
     showSuccess: false,
+    errorMessage: '',
   }),
   methods: {
     updateUnidadeSaude(unidadeSaudeId) {
@@ -281,9 +282,9 @@ export default {
           this.$refs.form.reset();
           this.showSuccess = true;
           this.notificacao = new Notificacao();
-        }).catch((err) => {
+        }).catch(({ response }) => {
           this.showError = true;
-          console.log(err);
+          this.errorMessage = response.data.error;
         });
       } else {
         this.showAlert = true;
