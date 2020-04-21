@@ -11,7 +11,6 @@ exports.consultaPorNome = async (req, res) => {
         [Op.like]: `%${nome || '%'}%`,
       },
     },
-    limit: 10,
   });
 
   return res.json({ data: profissoes });
