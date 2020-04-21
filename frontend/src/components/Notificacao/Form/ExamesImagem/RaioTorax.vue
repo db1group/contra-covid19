@@ -74,18 +74,27 @@ export default {
     },
     updateRaioNormal(raioNormal) {
       this.$emit('update:raioNormal', raioNormal);
+      this.$emit('update:raioInfiltradoIntersticial', false);
+      this.$emit('update:raioConsolidacao', false);
+      this.$emit('update:raioMisto', false);
+      this.$emit('update:raioOutro', '');
+      this.realizouOutroRaioTorax = false;
     },
     updateRaioInfiltradoIntersticial(raioInfiltradoIntersticial) {
       this.$emit('update:raioInfiltradoIntersticial', raioInfiltradoIntersticial);
+      this.$emit('update:raioNormal', false);
     },
     updateRaioConsolidacao(raioConsolidacao) {
       this.$emit('update:raioConsolidacao', raioConsolidacao);
+      this.$emit('update:raioNormal', false);
     },
     updateRaioMisto(raioMisto) {
       this.$emit('update:raioMisto', raioMisto);
+      this.$emit('update:raioNormal', false);
     },
     updateRaioOutro(raioOutro) {
       this.$emit('update:raioOutro', raioOutro);
+      this.$emit('update:raioNormal', false);
     },
     requiredIfRealizouOutroRaioTorax(value) {
       if (!this.realizouOutroRaioTorax) {
