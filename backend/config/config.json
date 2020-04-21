@@ -1,17 +1,31 @@
 {
   "development": {
     "dialect": "sqlite",
-    "storage": "./src/db/databases/dev.sqlite"
+    "storage": "./src/db/databases/dev.sqlite",
+    "dialectOptions": {
+      "useUTC": true,
+      "dateStrings": true
+    }
   },
   "test": {
     "dialect": "sqlite",
-    "storage": "./src/db/databases/test.sqlite"
+    "storage": "./src/db/databases/test.sqlite",
+    "dialectOptions": {
+      "useUTC": true,
+      "dateStrings": true
+    }
+
   },
   "production": {
     "username": "artamutj",
     "password": "r3AAc-798qno4Ba8FT_9DtLqHJyLLQKh",
     "database": "artamutj",
     "host": "drona.db.elephantsql.com",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "dialectOptions": {
+      "useUTC": true,
+      "dateStrings": true
+    },
+    "timezone":0
   }
 }
