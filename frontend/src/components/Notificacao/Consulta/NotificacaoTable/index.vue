@@ -38,15 +38,21 @@
         </v-card-title>
       </template>
       <template v-slot:item.situacao="{ item }">
-        <v-chip class="d-block text-center" :color="getColor(item.situacao)" dark>{{ item.situacao }}</v-chip>
+        <v-chip
+          class="d-block text-center"
+          :color="getColor(item.situacao)"
+          :text-color="getTextColor(item.situacao)"
+        >
+          {{ item.situacao }}
+        </v-chip>
       </template>
       <template v-slot:item.actions="{ item }">
         <v-btn v-if="isSecretariaSaude"
           text
           small
           color="primary"
-          :to="'/notificacao/' + item.id + '/evolucoes'"
-          >
+          :to="{ name: 'evolucao-form', params: { id: item.id } }"
+        >
           EVOLUÇÃO
         </v-btn>
         <v-btn text small color="red" @click="excluirItem(item)">EXCLUIR</v-btn>
@@ -92,19 +98,27 @@ export default {
   },
   methods: {
     getColor(situacao) {
-      let color;
       switch (situacao) {
-        case 'UTI': color = '#FD3A5C';
-          break;
-        case 'Óbito': color = 'black';
-          break;
-        case 'Leito comun': color = '#FFB300';
-          break;
-        case 'Isolamento domiciliar': color = '#64FFDA';
-          break;
-        default: color = 'red';
+        case 'UTI':
+          return '#FD3A5C';
+        case 'Óbito':
+          return 'black';
+        case 'Leito comun':
+          return '#FFB300';
+        case 'Isolamento domiciliar':
+          return '#64FFDA';
+        default:
+          return 'red';
       }
-      return color;
+    },
+    getTextColor(situacao) {
+      switch (situacao) {
+        case 'UTI':
+        case 'Óbito':
+          return 'white';
+        default:
+          return 'black';
+      }
     },
     consultarNotificacoes({ page, itemsPerPage } = this.options) {
       this.loading = true;
