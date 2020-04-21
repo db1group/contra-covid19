@@ -163,6 +163,13 @@
         Ops! Ocorreu um erro ao tentar enviar a notificação.
       </v-snackbar>
       <v-snackbar
+        v-model="showAlert"
+        color="warning"
+        bottom
+      >
+        Algum dos campos do formulário possui alguma pendência
+      </v-snackbar>
+      <v-snackbar
         v-model="showSuccess"
         color="success"
         bottom
@@ -212,6 +219,7 @@ export default {
   data: () => ({
     notificacao: new Notificacao(),
     showError: false,
+    showAlert: false,
     showSuccess: false,
   }),
   methods: {
@@ -277,6 +285,8 @@ export default {
           this.showError = true;
           console.log(err);
         });
+      } else {
+        this.showAlert = true;
       }
     },
   },
