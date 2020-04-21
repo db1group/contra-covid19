@@ -76,63 +76,53 @@ exports.gerarExcel = async (colunas, lista, res) => {
 };
 
 this.retornarCampo = (objeto, nomeDaPropriedade) => {
-  if (!objeto) {
+  if (!this.validarCampo(objeto, nomeDaPropriedade)) {
     return null;
+  }
+
+  return objeto[nomeDaPropriedade];
+};
+
+this.validarCampo = (objeto, nomeDaPropriedade) => {
+  if (!objeto) {
+    return false;
   }
 
   const objetoTemp = Object.prototype.hasOwnProperty.call(objeto, 'dataValues') ? objeto.dataValues : objeto;
-  if (!Object.prototype.hasOwnProperty.call(objetoTemp, nomeDaPropriedade)) {
-    return null;
-  }
-
-  return objetoTemp[nomeDaPropriedade];
+  return Object.prototype.hasOwnProperty.call(objetoTemp, nomeDaPropriedade);
 };
 
 exports.retornarHoraDaData = (objeto, nomeDaPropriedade) => {
-  if (!objeto) {
+  if (!this.validarCampo(objeto, nomeDaPropriedade)) {
     return null;
   }
 
-  const objetoTemp = Object.prototype.hasOwnProperty.call(objeto, 'dataValues') ? objeto.dataValues : objeto;
-  if (!Object.prototype.hasOwnProperty.call(objetoTemp, nomeDaPropriedade)) {
-    return null;
-  }
-
-  const data = objetoTemp[nomeDaPropriedade];
+  const data = objeto[nomeDaPropriedade];
   const horasFuso = data instanceof Date ? data.getTimezoneOffset() / 60 : 0;
 
   return moment(data).locale('pt-BR').add(horasFuso, 'hours').format('LT');
 };
 
 exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
-  if (!objeto) {
+  if (!this.validarCampo(objeto, nomeDaPropriedade)) {
     return null;
   }
 
-  const objetoTemp = Object.prototype.hasOwnProperty.call(objeto, 'dataValues') ? objeto.dataValues : objeto;
-  if (!Object.prototype.hasOwnProperty.call(objetoTemp, nomeDaPropriedade)) {
-    return null;
-  }
-
-  const data = objetoTemp[nomeDaPropriedade];
+  const data = objeto[nomeDaPropriedade];
   const horasFuso = data instanceof Date ? data.getTimezoneOffset() / 60 : 0;
 
   return moment(data).add(horasFuso, 'hours').format('DD/MM/YYYY');
 };
 
 exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {
-  if (!objeto) {
+  if (!this.validarCampo(objeto, nomeDaPropriedade)) {
     return null;
   }
 
-  const objetoTemp = Object.prototype.hasOwnProperty.call(objeto, 'dataValues') ? objeto.dataValues : objeto;
-  if (!Object.prototype.hasOwnProperty.call(objetoTemp, nomeDaPropriedade)) {
+  const valorDaPropriedade = objeto[nomeDaPropriedade];
+  if (!(typeof valorDaPropriedade === 'boolean')) {
     return null;
   }
 
-  if (!(typeof objetoTemp[nomeDaPropriedade] === 'boolean')) {
-    return null;
-  }
-
-  return objetoTemp[nomeDaPropriedade] ? 'Sim' : 'Não';
+  return valorDaPropriedade ? 'Sim' : 'Não';
 };
