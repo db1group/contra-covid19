@@ -122,16 +122,6 @@
           @update:nomeMedicacaoAntiflamatorio="updateInformacaoComplementar('nomeMedicacaoAntiflamatorio', $event)"
           @update:medicacaoAntiviral="updateInformacaoComplementar('medicacaoAntiviral', $event)"
           @update:nomeMedicacaoAntiviral="updateInformacaoComplementar('nomeMedicacaoAntiviral', $event)"
-          @update:historicoDeViagem="updateInformacaoComplementar('historicoDeViagem', $event)"
-          @update:dataDaViagem="updateInformacaoComplementar('dataDaViagem', $event)"
-          @update:localDaViagem="updateInformacaoComplementar('localDaViagem', $event)"
-          @update:recebeuVacinaDaGripeNosUltimosDozeMeses="
-            updateInformacaoComplementar('recebeuVacinaDaGripeNosUltimosDozeMeses', $event)
-          "
-        />
-        <conclusao-atendimento
-          :conclusao-atendimento="notificacao.conclusaoAtendimento"
-          @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
         />
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
@@ -140,11 +130,27 @@
           @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"
           @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
         />
+        <historico-de-viagem
+          :informacoes-complementares="notificacao.informacaoComplementar"
+          @update:historicoDeViagem="updateInformacaoComplementar('historicoDeViagem', $event)"
+          @update:dataDaViagem="updateInformacaoComplementar('dataDaViagem', $event)"
+          @update:localDaViagem="updateInformacaoComplementar('localDaViagem', $event)"
+        />
         <contato-com-suspeito-ou-confirmado
           :notificacao="notificacao"
           @update:tipoDeContatoComCaso="updateTipoDeContatoComCaso"
           @update:tipoDeLocalDoCaso="updateTipoDeLocalDoCaso"
           @update:nomeDoCaso="updateNomeDoCaso"
+        />
+        <outras-informacoes
+          :informacoes-complementares="notificacao.informacaoComplementar"
+          @update:recebeuVacinaDaGripeNosUltimosDozeMeses="
+            updateInformacaoComplementar('recebeuVacinaDaGripeNosUltimosDozeMeses', $event)
+          "
+        />
+        <conclusao-atendimento
+          :conclusao-atendimento="notificacao.conclusaoAtendimento"
+          @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
         />
         <observacoes v-model="notificacao.observacoes"/>
       </v-form>
@@ -179,6 +185,8 @@ import InformacoesComplementares from '@/components/Notificacao/Form/Informacoes
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
 import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
 import ContatoComSuspeitoOuConfirmado from '@/components/Notificacao/Form/ContatoComSuspeitoOuConfirmado/index.vue';
+import HistoricoDeViagem from '@/components/Notificacao/Form/HistoricoDeViagem/index.vue';
+import OutrasInformacoes from '@/components/Notificacao/Form/OutrasInformacoes/index.vue';
 import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
@@ -196,6 +204,8 @@ export default {
     ConclusaoAtendimento,
     RealizadoColeta,
     ContatoComSuspeitoOuConfirmado,
+    HistoricoDeViagem,
+    OutrasInformacoes,
     Observacoes,
     BotaoEnviar,
   },
