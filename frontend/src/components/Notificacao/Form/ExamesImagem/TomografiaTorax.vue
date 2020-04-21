@@ -91,7 +91,7 @@ export default {
       if (!this.realizouOutraTomografiaTorax) {
         return true;
       }
-      return required(value, 'O campo é obrigatório.');
+      return required(value);
     },
   },
   created() {
