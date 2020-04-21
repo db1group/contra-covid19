@@ -99,10 +99,9 @@ const salvarNotificacao = async (notificacao) => {
   const novaNotificacao = await models.Notificacao.create(notificacao);
   const { id: notificacaoId } = novaNotificacao;
   await models.NotificacaoCovid19.create({ notificacaoId, ...notificacao.notificacaoCovid19 });
-
   await models.NotificacaoEvolucao.create({
     notificacaoId,
-    dtEvolucao: new Date(),
+    dtEvolucao: notificacao.notificacaoCovid19.dataHoraNotificacao,
     tpEvolucao: 'SUSPEITO',
     tpLocal: 'Alta com isolamento domiciliar',
   });
