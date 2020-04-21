@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text title">
-      11. OUTRAS INFORMAÇÕES
+      7. OUTRAS INFORMAÇÕES
     </h4>
     <v-container
       fluid
