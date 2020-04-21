@@ -1,5 +1,5 @@
 const excel = require('excel4node');
-const { v4: uuidv4 } = require('uuid');
+const uuid = require('uuid/v4');
 const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
@@ -11,7 +11,7 @@ exports.gerarExcel = async (colunas, lista, res) => {
       fs.mkdirSync(diretorio);
     }
 
-    const guid = uuidv4();
+    const guid = uuid();
     const nomeArquivo = `${diretorio}/${guid}.xlsx`;
     const fullPath = path.resolve(nomeArquivo);
 
