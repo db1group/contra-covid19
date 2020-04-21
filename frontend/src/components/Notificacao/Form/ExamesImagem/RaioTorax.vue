@@ -71,6 +71,7 @@ export default {
   methods: {
     updateRealizouOutroRaioTorax(realizouOutroRaioTorax) {
       this.realizouOutroRaioTorax = realizouOutroRaioTorax;
+      this.$emit('update:raioNormal', false);
     },
     updateRaioNormal(raioNormal) {
       this.$emit('update:raioNormal', raioNormal);
