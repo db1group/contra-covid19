@@ -36,6 +36,7 @@ const extrairSuspeitoDaPessoa = ({
   telefoneResidencial,
   telefoneContato,
   telefoneCelular,
+  Bairro,
 }, bairro) => ({
   pessoaId: id,
   nome,
@@ -47,8 +48,8 @@ const extrairSuspeitoDaPessoa = ({
   ocupacao,
   endereco,
   numero,
-  bairro: bairro ? bairro.nome : null,
-  municipioId: bairro ? bairro.municipioId : null,
+  bairro: bairro ? bairro.nome : Bairro.nome,
+  municipioId: bairro ? bairro.municipioId : Bairro.id,
   telefoneResidencial,
   telefoneContato,
   telefoneCelular,

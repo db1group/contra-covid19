@@ -8,6 +8,7 @@ const requestParaModeloNotificacao = (objetoRequest) => {
     userId,
     unidadeSaudeId,
     notificadorId,
+    municipioId: suspeito.municipioId,
     pessoaId: suspeito.pessoaId,
     bairroId: suspeito.bairroId,
     profissaoId,
