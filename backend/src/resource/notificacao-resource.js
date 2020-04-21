@@ -65,10 +65,14 @@ const consolidarSuspeito = async (suspeito) => {
 */
 const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
   const suspeitoConsolidado = await consolidarSuspeito(suspeito);
+  const { municipioId } = suspeito;
 
   return {
     ...notificacao,
-    suspeito: suspeitoConsolidado,
+    suspeito: {
+      municipioId,
+      ...suspeitoConsolidado,
+    },
   };
 };
 
@@ -77,7 +81,18 @@ const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
 */
 const consultarNotificacaoPorId = async (id) => models.Notificacao.findOne({
   where: { id },
-  include: [{ model: models.Pessoa }, { model: models.NotificacaoCovid19 }],
+  include: [
+    {
+      model: models.Pessoa,
+      include: {
+        model: models.Bairro,
+        include: {
+          model: models.Municipio,
+        },
+      },
+    },
+    { model: models.NotificacaoCovid19 },
+  ],
 });
 
 const salvarNotificacao = async (notificacao) => {
