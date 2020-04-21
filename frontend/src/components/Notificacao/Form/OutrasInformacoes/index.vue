@@ -7,7 +7,7 @@
       <v-row>
         <v-col cols="12">
           <label class="primary--text body-1 font-weight-bold">
-            Recebeu vacina contra Gripe nos últimos doze meses?
+            Recebeu vacina contra Gripe nos últimos doze meses? *
           </label>
           <v-radio-group
             :input-value="informacoesComplementares.recebeuVacinaDaGripeNosUltimosDozeMeses"
