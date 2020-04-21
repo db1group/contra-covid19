@@ -7,7 +7,7 @@ const validate = (schema, property = 'body') => (req, res, next) => {
     next();
   } else {
     const { details } = error;
-    const mensagem = details.map((d) => i18n(d).ptbr[d.type] || d.mensagem).join(',');
+    const mensagem = details.map((d) => i18n(d).ptbr[d.type] || d.message).join(',');
     res.status(400).json({ error: mensagem });
   }
 };
