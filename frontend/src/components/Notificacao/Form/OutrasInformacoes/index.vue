@@ -1,7 +1,7 @@
 <template>
   <div class="px-2">
     <h4 class="primary--text title">
-      11. HISTÓRICO DE VIAGEM
+      11. OUTRAS INFORMAÇÕES
     </h4>
     <v-container fluid class="pa-0">
       <v-row>
