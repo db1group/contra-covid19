@@ -31,8 +31,8 @@
             :rules="rules.profissaoId"
             label="Profissão do notificador *"
             :items="profissoes.items"
-            item-text="value"
-            item-value="key"
+            item-text="nome"
+            item-value="id"
             :loading="profissoes.loading"
             no-data-text="Profissão não encontrada"
             @input="updateProfissaoId"
@@ -45,16 +45,10 @@
 <script>
 import { required } from '@/validations/CommonValidations';
 import Notificacao from '@/entities/Notificacao';
-// import ProfissaoService from '@/services/ProfissaoService';
+import ProfissaoService from '@/services/ProfissaoService';
 
 const UNIDADES_SAUDE = [
   { key: 1, value: 'Unidade Notificante de Teste - 1' },
-];
-// TODO: Após criação do endpoint no back, remover esses dados mockados
-const PROFISSOES = [
-  { key: 1, value: 'Profissão de Teste - 1' },
-  { key: 2, value: 'Profissão de Teste - 2' },
-  { key: 3, value: 'Profissão de Teste - 3' },
 ];
 
 export default {
@@ -89,19 +83,12 @@ export default {
     },
     findProfissoes() {
       this.profissoes.loading = true;
-      // TODO: Após criação do endpoint no back, descomentar essa parte do código
-      // ProfissaoService.findAll().then(({ data }) => {
-      //   this.profissoes = {
-      //     items: data,
-      //     loading: false,
-      //   };
-      // });
-
-      // TODO: Após criação do endpoint no back, remover esses dados mockados
-      this.profissoes = {
-        items: PROFISSOES,
-        loading: false,
-      };
+      ProfissaoService.findAll().then(({ data }) => {
+        this.profissoes = {
+          items: data,
+          loading: false,
+        };
+      });
     },
   },
   created() {
