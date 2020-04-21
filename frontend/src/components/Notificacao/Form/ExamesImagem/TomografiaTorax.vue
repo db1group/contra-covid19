@@ -71,21 +71,31 @@ export default {
   methods: {
     updateRealizouOutraTomografiaTorax(realizouOutraTomografiaTorax) {
       this.realizouOutraTomografiaTorax = realizouOutraTomografiaTorax;
+      this.$emit('update:tomografiaNormal', false);
     },
     updateTomografiaNormal(tomografiaNormal) {
       this.$emit('update:tomografiaNormal', tomografiaNormal);
+      this.$emit('update:tomografiaVidroFoscoPredominioPerifericoBasal', false);
+      this.$emit('update:tomografiaAusenciaDerramePleural', false);
+      this.$emit('update:tomografiaAusenciaLinfonodoMediastenal', false);
+      this.$emit('update:tomografiaOutro', '');
+      this.realizouOutraTomografiaTorax = false;
     },
     updateTomografiaVidroFoscoPredominioPerifericoBasal(tomografiaVidroFoscoPredominioPerifericoBasal) {
       this.$emit('update:tomografiaVidroFoscoPredominioPerifericoBasal', tomografiaVidroFoscoPredominioPerifericoBasal);
+      this.$emit('update:tomografiaNormal', false);
     },
     updateTomografiaAusenciaDerramePleural(tomografiaAusenciaDerramePleural) {
       this.$emit('update:tomografiaAusenciaDerramePleural', tomografiaAusenciaDerramePleural);
+      this.$emit('update:tomografiaNormal', false);
     },
     updateTomografiaAusenciaLinfonodoMediastenal(tomografiaAusenciaLinfonodoMediastenal) {
       this.$emit('update:tomografiaAusenciaLinfonodoMediastenal', tomografiaAusenciaLinfonodoMediastenal);
+      this.$emit('update:tomografiaNormal', false);
     },
     updateTomografiaOutro(tomografiaOutro) {
       this.$emit('update:tomografiaOutro', tomografiaOutro);
+      this.$emit('update:tomografiaNormal', false);
     },
     requiredIfRealizouOutraTomografiaTorax(value) {
       if (!this.realizouOutraTomografiaTorax) {

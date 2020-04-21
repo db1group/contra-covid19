@@ -5,7 +5,12 @@
     </h4>
     <v-row>
       <v-col cols="12">
-        <v-radio-group :value="realizouExamesImagem" class="mt-0" @change="updateRealizouExamesImagem">
+        <v-radio-group
+          :value="realizouExamesImagem"
+          class="mt-0"
+          :rules="rules.realizouExamesImagem"
+          @change="updateRealizouExamesImagem"
+        >
           <v-radio label="Sim" :value="true"/>
           <v-radio label="Não" :value="false"/>
         </v-radio-group>
@@ -59,6 +64,11 @@ export default {
       required: true,
     },
   },
+  data: () => ({
+    rules: {
+      realizouExamesImagem: [],
+    },
+  }),
   methods: {
     updateRealizouExamesImagem(realizouExamesImagem) {
       this.$emit('update:realizouExamesImagem', realizouExamesImagem);
@@ -93,6 +103,27 @@ export default {
     updateTomografiaOutro(tomografiaOutro) {
       this.$emit('update:tomografiaOutro', tomografiaOutro);
     },
+    requireExames(value) {
+      if (!value) {
+        return true;
+      }
+      const exames = [
+        this.examesImagem.raioNormal,
+        this.examesImagem.raioInfiltradoIntersticial,
+        this.examesImagem.raioConsolidacao,
+        this.examesImagem.raioMisto,
+        this.examesImagem.raioOutro,
+        this.examesImagem.tomografiaNormal,
+        this.examesImagem.tomografiaVidroFoscoPredominioPerifericoBasal,
+        this.examesImagem.tomografiaAusenciaDerramePleural,
+        this.examesImagem.tomografiaAusenciaLinfonodoMediastenal,
+        this.examesImagem.tomografiaOutro,
+      ];
+      return exames.some((exame) => exame) || 'Pelo menos um Raio ou Tomografia do tórax deve ser selecionado';
+    },
+  },
+  created() {
+    this.rules.realizouExamesImagem.push(this.requireExames);
   },
 };
 </script>
