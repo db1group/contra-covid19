@@ -181,9 +181,15 @@ const consultarNotificaoesWeb = async (page, limit, search = '') => {
   return models.Notificacao.findAndCountAll(optionsConsulta);
 };
 
+const consultarNotificacoesWebVazia = {
+  count: 0,
+  data: [],
+};
+
 exports.consultarNotificacoesWeb = async (req, res) => {
   const { page = 1, itemsPerPage = 10, search = '' } = req.query;
   const notificacoes = await consultarNotificaoesWeb(page, itemsPerPage, search);
+  if (!notificacoes) return res.json(consultarNotificacoesWebVazia);
   const notificacaoConsulta = Mappers.Notificacao.mapearParaConsulta(notificacoes.rows);
   return res.json({ count: notificacoes.count, data: notificacaoConsulta });
 };
