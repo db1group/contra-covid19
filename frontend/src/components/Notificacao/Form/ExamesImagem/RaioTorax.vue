@@ -38,8 +38,10 @@
     />
     <v-text-field
       :value="examesImagem.raioOutro"
+      :rules="rules.raioOutro"
       class="pl-8"
       label="Especifique"
+      validate-on-blur
       :disabled="!realizouOutroRaioTorax || !realizouExamesImagem"
       @input="updateRaioOutro"
     />
@@ -47,6 +49,7 @@
 </template>
 <script>
 import ExamesImagem from '@/entities/ExamesImagem';
+import { required } from '@/validations/CommonValidations';
 
 export default {
   props: {
@@ -61,6 +64,9 @@ export default {
   },
   data: () => ({
     realizouOutroRaioTorax: false,
+    rules: {
+      raioOutro: [],
+    },
   }),
   methods: {
     updateRealizouOutroRaioTorax(realizouOutroRaioTorax) {
@@ -81,6 +87,15 @@ export default {
     updateRaioOutro(raioOutro) {
       this.$emit('update:raioOutro', raioOutro);
     },
+    requiredIfRealizouOutroRaioTorax(value) {
+      if (!this.realizouOutroRaioTorax) {
+        return true;
+      }
+      return required(value);
+    },
+  },
+  created() {
+    this.rules.raioOutro.push(this.requiredIfRealizouOutroRaioTorax);
   },
 };
 </script>

@@ -38,8 +38,10 @@
     />
     <v-text-field
       :value="examesImagem.tomografiaOutro"
+      :rules="rules.tomografiaOutro"
       class="pl-8"
       label="Especifique"
+      validate-on-blur
       :disabled="!realizouOutraTomografiaTorax || !realizouExamesImagem"
       @input="updateTomografiaOutro"
     />
@@ -47,6 +49,7 @@
 </template>
 <script>
 import ExamesImagem from '@/entities/ExamesImagem';
+import { required } from '@/validations/CommonValidations';
 
 export default {
   props: {
@@ -61,6 +64,9 @@ export default {
   },
   data: () => ({
     realizouOutraTomografiaTorax: false,
+    rules: {
+      tomografiaOutro: [],
+    },
   }),
   methods: {
     updateRealizouOutraTomografiaTorax(realizouOutraTomografiaTorax) {
@@ -81,6 +87,15 @@ export default {
     updateTomografiaOutro(tomografiaOutro) {
       this.$emit('update:tomografiaOutro', tomografiaOutro);
     },
+    requiredIfRealizouOutraTomografiaTorax(value) {
+      if (!this.realizouOutraTomografiaTorax) {
+        return true;
+      }
+      return required(value);
+    },
+  },
+  created() {
+    this.rules.tomografiaOutro.push(this.requiredIfRealizouOutraTomografiaTorax);
   },
 };
 </script>

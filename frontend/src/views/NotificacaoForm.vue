@@ -140,8 +140,12 @@
           @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"
           @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
         />
-        <contato-com-suspeito/>
-        <contato-com-caso-confirmado/>
+        <contato-com-suspeito-ou-confirmado
+          :notificacao="notificacao"
+          @update:tipoDeContatoComCaso="updateTipoDeContatoComCaso"
+          @update:tipoDeLocalDoCaso="updateTipoDeLocalDoCaso"
+          @update:nomeDoCaso="updateNomeDoCaso"
+        />
         <observacoes v-model="notificacao.observacoes"/>
       </v-form>
       <botao-enviar @click="send"/>
@@ -174,8 +178,7 @@ import Comorbidades from '@/components/Notificacao/Form/Comorbidades/index.vue';
 import InformacoesComplementares from '@/components/Notificacao/Form/InformacoesComplementares/index.vue';
 import ConclusaoAtendimento from '@/components/Notificacao/Form/ConclusaoAtendimento/index.vue';
 import RealizadoColeta from '@/components/Notificacao/Form/RealizadoColeta/index.vue';
-import ContatoComSuspeito from '@/components/Notificacao/Form/ContatoComSuspeito/index.vue';
-import ContatoComCasoConfirmado from '@/components/Notificacao/Form/ContatoComCasoConfirmado/index.vue';
+import ContatoComSuspeitoOuConfirmado from '@/components/Notificacao/Form/ContatoComSuspeitoOuConfirmado/index.vue';
 import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
@@ -192,8 +195,7 @@ export default {
     InformacoesComplementares,
     ConclusaoAtendimento,
     RealizadoColeta,
-    ContatoComSuspeito,
-    ContatoComCasoConfirmado,
+    ContatoComSuspeitoOuConfirmado,
     Observacoes,
     BotaoEnviar,
   },
@@ -226,6 +228,15 @@ export default {
     },
     updateDataInicioDosSintomas(dataInicioDosSintomas) {
       this.notificacao.dataInicioDosSintomas = dataInicioDosSintomas;
+    },
+    updateTipoDeContatoComCaso(tipoDeContatoComCaso) {
+      this.notificacao.tipoDeContatoComCaso = tipoDeContatoComCaso;
+    },
+    updateTipoDeLocalDoCaso(tipoDeLocalDoCaso) {
+      this.notificacao.tipoDeLocalDoCaso = tipoDeLocalDoCaso;
+    },
+    updateNomeDoCaso(nomeDoCaso) {
+      this.notificacao.nomeDoCaso = nomeDoCaso;
     },
     updateSuspeito(campo, valor) {
       this.notificacao.suspeito[campo] = valor;
