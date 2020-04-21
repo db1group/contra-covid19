@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       status: {
         type: DataTypes.ENUM('ABERTO', 'ENCERRADA', 'EXCLUIDA'),
       },
+      municipioId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
     },
     {},
   );
