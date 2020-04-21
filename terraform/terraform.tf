@@ -110,11 +110,35 @@ resource "aws_security_group" "security_group" {
   vpc_id = aws_vpc.main.id
 
   ingress {
-    description = "TLS from VPC"
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.main.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "PostgreSQL"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -146,13 +170,14 @@ resource "aws_db_instance" "database" {
   engine                 = "postgres"
   engine_version         = "11.5"
   instance_class         = "db.t2.micro"
-  name                   = "${var.project}${var.environment}"
+  name                   = var.project
   identifier             = "${var.project}${var.environment}"
   username               = var.pg_database_username
   password               = var.pg_database_password
   vpc_security_group_ids = [aws_security_group.security_group.id]
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.id
   publicly_accessible    = true
+  skip_final_snapshot    = true
 }
 
 ############# IAM #############
@@ -537,7 +562,7 @@ resource "aws_ecs_task_definition" "keycloak" {
     "environment" : [
       { 
         "name" : "PG_DATABASE_URL", 
-        "value" : "jdbc:postgresql://${aws_db_instance.database.address}:5432/${var.project}-keycloak" 
+        "value" : "jdbc:postgresql://${aws_db_instance.database.address}:5432/keycloak" 
       },
       { 
         "name" : "PG_DATABASE_USERNAME", 
@@ -655,7 +680,7 @@ resource "aws_ecs_task_definition" "backend" {
     "environment" : [
       { 
         "name" : "PG_DATABASE_URL", 
-        "value" : "jdbc:postgresql://${aws_db_instance.database.address}:5432/${var.project}-backend" 
+        "value" : "jdbc:postgresql://${aws_db_instance.database.address}:5432/${var.project}" 
       },
       { 
         "name" : "PG_DATABASE_USERNAME", 

@@ -35,6 +35,24 @@ jobs:
       - run: sudo snap install --classic heroku
       - run: heroku container:login
       - run: heroku container:release web --app covid19-db1-backend
+  deploy-backend-qa-aws:
+    executor: aws-cli/default
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend
+      - run: docker build -t notificasaude/backend:latest .
+      - run: docker tag notificasaude/backend:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
+      - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
+  deploy-backend-prod-aws:
+    executor: aws-cli/default
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend
+      - run: docker pull 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
+      - run: docker tag 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:latest
+      - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:latest
 
   build-frontend:
     executor: covid19-executor
@@ -65,6 +83,9 @@ jobs:
       - run: heroku container:login
       - run: heroku container:release web --app covid19-db1-frontend
 
+orbs:
+  aws-cli: circleci/aws-cli@1.0.0
+
 workflows:
   version: 2.0
   covid19:
@@ -78,6 +99,7 @@ workflows:
             branches:
               only:
               - master
+              - feature/terraform
       - deploy-frontend:
           requires:
             - build-frontend
@@ -85,3 +107,19 @@ workflows:
             branches:
               only:
               - master
+      - deploy-backend-qa-aws:
+          requires:
+            - build-backend
+          filters:
+            branches:
+              only:
+              - master
+              - feature/terraform
+      - deploy-backend-prod-aws:
+          requires:
+            - build-backend
+          filters:
+            branches:
+              only:
+              - master
+              - feature/terraform
