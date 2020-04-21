@@ -34,6 +34,7 @@ import EvolucaoForm from '@/components/Notificacao/Evolucao/Form.vue';
 import EvolucaoConsulta from '@/components/Notificacao/Evolucao/Cons.vue';
 import EvolucaoService from '@/services/EvolucaoService';
 import Evolucao from '@/entities/Evolucao';
+import { isSecretariaSaude } from '@/validations/KeycloakValidations';
 
 export default {
   components: {
@@ -55,6 +56,9 @@ export default {
   },
   methods: {
     consultarEvolucao() {
+      if (!isSecretariaSaude(this)) {
+        this.$router.push('/');
+      }
       EvolucaoService.findByNotificacaoId(this.notificacaoId)
         .then(({ data }) => {
           this.evolucao = new Evolucao(data).toRequestBody();
