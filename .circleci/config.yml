@@ -1,36 +1,36 @@
 version: 2.1
 
 executors:
-  covid19-executor:
+  notificasaude-executor:
     machine:
       image: ubuntu-1604:201903-01
-    working_directory: ~/contra-covid19
+    working_directory: ~/notificasaude
 
 jobs:
   build-backend:
-    executor: covid19-executor
+    executor: notificasaude-executor
     steps:
       - checkout
       - restore_cache:
-          key: contra-covid19/backend-{{ checksum "backend/yarn.lock" }}
+          key: notificasaude/backend-{{ checksum "backend/yarn.lock" }}
       - run: docker run --rm -it -v ${PWD}/backend:/usr/src/app -w /usr/src/app node:13 yarn install
       - save_cache:
           paths:
-            - ~/contra-covid19/backend/node_modules
-          key: contra-covid19/backend-{{ checksum "backend/yarn.lock" }}
+            - ~/notificasaude/backend/node_modules
+          key: notificasaude/backend-{{ checksum "backend/yarn.lock" }}
       - persist_to_workspace:
           root: ~/
           paths:
-            - contra-covid19/backend
+            - notificasaude/backend
   deploy-backend:
-    executor: covid19-executor
+    executor: notificasaude-executor
     steps:
       - attach_workspace:
           at: ~/
       - run: docker run --rm -it -v ${PWD}/backend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 npx sequelize-cli db:migrate
-      - run: cd backend && docker build -t contra-covid19/backend -f Dockerfile .
+      - run: cd backend && docker build -t notificasaude/backend -f Dockerfile .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
-      - run: docker tag contra-covid19/backend registry.heroku.com/covid19-db1-backend/web:latest
+      - run: docker tag notificasaude/backend registry.heroku.com/covid19-db1-backend/web:latest
       - run: docker push registry.heroku.com/covid19-db1-backend/web:latest
       - run: sudo snap install --classic heroku
       - run: heroku container:login
@@ -55,30 +55,30 @@ jobs:
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:latest
 
   build-frontend:
-    executor: covid19-executor
+    executor: notificasaude-executor
     steps:
       - checkout
       - restore_cache:
-          key: contra-covid19/frontend-{{ checksum "frontend/yarn.lock" }}
+          key: notificasaude/frontend-{{ checksum "frontend/yarn.lock" }}
       - run: docker run --rm -it -v ${PWD}/frontend:/usr/src/app -w /usr/src/app node:13 yarn install
       - save_cache:
           paths:
-            - ~/contra-covid19/frontend/node_modules
-          key: contra-covid19/frontend-{{ checksum "frontend/yarn.lock" }}
+            - ~/notificasaude/frontend/node_modules
+          key: notificasaude/frontend-{{ checksum "frontend/yarn.lock" }}
       - run: docker run --rm -it -v ${PWD}/frontend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 yarn test:unit
       - run: docker run --rm -it -v ${PWD}/frontend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 yarn build
       - persist_to_workspace:
           root: ~/
           paths:
-            - contra-covid19/frontend
+            - notificasaude/frontend
   deploy-frontend:
-    executor: covid19-executor
+    executor: notificasaude-executor
     steps:
       - attach_workspace:
           at: ~/
-      - run: cd frontend && docker build -t contra-covid19/frontend .
+      - run: cd frontend && docker build -t notificasaude/frontend .
       - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
-      - run: docker tag contra-covid19/frontend registry.heroku.com/covid19-db1-frontend/web:latest
+      - run: docker tag notificasaude/frontend registry.heroku.com/covid19-db1-frontend/web:latest
       - run: docker push registry.heroku.com/covid19-db1-frontend/web:latest
       - run: sudo snap install --classic heroku
       - run: heroku container:login
@@ -110,7 +110,7 @@ workflows:
               - master
       - deploy-backend-qa-aws:
           requires:
-            - build-backend
+            - deploy-backend
           filters:
             branches:
               only:
@@ -118,7 +118,7 @@ workflows:
               - feature/terraform
       - deploy-backend-prod-aws:
           requires:
-            - build-backend
+            - deploy-backend
           filters:
             branches:
               only:
