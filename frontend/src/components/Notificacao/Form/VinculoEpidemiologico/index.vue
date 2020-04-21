@@ -20,7 +20,7 @@
                   <span class="font-weight-bold">CASO SUSPEITO</span>
                   <span v-if="situacao === 1">
                     &nbsp;
-                    <b>Situação 1:</b> febre E pelo menos um sinal
+                    <b>Situação 1:</b> Febre E pelo menos um sinal
                     ou sintoma respiratório (tosse, dificuldade para respirar, batimento das asas nasais, dor
                     de garganta, coriza e chiado no peito).
                   </span>
@@ -33,7 +33,7 @@
                   <span class="font-weight-bold">CONTATO DE CASO SUSPEITO OU CONFIRMADO</span>
                   <span v-if="situacao === 2">
                     &nbsp;
-                    <b> Situação 2:</b> E/OU pelo menos um sinal ou sintoma respiratório
+                    <b> Situação 2:</b> Febre E/OU pelo menos um sinal ou sintoma respiratório
                     (tosse, dificuldade para respirar, batimento das asas nasais, dor de garganta,
                     coriza e chiado no peito)
                     <b> + contato com caso suspeito e/ou confirmado com início dos sintomas, </b>
