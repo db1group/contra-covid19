@@ -33,9 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       municipioId: {
         type: DataTypes.UUID,
-        validate: {
-          allowNull: false,
-        },
+        allowNull: false,
       },
     },
     {},
