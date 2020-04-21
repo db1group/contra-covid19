@@ -1,1 +1,1 @@
-exports.removerAcentos = (palavra) => palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+module.exports = (palavra) => palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
