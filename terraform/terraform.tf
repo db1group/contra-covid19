@@ -561,15 +561,15 @@ resource "aws_ecs_task_definition" "keycloak" {
     "cpu": 10,
     "environment" : [
       { 
-        "name" : "PG_DATABASE_URL", 
+        "name" : "DATABASE_URL", 
         "value" : "jdbc:postgresql://${aws_db_instance.database.address}:5432/keycloak" 
       },
       { 
-        "name" : "PG_DATABASE_USERNAME", 
+        "name" : "DATABASE_USERNAME", 
         "value" : "${aws_db_instance.database.username}" 
       },
       { 
-        "name" : "PG_DATABASE_PASSWORD", 
+        "name" : "DATABASE_PASSWORD", 
         "value" : "${aws_db_instance.database.password}" 
       },
       { 
@@ -671,24 +671,36 @@ resource "aws_ecs_task_definition" "backend" {
     "privileged": true,
     "portMappings": [
       {
-        "containerPort": 8080,
+        "containerPort": 8181,
         "hostPort": 0
       }
     ],
-    "memory": 512,
+    "memory": 256,
     "cpu": 10,
     "environment" : [
-      { 
-        "name" : "PG_DATABASE_URL", 
-        "value" : "jdbc:postgresql://${aws_db_instance.database.address}:5432/${var.project}" 
+      {
+        "name" : "NODE_ENV", 
+        "value" : "${var.environment}"
+      },
+      {
+        "name" : "DATABASE_URL", 
+        "value" : "${aws_db_instance.database.address}"
+      },
+      {
+        "name" : "DATABASE_NAME", 
+        "value" : "${aws_db_instance.database.name}"
       },
       { 
-        "name" : "PG_DATABASE_USERNAME", 
+        "name" : "DATABASE_USERNAME", 
         "value" : "${aws_db_instance.database.username}" 
       },
       { 
-        "name" : "PG_DATABASE_PASSWORD",
+        "name" : "DATABASE_PASSWORD",
         "value" : "${aws_db_instance.database.password}"
+      },
+      { 
+        "name" : "PORT",
+        "value" : "8181"
       }
     ],
     "requiresAttributes": [
@@ -737,7 +749,7 @@ resource "aws_ecs_service" "ecs_service_backend" {
 
   load_balancer {
     target_group_arn = aws_alb_target_group.ecs_target_group_backend.arn
-    container_port   = 8080
+    container_port   = 8181
     container_name   = "${var.project}-${var.environment}-backend"
   }
 }
@@ -805,13 +817,17 @@ resource "aws_ecs_task_definition" "frontend" {
     "privileged": true,
     "portMappings": [
       {
-        "containerPort": 8080,
+        "containerPort": 8282,
         "hostPort": 0
       }
     ],
-    "memory": 512,
+    "memory": 256,
     "cpu": 10,
     "environment" : [
+      { 
+        "name" : "NODE_ENV",
+        "value" : "${var.environment}"
+      },
       { 
         "name" : "BACKEND_URL",
         "value" : "${var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"}"
@@ -819,6 +835,10 @@ resource "aws_ecs_task_definition" "frontend" {
       { 
         "name" : "AUTH_URL",
         "value" : "${var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"}"
+      },
+      { 
+        "name" : "PORT",
+        "value" : "8282"
       }
     ],
     "requiresAttributes": [
@@ -867,7 +887,7 @@ resource "aws_ecs_service" "ecs_service_frontend" {
 
   load_balancer {
     target_group_arn = aws_alb_target_group.ecs_target_group_frontend.arn
-    container_port   = 8080
+    container_port   = 8282
     container_name   = "${var.project}-${var.environment}-frontend"
   }
 }
