@@ -32,30 +32,30 @@
           @input="updateNumeroDocumento"
         />
       </v-col>
-      <v-col cols="12" sm="2" md="2" class="pl-5">
+    </v-row>
+    <v-row dense>
+      <v-col cols="12" sm="6" md="5">
+        <label class="primary--text body-1 font-weight-bold">Sexo *</label>
         <v-radio-group
           :value="suspeito.sexo"
           class="mt-0"
           @change="updateSexo"
           :rules="rules.sexo"
+          row
         >
-          <template v-slot:label>
-            <label class="primary--text body-1 font-weight-bold">Sexo *</label>
-          </template>
           <v-radio label="Masculino" value="M"/>
           <v-radio label="Feminino" value="F"/>
         </v-radio-group>
       </v-col>
-      <v-col v-show="suspeito.sexo === 'F'" cols="12" sm="2" md="2" class="pl-5">
+      <v-col v-show="suspeito.sexo === 'F'" cols="12" sm="6">
+        <label class="primary--text body-1 font-weight-bold">Gestante *</label>
         <v-radio-group
           :value="suspeito.gestante"
           class="mt-0"
           @change="updateGestante"
           :rules="rules.gestante"
+          row
         >
-          <template v-slot:label>
-            <label class="primary--text body-1 font-weight-bold">Gestante *</label>
-          </template>
           <v-radio label="Sim" value="true"/>
           <v-radio label="Não" value="false"/>
         </v-radio-group>
