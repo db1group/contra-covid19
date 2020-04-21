@@ -41,7 +41,14 @@
         <v-chip class="d-block text-center" :color="getColor(item.situacao)" dark>{{ item.situacao }}</v-chip>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-btn text small color="primary" :to="'/notificacao/' + item.id + '/evolucoes'">EVOLUÇÃO</v-btn>
+        <v-btn v-if="isSecretariaSaude"
+          text
+          small
+          color="primary"
+          :to="'/notificacao/' + item.id + '/evolucoes'"
+          >
+          EVOLUÇÃO
+        </v-btn>
         <v-btn text small color="red" @click="excluirItem(item)">EXCLUIR</v-btn>
       </template>
     </v-data-table>
@@ -50,6 +57,7 @@
 <script>
 import NotificacaoService from '@/services/NotificacaoService';
 import NotificacaoConsulta from '@/entities/NotificacaoConsulta';
+import { isSecretariaSaude } from '@/validations/KeycloakValidations';
 
 export default {
   data: () => ({
@@ -76,6 +84,11 @@ export default {
   }),
   created() {
     this.consultarNotificacoes();
+  },
+  computed: {
+    isSecretariaSaude() {
+      return isSecretariaSaude(this);
+    },
   },
   methods: {
     getColor(situacao) {
