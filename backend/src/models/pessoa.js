@@ -1,3 +1,13 @@
+/* eslint-disable no-param-reassign */
+const { normalizarTexto } = require('../lib/normalizar-texto');
+
+const normalizarTextoPessoa = (pessoa) => {
+  pessoa.nome = normalizarTexto(pessoa.nome);
+  pessoa.nomeDaMae = normalizarTexto(pessoa.nomeDaMae);
+  pessoa.ocupacao = normalizarTexto(pessoa.ocupacao);
+  pessoa.endereco = normalizarTexto(pessoa.endereco);
+};
+
 module.exports = (sequelize, DataTypes) => {
   const Pessoa = sequelize.define('Pessoa', {
     id: {
@@ -48,5 +58,11 @@ module.exports = (sequelize, DataTypes) => {
   Pessoa.associate = (models) => {
     Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });
   };
+  Pessoa.beforeCreate(async (pessoa) => {
+    normalizarTextoPessoa(pessoa);
+  });
+  Pessoa.beforeUpdate(async (pessoa) => {
+    normalizarTextoPessoa(pessoa);
+  });
   return Pessoa;
 };
