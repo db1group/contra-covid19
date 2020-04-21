@@ -11,6 +11,9 @@ export const required = (value, message = 'O campo é obrigatório.') => (
 export const minLength = (length) => (value) => !value
   || value.length >= length
   || `O campo precisa de pelo menos ${length} caracteres.`;
+export const exactLength = (length) => (value) => !value
+  || value.length === length
+  || `O campo deve possuir ${length} caracteres.`;
 export const dateFormat = (value) => !value
   || (DATE_FORMAT.test(value) && DateService.isDateValid(value, 'DD/MM/YYYY'))
   || 'O formato precisa ser dd/mm/aaaa';
