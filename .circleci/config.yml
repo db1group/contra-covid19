@@ -43,7 +43,7 @@ jobs:
       - aws-cli/setup:
           profile-name: default
       - run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend
-      - run: docker build -t notificasaude/backend:latest .
+      - run: cd backend && docker build -t notificasaude/backend:latest .
       - run: docker tag notificasaude/backend:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
   deploy-backend-prod-aws:
