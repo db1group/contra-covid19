@@ -119,9 +119,44 @@ const consultarNotificaoesPaginado = async (page, limit) => {
   });
 };
 
+const notificacaoAbertaJaExisteParaOPaciente = async (tipoDocumento, numeroDocumento) => {
+  const status = 'ABERTA';
+  const notificacao = await models.Notificacao.count({
+    where: {
+      status,
+    },
+    include: {
+      model: models.Pessoa,
+      where: {
+        [Op.and]: [{
+          tipoDocumento,
+        }, {
+          numeroDocumento,
+        }],
+      },
+      attributes: ['tipoDocumento', 'numeroDocumento'],
+    },
+  });
+
+  return notificacao > 0;
+};
+
+const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
+  const existeNotificacaoAbertaParaOPaciente = await notificacaoAbertaJaExisteParaOPaciente(
+    notificacaoRequest.suspeito.tipoDocumento,
+    notificacaoRequest.suspeito.numeroDocumento,
+  );
+
+  if (existeNotificacaoAbertaParaOPaciente) {
+    throw new Error('Já existe uma notificação aberta para este paciente.');
+  }
+};
+
 exports.salvar = async (req, res) => {
   try {
     const notificacaoRequest = req.body;
+
+    await validarNotificacaoUnicaPorPaciente(notificacaoRequest);
 
     const notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);
 
@@ -298,8 +333,8 @@ const validarPossuiConfirmacao = async (evolucao) => {
   });
 
   if (!evolucaoConfirmado) {
-    throw new Error(`Não é possivel atualizar para ${evolucao.tpEvolucao
-    } pois não existe atualização de confirmação.`);
+    throw new Error(`Não é possivel atualizar para ${evolucao.tpEvolucao}
+    pois não existe atualização de confirmação.`);
   }
 };
 
