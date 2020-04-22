@@ -14,6 +14,8 @@ module.exports = (app) => {
       const route = require(path.join(__dirname, file));
       app.use('/api', route);
     });
+  // Endpoint para o Docker/AWS
+  app.use(require('./health'));
 
   return app;
 };
