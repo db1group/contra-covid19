@@ -567,7 +567,7 @@ resource "aws_ecs_task_definition" "keycloak" {
     "environment" : [
       { 
         "name" : "DATABASE_URL", 
-        "value" : "jdbc:postgresql://${aws_db_instance.database.address}:5432/keycloak" 
+        "value" : "${aws_db_instance.database.address}" 
       },
       { 
         "name" : "DATABASE_USERNAME", 
