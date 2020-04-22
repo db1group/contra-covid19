@@ -109,6 +109,29 @@ jobs:
       - run: docker pull 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:qa
       - run: docker tag 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:qa 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:latest
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:latest
+  deploy-keycloak:
+    executor: notificasaude-executor
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: cd keycloak && docker build -t notificasaude/keycloak -f Dockerfile .
+      - aws-cli/setup:
+          profile-name: default
+      - run: $(aws ecr get-login --registry-ids 127682629527 --region us-east-1 --no-include-email)
+      - run: cd keycloak && docker build -t notificasaude/keycloak:latest .
+      - run: docker tag notificasaude/keycloak:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
+      - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
+  deploy-keycloak-prod-aws:
+    executor: notificasaude-executor
+    steps:
+      - attach_workspace:
+          at: ~/
+      - aws-cli/setup:
+          profile-name: default
+      - run: $(aws ecr get-login --registry-ids 127682629527 --region us-east-1 --no-include-email)
+      - run: docker pull 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
+      - run: docker tag 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:latest
+      - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:latest
 
 orbs:
   aws-cli: circleci/aws-cli@1.0.0
