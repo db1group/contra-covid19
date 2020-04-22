@@ -183,7 +183,11 @@ workflows:
             branches:
               only:
               - master
-      - deploy-keycloak-qa-aws
+      - deploy-keycloak-qa-aws:
+          filters:
+            branches:
+              only:
+              - master
       - deploy-keycloak-prod-aws:
           requires:
             - deploy-keycloak-qa-aws
