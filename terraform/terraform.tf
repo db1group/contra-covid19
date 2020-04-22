@@ -424,6 +424,10 @@ data "aws_route53_zone" "hosted_zone" {
   private_zone = false
 }
 
+resource "aws_route53_zone" "hosted_zone" {
+  name = var.hosted_zone
+}
+
 resource "aws_route53_record" "www" {
   zone_id = data.aws_route53_zone.hosted_zone.zone_id
   name    = var.is_production == true ? "www.${var.hosted_zone}" : "${var.environment}-www.${var.hosted_zone}"

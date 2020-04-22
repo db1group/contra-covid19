@@ -1,1 +1,0 @@
-docker run -e PG_URL=database.notificasaude.com.br -e PG_USERNAME=notificasaude -e PG_PASSWORD=3du4s4c1f1t0n -e PG_DATABASE=keycloak -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8080:8080 notificasaude/keycloak:latest
