@@ -15,6 +15,11 @@ export const situacoesList = [
   { key: 'OBITO', value: 'Óbito' },
 ];
 
+export const situacoesQueNaoEncerramFichaList = [
+  'SUSPEITO',
+  'CONFIRMADO',
+];
+
 const findItem = (list, value) => {
   const result = list.find((i) => i.key === value);
   if (result) return result.value;
