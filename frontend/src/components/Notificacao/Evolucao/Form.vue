@@ -63,7 +63,8 @@
 <script>
 import { required, dateHourMinuteFormat } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
-import NotificacaoEvolucao, { locaisList, situacoesList } from '@/entities/NotificacaoEvolucao';
+import NotificacaoEvolucao, { locaisList, situacoesList, situacoesQueNaoEncerramFichaList }
+  from '@/entities/NotificacaoEvolucao';
 import EvolucaoService from '@/services/EvolucaoService';
 
 export default {
@@ -110,13 +111,19 @@ export default {
     updateSituacao(situacao) {
       this.evolucao.situacao = situacao;
     },
+    obterMensagemDeSucesso() {
+      if (situacoesQueNaoEncerramFichaList.find((i) => i === this.evolucao.situacao)) {
+        return 'Evolução cadastrada com sucesso.';
+      }
+      return 'Notificação encerrada com sucesso.';
+    },
     cadastrarEvolucao() {
       if (this.$refs.form.validate()) {
         const requestEvolucao = this.evolucao.toRequest();
         requestEvolucao.notificacaoId = this.notificacaoId;
         EvolucaoService.save(requestEvolucao).then(() => {
           this.$refs.form.reset();
-          this.$emit('sucess:cadastroEvolucao', 'Evolução cadastrada com sucesso.');
+          this.$emit('sucess:cadastroEvolucao', this.obterMensagemDeSucesso());
           this.evolucao = new NotificacaoEvolucao();
         }).catch((error) => {
           const { data } = error.response;
