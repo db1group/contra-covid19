@@ -419,12 +419,13 @@ variable "hosted_zone" {
   description = "Hosted Zone"
 }
 
-resource "aws_route53_zone" "hosted_zone" {
-  name = var.hosted_zone
+data "aws_route53_zone" "hosted_zone" {
+  name         = "${var.hosted_zone}."
+  private_zone = false
 }
 
 resource "aws_route53_record" "www" {
-  zone_id = aws_route53_zone.hosted_zone.zone_id
+  zone_id = data.aws_route53_zone.hosted_zone.zone_id
   name    = var.is_production == true ? "www.${var.hosted_zone}" : "${var.environment}-www.${var.hosted_zone}"
   type    = "CNAME"
   ttl     = "300"
@@ -432,7 +433,7 @@ resource "aws_route53_record" "www" {
 }
 
 resource "aws_route53_record" "auth" {
-  zone_id = aws_route53_zone.hosted_zone.zone_id
+  zone_id = data.aws_route53_zone.hosted_zone.zone_id
   name    = var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"
   type    = "CNAME"
   ttl     = "300"
@@ -440,7 +441,7 @@ resource "aws_route53_record" "auth" {
 }
 
 resource "aws_route53_record" "api" {
-  zone_id = aws_route53_zone.hosted_zone.zone_id
+  zone_id = data.aws_route53_zone.hosted_zone.zone_id
   name    = var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"
   type    = "CNAME"
   ttl     = "300"
@@ -448,7 +449,7 @@ resource "aws_route53_record" "api" {
 }
 
 resource "aws_route53_record" "database" {
-  zone_id = aws_route53_zone.hosted_zone.zone_id
+  zone_id = data.aws_route53_zone.hosted_zone.zone_id
   name    = var.is_production == true ? "database.${var.hosted_zone}" : "${var.environment}-database.${var.hosted_zone}"
   type    = "CNAME"
   ttl     = "300"
