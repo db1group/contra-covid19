@@ -7,8 +7,8 @@
     "start": "node src/server.js",
     "lint": "npx eslint src/**/*.js",
     "dev": "nodemon --inspect src/server.js",
-    "build:db": "cross-env NODE_ENV=production npx sequelize-cli db:migrate",
-    "build": "cross-env NODE_ENV=production node src/server.js"
+    "migrate": "cross-env NODE_ENV=development npx sequelize-cli db:migrate",
+    "build": "cross-env NODE_ENV=development node src/server.js"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
