@@ -188,13 +188,13 @@ const consultarNotificaoesWeb = async (page, limit, search = '') => {
         {
           [Op.or]: [
             Sequelize.where(
-              Sequelize.fn('lower', Sequelize.col('Pessoa.nome')),
+              Sequelize.fn('upper', Sequelize.col('Pessoa.nome')),
               {
                 [Op.like]: `%${search.toUpperCase()}%`,
               },
             ),
             Sequelize.where(
-              Sequelize.fn('lower', Sequelize.col('Pessoa.numeroDocumento')),
+              Sequelize.fn('upper', Sequelize.col('Pessoa.numeroDocumento')),
               {
                 [Op.like]: `%${search.toUpperCase()}%`,
               },
