@@ -282,6 +282,7 @@ export default {
           this.$refs.form.reset();
           this.showSuccess = true;
           this.notificacao = new Notificacao();
+          window.scrollTo(0, 0);
         }).catch(({ response }) => {
           this.showError = true;
           this.errorMessage = response.data.error;
