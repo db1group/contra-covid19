@@ -91,7 +91,7 @@ export default {
       });
     },
     findUnidadesDeSaude() {
-      this.profissoes.loading = true;
+      this.unidadesSaude.loading = true;
       UnidadeSaudeService.findAll().then(({ data }) => {
         this.unidadesSaude = {
           items: data,
