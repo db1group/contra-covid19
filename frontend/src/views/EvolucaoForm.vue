@@ -6,7 +6,6 @@
         <v-col cols="auto">
           <evolucao-form
             :notificacao-id="notificacaoId"
-            @sucess:cadastroEvolucao="atualizarEvolucao"
             @error:cadastroEvolucao="mostrarMensagemErro" />
         </v-col>
         <v-col cols="auto">
@@ -64,16 +63,6 @@ export default {
           this.evolucao = new Evolucao(data).toRequestBody();
         })
         .catch(() => this.$router.push('/'));
-    },
-    atualizarEvolucao(msg) {
-      this.mostrarMensagemSucesso(msg);
-      setTimeout(() => {
-        this.$router.push('/notificacoes');
-      }, 4500);
-    },
-    mostrarMensagemSucesso(msg) {
-      this.showSuccess = true;
-      this.mensagemSucesso = msg;
     },
     mostrarMensagemErro(msg) {
       this.showError = true;

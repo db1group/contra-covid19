@@ -50,5 +50,13 @@ export default {
       this.mensagemSucesso = msg;
     },
   },
+  beforeRouteEnter(to, from, next) {
+    const { msg } = to.params;
+    let enter = true;
+    if (msg) {
+      enter = (vm) => vm.mostrarMensagemSucesso(msg);
+    }
+    next(enter);
+  },
 };
 </script>

@@ -123,8 +123,11 @@ export default {
         requestEvolucao.notificacaoId = this.notificacaoId;
         EvolucaoService.save(requestEvolucao).then(() => {
           this.$refs.form.reset();
-          this.$emit('sucess:cadastroEvolucao', this.obterMensagemDeSucesso());
           this.evolucao = new NotificacaoEvolucao();
+          this.$router.push({
+            name: 'notificacao-cons',
+            params: { msg: this.obterMensagemDeSucesso() },
+          });
         }).catch((error) => {
           const { data } = error.response;
           this.$emit('error:cadastroEvolucao', data.error);
