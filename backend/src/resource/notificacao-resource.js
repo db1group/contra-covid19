@@ -187,8 +187,18 @@ const consultarNotificaoesWeb = async (page, limit, search = '') => {
         { ...optionsConsulta.where },
         {
           [Op.or]: [
-            { '$Pessoa.nome$': { [Op.like]: `%${search}%` } },
-            { '$Pessoa.numeroDocumento$': { [Op.like]: `%${search}%` } },
+            Sequelize.where(
+              Sequelize.fn('lower', Sequelize.col('Pessoa.nome')),
+              {
+                [Op.like]: `%${search.toLowerCase()}%`,
+              },
+            ),
+            Sequelize.where(
+              Sequelize.fn('lower', Sequelize.col('Pessoa.numeroDocumento')),
+              {
+                [Op.like]: `%${search.toLowerCase()}%`,
+              },
+            ),
           ],
         }],
     };
