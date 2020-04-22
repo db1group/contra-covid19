@@ -114,7 +114,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run: cd keycloak && docker build -t notificasaude/keycloak -f Dockerfile .
       - aws-cli/setup:
           profile-name: default
       - run: $(aws ecr get-login --registry-ids 127682629527 --region us-east-1 --no-include-email)
