@@ -121,7 +121,7 @@ workflows:
       - build-frontend
       - deploy-backend-qa-aws:
           requires:
-            - deploy-backend
+            - build-backend
           filters:
             branches:
               only:
@@ -136,7 +136,7 @@ workflows:
               - master
       - deploy-frontend-qa-aws:
           requires:
-            - deploy-frontend
+            - build-frontend
           filters:
             branches:
               only:
