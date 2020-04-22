@@ -67,7 +67,9 @@ export default {
     },
     atualizarEvolucao(msg) {
       this.mostrarMensagemSucesso(msg);
-      this.consultarEvolucao();
+      setTimeout(() => {
+        this.$router.push('/notificacoes');
+      }, 4500);
     },
     mostrarMensagemSucesso(msg) {
       this.showSuccess = true;
