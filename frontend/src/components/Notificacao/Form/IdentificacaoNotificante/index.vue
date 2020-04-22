@@ -4,15 +4,16 @@
     <div>
       <v-row dense>
         <v-col cols="12" sm="12">
-          <v-select
-            :value="unidadeSaudeId"
-            :rules="rules.unidadeSaude"
+          <v-autocomplete
+            :value="notificacao.unidadeSaudeId"
+            :rules="rules.unidadeSaudeId"
             label="Unidade notificante *"
-            :items="unidadesSaude"
-            item-text="value"
-            item-value="key"
+            :items="unidadesSaude.items"
+            item-text="nome"
+            item-value="id"
+            :loading="unidadesSaude.loading"
+            no-data-text="Unidade de saúde não encontrada"
             @input="updateUnidadeSaude"
-            disabled
           />
         </v-col>
       </v-row>
@@ -46,10 +47,7 @@
 import { required } from '@/validations/CommonValidations';
 import Notificacao from '@/entities/Notificacao';
 import ProfissaoService from '@/services/ProfissaoService';
-
-const UNIDADES_SAUDE = [
-  { key: 1, value: 'Unidade Notificante de Teste - 1' },
-];
+import UnidadeSaudeService from '@/services/UnidadeSaudeService';
 
 export default {
   props: {
@@ -59,14 +57,16 @@ export default {
     },
   },
   data: () => ({
-    unidadesSaude: UNIDADES_SAUDE,
-    unidadeSaudeId: 1,
+    unidadesSaude: {
+      items: [],
+      loading: true,
+    },
     profissoes: {
       items: [],
       loading: true,
     },
     rules: {
-      unidadeSaude: [required],
+      unidadeSaudeId: [required],
       profissaoId: [required],
       nomeNotificador: [required],
     },
@@ -90,9 +90,19 @@ export default {
         };
       });
     },
+    findUnidadesDeSaude() {
+      this.profissoes.loading = true;
+      UnidadeSaudeService.findAll().then(({ data }) => {
+        this.unidadesSaude = {
+          items: data,
+          loading: false,
+        };
+      });
+    },
   },
   created() {
     this.findProfissoes();
+    this.findUnidadesDeSaude();
   },
 };
 </script>
