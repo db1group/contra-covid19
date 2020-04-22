@@ -109,7 +109,7 @@ jobs:
       - run: docker pull 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:qa
       - run: docker tag 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:qa 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:latest
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:latest
-  deploy-keycloak:
+  deploy-keycloak-qa-aws:
     executor: notificasaude-executor
     steps:
       - attach_workspace:
@@ -149,7 +149,6 @@ workflows:
             branches:
               only:
               - master
-              - feature/terraform
       - deploy-backend-qa-aws:
           requires:
             - deploy-backend
@@ -157,7 +156,6 @@ workflows:
             branches:
               only:
               - master
-              - feature/terraform
       - deploy-backend-prod-aws:
           requires:
             - deploy-backend-qa-aws
@@ -165,7 +163,6 @@ workflows:
             branches:
               only:
               - master
-              - feature/terraform
       - deploy-frontend:
           requires:
             - build-frontend
@@ -180,7 +177,6 @@ workflows:
             branches:
               only:
               - master
-              - feature/terraform
       - deploy-frontend-prod-aws:
           requires:
             - deploy-frontend-qa-aws
@@ -188,4 +184,11 @@ workflows:
             branches:
               only:
               - master
-              - feature/terraform
+      - deploy-keycloak-qa-aws
+      - deploy-keycloak-prod-aws:
+          requires:
+            - deploy-keycloak-qa-aws
+          filters:
+            branches:
+              only:
+              - master
