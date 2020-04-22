@@ -103,7 +103,7 @@ const salvarNotificacao = async (notificacao) => {
     notificacaoId,
     dtEvolucao: notificacao.notificacaoCovid19.dataHoraNotificacao,
     tpEvolucao: 'SUSPEITO',
-    tpLocal: 'Alta com isolamento domiciliar',
+    tpLocal: notificacao.notificacaoCovid19.situacaoNoMomentoDaNotificacao,
   });
 
   return consultarNotificacaoPorId(notificacaoId);
@@ -295,9 +295,9 @@ const validarPossuiConfirmacao = async (evolucao) => {
 
 const encerrarNotificacao = async (evolucao, t) => {
   const deveEncerrar = (evolucao.tpEvolucao === 'CURA'
-        || evolucao.tpEvolucao === 'DESCARTADO'
-        || evolucao.tpEvolucao === 'ENCERRADO'
-        || evolucao.tpEvolucao === 'OBITO');
+    || evolucao.tpEvolucao === 'DESCARTADO'
+    || evolucao.tpEvolucao === 'ENCERRADO'
+    || evolucao.tpEvolucao === 'OBITO');
 
   if (!deveEncerrar) {
     return;
