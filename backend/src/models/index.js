@@ -10,7 +10,9 @@ const db = {};
 
 config.define = {
   freezeTableName: true,
+  logging: console.log,
 };
+console.log(config);
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
