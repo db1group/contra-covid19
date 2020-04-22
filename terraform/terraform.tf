@@ -424,6 +424,10 @@ data "aws_route53_zone" "hosted_zone" {
   private_zone = false
 }
 
+resource "aws_route53_zone" "hosted_zone" {
+  name = var.hosted_zone
+}
+
 resource "aws_route53_record" "www" {
   zone_id = data.aws_route53_zone.hosted_zone.zone_id
   name    = var.is_production == true ? "www.${var.hosted_zone}" : "${var.environment}-www.${var.hosted_zone}"
@@ -563,7 +567,7 @@ resource "aws_ecs_task_definition" "keycloak" {
     "environment" : [
       { 
         "name" : "DATABASE_URL", 
-        "value" : "jdbc:postgresql://${aws_db_instance.database.address}:5432/keycloak" 
+        "value" : "${aws_db_instance.database.address}" 
       },
       { 
         "name" : "DATABASE_USERNAME", 

@@ -133,14 +133,14 @@
         <subsystem xmlns="urn:jboss:domain:datasources:5.0">
             <datasources>
                 <datasource jndi-name="java:jboss/datasources/KeycloakDS" pool-name="KeycloakDS" enabled="true" use-java-context="true" use-ccm="true" statistics-enabled="${wildfly.datasources.statistics-enabled:${wildfly.statistics-enabled:false}}">
-                    <connection-url>jdbc:postgresql://${env.PG_URL:postgres}:${env.PG_PORT:5432}/${env.PG_DATABASE:keycloak}${env.JDBC_PARAMS:}</connection-url>
+                    <connection-url>jdbc:postgresql://${env.DATABASE_URL:localhost}:5432/keycloak</connection-url>
                     <driver>postgresql</driver>
                     <pool>
                         <flush-strategy>IdleConnections</flush-strategy>
                     </pool>
                     <security>
-                        <user-name>${env.PG_USERNAME:keycloak}</user-name>
-                        <password>${env.PG_PASSWORD:password}</password>
+                        <user-name>${env.DATABASE_USERNAME:keycloak}</user-name>
+                        <password>${env.DATABASE_PASSWORD:keycloak}</password>
                     </security>
                     <validation>
                         <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
