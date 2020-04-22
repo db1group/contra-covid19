@@ -3,7 +3,7 @@ const path = require('path');
 const Sequelize = require('sequelize');
 
 const basename = path.basename(__filename);
-console.log("Environment: " + process.env.NODE_ENV);
+console.info(`Environment: ${process.env.NODE_ENV}`);
 const env = process.env.NODE_ENV || 'qa';
 const config = require('../../config/config.js')[env];
 
@@ -11,7 +11,7 @@ const db = {};
 
 config.define = {
   freezeTableName: true,
-  logging: console.log,
+  logging: console.info,
 };
 let sequelize;
 if (config.use_env_variable) {

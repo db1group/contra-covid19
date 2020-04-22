@@ -1,0 +1,24 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-f",
+        "keycloak/Dockerfile",
+        "-t",
+        "gcr.io/notificasaude/keycloak:$SHORT_SHA",
+        "keycloak",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/notificasaude/keycloak:$SHORT_SHA"]
+  - name: "gcr.io/cloud-builders/kubectl"
+    args:
+      [
+        "set",
+        "image",
+        "deployment/keycloak",
+        "keycloak=gcr.io/notificasaude/keycloak:$SHORT_SHA",
+      ]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1-a"
+      - "CLOUDSDK_CONTAINER_CLUSTER=notificasaude-cluster"
