@@ -39,7 +39,7 @@
             <v-autocomplete
               :value="evolucao.situacao"
               :rules="rules.situacao"
-              label="Local do isolamento *"
+              label="Situação do paciente *"
               :items="situacoes.items"
               item-text="value"
               item-value="key"
