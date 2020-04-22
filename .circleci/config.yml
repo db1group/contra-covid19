@@ -40,6 +40,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
+      - run: apt-get install awscli
       - run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend
       - run: docker build -t notificasaude/backend:latest .
       - run: docker tag notificasaude/backend:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
@@ -49,6 +50,7 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
+      - run: apt-get install awscli
       - run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend
       - run: docker pull 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
       - run: docker tag 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:latest
