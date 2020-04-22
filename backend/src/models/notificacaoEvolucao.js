@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
           const actualValue = new Date(value);
           const tomorrow = new Date();
           if (actualValue >= tomorrow) {
-            throw new Error(`A evolução não pode possuir data futura ${value}]`);
+            throw new Error('A evolução não pode possuir data futura');
           }
         },
       },
