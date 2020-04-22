@@ -36,7 +36,7 @@ jobs:
       - run: heroku container:login
       - run: heroku container:release web --app covid19-db1-backend
   deploy-backend-qa-aws:
-    executor: aws-cli/default
+    executor: notificasaude-executor
     steps:
       - attach_workspace:
           at: ~/
@@ -46,7 +46,7 @@ jobs:
       - run: docker tag notificasaude/backend:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
   deploy-backend-prod-aws:
-    executor: aws-cli/default
+    executor: notificasaude-executor
     steps:
       - attach_workspace:
           at: ~/
@@ -85,9 +85,6 @@ jobs:
       - run: sudo snap install --classic heroku
       - run: heroku container:login
       - run: heroku container:release web --app covid19-db1-frontend
-
-orbs:
-  aws-cli: circleci/aws-cli@1.0.0
 
 workflows:
   version: 2.0
