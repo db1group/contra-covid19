@@ -10,7 +10,7 @@ import ConclusaoAtendimento from './ConclusaoAtendimento';
 export default class Notificacao {
   constructor(data = {}) {
     this.dataHoraNotificacao = data.dataHoraNotificacao || DateService.formatNowAsStringDateTime();
-    this.unidadeSaudeId = data.unidadeSaudeId || 'ac3227a1-8a09-4b5f-93cd-d6ca43b637a3';
+    this.unidadeSaudeId = data.unidadeSaudeId || null;
     this.notificadorId = data.notificadorId || 'ac3227a1-8a09-4b5f-93cd-d6ca43b637a4';
     this.sintomatico = data.sintomatico || false;
     this.realizouExamesImagem = data.realizouExamesImagem || false;
