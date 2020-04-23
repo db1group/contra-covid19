@@ -15,6 +15,7 @@
       no-data-text="Não há notificações até o momento."
       no-results-text="Não há notificações com estes dados."
       :footer-props="{
+        pageText: '{0}-{1} de {2}',
         itemsPerPageText: 'Linhas por página',
         itemsPerPageOptions: [10, 30, 50, 100],
       }"
