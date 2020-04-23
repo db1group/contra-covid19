@@ -335,7 +335,7 @@ const validarNotificacaoFinalizada = async (evolucao) => {
   });
 
   if (notificacaoFinalizada) {
-    throw new RegraNegocio(`Não é possivel adicionar nova evolução pois a notificação está ${
+    throw new RegraNegocio(`Não é possível adicionar nova evolução pois a notificação está ${
       notificacaoFinalizada.status}.`);
   }
 };
@@ -354,7 +354,8 @@ const validarPossuiConfirmacao = async (evolucao) => {
   });
 
   if (!evolucaoConfirmado) {
-    throw new RegraNegocio(`Não é possivel atualizar para ${evolucao.tpEvolucao}
+    const tipoEvolucao = evolucao.tpEvolucao !== 'OBITO' ? evolucao.tpEvolucao : 'ÓBITO';
+    throw new RegraNegocio(`Não é possível atualizar para ${tipoEvolucao}
     pois não existe atualização de confirmação.`);
   }
 };
