@@ -466,14 +466,14 @@
       "redirectUris": [
         "http://localhost:8080/*",
         "https://app.notificasaude.com.br/*",
-        "https://app.notificasaude.com.br/*",
+        "https://www.notificasaude.com.br/*",
         "https://qa-www.notificasaude.com.br/*",
         "https://qa-app.notificasaude.com.br/*"
       ],
       "webOrigins": [
         "http://localhost:8080/*",
         "https://app.notificasaude.com.br/*",
-        "https://app.notificasaude.com.br/*",
+        "https://www.notificasaude.com.br/*",
         "https://qa-www.notificasaude.com.br/*",
         "https://qa-app.notificasaude.com.br/*"
       ],
