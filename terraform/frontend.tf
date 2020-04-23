@@ -93,24 +93,28 @@ resource "aws_ecs_task_definition" "frontend" {
         "hostPort": 0
       }
     ],
-    "memory": 768,
-    "cpu": 10,
+    "memory": 256,
+    "cpu": 100,
     "environment" : [
       { 
         "name" : "NODE_ENV",
         "value" : "${var.environment}"
       },
       { 
-        "name" : "VUE_APP_BACKEND_URL",
+        "name" : "BACKEND_URL",
         "value" : "${var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"}"
       },
       { 
-        "name" : "VUE_APP_AUTH_URL",
+        "name" : "KEYCLOAK_URL",
         "value" : "${var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"}"
       },
       { 
-        "name" : "VUE_APP_CLIENT_ID",
-        "value" : "notifica-saude"
+        "name" : "KEYCLOAK_REALM",
+        "value" : "${var.project}"
+      },
+      { 
+        "name" : "KEYCLOAK_CLIENT_ID",
+        "value" : "${var.project}"
       },
       { 
         "name" : "PORT",

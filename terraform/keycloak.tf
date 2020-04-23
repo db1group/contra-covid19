@@ -63,8 +63,8 @@ resource "aws_ecs_task_definition" "keycloak" {
         "hostPort": 0
       }
     ],
-    "memory": 1536,
-    "cpu": 10,
+    "memory": 1024,
+    "cpu": 300,
     "environment" : [
       { 
         "name" : "DATABASE_URL", 
