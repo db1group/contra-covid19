@@ -35,11 +35,14 @@
             :rules="rules.profissaoId"
             label="Profissão do notificador *"
             :items="profissoes.items"
+            @update:search-input="searchProfissoes"
             item-text="nome"
             item-value="id"
             :loading="profissoes.loading"
             no-data-text="Profissão não encontrada"
             @input="updateProfissaoId"
+            v-model="profissaoSelected"
+            return-object
           />
         </v-col>
       </v-row>
@@ -70,9 +73,11 @@ export default {
       items: [],
       loading: true,
     },
+    searchProfissao: '',
+    profissaoSelected: null,
     rules: {
       unidadeSaudeId: [requiredObjectId],
-      profissaoId: [required],
+      profissaoId: [requiredObjectId],
       nomeNotificador: [required],
     },
   }),
@@ -84,18 +89,24 @@ export default {
     updateNomeNotificador(nomeNotificador) {
       this.$emit('update:nomeNotificador', nomeNotificador);
     },
-    updateProfissaoId(profissaoId) {
-      this.$emit('update:profissaoId', profissaoId);
+    updateProfissaoId(profissao) {
+      this.searchProfissao = profissao.nome;
+      this.$emit('update:profissaoId', profissao.id);
     },
-    findProfissoes() {
+    findProfissoes(searchProfissao = '') {
       this.profissoes.loading = true;
-      ProfissaoService.findAll().then(({ data }) => {
-        this.profissoes = {
-          items: data,
-          loading: false,
-        };
-      });
+      ProfissaoService.findAll(searchProfissao)
+        .then(({ data }) => {
+          this.profissoes.items = data;
+        })
+        .finally(() => { this.profissoes.loading = false; });
     },
+    searchProfissoes(search = '') {
+      if (search === this.searchProfissao) return;
+      this.searchProfissao = search;
+      this.findProfissoes(search);
+    },
+
     findUnidadesDeSaude(searchUnidade = '') {
       if (this.unidadesSaude.loading) return;
       this.unidadesSaude.loading = true;
@@ -112,7 +123,7 @@ export default {
     },
   },
   created() {
-    this.findProfissoes();
+    this.findProfissoes('');
     this.findUnidadesDeSaude('');
   },
 };
