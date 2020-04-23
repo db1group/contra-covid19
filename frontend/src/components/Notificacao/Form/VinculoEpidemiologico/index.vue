@@ -45,17 +45,6 @@
           </v-radio-group>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="12">
-          <v-text-field
-            :value="vinculoEpidemiologico.nome"
-            label="Nome do caso suspeito ou confirmado que teve contato *"
-            :rules="rules.nome"
-            :disabled="!vinculoEpidemiologico.situacao2"
-            @input="updateNome"
-          />
-        </v-col>
-      </v-row>
     </v-container>
   </div>
 </template>
