@@ -101,12 +101,16 @@ resource "aws_ecs_task_definition" "frontend" {
         "value" : "${var.environment}"
       },
       { 
-        "name" : "BACKEND_URL",
+        "name" : "VUE_APP_BACKEND_URL",
         "value" : "${var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"}"
       },
       { 
-        "name" : "AUTH_URL",
+        "name" : "VUE_APP_AUTH_URL",
         "value" : "${var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"}"
+      },
+      { 
+        "name" : "VUE_APP_CLIENT_ID",
+        "value" : "notifica-saude"
       },
       { 
         "name" : "PORT",
