@@ -115,7 +115,7 @@ orbs:
 
 workflows:
   version: 2.0
-  covid19:
+  notificasaude:
     jobs:
       - build-backend
       - build-frontend
@@ -126,6 +126,7 @@ workflows:
             branches:
               only:
               - master
+              - feature/terraform
       - deploy-backend-prod-aws:
           type: approval
           requires:
@@ -141,6 +142,7 @@ workflows:
             branches:
               only:
               - master
+              - feature/terraform
       - deploy-frontend-prod-aws:
           type: approval
           requires:
@@ -154,6 +156,7 @@ workflows:
             branches:
               only:
               - master
+              - feature/terraform
       - deploy-keycloak-prod-aws:
           type: approval
           requires:

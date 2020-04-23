@@ -4,17 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-CMD ["node_modules/.bin/cross-env", \
-  "NODE_ENV=$NODE_ENV", \
-  "DATABASE_URL=$DATABASE_URL", \
-  "DATABASE_USERNAME=$DATABASE_USERNAME", \
-  "DATABASE_PASSWORD=$DATABASE_PASSWORD", \
-  "npx sequelize-cli db:migrate"
+CMD ["npx", "sequelize-cli", "db:migrate", "db:seed:all"]
 
-ENTRYPOINT ["node_modules/.bin/cross-env", \
-  "NODE_ENV=$NODE_ENV", \
-  "DATABASE_URL=$DATABASE_URL", \
-  "DATABASE_USERNAME=$DATABASE_USERNAME", \
-  "DATABASE_PASSWORD=$DATABASE_PASSWORD", \
-  "node", \
-  "/app/src/server.js"]
+ENTRYPOINT ["node", "/app/src/server.js"]

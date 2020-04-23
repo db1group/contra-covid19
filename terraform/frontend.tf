@@ -101,20 +101,24 @@ resource "aws_ecs_task_definition" "frontend" {
         "value" : "${var.environment}"
       },
       { 
-        "name" : "BACKEND_URL",
+        "name" : "VUE_APP_BACKEND_URL",
         "value" : "${var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"}"
       },
       { 
-        "name" : "KEYCLOAK_URL",
+        "name" : "VUE_APP_KEYCLOAK_URL",
         "value" : "${var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"}"
       },
       { 
-        "name" : "KEYCLOAK_REALM",
+        "name" : "VUE_APP_KEYCLOAK_REALM",
         "value" : "${var.project}"
       },
       { 
-        "name" : "KEYCLOAK_CLIENT_ID",
+        "name" : "VUE_APP_KEYCLOAK_CLIENT_ID",
         "value" : "${var.project}"
+      },
+      { 
+        "name" : "VUE_APP_MUNICIPIO_ID",
+        "value" : "fcf83c0a-8de6-43a5-9845-907f597f56ce"
       },
       { 
         "name" : "PORT",
