@@ -15,8 +15,7 @@ const validarMenorQueDataAtual = (value, artigo, nomeCampo) => {
     dataHoraAtual.getDate(),
   );
   if (dataInserida >= dataAtual) {
-    const mensagemErro = `${artigo} ${nomeCampo} não pode ser maior que a data atual`;
-    throw new Error(mensagemErro);
+    throw new Error(`${artigo} ${nomeCampo} não pode ser maior que a data atual`);
   }
 };
 
