@@ -19,6 +19,8 @@
         itemsPerPageText: 'Linhas por página',
         itemsPerPageOptions: [10, 30, 50, 100],
       }"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
       class="elevation-1"
     >
       <template v-slot:top>
@@ -58,6 +60,8 @@ import { isSecretariaSaude } from '@/validations/KeycloakValidations';
 
 export default {
   data: () => ({
+    sortBy: 'nome',
+    sortDesc: false,
     singleSelect: false,
     selected: [],
     items: [],
@@ -110,10 +114,14 @@ export default {
           return 'black';
       }
     },
-    consultarNotificacoes({ page, itemsPerPage } = this.options) {
+    consultarNotificacoes({
+      page, itemsPerPage, sortBy, sortDesc,
+    } = this.options) {
       this.loading = true;
       const search = this.filter;
-      NotificacaoService.findAll({ page, itemsPerPage, search })
+      NotificacaoService.findAll({
+        page, itemsPerPage, sortBy, sortDesc, search,
+      })
         .then(({ count, data }) => {
           this.totalNotif = count;
           this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());
