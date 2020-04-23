@@ -105,8 +105,16 @@ resource "aws_ecs_task_definition" "frontend" {
         "value" : "${var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"}"
       },
       { 
-        "name" : "AUTH_URL",
+        "name" : "KEYCLOAK_URL",
         "value" : "${var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"}"
+      },
+      { 
+        "name" : "KEYCLOAK_REALM",
+        "value" : "${var.project}"
+      },
+      { 
+        "name" : "KEYCLOAK_CLIENT_ID",
+        "value" : "${var.project}"
       },
       { 
         "name" : "PORT",
