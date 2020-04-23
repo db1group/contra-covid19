@@ -10,9 +10,7 @@ export const required = (value, message = 'O campo é obrigatório.') => (
 ) || message;
 
 export const requiredObjectId = (value, message = 'O campo é obrigatório.') => (
-  value
-  && typeof value === 'object'
-  && value.id
+  (value && typeof value === 'object' && !!value.id)
 ) || message;
 
 export const minLength = (length) => (value) => !value
