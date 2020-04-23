@@ -93,8 +93,8 @@ resource "aws_ecs_task_definition" "frontend" {
         "hostPort": 0
       }
     ],
-    "memory": 768,
-    "cpu": 10,
+    "memory": 256,
+    "cpu": 100,
     "environment" : [
       { 
         "name" : "NODE_ENV",

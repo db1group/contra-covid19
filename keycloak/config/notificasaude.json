@@ -1,5 +1,5 @@
 {
-  "id": "notifica-saude",
+  "id": "notificasaude",
   "realm": "notificasaude",
   "displayName": "Notifica Saúde",
   "notBefore": 0,
@@ -45,7 +45,7 @@
         "description": "${role_offline-access}",
         "composite": false,
         "clientRole": false,
-        "containerId": "notifica-saude",
+        "containerId": "notificasaude",
         "attributes": {}
       },
       {
@@ -54,7 +54,7 @@
         "description": "${role_uma_authorization}",
         "composite": false,
         "clientRole": false,
-        "containerId": "notifica-saude",
+        "containerId": "notificasaude",
         "attributes": {}
       },
       {
@@ -62,12 +62,12 @@
         "name": "SECRETARIA_SAUDE",
         "composite": false,
         "clientRole": false,
-        "containerId": "notifica-saude",
+        "containerId": "notificasaude",
         "attributes": {}
       }
     ],
     "client": {
-      "notifica-saude-api": [],
+      "notificasaude-api": [],
       "realm-management": [
         {
           "id": "fd3695a6-9931-453c-be4d-ef84016c7a19",
@@ -281,7 +281,7 @@
         }
       ],
       "security-admin-console": [],
-      "notifica-saude": [],
+      "notificasaude": [],
       "admin-cli": [],
       "broker": [
         {
@@ -456,7 +456,7 @@
     },
     {
       "id": "d5573caf-7d34-43a3-a4d4-4c3276034498",
-      "clientId": "notifica-saude",
+      "clientId": "notificasaude",
       "rootUrl": "https://app.notificasaude.com.br",
       "adminUrl": "https://app.notificasaude.com.br",
       "surrogateAuthRequired": false,
@@ -465,12 +465,17 @@
       "secret": "**********",
       "redirectUris": [
         "http://localhost:8080/*",
-        "https://app.notificasaude.com.br/*"
+        "https://app.notificasaude.com.br/*",
+        "https://app.notificasaude.com.br/*",
+        "https://qa-www.notificasaude.com.br/*",
+        "https://qa-app.notificasaude.com.br/*"
       ],
       "webOrigins": [
         "http://localhost:8080/*",
-        "https://app.notificasaude.com.br",
-        "*"
+        "https://app.notificasaude.com.br/*",
+        "https://app.notificasaude.com.br/*",
+        "https://qa-www.notificasaude.com.br/*",
+        "https://qa-app.notificasaude.com.br/*"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -516,7 +521,7 @@
     },
     {
       "id": "03656695-ea8d-4b6d-a1a0-c4e988b1909c",
-      "clientId": "notifica-saude-api",
+      "clientId": "notificasaude-api",
       "name": "Notifica Saúde API",
       "rootUrl": "https://api.notificasaude.com.br",
       "adminUrl": "https://api.notificasaude.com.br",
@@ -526,12 +531,13 @@
       "secret": "**********",
       "redirectUris": [
         "https://api.notificasaude.com.br/*",
+        "https://qa-api.notificasaude.com.br/*",
         "http://localhost:3000/*"
       ],
       "webOrigins": [
         "https://api.notificasaude.com.br",
-        "http://localhost:3000/*",
-        "*"
+        "https://qa-api.notificasaude.com.br/*",
+        "http://localhost:3000/*"
       ],
       "notBefore": 0,
       "bearerOnly": false,
