@@ -37,10 +37,12 @@
       @change="updateRealizouOutraTomografiaTorax"
     />
     <v-text-field
+      id="tomografiaOutro"
+      ref="tomografiaOutro"
       :value="examesImagem.tomografiaOutro"
       :rules="rules.tomografiaOutro"
       class="pl-8"
-      label="Especifique"
+      label="Especifique *"
       validate-on-blur
       :disabled="!realizouOutraTomografiaTorax || !realizouExamesImagem"
       @input="updateTomografiaOutro"
@@ -69,9 +71,15 @@ export default {
     },
   }),
   methods: {
+    validarRealizouExamesImagem() {
+      this.$emit('update:validarRealizouExamesImagem');
+    },
     updateRealizouOutraTomografiaTorax(realizouOutraTomografiaTorax) {
       this.realizouOutraTomografiaTorax = realizouOutraTomografiaTorax;
       this.$emit('update:tomografiaNormal', false);
+      this.updateTomografiaOutro();
+      this.validarTomografiaOutro();
+      this.validarRealizouExamesImagem();
     },
     updateTomografiaNormal(tomografiaNormal) {
       this.$emit('update:tomografiaNormal', tomografiaNormal);
@@ -80,22 +88,30 @@ export default {
       this.$emit('update:tomografiaAusenciaLinfonodoMediastenal', false);
       this.$emit('update:tomografiaOutro', '');
       this.realizouOutraTomografiaTorax = false;
+      this.validarRealizouExamesImagem();
     },
     updateTomografiaVidroFoscoPredominioPerifericoBasal(tomografiaVidroFoscoPredominioPerifericoBasal) {
       this.$emit('update:tomografiaVidroFoscoPredominioPerifericoBasal', tomografiaVidroFoscoPredominioPerifericoBasal);
       this.$emit('update:tomografiaNormal', false);
+      this.validarRealizouExamesImagem();
     },
     updateTomografiaAusenciaDerramePleural(tomografiaAusenciaDerramePleural) {
       this.$emit('update:tomografiaAusenciaDerramePleural', tomografiaAusenciaDerramePleural);
       this.$emit('update:tomografiaNormal', false);
+      this.validarRealizouExamesImagem();
     },
     updateTomografiaAusenciaLinfonodoMediastenal(tomografiaAusenciaLinfonodoMediastenal) {
       this.$emit('update:tomografiaAusenciaLinfonodoMediastenal', tomografiaAusenciaLinfonodoMediastenal);
       this.$emit('update:tomografiaNormal', false);
+      this.validarRealizouExamesImagem();
     },
     updateTomografiaOutro(tomografiaOutro) {
       this.$emit('update:tomografiaOutro', tomografiaOutro);
       this.$emit('update:tomografiaNormal', false);
+      this.validarRealizouExamesImagem();
+    },
+    validarTomografiaOutro() {
+      this.$refs.tomografiaOutro.validate();
     },
     requiredIfRealizouOutraTomografiaTorax(value) {
       if (!this.realizouOutraTomografiaTorax) {

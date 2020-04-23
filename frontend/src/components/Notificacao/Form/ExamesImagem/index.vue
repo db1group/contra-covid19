@@ -6,6 +6,8 @@
     <v-row>
       <v-col cols="12">
         <v-radio-group
+          id="realizouExamesImagem"
+          ref="realizouExamesImagem"
           :value="realizouExamesImagem"
           class="mt-0"
           :rules="rules.realizouExamesImagem"
@@ -22,6 +24,7 @@
           <raio-torax
             :realizouExamesImagem="realizouExamesImagem"
             :examesImagem="examesImagem"
+            @update:validarRealizouExamesImagem="validarRealizouExamesImagem"
             @update:raioNormal="updateRaioNormal"
             @update:raioInfiltradoIntersticial="updateRaioInfiltradoIntersticial"
             @update:raioConsolidacao="updateRaioConsolidacao"
@@ -33,6 +36,7 @@
           <tomografia-torax
             :realizouExamesImagem="realizouExamesImagem"
             :examesImagem="examesImagem"
+            @update:validarRealizouExamesImagem="validarRealizouExamesImagem"
             @update:tomografiaNormal="updateTomografiaNormal"
             @update:tomografiaVidroFoscoPredominioPerifericoBasal="updateTomografiaVidroFoscoPredominioPerifericoBasal"
             @update:tomografiaAusenciaDerramePleural="updateTomografiaAusenciaDerramePleural"
@@ -102,6 +106,9 @@ export default {
     },
     updateTomografiaOutro(tomografiaOutro) {
       this.$emit('update:tomografiaOutro', tomografiaOutro);
+    },
+    validarRealizouExamesImagem() {
+      this.$refs.realizouExamesImagem.validate();
     },
     requireExames(value) {
       if (!value) {
