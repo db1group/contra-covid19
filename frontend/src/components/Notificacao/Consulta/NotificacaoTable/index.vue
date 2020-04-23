@@ -19,8 +19,6 @@
         itemsPerPageText: 'Linhas por página',
         itemsPerPageOptions: [10, 30, 50, 100],
       }"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
       class="elevation-1"
     >
       <template v-slot:top>
@@ -60,8 +58,6 @@ import { isSecretariaSaude } from '@/validations/KeycloakValidations';
 
 export default {
   data: () => ({
-    sortBy: 'nome',
-    sortDesc: false,
     singleSelect: false,
     selected: [],
     items: [],
@@ -115,7 +111,7 @@ export default {
       }
     },
     consultarNotificacoes({
-      page, itemsPerPage, sortBy, sortDesc,
+      page, itemsPerPage, sortBy = 'createdAt', sortDesc = 'true',
     } = this.options) {
       this.loading = true;
       const search = this.filter;
