@@ -341,7 +341,14 @@ const validarNotificacaoFinalizada = async (evolucao) => {
 };
 
 const validarPossuiConfirmacao = async (evolucao) => {
-  if (!(evolucao.tpEvolucao === 'CURA' || evolucao.tpEvolucao === 'OBITO')) {
+  const tpEvolucaoPrecisaTerConfirmacao = (evolucao.tpEvolucao === 'CURA'
+      || evolucao.tpEvolucao === 'OBITO');
+
+  const tpEvolucaoProibidaSeJaConfirmada = (evolucao.tpEvolucao === 'SUSPEITO'
+      || evolucao.tpEvolucao === 'DESCARTADO'
+      || evolucao.tpEvolucao === 'CONFIRMADO');
+
+  if (!(tpEvolucaoPrecisaTerConfirmacao || tpEvolucaoProibidaSeJaConfirmada)) {
     return;
   }
 
@@ -353,10 +360,14 @@ const validarPossuiConfirmacao = async (evolucao) => {
     },
   });
 
-  if (!evolucaoConfirmado) {
-    const tipoEvolucao = evolucao.tpEvolucao !== 'OBITO' ? evolucao.tpEvolucao : 'ÓBITO';
-    throw new RegraNegocio(`Não é possível atualizar para ${tipoEvolucao}
-    pois não existe atualização de confirmação.`);
+  if (evolucaoConfirmado && tpEvolucaoProibidaSeJaConfirmada) {
+    throw new RegraNegocio(`Não é possivel atualizar para ${evolucao.tpEvolucao}
+      pois já existe atualização de confirmação.`);
+  }
+
+  if (!evolucaoConfirmado && tpEvolucaoPrecisaTerConfirmacao) {
+    throw new RegraNegocio(`Não é possivel atualizar para ${evolucao.tpEvolucao}
+      pois não existe atualização de confirmação.`);
   }
 };
 
