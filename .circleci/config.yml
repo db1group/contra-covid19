@@ -22,19 +22,6 @@ jobs:
           root: ~/
           paths:
             - notificasaude/backend
-  deploy-backend:
-    executor: notificasaude-executor
-    steps:
-      - attach_workspace:
-          at: ~/
-      - run: docker run --rm -it -v ${PWD}/backend:/usr/src/app -w /usr/src/app -e NODE_ENV=$NODE_ENV node:13 npx sequelize-cli db:migrate
-      - run: cd backend && docker build -t notificasaude/backend -f Dockerfile .
-      - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
-      - run: docker tag notificasaude/backend registry.heroku.com/covid19-db1-backend/web:latest
-      - run: docker push registry.heroku.com/covid19-db1-backend/web:latest
-      - run: sudo snap install --classic heroku
-      - run: heroku container:login
-      - run: heroku container:release web --app covid19-db1-backend
   deploy-backend-qa-aws:
     executor: notificasaude-executor
     steps:
@@ -75,18 +62,6 @@ jobs:
           root: ~/
           paths:
             - notificasaude/frontend
-  deploy-frontend:
-    executor: notificasaude-executor
-    steps:
-      - attach_workspace:
-          at: ~/
-      - run: cd frontend && docker build -t notificasaude/frontend .
-      - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
-      - run: docker tag notificasaude/frontend registry.heroku.com/covid19-db1-frontend/web:latest
-      - run: docker push registry.heroku.com/covid19-db1-frontend/web:latest
-      - run: sudo snap install --classic heroku
-      - run: heroku container:login
-      - run: heroku container:release web --app covid19-db1-frontend
   deploy-frontend-qa-aws:
     executor: notificasaude-executor
     steps:
@@ -120,6 +95,10 @@ jobs:
       - run: cd keycloak && docker build -t notificasaude/keycloak:latest .
       - run: docker tag notificasaude/keycloak:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
+      - aws-ecs/update-service:
+          family: 'notificasaude-qa-keycloak'
+          cluster-name: 'notificasaude-qa'
+          container-image-name-updates: 'container=notificasaude-qa-keycloak,tag=qa'
   deploy-keycloak-prod-aws:
     executor: notificasaude-executor
     steps:
@@ -132,6 +111,7 @@ jobs:
 
 orbs:
   aws-cli: circleci/aws-cli@1.0.0
+  aws-ecs: circleci/aws-ecs@1.1.0
 
 workflows:
   version: 2.0
@@ -139,42 +119,30 @@ workflows:
     jobs:
       - build-backend
       - build-frontend
-      - deploy-backend:
+      - deploy-backend-qa-aws:
           requires:
             - build-backend
           filters:
             branches:
               only:
               - master
-      - deploy-backend-qa-aws:
-          requires:
-            - deploy-backend
-          filters:
-            branches:
-              only:
-              - master
       - deploy-backend-prod-aws:
+          type: approval
           requires:
             - deploy-backend-qa-aws
           filters:
             branches:
               only:
               - master
-      - deploy-frontend:
+      - deploy-frontend-qa-aws:
           requires:
             - build-frontend
           filters:
             branches:
               only:
               - master
-      - deploy-frontend-qa-aws:
-          requires:
-            - deploy-frontend
-          filters:
-            branches:
-              only:
-              - master
       - deploy-frontend-prod-aws:
+          type: approval
           requires:
             - deploy-frontend-qa-aws
           filters:
@@ -187,6 +155,7 @@ workflows:
               only:
               - master
       - deploy-keycloak-prod-aws:
+          type: approval
           requires:
             - deploy-keycloak-qa-aws
           filters:

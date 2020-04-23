@@ -9,8 +9,8 @@ Vue.config.productionTip = false;
 Vue.use(VueKeyCloak, {
   config: {
     url: `${process.env.VUE_APP_KEYCLOAK_URL}`,
-    realm: `${process.env.VUE_APP_REALM || 'notificasaude'}`,
-    clientId: `${process.env.VUE_APP_CLIENT_ID || 'webapp'}`,
+    realm: `${process.env.VUE_APP_KEYCLOAK_REALM}`,
+    clientId: `${process.env.VUE_APP_KEYCLOAK_CLIENT_ID}`,
   },
   onReady: () => new Vue({
     router,

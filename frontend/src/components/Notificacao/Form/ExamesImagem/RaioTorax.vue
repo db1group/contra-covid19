@@ -37,10 +37,12 @@
       @change="updateRealizouOutroRaioTorax"
     />
     <v-text-field
+      id="raioOutro"
+      ref="raioOutro"
       :value="examesImagem.raioOutro"
       :rules="rules.raioOutro"
       class="pl-8"
-      label="Especifique"
+      label="Especifique *"
       validate-on-blur
       :disabled="!realizouOutroRaioTorax || !realizouExamesImagem"
       @input="updateRaioOutro"
@@ -69,9 +71,15 @@ export default {
     },
   }),
   methods: {
+    validarRealizouExamesImagem() {
+      this.$emit('update:validarRealizouExamesImagem');
+    },
     updateRealizouOutroRaioTorax(realizouOutroRaioTorax) {
       this.realizouOutroRaioTorax = realizouOutroRaioTorax;
       this.$emit('update:raioNormal', false);
+      this.updateRaioOutro();
+      this.validarRaioOutro();
+      this.validarRealizouExamesImagem();
     },
     updateRaioNormal(raioNormal) {
       this.$emit('update:raioNormal', raioNormal);
@@ -80,22 +88,30 @@ export default {
       this.$emit('update:raioMisto', false);
       this.$emit('update:raioOutro', '');
       this.realizouOutroRaioTorax = false;
+      this.validarRealizouExamesImagem();
     },
     updateRaioInfiltradoIntersticial(raioInfiltradoIntersticial) {
       this.$emit('update:raioInfiltradoIntersticial', raioInfiltradoIntersticial);
       this.$emit('update:raioNormal', false);
+      this.validarRealizouExamesImagem();
     },
     updateRaioConsolidacao(raioConsolidacao) {
       this.$emit('update:raioConsolidacao', raioConsolidacao);
       this.$emit('update:raioNormal', false);
+      this.validarRealizouExamesImagem();
     },
     updateRaioMisto(raioMisto) {
       this.$emit('update:raioMisto', raioMisto);
       this.$emit('update:raioNormal', false);
+      this.validarRealizouExamesImagem();
     },
     updateRaioOutro(raioOutro) {
       this.$emit('update:raioOutro', raioOutro);
       this.$emit('update:raioNormal', false);
+      this.validarRealizouExamesImagem();
+    },
+    validarRaioOutro() {
+      this.$refs.raioOutro.validate();
     },
     requiredIfRealizouOutroRaioTorax(value) {
       if (!this.realizouOutroRaioTorax) {
