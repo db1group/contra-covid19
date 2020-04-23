@@ -1,6 +1,6 @@
 const situacoesModel = {
   ALTA_ISOLAMENTO_DOMICILIAR: 'Isolamento domiciliar',
-  INTERNAMENTO_LEITO_COMUM: 'Leito comun',
+  INTERNAMENTO_LEITO_COMUM: 'Leito comum',
   INTERNAMENTO_LEITO_UTI: 'UTI',
   EVOLUCAO_OBITO: 'Óbito',
 };

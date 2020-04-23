@@ -92,7 +92,7 @@ export default {
           return '#FD3A5C';
         case 'Óbito':
           return 'black';
-        case 'Leito comun':
+        case 'Leito comum':
           return '#FFB300';
         case 'Isolamento domiciliar':
           return '#64FFDA';
