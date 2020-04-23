@@ -154,7 +154,6 @@ workflows:
             branches:
               only:
               - master
-              - feature/terraform
       - deploy-keycloak-prod-aws:
           type: approval
           requires:
