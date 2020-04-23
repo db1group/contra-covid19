@@ -1,8 +1,10 @@
-const Sequelize = require('sequelize');
+const { Sequelize, ValidationError } = require('sequelize');
 const models = require('../models');
 const Mappers = require('../mapper');
+const { tratarErrorsRetornoAPI } = require('../lib/api-error-handling');
 
 const { Op } = Sequelize;
+
 /*
   Refatorar para repositório de pessoas ou outro local apropriado
 */
@@ -96,17 +98,28 @@ const consultarNotificacaoPorId = async (id) => models.Notificacao.findOne({
 });
 
 const salvarNotificacao = async (notificacao) => {
-  const novaNotificacao = await models.Notificacao.create(notificacao);
-  const { id: notificacaoId } = novaNotificacao;
-  await models.NotificacaoCovid19.create({ notificacaoId, ...notificacao.notificacaoCovid19 });
-  await models.NotificacaoEvolucao.create({
-    notificacaoId,
-    dtEvolucao: notificacao.notificacaoCovid19.dataHoraNotificacao,
-    tpEvolucao: 'SUSPEITO',
-    tpLocal: notificacao.notificacaoCovid19.situacaoNoMomentoDaNotificacao,
-  });
-
-  return consultarNotificacaoPorId(notificacaoId);
+  const transaction = await models.sequelize.transaction();
+  try {
+    const novaNotificacao = await models.Notificacao.create(
+      notificacao, { transaction },
+    );
+    const { id: notificacaoId } = novaNotificacao;
+    await models.NotificacaoCovid19.create({
+      notificacaoId,
+      ...notificacao.notificacaoCovid19,
+    }, { transaction });
+    await models.NotificacaoEvolucao.create({
+      notificacaoId,
+      dtEvolucao: notificacao.notificacaoCovid19.dataHoraNotificacao,
+      tpEvolucao: 'SUSPEITO',
+      tpLocal: notificacao.notificacaoCovid19.situacaoNoMomentoDaNotificacao,
+    }, { transaction });
+    await transaction.commit();
+    return consultarNotificacaoPorId(notificacaoId);
+  } catch (err) {
+    await transaction.rollback();
+    throw err;
+  }
 };
 
 const consultarNotificaoesPaginado = async (page, limit) => {
@@ -148,7 +161,7 @@ const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
   );
 
   if (existeNotificacaoAbertaParaOPaciente) {
-    throw new Error('Já existe uma notificação aberta para este paciente.');
+    throw new ValidationError('Já existe uma notificação aberta para este paciente.');
   }
 };
 
@@ -178,8 +191,7 @@ exports.salvar = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error(err);
-    return res.status(400).json({ error: err.message });
+    return tratarErrorsRetornoAPI(res, err);
   }
 };
 
@@ -314,7 +326,7 @@ const validarNotificacaoFinalizada = async (evolucao) => {
   });
 
   if (notificacaoFinalizada) {
-    throw new Error(`Não é possivel adicionar nova evolução pois a notificação está ${
+    throw new ValidationError(`Não é possivel adicionar nova evolução pois a notificação está ${
       notificacaoFinalizada.status}.`);
   }
 };
@@ -333,7 +345,7 @@ const validarPossuiConfirmacao = async (evolucao) => {
   });
 
   if (!evolucaoConfirmado) {
-    throw new Error(`Não é possivel atualizar para ${evolucao.tpEvolucao}
+    throw new ValidationError(`Não é possivel atualizar para ${evolucao.tpEvolucao}
     pois não existe atualização de confirmação.`);
   }
 };
