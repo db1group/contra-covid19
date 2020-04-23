@@ -126,7 +126,12 @@ const salvarNotificacao = async (notificacao) => {
 const consultarNotificaoesPaginado = async (page, limit) => {
   const offset = (page - 1) * limit;
   return models.Notificacao.findAndCountAll({
-    include: [{ model: models.Pessoa }, { model: models.NotificacaoCovid19 }],
+    include: [{
+      model: models.Pessoa,
+      include: [{
+        model: models.Bairro,
+      }],
+    }, { model: models.NotificacaoCovid19 }],
     order: [['updatedAt', 'DESC']],
     limit,
     offset,
@@ -221,7 +226,10 @@ const consultarNotificaoesWeb = async (page, limit, search = '') => {
       },
     },
     attributes: ['id'],
-    include: [{ model: models.Pessoa, attributes: ['nome', 'numeroDocumento', 'telefoneContato'] }, {
+    include: [{
+      model: models.Pessoa,
+      attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
+    }, {
       model: models.NotificacaoCovid19,
       attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao'],
     }],
