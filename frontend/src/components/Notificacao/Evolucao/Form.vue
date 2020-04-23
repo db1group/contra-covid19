@@ -52,7 +52,7 @@
         <v-card-actions>
           <v-row align="center" justify="end">
             <v-col cols="auto">
-              <v-btn color="primary" rounded @click="cadastrarEvolucao">ATUALIZAR NOTIFICÃO</v-btn>
+              <v-btn color="primary" rounded @click="cadastrarEvolucao">ATUALIZAR NOTIFICACÃO</v-btn>
             </v-col>
           </v-row>
         </v-card-actions>
