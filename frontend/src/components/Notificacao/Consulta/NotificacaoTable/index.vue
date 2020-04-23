@@ -37,24 +37,14 @@
           <v-btn text small color="primary" @click="excluirLote()">EXCLUIR</v-btn>
         </v-card-title>
       </template>
-      <template v-slot:item.situacao="{ item }">
-        <v-chip
-          class="d-block text-center"
-          :color="getColor(item.situacao)"
-          :text-color="getTextColor(item.situacao)"
-        >
-          {{ item.situacao }}
-        </v-chip>
-      </template>
       <template v-slot:item.actions="{ item }">
-        <v-btn v-if="isSecretariaSaude"
+        <v-btn
+          v-if="isSecretariaSaude"
           text
           small
           color="primary"
           :to="{ name: 'evolucao-form', params: { id: item.id } }"
-        >
-          EVOLUÇÃO
-        </v-btn>
+        >EVOLUÇÃO</v-btn>
         <v-btn text small color="red" @click="excluirItem(item)">EXCLUIR</v-btn>
       </template>
     </v-data-table>
@@ -84,7 +74,6 @@ export default {
       { text: 'Documento', value: 'documento' },
       { text: 'Notificação', value: 'dataNotificacao' },
       { text: 'Telefone', value: 'telefone' },
-      { text: 'Situação', value: 'situacao', width: '185px' },
       { sortable: false, value: 'actions', width: '210px' },
     ],
   }),

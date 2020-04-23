@@ -1,3 +1,5 @@
+const { validarMenorQueDataHoraAtual } = require('../lib/validacoes-comuns/data');
+
 module.exports = (sequelize, DataTypes) => {
   const NotificacaoCovid19 = sequelize.define('NotificacaoCovid19', {
     id: {
@@ -78,7 +80,15 @@ module.exports = (sequelize, DataTypes) => {
     coletaMaterialParaDiagnostico: DataTypes.BOOLEAN,
     laboratorioOficial: DataTypes.BOOLEAN,
     laboratorioRedePrivada: DataTypes.BOOLEAN,
-    dataDaColeta: DataTypes.DATE,
+    dataDaColeta: {
+      type: DataTypes.DATE,
+      validate: {
+        isDate: true,
+        naoEhMaiorQueDataAtual(value) {
+          validarMenorQueDataHoraAtual(value, 'A', 'data da coleta do exame');
+        },
+      },
+    },
     metodoDeExame: DataTypes.ENUM('RT-PCR', 'TESTE_RAPIDO'),
     realizouExameDeImagem: DataTypes.BOOLEAN,
     raioXNormal: DataTypes.BOOLEAN,
