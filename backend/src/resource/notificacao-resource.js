@@ -1,7 +1,8 @@
-const { Sequelize, ValidationError } = require('sequelize');
+const { Sequelize } = require('sequelize');
 const models = require('../models');
 const Mappers = require('../mapper');
-const { tratarErrorsRetornoAPI } = require('../lib/api-error-handling');
+const { tratarErrorsRetornoAPI, RegraNegocio } = require('../lib/erros');
+
 
 const { Op } = Sequelize;
 
@@ -161,7 +162,7 @@ const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
   );
 
   if (existeNotificacaoAbertaParaOPaciente) {
-    throw new ValidationError('Já existe uma notificação aberta para este paciente.');
+    throw new RegraNegocio('Já existe uma notificação aberta para este paciente.');
   }
 };
 
@@ -326,7 +327,7 @@ const validarNotificacaoFinalizada = async (evolucao) => {
   });
 
   if (notificacaoFinalizada) {
-    throw new ValidationError(`Não é possivel adicionar nova evolução pois a notificação está ${
+    throw new RegraNegocio(`Não é possivel adicionar nova evolução pois a notificação está ${
       notificacaoFinalizada.status}.`);
   }
 };
@@ -345,7 +346,7 @@ const validarPossuiConfirmacao = async (evolucao) => {
   });
 
   if (!evolucaoConfirmado) {
-    throw new ValidationError(`Não é possivel atualizar para ${evolucao.tpEvolucao}
+    throw new RegraNegocio(`Não é possivel atualizar para ${evolucao.tpEvolucao}
     pois não existe atualização de confirmação.`);
   }
 };
