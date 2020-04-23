@@ -95,7 +95,7 @@ jobs:
       - run: cd keycloak && docker build -t notificasaude/keycloak:latest .
       - run: docker tag notificasaude/keycloak:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
-      - aws-ecs/deploy-service-update:
+      - aws-ecs/deploy-service:
           family: 'notificasaude-qa-keycloak'
           cluster-name: 'notificasaude-qa'
           container-image-name-updates: 'container=notificasaude-qa-keycloak,tag=qa'
