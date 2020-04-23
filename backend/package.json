@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "lint": "npx eslint src/**/*.js",
-    "dev": "nodemon --inspect src/server.js",
+    "dev": "cross-env NODE_ENV=development nodemon --inspect src/server.js",
     "migrate": "cross-env NODE_ENV=development npx sequelize-cli db:migrate",
     "build": "cross-env NODE_ENV=prod node src/server.js"
   },

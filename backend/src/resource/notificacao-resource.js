@@ -1,8 +1,11 @@
-const Sequelize = require('sequelize');
+const { Sequelize } = require('sequelize');
 const models = require('../models');
 const Mappers = require('../mapper');
+const { tratarErrorsRetornoAPI, RegraNegocio } = require('../lib/erros');
+
 
 const { Op } = Sequelize;
+
 /*
   Refatorar para repositório de pessoas ou outro local apropriado
 */
@@ -96,23 +99,39 @@ const consultarNotificacaoPorId = async (id) => models.Notificacao.findOne({
 });
 
 const salvarNotificacao = async (notificacao) => {
-  const novaNotificacao = await models.Notificacao.create(notificacao);
-  const { id: notificacaoId } = novaNotificacao;
-  await models.NotificacaoCovid19.create({ notificacaoId, ...notificacao.notificacaoCovid19 });
-  await models.NotificacaoEvolucao.create({
-    notificacaoId,
-    dtEvolucao: notificacao.notificacaoCovid19.dataHoraNotificacao,
-    tpEvolucao: 'SUSPEITO',
-    tpLocal: notificacao.notificacaoCovid19.situacaoNoMomentoDaNotificacao,
-  });
-
-  return consultarNotificacaoPorId(notificacaoId);
+  const transaction = await models.sequelize.transaction();
+  try {
+    const novaNotificacao = await models.Notificacao.create(
+      notificacao, { transaction },
+    );
+    const { id: notificacaoId } = novaNotificacao;
+    await models.NotificacaoCovid19.create({
+      notificacaoId,
+      ...notificacao.notificacaoCovid19,
+    }, { transaction });
+    await models.NotificacaoEvolucao.create({
+      notificacaoId,
+      dtEvolucao: notificacao.notificacaoCovid19.dataHoraNotificacao,
+      tpEvolucao: 'SUSPEITO',
+      tpLocal: notificacao.notificacaoCovid19.situacaoNoMomentoDaNotificacao,
+    }, { transaction });
+    await transaction.commit();
+    return consultarNotificacaoPorId(notificacaoId);
+  } catch (err) {
+    await transaction.rollback();
+    throw err;
+  }
 };
 
 const consultarNotificaoesPaginado = async (page, limit) => {
   const offset = (page - 1) * limit;
   return models.Notificacao.findAndCountAll({
-    include: [{ model: models.Pessoa }, { model: models.NotificacaoCovid19 }],
+    include: [{
+      model: models.Pessoa,
+      include: [{
+        model: models.Bairro,
+      }],
+    }, { model: models.NotificacaoCovid19 }],
     order: [['updatedAt', 'DESC']],
     limit,
     offset,
@@ -148,7 +167,7 @@ const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
   );
 
   if (existeNotificacaoAbertaParaOPaciente) {
-    throw new Error('Já existe uma notificação aberta para este paciente.');
+    throw new RegraNegocio('Já existe uma notificação aberta para este paciente.');
   }
 };
 
@@ -178,8 +197,7 @@ exports.salvar = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error(err);
-    return res.status(400).json({ error: err.message });
+    return tratarErrorsRetornoAPI(res, err);
   }
 };
 
@@ -208,7 +226,10 @@ const consultarNotificaoesWeb = async (page, limit, search = '') => {
       },
     },
     attributes: ['id'],
-    include: [{ model: models.Pessoa, attributes: ['nome', 'numeroDocumento', 'telefoneContato'] }, {
+    include: [{
+      model: models.Pessoa,
+      attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
+    }, {
       model: models.NotificacaoCovid19,
       attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao'],
     }],
@@ -314,7 +335,7 @@ const validarNotificacaoFinalizada = async (evolucao) => {
   });
 
   if (notificacaoFinalizada) {
-    throw new Error(`Não é possivel adicionar nova evolução pois a notificação está ${
+    throw new RegraNegocio(`Não é possivel adicionar nova evolução pois a notificação está ${
       notificacaoFinalizada.status}.`);
   }
 };
@@ -333,7 +354,7 @@ const validarPossuiConfirmacao = async (evolucao) => {
   });
 
   if (!evolucaoConfirmado) {
-    throw new Error(`Não é possivel atualizar para ${evolucao.tpEvolucao}
+    throw new RegraNegocio(`Não é possivel atualizar para ${evolucao.tpEvolucao}
     pois não existe atualização de confirmação.`);
   }
 };
