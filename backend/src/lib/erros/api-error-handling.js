@@ -1,5 +1,5 @@
 const { ValidationError } = require('sequelize');
-const RegraNegocio = require('./RegraNegocio');
+const NotificaSaudeErro = require('./NotificaSaudeErro');
 
 const tratarErrorsRetornoAPI = (response, erro) => {
   let codigoResposta = 500;
@@ -14,9 +14,9 @@ const tratarErrorsRetornoAPI = (response, erro) => {
     objetoRetorno.error = errorMessage;
   }
 
-  if (erro instanceof RegraNegocio) {
+  if (erro instanceof NotificaSaudeErro) {
     const errorMessage = erro.message;
-    codigoResposta = 400;
+    codigoResposta = erro.statusCode;
     objetoRetorno.error = errorMessage;
   }
 
