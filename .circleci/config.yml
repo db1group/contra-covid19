@@ -39,6 +39,7 @@ jobs:
           awsvpc: false
           launch-type: EC2
           group: service:notificasaude-qa-backend
+          started-by: 'CircleCI $CIRCLE_BUILD_NUM'
   deploy-backend-prod-aws:
     executor: notificasaude-executor
     steps:
@@ -54,6 +55,7 @@ jobs:
           awsvpc: false
           launch-type: EC2
           group: service:notificasaude-prod-backend
+          started-by: 'CircleCI $CIRCLE_BUILD_NUM'
 
   build-frontend:
     executor: notificasaude-executor
@@ -89,6 +91,7 @@ jobs:
           awsvpc: false
           launch-type: EC2
           group: service:notificasaude-qa-frontend
+          started-by: 'CircleCI $CIRCLE_BUILD_NUM'
   deploy-frontend-prod-aws:
     executor: notificasaude-executor
     steps:
@@ -104,6 +107,7 @@ jobs:
           awsvpc: false
           launch-type: EC2
           group: service:notificasaude-prod-frontend
+          started-by: 'CircleCI $CIRCLE_BUILD_NUM'
 
   deploy-keycloak-qa-aws:
     executor: notificasaude-executor
@@ -121,6 +125,7 @@ jobs:
           awsvpc: false
           launch-type: EC2
           group: service:notificasaude-qa-keycloak
+          started-by: 'CircleCI $CIRCLE_BUILD_NUM'
   deploy-keycloak-prod-aws:
     executor: notificasaude-executor
     steps:
@@ -136,6 +141,7 @@ jobs:
           awsvpc: false
           launch-type: EC2
           group: service:notificasaude-prod-keycloak
+          started-by: 'CircleCI $CIRCLE_BUILD_NUM'
 
 orbs:
   aws-cli: circleci/aws-cli@1.0.0
