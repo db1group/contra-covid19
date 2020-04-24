@@ -58,7 +58,6 @@ export default {
     },
     validateOcupacaoDisabled(ocupacao) {
       const validateOcupacao = this.ocupacoes.find((ocupacaoFilter) => ocupacaoFilter.id === ocupacao);
-
       if (validateOcupacao && validateOcupacao.descricao === 'Outro') {
         this.isOcupacaoDisable = false;
       } else {
