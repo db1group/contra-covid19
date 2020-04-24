@@ -46,11 +46,14 @@
           :rules="rules.bairroId"
           label="Bairro *"
           :items="bairros.items"
+          @update:search-input="searchBairros"
           item-text="nome"
           item-value="id"
           :loading="bairros.loading"
           no-data-text="Bairro não encontrado"
           @input="updateBairroId"
+          v-model="bairroSelected"
+          return-object
         />
       </v-col>
     </v-row>
@@ -64,11 +67,19 @@
         />
       </v-col>
       <v-col cols="9">
-        <v-select
-          value="Maringá"
+        <v-autocomplete
+          :value="suspeito.municipioId"
+          :rules="rules.municipioId"
           label="Município *"
-          :items="municipios"
-          disabled
+          :items="municipios.items"
+          @update:search-input="searchMunicipios"
+          item-text="nome"
+          item-value="id"
+          :loading="municipios.loading"
+          no-data-text="Município não encontrado"
+          @input="updateMunicipioId"
+          v-model="municipioSelected"
+          return-object
         />
       </v-col>
     </v-row>
@@ -76,11 +87,10 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
-import { required, minLength } from '@/validations/CommonValidations';
+import { required, minLength, requiredObjectId } from '@/validations/CommonValidations';
 import Pessoa from '@/entities/Pessoa';
 import BairroService from '@/services/BairroService';
-
-const MUNICIPIOS = ['Maringá'];
+import MunicipioService from '@/services/MunicipioService';
 
 export default {
   directives: { mask },
@@ -91,7 +101,14 @@ export default {
     },
   },
   data: () => ({
-    municipios: MUNICIPIOS,
+    searchMunicipio: '',
+    municipioSelected: null,
+    searchBairro: '',
+    bairroSelected: null,
+    municipios: {
+      items: [],
+      loading: true,
+    },
     bairros: {
       items: [],
       loading: true,
@@ -100,7 +117,8 @@ export default {
       cep: [minLength(8)],
       endereco: [required],
       numero: [required],
-      bairroId: [required],
+      bairroId: [requiredObjectId],
+      municipioId: [requiredObjectId],
     },
   }),
   methods: {
@@ -113,21 +131,45 @@ export default {
     updateNumero(numero) {
       this.$emit('update:numero', numero);
     },
-    updateBairroId(bairroId) {
-      this.$emit('update:bairroId', bairroId);
+    updateBairroId(bairro) {
+      this.searchBairro = bairro.nome;
+      this.$emit('update:bairroId', bairro.id);
     },
-    findBairros() {
+    updateMunicipioId(municipio) {
+      this.searchMunicipio = municipio.nome;
+      this.$emit('update:municipioId', municipio.id);
+      this.updateBairroId(null);
+    },
+    findBairros(searchBairro = '') {
       this.bairros.loading = true;
-      BairroService.findAll().then(({ data }) => {
-        this.bairros = {
-          items: data,
-          loading: false,
-        };
-      });
+      BairroService.findAllPorMunicipio(this.suspeito.municipioId, searchBairro)
+        .then(({ data }) => {
+          this.bairros.items = data;
+        })
+        .finally(() => { this.bairros.loading = false; });
+    },
+    searchBairros(search = '') {
+      if (search === this.searchBairro) return;
+      this.searchBairro = search;
+      this.findBairros(search);
+    },
+    findMunicipios(searchMunicipio = '') {
+      this.municipios.loading = true;
+      MunicipioService.findAll(searchMunicipio)
+        .then(({ data }) => {
+          this.municipios.items = data;
+        })
+        .finally(() => { this.municipios.loading = false; });
+    },
+    searchMunicipios(search = '') {
+      if (search === this.searchMunicipio) return;
+      this.searchMunicipio = search;
+      this.findMunicipios(search);
     },
   },
   created() {
-    this.findBairros();
+    this.findBairros('');
+    this.findMunicipios('');
   },
 };
 </script>

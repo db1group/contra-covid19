@@ -6,7 +6,7 @@
     <v-container fluid>
       <v-form ref="form">
         <v-row align="center">
-          <v-col cols="8">
+          <v-col>
             <v-text-field
               :value="evolucao.dataHoraAtualizacao"
               label="Data e hora da notificação *"
@@ -16,6 +16,7 @@
               @input="updateDataHoraAtualizacao"
               required
               append-icon="mdi-calendar-blank"
+              autofocus
             />
           </v-col>
         </v-row>
@@ -39,12 +40,12 @@
             <v-autocomplete
               :value="evolucao.situacao"
               :rules="rules.situacao"
-              label="Situação do paciente *"
+              label="Condição atual do paciente *"
               :items="situacoes.items"
               item-text="value"
               item-value="key"
               :loading="situacoes.loading"
-              no-data-text="Situação do paciente não encontrada"
+              no-data-text="Condição atual do paciente não encontrada"
               @input="updateSituacao"
             />
           </v-col>
@@ -52,7 +53,7 @@
         <v-card-actions>
           <v-row align="center" justify="end">
             <v-col cols="auto">
-              <v-btn color="primary" rounded @click="cadastrarEvolucao">ATUALIZAR NOTIFICACÃO</v-btn>
+              <v-btn color="primary" rounded @click="cadastrarEvolucao">Incluir</v-btn>
             </v-col>
           </v-row>
         </v-card-actions>
