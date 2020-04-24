@@ -22,7 +22,7 @@ export default {
     const splitedDate = splitedDateTime[0].split('/');
     const splitedTime = splitedDateTime[1].split(':');
 
-    const inputedDateTime = new Date(splitedDate[2], splitedDate[1], splitedDate[0],
+    const inputedDateTime = new Date(splitedDate[2], (splitedDate[1] - 1), splitedDate[0],
       splitedTime[0], splitedTime[1], 0);
 
     return inputedDateTime;
@@ -51,7 +51,7 @@ export default {
       maximumDate = new Date();
     }
 
-    return (inputedInformedDate < maximumDate);
+    return (inputedInformedDate <= maximumDate);
   },
   isGreaterThanMinimumDate(stringInformedDate, stringMinimumDate) {
     const splitedInformedValue = stringInformedDate.split('/');
@@ -69,13 +69,13 @@ export default {
       minimumDate = new Date();
     }
 
-    return (inputedInformedDate > minimumDate);
+    return (inputedInformedDate >= minimumDate);
   },
   isLessThanMaximumDateWithMinutes(stringInformedDate, stringMaximumDate) {
     const splitedDateTime = stringInformedDate.split(' ');
     const splitedDateValue = splitedDateTime[0].split('/');
     const splitedTimeValue = splitedDateTime[1].split(':');
-    const inputedInformedDate = new Date(splitedDateValue[2], splitedDateValue[1], splitedDateValue[0],
+    const inputedInformedDate = new Date(splitedDateValue[2], (splitedDateValue[1] - 1), splitedDateValue[0],
       splitedTimeValue[0], splitedTimeValue[1], 0);
 
     let maximumDate;
@@ -83,19 +83,19 @@ export default {
       const splitedMaximumDateTime = stringMaximumDate.split(' ');
       const splitedMaximumDateValue = splitedMaximumDateTime[0].split('/');
       const splitedMaximumTimeValue = splitedMaximumDateTime[1].split(':');
-      maximumDate = new Date(splitedMaximumDateValue[2], splitedMaximumDateValue[1], splitedMaximumDateValue[0],
+      maximumDate = new Date(splitedMaximumDateValue[2], (splitedMaximumDateValue[1] - 1), splitedMaximumDateValue[0],
         splitedMaximumTimeValue[0], splitedMaximumTimeValue[1], 0);
     } else {
       maximumDate = new Date();
     }
 
-    return (inputedInformedDate < maximumDate);
+    return (inputedInformedDate <= maximumDate);
   },
   isGreaterThanMinimumDateWithMinutes(stringInformedDate, stringMinimumDate) {
     const splitedDateTime = stringInformedDate.split(' ');
     const splitedDateValue = splitedDateTime[0].split('/');
     const splitedTimeValue = splitedDateTime[1].split(':');
-    const inputedInformedDate = new Date(splitedDateValue[2], splitedDateValue[1], splitedDateValue[0],
+    const inputedInformedDate = new Date(splitedDateValue[2], (splitedDateValue[1] - 1), splitedDateValue[0],
       splitedTimeValue[0], splitedTimeValue[1], 0);
 
     let minimumDate;
@@ -103,12 +103,12 @@ export default {
       const splitedMinimumDateTime = stringMinimumDate.split(' ');
       const splitedMinimumDateValue = splitedMinimumDateTime[0].split('/');
       const splitedMinimumTimeValue = splitedMinimumDateTime[1].split(':');
-      minimumDate = new Date(splitedMinimumDateValue[2], splitedMinimumDateValue[1], splitedMinimumDateValue[0],
+      minimumDate = new Date(splitedMinimumDateValue[2], (splitedMinimumDateValue[1] - 1), splitedMinimumDateValue[0],
         splitedMinimumTimeValue[0], splitedMinimumTimeValue[1], 0);
     } else {
       minimumDate = new Date();
     }
 
-    return (inputedInformedDate > minimumDate);
+    return (inputedInformedDate >= minimumDate);
   },
 };

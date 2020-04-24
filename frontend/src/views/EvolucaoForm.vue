@@ -75,8 +75,8 @@ export default {
     obterDataMaximaPermitida(evolucao) {
       if (evolucao.items && evolucao.items.length > 0) {
         const dataHoraDasAtualizacoes = evolucao.items
-          .map((x) => DateService.formatStringTypeToDateType(x.dataHoraAtualizacao));
-        const dataMaxima = new Date(Math.max.apply(null, dataHoraDasAtualizacoes));
+          .map((x) => DateService.formatStringTypeToDateTypeWithMinutes(x.dataHoraAtualizacao));
+        const dataMaxima = new Date(Math.max.apply(null, dataHoraDasAtualizacoes)).toString();
         this.dataMaximaPermitida = DateService.formatDateTypeToStringTypeWithMinutes(dataMaxima);
       }
     },
