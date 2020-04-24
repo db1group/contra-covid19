@@ -113,6 +113,7 @@ export default {
       this.evolucao.situacao = situacao;
     },
     obterMensagemDeSucesso() {
+      console.log(this.evolucao);
       if (situacoesQueNaoEncerramFichaList.find((i) => i === this.evolucao.situacao)) {
         return 'Evolução cadastrada com sucesso.';
       }
@@ -123,11 +124,11 @@ export default {
         const requestEvolucao = this.evolucao.toRequest();
         requestEvolucao.notificacaoId = this.notificacaoId;
         EvolucaoService.save(requestEvolucao).then(() => {
+          const msg = this.obterMensagemDeSucesso();
           this.$refs.form.reset();
-          this.evolucao = new NotificacaoEvolucao();
           this.$router.push({
             name: 'notificacao-cons',
-            params: { msg: this.obterMensagemDeSucesso() },
+            params: { msg },
           });
         }).catch((error) => {
           const { data } = error.response;
