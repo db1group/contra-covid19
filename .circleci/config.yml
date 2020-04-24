@@ -38,6 +38,7 @@ jobs:
           task-definition: notificasaude-qa-backend
           awsvpc: false
           launch-type: EC2
+          group: service:notificasaude-qa-backend
   deploy-backend-prod-aws:
     executor: notificasaude-executor
     steps:
@@ -52,6 +53,7 @@ jobs:
           task-definition: notificasaude-prod-backend
           awsvpc: false
           launch-type: EC2
+          group: service:notificasaude-prod-backend
 
   build-frontend:
     executor: notificasaude-executor
@@ -86,6 +88,7 @@ jobs:
           task-definition: notificasaude-qa-frontend
           awsvpc: false
           launch-type: EC2
+          group: service:notificasaude-qa-frontend
   deploy-frontend-prod-aws:
     executor: notificasaude-executor
     steps:
@@ -100,6 +103,7 @@ jobs:
           task-definition: notificasaude-prod-frontend
           awsvpc: false
           launch-type: EC2
+          group: service:notificasaude-prod-frontend
 
   deploy-keycloak-qa-aws:
     executor: notificasaude-executor
@@ -116,6 +120,7 @@ jobs:
           task-definition: notificasaude-qa-keycloak
           awsvpc: false
           launch-type: EC2
+          group: service:notificasaude-qa-keycloak
   deploy-keycloak-prod-aws:
     executor: notificasaude-executor
     steps:
@@ -130,6 +135,7 @@ jobs:
           task-definition: notificasaude-prod-keycloak
           awsvpc: false
           launch-type: EC2
+          group: service:notificasaude-prod-keycloak
 
 orbs:
   aws-cli: circleci/aws-cli@1.0.0
