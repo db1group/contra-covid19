@@ -111,13 +111,14 @@ jobs:
       - checkout
       - aws-cli/setup:
           profile-name: default
-      - run: $(aws ecr get-login --registry-ids 127682629527 --region us-east-1 --no-include-email)
-      - run: cd keycloak && docker build -t notificasaude/keycloak:latest .
-      - run: docker tag notificasaude/keycloak:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
-      - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
+      #- run: $(aws ecr get-login --registry-ids 127682629527 --region us-east-1 --no-include-email)
+      #- run: cd keycloak && docker build -t notificasaude/keycloak:latest .
+      #- run: docker tag notificasaude/keycloak:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
+      #- run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
       - aws-ecs/run-task:
           cluster: notificasaude-qa
           task-definition: notificasaude-qa-keycloak
+          awsvpc: false
           launch-type: EC2
           started-by: 'CircleCI << pipeline.number >>'
           group: service:notificasaude-qa-keycloak
