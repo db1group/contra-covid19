@@ -56,10 +56,15 @@ module.exports = (sequelize, DataTypes) => {
     gestante: DataTypes.ENUM('SIM', 'NAO', 'NAO_APLICADO'),
     racaCor: DataTypes.ENUM('BRANCA', 'PRETA', 'AMARELA', 'PARDA', 'INDIGENA', 'IGNORADO'),
     complemento: DataTypes.STRING(150),
+    ocupacaoId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
   });
   Pessoa.associate = (models) => {
     Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });
     Pessoa.belongsTo(models.Municipio, { foreignKey: 'municipioId' });
+    Pessoa.belongsTo(models.Ocupacao, { foreignKey: 'ocupacaoId' });
   };
   Pessoa.beforeCreate(async (pessoa) => {
     normalizarTextoPessoa(pessoa);
