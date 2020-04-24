@@ -17,3 +17,20 @@ exports.consultaPorNome = async (req, res) => {
 
   return res.json({ data: bairros });
 };
+
+exports.consultarNomeEMunicipio = async (req, res) => {
+  const { municipioId } = req.params;
+  const { nome } = req.query;
+  const bairros = await models.Bairro.findAll({
+    where: [
+      { municipioId },
+      {
+        nome: {
+          [Op.like]: `%${nome}%`,
+        },
+      },
+    ],
+  });
+
+  return res.json({ data: bairros });
+};

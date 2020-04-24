@@ -69,12 +69,22 @@ const consolidarSuspeito = async (suspeito) => {
 const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
   const suspeitoConsolidado = await consolidarSuspeito(suspeito);
   const { municipioId } = suspeito;
+  const { unidadeSaudeId } = notificacao;
+
+  const unidadeDeSaude = await models.UnidadeSaude.findOne(
+    {
+      where: { id: unidadeSaudeId },
+    },
+  );
 
   return {
     ...notificacao,
     suspeito: {
       municipioId,
       ...suspeitoConsolidado,
+    },
+    unidadeDeSaude: {
+      ...unidadeDeSaude.dataValues,
     },
   };
 };
