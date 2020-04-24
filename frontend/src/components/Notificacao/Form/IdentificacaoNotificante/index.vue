@@ -106,10 +106,6 @@ export default {
       this.searchProfissao = search;
       this.findProfissoes(search);
     },
-<<<<<<< HEAD
-
-=======
->>>>>>> faff7bc5b0edd1480941ac687c1cc96d222b58e7
     findUnidadesDeSaude(searchUnidade = '') {
       if (this.unidadesSaude.loading) return;
       this.unidadesSaude.loading = true;
