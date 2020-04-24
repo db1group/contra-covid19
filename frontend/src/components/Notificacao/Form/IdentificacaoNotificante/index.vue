@@ -122,11 +122,7 @@ export default {
     },
   },
   created() {
-<<<<<<< HEAD
-    this.findProfissoes('');
-=======
     this.findProfissoes();
->>>>>>> faff7bc5b0edd1480941ac687c1cc96d222b58e7
     this.findUnidadesDeSaude('');
   },
 };
