@@ -15,6 +15,7 @@
       no-data-text="Não há notificações até o momento."
       no-results-text="Não há notificações com estes dados."
       :footer-props="{
+        pageText: '{0}-{1} de {2}',
         itemsPerPageText: 'Linhas por página',
         itemsPerPageOptions: [10, 30, 50, 100],
       }"
@@ -32,12 +33,9 @@
             hide-details
           ></v-text-field>
         </v-card-title>
-        <v-card-title>
-          Ações em lote:
-          <v-btn text small color="primary" @click="excluirLote()">EXCLUIR</v-btn>
-        </v-card-title>
       </template>
       <template v-slot:item.actions="{ item }">
+        <v-btn text small color="#B8860B" :to="{ name: 'notificacao-form' }">VISUALIZAR</v-btn>
         <v-btn
           v-if="isSecretariaSaude"
           text
@@ -71,10 +69,10 @@ export default {
     filterCons: null,
     headers: [
       { text: 'Paciente', value: 'nome' },
-      { text: 'Documento', value: 'documento' },
-      { text: 'Notificação', value: 'dataNotificacao' },
-      { text: 'Telefone', value: 'telefone' },
-      { sortable: false, value: 'actions', width: '210px' },
+      { text: 'Data Notificação', value: 'dataNotificacao' },
+      { text: 'Unidade Notificadora', value: 'unidade' },
+      { text: 'Situação', value: 'status' },
+      { sortable: false, value: 'actions', width: '315px' },
     ],
   }),
   created() {
@@ -92,7 +90,7 @@ export default {
           return '#FD3A5C';
         case 'Óbito':
           return 'black';
-        case 'Leito comun':
+        case 'Leito comum':
           return '#FFB300';
         case 'Isolamento domiciliar':
           return '#64FFDA';
@@ -109,10 +107,14 @@ export default {
           return 'black';
       }
     },
-    consultarNotificacoes({ page, itemsPerPage } = this.options) {
+    consultarNotificacoes({
+      page, itemsPerPage, sortBy = 'createdAt', sortDesc = 'true',
+    } = this.options) {
       this.loading = true;
       const search = this.filter;
-      NotificacaoService.findAll({ page, itemsPerPage, search })
+      NotificacaoService.findAll({
+        page, itemsPerPage, sortBy, sortDesc, search,
+      })
         .then(({ count, data }) => {
           this.totalNotif = count;
           this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());
@@ -137,24 +139,6 @@ export default {
         .catch((error) => {
           const { data } = error.response;
           this.$emit('erro:deleteNotificacao', data.error);
-        });
-    },
-    excluirLote() {
-      const ids = this.selected.map((n) => n.id);
-      this.selected = [];
-      NotificacaoService.deleteLote(ids)
-        .then(() => {
-          const left = this.notificacoes.length - ids.length;
-          const page = left <= 0 ? 1 : this.options.page;
-          this.options = { ...this.options, page };
-          this.$emit('delete:notificacaoLote', 'Notificação em lote excluída com sucesso.');
-        })
-        .then(() => {
-          this.consultarNotificacoes();
-        })
-        .catch((error) => {
-          const { data } = error.response;
-          this.$emit('erro:deleteNotificacaoLote', data.error);
         });
     },
     filterNotificacoes() {

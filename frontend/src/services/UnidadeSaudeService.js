@@ -1,7 +1,7 @@
 import http from './Http';
 
 export default {
-  findAll() {
-    return http.get('/unidades-saude?nome=').then(({ data }) => data);
+  findAll(nome = '') {
+    return http.get(`/unidades-saude?nome=${nome}`).then(({ data }) => data);
   },
 };

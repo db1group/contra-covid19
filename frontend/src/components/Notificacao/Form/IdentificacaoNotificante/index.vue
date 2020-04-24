@@ -9,11 +9,14 @@
             :rules="rules.unidadeSaudeId"
             label="Unidade notificante *"
             :items="unidadesSaude.items"
+            @update:search-input="searchUnidadeSaude"
             item-text="nome"
             item-value="id"
             :loading="unidadesSaude.loading"
             no-data-text="Unidade de saúde não encontrada"
             @input="updateUnidadeSaude"
+            v-model="unidadeSelected"
+            return-object
           />
         </v-col>
       </v-row>
@@ -44,7 +47,7 @@
   </div>
 </template>
 <script>
-import { required } from '@/validations/CommonValidations';
+import { required, requiredObjectId } from '@/validations/CommonValidations';
 import Notificacao from '@/entities/Notificacao';
 import ProfissaoService from '@/services/ProfissaoService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
@@ -59,21 +62,24 @@ export default {
   data: () => ({
     unidadesSaude: {
       items: [],
-      loading: true,
+      loading: false,
     },
+    searchUnidade: '',
+    unidadeSelected: null,
     profissoes: {
       items: [],
       loading: true,
     },
     rules: {
-      unidadeSaudeId: [required],
+      unidadeSaudeId: [requiredObjectId],
       profissaoId: [required],
       nomeNotificador: [required],
     },
   }),
   methods: {
-    updateUnidadeSaude(unidadeSaudeId) {
-      this.$emit('update:unidadeSaudeId', unidadeSaudeId);
+    updateUnidadeSaude(unidadeSaude) {
+      this.searchUnidade = unidadeSaude.nome;
+      this.$emit('update:unidadeSaudeId', unidadeSaude.id);
     },
     updateNomeNotificador(nomeNotificador) {
       this.$emit('update:nomeNotificador', nomeNotificador);
@@ -90,19 +96,24 @@ export default {
         };
       });
     },
-    findUnidadesDeSaude() {
+    findUnidadesDeSaude(searchUnidade = '') {
+      if (this.unidadesSaude.loading) return;
       this.unidadesSaude.loading = true;
-      UnidadeSaudeService.findAll().then(({ data }) => {
-        this.unidadesSaude = {
-          items: data,
-          loading: false,
-        };
-      });
+      UnidadeSaudeService.findAll(searchUnidade)
+        .then(({ data }) => {
+          this.unidadesSaude.items = data;
+        })
+        .finally(() => { this.unidadesSaude.loading = false; });
+    },
+    searchUnidadeSaude(search = '') {
+      if (search === this.searchUnidade) return;
+      this.searchUnidade = search;
+      this.findUnidadesDeSaude(search);
     },
   },
   created() {
     this.findProfissoes();
-    this.findUnidadesDeSaude();
+    this.findUnidadesDeSaude('');
   },
 };
 </script>

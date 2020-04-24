@@ -7,6 +7,7 @@
     >
       <v-text-field
         :value="suspeito.telefoneResidencial"
+        type="tel"
         label="Telefone residencial"
         v-mask="'(##) ####-####'"
         :rules="rules.telefoneResidencial"
@@ -20,6 +21,7 @@
     >
       <v-text-field
         :value="suspeito.telefoneCelular"
+        type="tel"
         label="Telefone celular"
         v-mask="'(##) #####-####'"
         :rules="rules.telefoneCelular"
@@ -33,8 +35,9 @@
     >
       <v-text-field
         :value="suspeito.telefoneContato"
+        type="tel"
         label="Telefone contato"
-        v-mask="'(##) #########'"
+        v-mask="['(##) ####-####', '(##) #####-####']"
         :rules="rules.telefoneContato"
         @input="updateTelefoneContato"
       />

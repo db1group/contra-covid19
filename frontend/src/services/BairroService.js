@@ -1,5 +1,5 @@
-import http from './Http';
 import Configuration from '@/configuration';
+import http from './Http';
 
 export default {
   findAll() {
