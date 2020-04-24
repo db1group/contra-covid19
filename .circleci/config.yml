@@ -125,10 +125,11 @@ jobs:
       - run: docker pull 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
       - run: docker tag 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:latest
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:latest
-      - aws-ecs/deploy-service-update:
-          family: 'notificasaude-prod-keycloak'
-          cluster-name: 'notificasaude-prod'
-          container-image-name-updates: 'container=notificasaude-prod-keycloak,tag=latest'
+      - aws-ecs/run-task:
+          cluster: notificasaude-prod
+          task-definition: notificasaude-prod-keycloak
+          awsvpc: false
+          launch-type: EC2
 
 orbs:
   aws-cli: circleci/aws-cli@1.0.0
