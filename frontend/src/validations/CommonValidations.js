@@ -8,6 +8,13 @@ export const required = (value, message = 'O campo é obrigatório.') => (
   || (value && typeof value === 'number' && value > 0)
   || (value && typeof value === 'boolean')
 ) || message;
+
+export const requiredObjectId = (value, message = 'O campo é obrigatório.') => (
+  value
+  && typeof value === 'object'
+  && value.id
+) || message;
+
 export const minLength = (length) => (value) => !value
   || value.length >= length
   || `O campo precisa de pelo menos ${length} caracteres.`;

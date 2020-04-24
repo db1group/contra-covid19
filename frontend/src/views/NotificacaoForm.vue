@@ -1,7 +1,11 @@
 <template>
   <section style="margin-top: 75px;">
     <base-page>
+
       <h3 class="primary--text my-7 display-1">
+        <v-btn large icon color="primary" :to="{ name: 'notificacao-cons' }">
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
         Cadastro de notificação
       </h3>
       <v-form ref="form">
