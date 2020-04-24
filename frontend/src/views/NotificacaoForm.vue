@@ -6,7 +6,7 @@
         <v-btn large icon color="primary" :to="{ name: 'notificacao-cons' }">
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
-        Cadastro de notificação
+        {{title}}
       </h3>
       <v-form ref="form">
         <identificacao-notificante
@@ -204,6 +204,12 @@ import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
 
+const StateForm = {
+  NEW: 'NEW',
+  VIEW: 'VIEW',
+  EDIT: 'EDIT',
+};
+
 export default {
   components: {
     BasePage,
@@ -228,7 +234,17 @@ export default {
     showAlert: false,
     showSuccess: false,
     errorMessage: '',
+    stateForm: StateForm.NEW,
   }),
+  computed: {
+    title() {
+      switch (this.stateForm) {
+        case StateForm.VIEW: return 'Visualizar notificação';
+        case StateForm.EDIT: return 'Editar notificação';
+        default: return 'Cadastrar notificação';
+      }
+    },
+  },
   methods: {
     updateUnidadeSaude(unidadeSaudeId) {
       this.notificacao.unidadeSaudeId = unidadeSaudeId;
@@ -297,6 +313,34 @@ export default {
         this.showAlert = true;
       }
     },
+    visualizarNotificacao(notificacaoId) {
+      this.stateForm = StateForm.VIEW;
+      this.buscarNotiticacao(notificacaoId);
+    },
+    editarNotificacao(notificacaoId) {
+      this.stateForm = StateForm.EDIT;
+      this.buscarNotiticacao(notificacaoId);
+    },
+    buscarNotiticacao(notificacaoId) {
+      NotificacaoService.findById(notificacaoId)
+        .then(({ data }) => {
+          this.notificacao = new Notificacao(data);
+        })
+        .catch(({ response }) => {
+          this.showError = true;
+          this.errorMessage = response.data.error;
+        });
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    const { id, edit } = to.params;
+    let enter = true;
+    if (edit) {
+      enter = (vm) => vm.editarNotificacao(id);
+    } else if (id) {
+      enter = (vm) => vm.visualizarNotificacao(id);
+    }
+    next(enter);
   },
 };
 </script>

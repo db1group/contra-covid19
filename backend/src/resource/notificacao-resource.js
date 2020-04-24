@@ -97,14 +97,19 @@ const consultarNotificacaoPorId = async (id) => models.Notificacao.findOne({
   include: [
     {
       model: models.Pessoa,
-      include: {
-        model: models.Bairro,
-        include: {
-          model: models.Municipio,
-        },
-      },
+      include: [
+        { model: models.Bairro },
+        { model: models.Municipio },
+        { model: models.Ocupacao },
+      ],
     },
     { model: models.NotificacaoCovid19 },
+    { model: models.Bairro },
+    { model: models.Municipio },
+    { model: models.UnidadeSaude },
+    { model: models.User },
+    { model: models.ProfissionalSaude },
+    { model: models.Profissao },
   ],
 });
 
