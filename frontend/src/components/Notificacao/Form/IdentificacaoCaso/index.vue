@@ -1,8 +1,6 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text font-weight-medium title">
-      3. IDENTIFICAÇÃO DO PACIENTE
-    </h4>
+    <h4 class="primary--text font-weight-medium title">3. IDENTIFICAÇÃO DO PACIENTE</h4>
     <dados-pessoais
       :data-hora-notificacao="dataHoraNotificacao"
       :suspeito="suspeito"
@@ -34,6 +32,7 @@
     <ocupacao
       :suspeito="suspeito"
       @update:ocupacao="updateOcupacao"
+      @update:updateDescricaoOcupacao="updateDescricaoOcupacao"
     />
   </div>
 </template>
@@ -109,6 +108,9 @@ export default {
     },
     updateTelefoneContato(telefoneContato) {
       this.$emit('update:telefoneContato', telefoneContato);
+    },
+    updateDescricaoOcupacao(descricaoOcupacao) {
+      this.$emit('update:descricaoOcupacao', descricaoOcupacao);
     },
     updateOcupacao(ocupacao) {
       this.$emit('update:ocupacao', ocupacao);
