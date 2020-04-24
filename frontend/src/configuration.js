@@ -5,7 +5,6 @@ dotenv.config();
 export default class Configuration {
   static get CONFIG() {
     return {
-      VUE_APP_BASE_URL: '$VUE_APP_BASE_URL',
       VUE_APP_BACKEND_URL: '$VUE_APP_BACKEND_URL',
       VUE_APP_KEYCLOAK_URL: '$VUE_APP_KEYCLOAK_URL',
       VUE_APP_KEYCLOAK_REALM: '$VUE_APP_KEYCLOAK_REALM',
