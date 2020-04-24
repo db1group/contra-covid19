@@ -115,13 +115,19 @@ jobs:
       - run: cd keycloak && docker build -t notificasaude/keycloak:latest .
       - run: docker tag notificasaude/keycloak:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
-      - aws-ecs/run-task:
-          cluster: notificasaude-qa
-          task-definition: notificasaude-qa-keycloak
-          awsvpc: false
-          launch-type: EC2
-          started-by: 'CircleCI << pipeline.number >>'
-          group: service:notificasaude-qa-keycloak
+      # - aws-ecs/run-task:
+          # cluster: notificasaude-qa
+          # task-definition: notificasaude-qa-keycloak
+          # awsvpc: false
+          # launch-type: EC2
+          # started-by: 'CircleCI << pipeline.number >>'
+          # group: service:notificasaude-qa-keycloak
+      - aws-ecs/update-service:
+          family: notificasaude-qa-keycloak
+          cluster-name: 'notificasaude-qa'
+          container-image-name-updates: 'container=notificasaude/keycloak,tag=qa'
+          force-new-deployment: true
+          verify-revision-is-deployed: true
   deploy-keycloak-prod-aws:
     executor: notificasaude-executor
     steps:
