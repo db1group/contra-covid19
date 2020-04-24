@@ -6,8 +6,20 @@ const { Op } = Sequelize;
 
 exports.consultarBairrosDoMunicipio = async (req, res) => {
   const { municipioId } = req.params;
+  const { nome } = req.query;
   const bairros = await models.Bairro.findAll({
-    where: { municipioId },
+    where: {
+      [Op.and]: [
+        { municipioId },
+        {
+          nome: {
+            [Op.like]: `%${nome}%`,
+          },
+        },
+      ],
+    },
+    order: [['nome', 'ASC']],
+    limit: 10,
   });
 
   return res.json({ data: bairros });
