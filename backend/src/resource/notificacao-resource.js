@@ -69,12 +69,22 @@ const consolidarSuspeito = async (suspeito) => {
 const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
   const suspeitoConsolidado = await consolidarSuspeito(suspeito);
   const { municipioId } = suspeito;
+  const { unidadeSaudeId } = notificacao;
+
+  const unidadeDeSaude = await models.UnidadeSaude.findOne(
+    {
+      where: { id: unidadeSaudeId },
+    },
+  );
 
   return {
     ...notificacao,
     suspeito: {
       municipioId,
       ...suspeitoConsolidado,
+    },
+    unidadeDeSaude: {
+      ...unidadeDeSaude.dataValues,
     },
   };
 };
@@ -239,16 +249,19 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
   const optionsConsulta = {
     where: {
       status: {
-        [Op.eq]: 'ABERTA',
+        [Op.ne]: 'EXCLUIDA',
       },
     },
-    attributes: ['id'],
+    attributes: ['id', 'status'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
     }, {
       model: models.NotificacaoCovid19,
       attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao'],
+    }, {
+      model: models.UnidadeSaude,
+      attributes: ['nome'],
     }],
     order: [[Sequelize.col(ordernacao), ordem]],
     limit,

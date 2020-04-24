@@ -199,10 +199,20 @@ export default {
       }
       return exactLength(11)(value);
     },
+    validateFutureDate(value) {
+      const splitedValue = value.split('/');
+      const now = new Date();
+      const inputedDate = new Date(`${splitedValue[2]}-${splitedValue[1]}-${splitedValue[0]}`);
+      if (inputedDate > now) {
+        return required('', 'Informe uma data igual ou anterior ao dia de hoje.');
+      }
+      return true;
+    },
   },
   created() {
     this.rules.gestante.push(this.requiredIfSexoForFeminino);
     this.rules.numeroDocumento.push(this.maxLengthIfCPF);
+    this.rules.dataDeNascimento.push(this.validateFutureDate);
   },
 };
 </script>

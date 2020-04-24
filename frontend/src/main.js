@@ -6,6 +6,8 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false;
 
+console.log(`Valor da env: ${process.env.VUE_APP_ANY_VARIABLE}`);
+
 Vue.use(VueKeyCloak, {
   config: {
     url: `${process.env.VUE_APP_KEYCLOAK_URL}`,

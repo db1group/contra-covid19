@@ -33,12 +33,9 @@
             hide-details
           ></v-text-field>
         </v-card-title>
-        <v-card-title>
-          Ações em lote:
-          <v-btn text small color="primary" @click="excluirLote()">EXCLUIR</v-btn>
-        </v-card-title>
       </template>
       <template v-slot:item.actions="{ item }">
+        <v-btn text small color="#B8860B" :to="{ name: 'notificacao-form' }">VISUALIZAR</v-btn>
         <v-btn
           v-if="isSecretariaSaude"
           text
@@ -72,10 +69,10 @@ export default {
     filterCons: null,
     headers: [
       { text: 'Paciente', value: 'nome' },
-      { text: 'Documento', value: 'documento' },
-      { text: 'Notificação', value: 'dataNotificacao' },
-      { text: 'Telefone', value: 'telefone' },
-      { sortable: false, value: 'actions', width: '210px' },
+      { text: 'Data Notificação', value: 'dataNotificacao' },
+      { text: 'Unidade Notificadora', value: 'unidade' },
+      { text: 'Situação', value: 'status' },
+      { sortable: false, value: 'actions', width: '315px' },
     ],
   }),
   created() {
@@ -142,24 +139,6 @@ export default {
         .catch((error) => {
           const { data } = error.response;
           this.$emit('erro:deleteNotificacao', data.error);
-        });
-    },
-    excluirLote() {
-      const ids = this.selected.map((n) => n.id);
-      this.selected = [];
-      NotificacaoService.deleteLote(ids)
-        .then(() => {
-          const left = this.notificacoes.length - ids.length;
-          const page = left <= 0 ? 1 : this.options.page;
-          this.options = { ...this.options, page };
-          this.$emit('delete:notificacaoLote', 'Notificação em lote excluída com sucesso.');
-        })
-        .then(() => {
-          this.consultarNotificacoes();
-        })
-        .catch((error) => {
-          const { data } = error.response;
-          this.$emit('erro:deleteNotificacaoLote', data.error);
         });
     },
     filterNotificacoes() {
