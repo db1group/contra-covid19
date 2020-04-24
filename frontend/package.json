@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "chmod +x ./env.sh && ./env.sh && cp env-config.js ./public/ vue-cli-service serve --open",
-    "build": "sh -ac '. ./.env;vue-cli-service build'",
+    "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
@@ -12,6 +12,7 @@
     "@dsb-norge/vue-keycloak-js": "^1.1.2",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "dotenv": "^8.2.0",
     "moment": "^2.24.0",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",

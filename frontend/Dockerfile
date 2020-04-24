@@ -4,9 +4,9 @@ WORKDIR /usr/share/nginx/html/
 
 COPY nginx/default.conf /etc/nginx/conf.d/
 COPY dist/ .
-COPY env.sh .
-COPY .env .
 
-RUN chmod +x env.sh
+COPY entrypoint.sh .
 
-CMD ["/bin/bash", "-c", "/usr/share/nginx/html/env.sh && nginx -g \"daemon off;\""]
+RUN chmod +x entrypoint.sh
+
+CMD ["/bin/bash", "-c", "/usr/share/nginx/html/entrypoint.sh && nginx -g \"daemon off;\""]
