@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default class Configuration {
-  static get CONFIG () {
+  static get CONFIG (){
     return {
       VUE_APP_BASE_URL: '$VUE_APP_BASE_URL',
       VUE_APP_BACKEND_URL: '$VUE_APP_BACKEND_URL',
@@ -11,10 +11,10 @@ export default class Configuration {
       VUE_APP_KEYCLOAK_REALM: '$VUE_APP_KEYCLOAK_REALM',
       VUE_APP_KEYCLOAK_CLIENT_ID: '$VUE_APP_KEYCLOAK_CLIENT_ID',
       VUE_APP_MUNICIPIO_ID: '$VUE_APP_MUNICIPIO_ID',
-    }
+    };
   }
 
-  static value (name) {
+  static value (name){
     if (!(name in this.CONFIG)) {
       console.log(`Configuration: There is no key named ${name}`);
       return;
@@ -33,9 +33,8 @@ export default class Configuration {
       if (envValue) {
         return envValue;
       }
-      console.log(`Configuration: Environment variable "${envName}" is not defined`);
-    } else {
-      return value;
+      console.log(`Configuration: Environment variable ${envName} is not defined`);
     }
+    return value;
   }
 }
