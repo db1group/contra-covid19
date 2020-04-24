@@ -22,6 +22,8 @@
       @update:endereco="updateEndereco"
       @update:numero="updateNumero"
       @update:bairroId="updateBairroId"
+      @update:complemento="updateComplemento"
+      @update:municipioId="updateMunicipioId"
     />
     <contato
       :suspeito="suspeito"
@@ -110,6 +112,13 @@ export default {
     },
     updateOcupacao(ocupacao) {
       this.$emit('update:ocupacao', ocupacao);
+    },
+    updateComplemento(complemento) {
+      this.$emit('update:complemento', complemento);
+    },
+    updateMunicipioId(municipioId) {
+      this.$emit('update:municipioId', municipioId);
+      this.$emit('update:bairroId', '');
     },
   },
 };

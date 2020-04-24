@@ -15,8 +15,6 @@
             :loading="unidadesSaude.loading"
             no-data-text="Unidade de saúde não encontrada"
             @input="updateUnidadeSaude"
-            v-model="unidadeSelected"
-            return-object
           />
         </v-col>
       </v-row>
@@ -41,8 +39,6 @@
             :loading="profissoes.loading"
             no-data-text="Profissão não encontrada"
             @input="updateProfissaoId"
-            v-model="profissaoSelected"
-            return-object
           />
         </v-col>
       </v-row>
@@ -50,7 +46,7 @@
   </div>
 </template>
 <script>
-import { required, requiredObjectId } from '@/validations/CommonValidations';
+import { required } from '@/validations/CommonValidations';
 import Notificacao from '@/entities/Notificacao';
 import ProfissaoService from '@/services/ProfissaoService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
@@ -76,22 +72,20 @@ export default {
     searchProfissao: '',
     profissaoSelected: null,
     rules: {
-      unidadeSaudeId: [requiredObjectId],
-      profissaoId: [requiredObjectId],
+      unidadeSaudeId: [required],
+      profissaoId: [required],
       nomeNotificador: [required],
     },
   }),
   methods: {
-    updateUnidadeSaude(unidadeSaude) {
-      this.searchUnidade = unidadeSaude.nome;
-      this.$emit('update:unidadeSaudeId', unidadeSaude.id);
+    updateUnidadeSaude(unidadeSaudeId) {
+      this.$emit('update:unidadeSaudeId', unidadeSaudeId);
     },
     updateNomeNotificador(nomeNotificador) {
       this.$emit('update:nomeNotificador', nomeNotificador);
     },
-    updateProfissaoId(profissao) {
-      this.searchProfissao = profissao.nome;
-      this.$emit('update:profissaoId', profissao.id);
+    updateProfissaoId(profissaoId) {
+      this.$emit('update:profissaoId', profissaoId);
     },
     findProfissoes(searchProfissao = '') {
       this.profissoes.loading = true;
