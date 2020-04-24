@@ -452,11 +452,20 @@ const encerrarNotificacao = async (evolucao, t) => {
   );
 };
 
+const validarDataEvolucaoSuperiorDataNotificacao = async ({ notificacaoId, dtEvolucao }) => {
+  const { NotificacaoCovid19 } = await consultarNotificacaoPorId(notificacaoId);
+  const dataHoraNotificacao = new Date(NotificacaoCovid19.dataHoraNotificacao);
+  const dataEvolucao = new Date(dtEvolucao);
+  if (!NotificacaoCovid19) throw new Error(`Não foi possível encontrar a notificação ${notificacaoId}`);
+  if (dataEvolucao < dataHoraNotificacao) throw new RegraNegocioErro('A data da evolução não pode ser menor que a data da notificação.');
+};
+
 exports.salvarEvolucao = async (req, res, next) => {
   try {
     const result = await models.sequelize.transaction(async (t) => {
       const evolucaoReq = req.body;
 
+      await validarDataEvolucaoSuperiorDataNotificacao(evolucaoReq);
       await validarNotificacaoFinalizada(evolucaoReq);
       await validarPossuiConfirmacao(evolucaoReq);
 
