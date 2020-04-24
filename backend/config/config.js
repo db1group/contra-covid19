@@ -2,7 +2,6 @@ module.exports = {
   development: {
     dialect: 'sqlite',
     storage: './src/db/databases/dev.sqlite',
-    seederStorage: 'sequelize',
   },
   qa: {
     host: process.env.DATABASE_URL,
