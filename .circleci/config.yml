@@ -125,7 +125,7 @@ jobs:
       - aws-ecs/update-service:
           family: notificasaude-qa-keycloak
           cluster-name: 'notificasaude-qa'
-          container-image-name-updates: 'container=notificasaude/keycloak,tag=qa'
+          container-image-name-updates: 'container=notificasaude-qa-keycloak,tag=qa'
           force-new-deployment: true
           verify-revision-is-deployed: true
   deploy-keycloak-prod-aws:
