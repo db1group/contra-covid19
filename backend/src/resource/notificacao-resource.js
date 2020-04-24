@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 const models = require('../models');
 const Mappers = require('../mapper');
-const { tratarErrorsRetornoAPI, RegraNegocio } = require('../lib/erros');
+const { RegraNegocioErro } = require('../lib/erros');
 
 
 const { Op } = Sequelize;
@@ -69,12 +69,22 @@ const consolidarSuspeito = async (suspeito) => {
 const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
   const suspeitoConsolidado = await consolidarSuspeito(suspeito);
   const { municipioId } = suspeito;
+  const { unidadeSaudeId } = notificacao;
+
+  const unidadeDeSaude = await models.UnidadeSaude.findOne(
+    {
+      where: { id: unidadeSaudeId },
+    },
+  );
 
   return {
     ...notificacao,
     suspeito: {
       municipioId,
       ...suspeitoConsolidado,
+    },
+    unidadeDeSaude: {
+      ...unidadeDeSaude.dataValues,
     },
   };
 };
@@ -167,14 +177,14 @@ const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
   );
 
   if (existeNotificacaoAbertaParaOPaciente) {
-    throw new RegraNegocio('Já existe uma notificação aberta para este paciente.');
+    throw new RegraNegocioErro('Já existe uma notificação aberta para este paciente.');
   }
 };
 
-exports.salvar = async (req, res) => {
-  try {
-    const notificacaoRequest = req.body;
 
+exports.salvar = async (req, res, next) => {
+  const notificacaoRequest = req.body;
+  try {
     await validarNotificacaoUnicaPorPaciente(notificacaoRequest);
 
     const notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);
@@ -196,44 +206,68 @@ exports.salvar = async (req, res) => {
         ...retorno,
       },
     });
-  } catch (err) {
-    return tratarErrorsRetornoAPI(res, err);
+  } catch (error) {
+    return next(error);
   }
 };
 
-exports.consultarPaginado = async (req, res) => {
-  const { page = 1 } = req.query;
-  const limit = 10;
-  const notificacoes = await consultarNotificaoesPaginado(page, limit);
+exports.consultarPaginado = async (req, res, next) => {
+  try {
+    const { page = 1 } = req.query;
+    const limit = 10;
+    const notificacoes = await consultarNotificaoesPaginado(page, limit);
 
-  const notificacoesResponse = [];
-  notificacoes.rows.map((notificacao) => notificacoesResponse.push(
-    Mappers.Notificacao.mapearParaResponse(
-      notificacao,
-      notificacao.NotificacaoCovid19,
-    ),
-  ));
+    const notificacoesResponse = [];
+    notificacoes.rows.map((notificacao) => notificacoesResponse.push(
+      Mappers.Notificacao.mapearParaResponse(
+        notificacao,
+        notificacao.NotificacaoCovid19,
+      ),
+    ));
 
-  return res.json({ count: notificacoes.count, data: notificacoesResponse });
+    return res.json({ count: notificacoes.count, data: notificacoesResponse });
+  } catch (err) {
+    return next(err);
+  }
 };
 
-const consultarNotificaoesWeb = async (page, limit, search = '') => {
+const obterOrdemConsultarNotificacao = async (sortBy) => {
+  const ordernacaoIndice = {
+    createdAt: 'Notificacao.createdAt',
+    nome: 'Pessoa.nome',
+    documento: 'Pessoa.numeroDocumento',
+    telefone: 'Pessoa.telefoneContato',
+    dataNotificacao: 'NotificacaoCovid19.dataHoraNotificacao',
+  };
+
+  if (!sortBy) {
+    return ordernacaoIndice.createdAt;
+  }
+  return ordernacaoIndice[sortBy];
+};
+
+const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '') => {
+  const ordernacao = await obterOrdemConsultarNotificacao(sortBy);
+  const ordem = sortDesc === 'true' ? 'DESC' : 'ASC';
   const offset = (page - 1) * limit;
   const optionsConsulta = {
     where: {
       status: {
-        [Op.eq]: 'ABERTA',
+        [Op.ne]: 'EXCLUIDA',
       },
     },
-    attributes: ['id'],
+    attributes: ['id', 'status'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
     }, {
       model: models.NotificacaoCovid19,
       attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao'],
+    }, {
+      model: models.UnidadeSaude,
+      attributes: ['nome'],
     }],
-    order: [['updatedAt', 'DESC']],
+    order: [[Sequelize.col(ordernacao), ordem]],
     limit,
     offset,
   };
@@ -267,62 +301,90 @@ const consultarNotificacoesWebVazia = {
   data: [],
 };
 
-exports.consultarNotificacoesWeb = async (req, res) => {
-  const { page = 1, itemsPerPage = 10, search = '' } = req.query;
-  const notificacoes = await consultarNotificaoesWeb(page, itemsPerPage, search);
-  if (!notificacoes) return res.json(consultarNotificacoesWebVazia);
-  const notificacaoConsulta = Mappers.Notificacao.mapearParaConsulta(notificacoes.rows);
-  return res.json({ count: notificacoes.count, data: notificacaoConsulta });
+exports.consultarNotificacoesWeb = async (req, res, next) => {
+  try {
+    const {
+      page = 1, itemsPerPage = 10, search = '', sortBy, sortDesc,
+    } = req.query;
+    const notificacoes = await consultarNotificaoesWeb(
+      page,
+      itemsPerPage,
+      sortBy,
+      sortDesc,
+      search,
+    );
+    if (!notificacoes) return res.json(consultarNotificacoesWebVazia);
+    const notificacaoConsulta = Mappers.Notificacao.mapearParaConsulta(notificacoes.rows);
+    return res.json({ count: notificacoes.count, data: notificacaoConsulta });
+  } catch (err) {
+    return next(err);
+  }
 };
 
-exports.consultarPorId = async (req, res) => {
-  const { id } = req.params;
-  const notificacaoModel = await consultarNotificacaoPorId(id);
+exports.consultarPorId = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const notificacaoModel = await consultarNotificacaoPorId(id);
 
-  if (!notificacaoModel) return res.status(204).json();
+    if (!notificacaoModel) return res.status(204).json();
 
-  const retorno = Mappers.Notificacao.mapearParaResponse(
-    notificacaoModel,
-    notificacaoModel.NotificacaoCovid19,
-  );
+    const retorno = Mappers.Notificacao.mapearParaResponse(
+      notificacaoModel,
+      notificacaoModel.NotificacaoCovid19,
+    );
 
-  return res.json({ data: retorno });
+    return res.json({ data: retorno });
+  } catch (err) {
+    return next(err);
+  }
 };
 
-exports.excluirLogicamenteNotificacao = async (req, res) => {
-  const { id } = req.params;
-  await models.Notificacao.update(
-    { status: 'EXCLUIDA' },
-    { where: { id } },
-  );
-  return res.status(204).json();
+exports.excluirLogicamenteNotificacao = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await models.Notificacao.update(
+      { status: 'EXCLUIDA' },
+      { where: { id } },
+    );
+    return res.status(204).json();
+  } catch (err) {
+    return next(err);
+  }
 };
 
-exports.excluirLoteLogicamenteNotificacao = async (req, res) => {
-  const ids = req.body;
-  await models.Notificacao.update(
-    { status: 'EXCLUIDA' },
-    { where: { id: { [Op.in]: ids } } },
-  );
-  return res.status(204).json();
+exports.excluirLoteLogicamenteNotificacao = async (req, res, next) => {
+  try {
+    const ids = req.body;
+    await models.Notificacao.update(
+      { status: 'EXCLUIDA' },
+      { where: { id: { [Op.in]: ids } } },
+    );
+    return res.status(204).json();
+  } catch (err) {
+    return next(err);
+  }
 };
 
-exports.consultarNotificacaoEvolucao = async (req, res) => {
-  const { id } = req.params;
-  const notificacaoEvolucao = await models.Notificacao.findOne({
-    where: { id },
-    attributes: ['status'],
-    include: [{
-      model: models.Pessoa,
-      attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
-    },
-    { model: models.NotificacaoEvolucao },
-    ],
-  });
-  if (!notificacaoEvolucao) res.status(404).json({ error: 'Notificação não encontrada.' });
-  if (notificacaoEvolucao.status !== 'ABERTA') res.status(400).json({ error: 'Notificação não está mais aberta.' });
+exports.consultarNotificacaoEvolucao = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const notificacaoEvolucao = await models.Notificacao.findOne({
+      where: { id },
+      attributes: ['status'],
+      include: [{
+        model: models.Pessoa,
+        attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
+      },
+      { model: models.NotificacaoEvolucao },
+      ],
+    });
+    if (!notificacaoEvolucao) res.status(404).json({ error: 'Notificação não encontrada.' });
+    if (notificacaoEvolucao.status !== 'ABERTA') res.status(400).json({ error: 'Notificação não está mais aberta.' });
 
-  return res.json({ data: notificacaoEvolucao });
+    return res.json({ data: notificacaoEvolucao });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 const validarNotificacaoFinalizada = async (evolucao) => {
@@ -335,18 +397,18 @@ const validarNotificacaoFinalizada = async (evolucao) => {
   });
 
   if (notificacaoFinalizada) {
-    throw new RegraNegocio(`Não é possível adicionar nova evolução pois a notificação está ${
+    throw new RegraNegocioErro(`Não é possível adicionar nova evolução pois a notificação está ${
       notificacaoFinalizada.status}.`);
   }
 };
 
 const validarPossuiConfirmacao = async (evolucao) => {
   const tpEvolucaoPrecisaTerConfirmacao = (evolucao.tpEvolucao === 'CURA'
-      || evolucao.tpEvolucao === 'OBITO');
+    || evolucao.tpEvolucao === 'OBITO');
 
   const tpEvolucaoProibidaSeJaConfirmada = (evolucao.tpEvolucao === 'SUSPEITO'
-      || evolucao.tpEvolucao === 'DESCARTADO'
-      || evolucao.tpEvolucao === 'CONFIRMADO');
+    || evolucao.tpEvolucao === 'DESCARTADO'
+    || evolucao.tpEvolucao === 'CONFIRMADO');
 
   if (!(tpEvolucaoPrecisaTerConfirmacao || tpEvolucaoProibidaSeJaConfirmada)) {
     return;
@@ -361,12 +423,12 @@ const validarPossuiConfirmacao = async (evolucao) => {
   });
 
   if (evolucaoConfirmado && tpEvolucaoProibidaSeJaConfirmada) {
-    throw new RegraNegocio(`Não é possivel atualizar para ${evolucao.tpEvolucao}
+    throw new RegraNegocioErro(`Não é possivel atualizar para ${evolucao.tpEvolucao}
       pois já existe atualização de confirmação.`);
   }
 
   if (!evolucaoConfirmado && tpEvolucaoPrecisaTerConfirmacao) {
-    throw new RegraNegocio(`Não é possivel atualizar para ${evolucao.tpEvolucao}
+    throw new RegraNegocioErro(`Não é possivel atualizar para ${evolucao.tpEvolucao}
       pois não existe atualização de confirmação.`);
   }
 };
@@ -390,11 +452,20 @@ const encerrarNotificacao = async (evolucao, t) => {
   );
 };
 
-exports.salvarEvolucao = async (req, res) => {
+const validarDataEvolucaoSuperiorDataNotificacao = async ({ notificacaoId, dtEvolucao }) => {
+  const { NotificacaoCovid19 } = await consultarNotificacaoPorId(notificacaoId);
+  const dataHoraNotificacao = new Date(NotificacaoCovid19.dataHoraNotificacao);
+  const dataEvolucao = new Date(dtEvolucao);
+  if (!NotificacaoCovid19) throw new Error(`Não foi possível encontrar a notificação ${notificacaoId}`);
+  if (dataEvolucao < dataHoraNotificacao) throw new RegraNegocioErro('A data da evolução não pode ser menor que a data da notificação.');
+};
+
+exports.salvarEvolucao = async (req, res, next) => {
   try {
     const result = await models.sequelize.transaction(async (t) => {
       const evolucaoReq = req.body;
 
+      await validarDataEvolucaoSuperiorDataNotificacao(evolucaoReq);
       await validarNotificacaoFinalizada(evolucaoReq);
       await validarPossuiConfirmacao(evolucaoReq);
 
@@ -406,7 +477,6 @@ exports.salvarEvolucao = async (req, res) => {
 
     return res.json({ data: result });
   } catch (err) {
-    console.error(err);
-    return res.status(400).json({ error: err.message });
+    return next(err);
   }
 };

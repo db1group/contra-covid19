@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     endereco: DataTypes.STRING(150),
     numero: DataTypes.STRING(12),
     bairroId: DataTypes.UUID,
+    municipioId: DataTypes.UUID,
     telefoneResidencial: DataTypes.STRING(12),
     telefoneContato: DataTypes.STRING(12),
     telefoneCelular: DataTypes.STRING(12),
@@ -57,6 +58,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   Pessoa.associate = (models) => {
     Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });
+    Pessoa.belongsTo(models.Municipio, { foreignKey: 'municipioId' });
   };
   Pessoa.beforeCreate(async (pessoa) => {
     normalizarTextoPessoa(pessoa);

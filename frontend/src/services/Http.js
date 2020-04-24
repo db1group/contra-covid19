@@ -1,5 +1,6 @@
 import axios from 'axios';
+import Configuration from '@/configuration';
 
 export default axios.create({
-  baseURL: process.env.VUE_APP_BACKEND_URL,
+  baseURL: Configuration.value('VUE_APP_BACKEND_URL'),
 });

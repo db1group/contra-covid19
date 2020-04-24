@@ -1,7 +1,7 @@
 const { tratarErrorsRetornoAPI } = require('./api-error-handling');
-const RegraNegocio = require('./RegraNegocio');
+const RegraNegocioErro = require('./RegraNegocioErro');
 
 module.exports = {
   tratarErrorsRetornoAPI,
-  RegraNegocio,
+  RegraNegocioErro,
 };

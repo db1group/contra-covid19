@@ -4,6 +4,7 @@ import Home from '../views/Home.vue';
 import NotificacaoForm from '../views/NotificacaoForm.vue';
 import NotificacaoCons from '../views/NotificacaoCons.vue';
 import EvolucaoForm from '../views/EvolucaoForm.vue';
+import Configuration from '../configuration';
 
 Vue.use(VueRouter);
 
@@ -32,7 +33,7 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
+  base: Configuration.value('VUE_APP_BASE_URL'),
   routes,
 });
 
