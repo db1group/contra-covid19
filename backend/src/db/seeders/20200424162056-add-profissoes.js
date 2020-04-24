@@ -5,14 +5,20 @@ module.exports = {
   up: (queryInterface) => queryInterface
     .bulkInsert('Profissao', [
       {
-        id: '28da7c76-d068-4d31-9013-358bed063b5d',
-        nome: 'ENFERMEIRO',
+        id: uuidv4(),
+        nome: 'TECNICO/AUXILIAR DE ENFERMAGEM',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         id: uuidv4(),
-        nome: 'MEDICO',
+        nome: 'TECNICO/AUXILIAR ADMINISTRATIVO',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: uuidv4(),
+        nome: 'OUTRO PROFISSIONAL DA SAUDE',
         createdAt: new Date(),
         updatedAt: new Date(),
       },

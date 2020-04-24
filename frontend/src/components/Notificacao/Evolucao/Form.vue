@@ -62,7 +62,7 @@
   </v-card>
 </template>
 <script>
-import { required, dateHourMinuteFormat } from '@/validations/CommonValidations';
+import { required, dateHourMinuteFormat, greaterThanMinimumDateWithMinutes } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import NotificacaoEvolucao, { locaisList, situacoesList, situacoesQueNaoEncerramFichaList }
   from '@/entities/NotificacaoEvolucao';
@@ -74,6 +74,9 @@ export default {
     notificacaoId: {
       type: String,
       required: true,
+    },
+    dataMaximaPermitida: {
+      type: String,
     },
   },
   data: () => ({
@@ -112,8 +115,11 @@ export default {
     updateSituacao(situacao) {
       this.evolucao.situacao = situacao;
     },
+    validatePastDate(value) {
+      return greaterThanMinimumDateWithMinutes(value,
+        this.dataMaximaPermitida, 'Informe uma data igual ou posterior a última notificação.');
+    },
     obterMensagemDeSucesso() {
-      console.log(this.evolucao);
       if (situacoesQueNaoEncerramFichaList.find((i) => i === this.evolucao.situacao)) {
         return 'Evolução cadastrada com sucesso.';
       }
@@ -140,6 +146,7 @@ export default {
   created() {
     this.loadLocais();
     this.loadSituacoes();
+    this.rules.dataHoraAtualizacao.push(this.validatePastDate);
   },
 };
 </script>

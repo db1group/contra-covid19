@@ -10,9 +10,7 @@ export const required = (value, message = 'O campo é obrigatório.') => (
 ) || message;
 
 export const requiredObjectId = (value, message = 'O campo é obrigatório.') => (
-  value
-  && typeof value === 'object'
-  && value.id
+  (value && typeof value === 'object' && !!value.id)
 ) || message;
 
 export const minLength = (length) => (value) => !value
@@ -27,3 +25,19 @@ export const dateFormat = (value) => !value
 export const dateHourMinuteFormat = (value) => !value
   || (DATE_HOUR_MINUTE_FORMAT.test(value) && DateService.isDateValid(value, 'DD/MM/YYYY HH:mm'))
   || 'O formato precisa ser dd/mm/aaaa hh:mm';
+// eslint-disable-next-line max-len
+export const lessThanMaximumDate = (value, valueForComparation, message = 'Informe uma data igual ou anterior.') => !value
+  || (DateService.isLessThanMaximumDate(value, valueForComparation))
+  || message;
+// eslint-disable-next-line max-len
+export const greaterThanMinimumDate = (value, valueForComparation, message = 'Informe uma data igual ou posterior.') => !value
+  || (DateService.isGreaterThanMinimumDate(value, valueForComparation))
+  || message;
+// eslint-disable-next-line max-len
+export const lessThanMaximumDateWithMinutes = (value, valueForComparation, message = 'Informe uma data igual ou anterior.') => !value
+  || (DateService.isLessThanMaximumDateWithMinutes(value, valueForComparation))
+  || message;
+// eslint-disable-next-line max-len
+export const greaterThanMinimumDateWithMinutes = (value, valueForComparation, message = 'Informe uma data igual ou posterior.') => !value
+  || (DateService.isGreaterThanMinimumDateWithMinutes(value, valueForComparation))
+  || message;

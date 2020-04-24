@@ -6,6 +6,7 @@
         <v-col cols="auto">
           <evolucao-form
             :notificacao-id="notificacaoId"
+            :dataMaximaPermitida="dataMaximaPermitida"
             @error:cadastroEvolucao="mostrarMensagemErro" />
         </v-col>
         <v-col cols="auto">
@@ -34,6 +35,7 @@ import EvolucaoConsulta from '@/components/Notificacao/Evolucao/Cons.vue';
 import EvolucaoService from '@/services/EvolucaoService';
 import Evolucao from '@/entities/Evolucao';
 import { isSecretariaSaude } from '@/validations/KeycloakValidations';
+import DateService from '@/services/DateService';
 
 export default {
   components: {
@@ -48,6 +50,7 @@ export default {
     mensagemErro: '',
     showSuccess: false,
     mensagemSucesso: '',
+    dataMaximaPermitida: '',
   }),
   created() {
     this.notificacaoId = this.$route.params.id;
@@ -61,12 +64,21 @@ export default {
       EvolucaoService.findByNotificacaoId(this.notificacaoId)
         .then(({ data }) => {
           this.evolucao = new Evolucao(data).toRequestBody();
+          this.obterDataMaximaPermitida(this.evolucao);
         })
         .catch(() => this.$router.push({ name: 'notificacao-cons' }));
     },
     mostrarMensagemErro(msg) {
       this.showError = true;
       this.mensagemErro = msg;
+    },
+    obterDataMaximaPermitida(evolucao) {
+      if (evolucao.items && evolucao.items.length > 0) {
+        const dataHoraDasAtualizacoes = evolucao.items
+          .map((x) => DateService.formatStringTypeToDateTypeWithMinutes(x.dataHoraAtualizacao));
+        const dataMaxima = new Date(Math.max.apply(null, dataHoraDasAtualizacoes)).toString();
+        this.dataMaximaPermitida = DateService.formatDateTypeToStringTypeWithMinutes(dataMaxima);
+      }
     },
   },
 };

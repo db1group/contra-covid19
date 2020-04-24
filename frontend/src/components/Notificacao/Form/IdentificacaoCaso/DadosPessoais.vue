@@ -110,7 +110,7 @@
 </template>
 <script>
 import {
-  required, dateFormat, dateHourMinuteFormat, exactLength,
+  required, dateFormat, dateHourMinuteFormat, exactLength, lessThanMaximumDate,
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
@@ -200,13 +200,7 @@ export default {
       return exactLength(11)(value);
     },
     validateFutureDate(value) {
-      const splitedValue = value.split('/');
-      const now = new Date();
-      const inputedDate = new Date(`${splitedValue[2]}-${splitedValue[1]}-${splitedValue[0]}`);
-      if (inputedDate > now) {
-        return required('', 'Informe uma data igual ou anterior ao dia de hoje.');
-      }
-      return true;
+      return lessThanMaximumDate(value, null, 'Informe uma data igual ou anterior ao dia de hoje.');
     },
   },
   created() {

@@ -41,6 +41,8 @@
           @update:telefoneCelular="updateSuspeito('telefoneCelular', $event)"
           @update:telefoneContato="updateSuspeito('telefoneContato', $event)"
           @update:ocupacao="updateSuspeito('ocupacao', $event)"
+          @update:complemento="updateSuspeito('complemento', $event)"
+          @update:municipioId="updateSuspeito('municipioId', $event)"
         />
         <sinais-e-sintomas
           :sintomatico="notificacao.sintomatico"
