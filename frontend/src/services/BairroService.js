@@ -6,6 +6,6 @@ export default {
     return http.get(`/municipios/${Configuration.value('VUE_APP_MUNICIPIO_ID')}/bairros`).then(({ data }) => data);
   },
   findAllPorMunicipio(municipioId, nome = '') {
-    return http.get(`/bairros/${municipioId}?nome=${nome}`).then(({ data }) => data);
+    return http.get(`/municipios/${municipioId}/bairros?nome=${nome}`).then(({ data }) => data);
   },
 };

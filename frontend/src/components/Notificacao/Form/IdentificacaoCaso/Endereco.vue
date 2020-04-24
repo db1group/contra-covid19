@@ -3,18 +3,6 @@
     <v-row dense>
       <v-col
         cols="12"
-        sm="4"
-      >
-        <v-text-field
-          :value="suspeito.cep"
-          label="CEP"
-          v-mask="'########'"
-          :rules="rules.cep"
-          @input="updateCep"
-        />
-      </v-col>
-      <v-col
-        cols="12"
         sm="8"
       >
         <v-text-field
@@ -24,8 +12,6 @@
           @input="updateEndereco"
         />
       </v-col>
-    </v-row>
-    <v-row dense>
       <v-col
         cols="12"
         sm="4"
@@ -37,9 +23,28 @@
           @input="updateNumero"
         />
       </v-col>
+    </v-row>
+    <v-row dense>
       <v-col
         cols="12"
-        sm="8"
+        sm="6"
+      >
+        <v-autocomplete
+          :value="suspeito.municipioId"
+          :rules="rules.municipioId"
+          label="Município *"
+          :items="municipios.items"
+          @update:search-input="searchMunicipios"
+          item-text="nome"
+          item-value="id"
+          :loading="municipios.loading"
+          no-data-text="Município não encontrado"
+          @input="updateMunicipioId"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        sm="6"
       >
         <v-autocomplete
           :value="suspeito.bairroId"
@@ -52,12 +57,17 @@
           :loading="bairros.loading"
           no-data-text="Bairro não encontrado"
           @input="updateBairroId"
-          v-model="bairroSelected"
-          return-object
         />
       </v-col>
     </v-row>
     <v-row dense>
+      <v-col cols="6">
+        <v-text-field
+          :value="suspeito.complemento"
+          label="Complemento"
+          @input="updateComplemento"
+        />
+      </v-col>
       <v-col cols="3">
         <v-select
           value="PR"
@@ -66,20 +76,13 @@
           disabled
         />
       </v-col>
-      <v-col cols="9">
-        <v-autocomplete
-          :value="suspeito.municipioId"
-          :rules="rules.municipioId"
-          label="Município *"
-          :items="municipios.items"
-          @update:search-input="searchMunicipios"
-          item-text="nome"
-          item-value="id"
-          :loading="municipios.loading"
-          no-data-text="Município não encontrado"
-          @input="updateMunicipioId"
-          v-model="municipioSelected"
-          return-object
+      <v-col cols="3">
+        <v-text-field
+          :value="suspeito.cep"
+          label="CEP"
+          v-mask="'########'"
+          :rules="rules.cep"
+          @input="updateCep"
         />
       </v-col>
     </v-row>
@@ -87,7 +90,7 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
-import { required, minLength, requiredObjectId } from '@/validations/CommonValidations';
+import { required, minLength } from '@/validations/CommonValidations';
 import Pessoa from '@/entities/Pessoa';
 import BairroService from '@/services/BairroService';
 import MunicipioService from '@/services/MunicipioService';
@@ -102,9 +105,7 @@ export default {
   },
   data: () => ({
     searchMunicipio: '',
-    municipioSelected: null,
     searchBairro: '',
-    bairroSelected: null,
     municipios: {
       items: [],
       loading: true,
@@ -117,8 +118,8 @@ export default {
       cep: [minLength(8)],
       endereco: [required],
       numero: [required],
-      bairroId: [requiredObjectId],
-      municipioId: [requiredObjectId],
+      bairroId: [required],
+      municipioId: [required],
     },
   }),
   methods: {
@@ -131,14 +132,14 @@ export default {
     updateNumero(numero) {
       this.$emit('update:numero', numero);
     },
-    updateBairroId(bairro) {
-      this.searchBairro = bairro.nome;
-      this.$emit('update:bairroId', bairro.id);
+    updateBairroId(bairroId) {
+      this.$emit('update:bairroId', bairroId);
     },
-    updateMunicipioId(municipio) {
-      this.searchMunicipio = municipio.nome;
-      this.$emit('update:municipioId', municipio.id);
-      this.updateBairroId(null);
+    updateMunicipioId(municipioId) {
+      this.$emit('update:municipioId', municipioId);
+    },
+    updateComplemento(complemento) {
+      this.$emit('update:complemento', complemento);
     },
     findBairros(searchBairro = '') {
       this.bairros.loading = true;
@@ -151,7 +152,7 @@ export default {
     searchBairros(search = '') {
       if (search === this.searchBairro) return;
       this.searchBairro = search;
-      this.findBairros(search);
+      this.findBairros(search || '');
     },
     findMunicipios(searchMunicipio = '') {
       this.municipios.loading = true;
@@ -164,12 +165,12 @@ export default {
     searchMunicipios(search = '') {
       if (search === this.searchMunicipio) return;
       this.searchMunicipio = search;
-      this.findMunicipios(search);
+      this.findMunicipios(search || '');
     },
   },
   created() {
+    this.findMunicipios();
     this.findBairros('');
-    this.findMunicipios('');
   },
 };
 </script>
