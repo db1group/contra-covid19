@@ -118,9 +118,9 @@ jobs:
       - aws-ecs/run-task:
           cluster: notificasaude-qa
           task-definition: notificasaude-qa-keycloak
-          awsvpc: false
           launch-type: EC2
           started-by: 'CircleCI << pipeline.number >>'
+          group: service:notificasaude-qa-keycloak
   deploy-keycloak-prod-aws:
     executor: notificasaude-executor
     steps:
