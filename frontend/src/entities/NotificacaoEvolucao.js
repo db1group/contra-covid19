@@ -1,7 +1,7 @@
 import DateService from '@/services/DateService';
 
 export const locaisList = [
-  { key: 'ALTA_ISOLAMENTO_DOMICILIAR', value: 'Alta com isolamento domiciliar' },
+  { key: 'ALTA_ISOLAMENTO_DOMICILIAR', value: 'Isolamento Domiciliar' },
   { key: 'INTERNAMENTO_LEITO_COMUM', value: 'Hospitalizado – Leito comum' },
   { key: 'INTERNAMENTO_LEITO_UTI', value: 'Hospitalizado - Leito UTI' },
 ];

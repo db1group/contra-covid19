@@ -222,16 +222,19 @@ const consultarNotificaoesWeb = async (page, limit, search = '') => {
   const optionsConsulta = {
     where: {
       status: {
-        [Op.eq]: 'ABERTA',
+        [Op.ne]: 'EXCLUIDA',
       },
     },
-    attributes: ['id'],
+    attributes: ['id', 'status'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
     }, {
       model: models.NotificacaoCovid19,
       attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao'],
+    }, {
+      model: models.UnidadeSaude,
+      attributes: ['nome'],
     }],
     order: [['updatedAt', 'DESC']],
     limit,

@@ -1,6 +1,6 @@
 <template>
  <section style="margin-top: 35px;">
-    <header-title title="Evolução dos pacientes" />
+    <header-title title="Evolução dos pacientes" backRoute="notificacao-cons" />
     <v-container fluid>
       <v-row justify="space-around" align="center">
         <v-col cols="auto">
@@ -56,13 +56,13 @@ export default {
   methods: {
     consultarEvolucao() {
       if (!isSecretariaSaude(this)) {
-        this.$router.push('/');
+        this.$router.push({ name: 'notificacao-cons' });
       }
       EvolucaoService.findByNotificacaoId(this.notificacaoId)
         .then(({ data }) => {
           this.evolucao = new Evolucao(data).toRequestBody();
         })
-        .catch(() => this.$router.push('/'));
+        .catch(() => this.$router.push({ name: 'notificacao-cons' }));
     },
     mostrarMensagemErro(msg) {
       this.showError = true;
