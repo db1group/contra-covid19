@@ -63,7 +63,7 @@ resource "aws_ecs_task_definition" "backend" {
         "hostPort": 0
       }
     ],
-    "memory": 512,
+    "memory": 252,
     "cpu": 100,
     "environment" : [
       {
@@ -121,9 +121,9 @@ resource "aws_ecs_service" "ecs_service_backend" {
   name     = "${var.project}-${var.environment}-backend"
   iam_role = aws_iam_role.ecs_service_role.name
   cluster  = aws_ecs_cluster.ecs_cluster.id
-  task_definition = "${aws_ecs_task_definition.backend.family}:${max(
-    aws_ecs_task_definition.backend.revision,
-    aws_ecs_task_definition.backend.revision,
+  task_definition = "${aws_ecs_task_definition.frontend.family}:${max(
+    aws_ecs_task_definition.frontend.revision,
+    aws_ecs_task_definition.frontend.revision,
   )}"
   scheduling_strategy               = "REPLICA"
   health_check_grace_period_seconds = 30
