@@ -84,10 +84,37 @@ export default {
     },
   },
   methods: {
-    consultarNotificacoes({ page, itemsPerPage } = this.options) {
+    getColor(situacao) {
+      switch (situacao) {
+        case 'UTI':
+          return '#FD3A5C';
+        case 'Óbito':
+          return 'black';
+        case 'Leito comum':
+          return '#FFB300';
+        case 'Isolamento domiciliar':
+          return '#64FFDA';
+        default:
+          return 'red';
+      }
+    },
+    getTextColor(situacao) {
+      switch (situacao) {
+        case 'UTI':
+        case 'Óbito':
+          return 'white';
+        default:
+          return 'black';
+      }
+    },
+    consultarNotificacoes({
+      page, itemsPerPage, sortBy = 'createdAt', sortDesc = 'true',
+    } = this.options) {
       this.loading = true;
       const search = this.filter;
-      NotificacaoService.findAll({ page, itemsPerPage, search })
+      NotificacaoService.findAll({
+        page, itemsPerPage, sortBy, sortDesc, search,
+      })
         .then(({ count, data }) => {
           this.totalNotif = count;
           this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());

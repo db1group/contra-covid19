@@ -4,8 +4,12 @@ export default {
   save(notificacaco) {
     return http.post('/notificacoes', notificacaco);
   },
-  findAll({ page, itemsPerPage, search }) {
-    return http.get(`/notificacoes/consulta?page=${page}&itemsPerPage=${itemsPerPage}&search=${search}`)
+  findAll({
+    page, itemsPerPage, search, sortBy, sortDesc,
+  }) {
+    return http
+      .get(`/notificacoes/consulta?page=${page}&itemsPerPage=${itemsPerPage}
+        &sortBy=${sortBy}&sortDesc=${sortDesc}&search=${search}`)
       .then(({ data }) => data);
   },
   delete(id) {
