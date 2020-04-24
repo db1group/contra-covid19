@@ -1,5 +1,17 @@
 <template>
   <v-container fluid>
+    <confirm-dialog
+      v-model="removingNotificationDialog.showDialog"
+      confirm-color="error"
+      @confirm="confirmExclusion"
+    >
+      <div class="pa-5">
+        <h4 class="headline">Confirmação</h4>
+        <div class="mt-3">
+          Deseja mesmo <span class="font-weight-bold">excluir</span> a notificação?
+        </div>
+      </div>
+    </confirm-dialog>
     <v-data-table
       v-model="selected"
       :single-select="false"
@@ -42,18 +54,22 @@
           small
           color="primary"
           :to="{ name: 'evolucao-form', params: { id: item.id } }"
-        >EVOLUÇÃO</v-btn>
-        <v-btn text small color="red" @click="excluirItem(item)">EXCLUIR</v-btn>
+        >
+          EVOLUÇÃO
+        </v-btn>
+        <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
       </template>
     </v-data-table>
   </v-container>
 </template>
 <script>
+import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import NotificacaoService from '@/services/NotificacaoService';
 import NotificacaoConsulta from '@/entities/NotificacaoConsulta';
 import { isSecretariaSaude } from '@/validations/KeycloakValidations';
 
 export default {
+  components: { ConfirmDialog },
   data: () => ({
     singleSelect: false,
     selected: [],
@@ -74,6 +90,10 @@ export default {
       { text: 'Situação', value: 'status' },
       { sortable: false, value: 'actions', width: '315px' },
     ],
+    removingNotificationDialog: {
+      showDialog: false,
+      id: null,
+    },
   }),
   created() {
     this.consultarNotificacoes();
@@ -125,7 +145,14 @@ export default {
           this.$emit('erro:consultaNotificacao', data.error);
         });
     },
-    excluirItem({ id }) {
+    showExclusionConfirmDialog({ id }) {
+      this.removingNotificationDialog.showDialog = true;
+      this.removingNotificationDialog.id = id;
+    },
+    confirmExclusion() {
+      this.excluirItem(this.removingNotificationDialog.id);
+    },
+    excluirItem(id) {
       NotificacaoService.delete(id)
         .then(() => {
           this.selected = this.selected.filter((n) => n.id !== id);
