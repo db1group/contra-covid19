@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export default class Configuration {
-  static get CONFIG (){
+  static get CONFIG() {
     return {
       VUE_APP_BASE_URL: '$VUE_APP_BASE_URL',
       VUE_APP_BACKEND_URL: '$VUE_APP_BACKEND_URL',
@@ -14,17 +14,17 @@ export default class Configuration {
     };
   }
 
-  static value (name){
+  static value(name) {
     if (!(name in this.CONFIG)) {
       console.log(`Configuration: There is no key named ${name}`);
-      return;
+      return undefined;
     }
 
     const value = this.CONFIG[name];
 
     if (!value) {
       console.log(`Configuration: Value for ${name} is not defined`);
-      return;
+      return undefined;
     }
 
     if (value.startsWith('$VUE_APP_')) {
