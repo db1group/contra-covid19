@@ -69,12 +69,22 @@ const consolidarSuspeito = async (suspeito) => {
 const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
   const suspeitoConsolidado = await consolidarSuspeito(suspeito);
   const { municipioId } = suspeito;
+  const { unidadeSaudeId } = notificacao;
+
+  const unidadeDeSaude = await models.UnidadeSaude.findOne(
+    {
+      where: { id: unidadeSaudeId },
+    },
+  );
 
   return {
     ...notificacao,
     suspeito: {
       municipioId,
       ...suspeitoConsolidado,
+    },
+    unidadeDeSaude: {
+      ...unidadeDeSaude.dataValues,
     },
   };
 };
@@ -217,23 +227,43 @@ exports.consultarPaginado = async (req, res) => {
   return res.json({ count: notificacoes.count, data: notificacoesResponse });
 };
 
-const consultarNotificaoesWeb = async (page, limit, search = '') => {
+const obterOrdemConsultarNotificacao = async (sortBy) => {
+  const ordernacaoIndice = {
+    createdAt: 'Notificacao.createdAt',
+    nome: 'Pessoa.nome',
+    documento: 'Pessoa.numeroDocumento',
+    telefone: 'Pessoa.telefoneContato',
+    dataNotificacao: 'NotificacaoCovid19.dataHoraNotificacao',
+  };
+
+  if (!sortBy) {
+    return ordernacaoIndice.createdAt;
+  }
+  return ordernacaoIndice[sortBy];
+};
+
+const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '') => {
+  const ordernacao = await obterOrdemConsultarNotificacao(sortBy);
+  const ordem = sortDesc === 'true' ? 'DESC' : 'ASC';
   const offset = (page - 1) * limit;
   const optionsConsulta = {
     where: {
       status: {
-        [Op.eq]: 'ABERTA',
+        [Op.ne]: 'EXCLUIDA',
       },
     },
-    attributes: ['id'],
+    attributes: ['id', 'status'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
     }, {
       model: models.NotificacaoCovid19,
       attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao'],
+    }, {
+      model: models.UnidadeSaude,
+      attributes: ['nome'],
     }],
-    order: [['updatedAt', 'DESC']],
+    order: [[Sequelize.col(ordernacao), ordem]],
     limit,
     offset,
   };
@@ -268,8 +298,10 @@ const consultarNotificacoesWebVazia = {
 };
 
 exports.consultarNotificacoesWeb = async (req, res) => {
-  const { page = 1, itemsPerPage = 10, search = '' } = req.query;
-  const notificacoes = await consultarNotificaoesWeb(page, itemsPerPage, search);
+  const {
+    page = 1, itemsPerPage = 10, search = '', sortBy, sortDesc,
+  } = req.query;
+  const notificacoes = await consultarNotificaoesWeb(page, itemsPerPage, sortBy, sortDesc, search);
   if (!notificacoes) return res.json(consultarNotificacoesWebVazia);
   const notificacaoConsulta = Mappers.Notificacao.mapearParaConsulta(notificacoes.rows);
   return res.json({ count: notificacoes.count, data: notificacaoConsulta });
@@ -342,11 +374,11 @@ const validarNotificacaoFinalizada = async (evolucao) => {
 
 const validarPossuiConfirmacao = async (evolucao) => {
   const tpEvolucaoPrecisaTerConfirmacao = (evolucao.tpEvolucao === 'CURA'
-      || evolucao.tpEvolucao === 'OBITO');
+    || evolucao.tpEvolucao === 'OBITO');
 
   const tpEvolucaoProibidaSeJaConfirmada = (evolucao.tpEvolucao === 'SUSPEITO'
-      || evolucao.tpEvolucao === 'DESCARTADO'
-      || evolucao.tpEvolucao === 'CONFIRMADO');
+    || evolucao.tpEvolucao === 'DESCARTADO'
+    || evolucao.tpEvolucao === 'CONFIRMADO');
 
   if (!(tpEvolucaoPrecisaTerConfirmacao || tpEvolucaoProibidaSeJaConfirmada)) {
     return;

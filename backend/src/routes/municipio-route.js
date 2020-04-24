@@ -8,4 +8,6 @@ router.get('/municipios/:municipioId/bairros',
   validate(schemas.municipio.consultarBairrosDoMunicipio, 'params'),
   MunicipioResource.consultarBairrosDoMunicipio);
 
+router.get('/municipios', MunicipioResource.consultaPorNome);
+
 module.exports = router;

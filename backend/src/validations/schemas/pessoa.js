@@ -17,6 +17,7 @@ const schemas = {
     endereco: Joi.string().max(150),
     numero: Joi.string().max(18),
     bairroId: Joi.string().guid({ version: 'uuidv4' }),
+    municicpioId: Joi.string().guid({ version: 'uuidv4' }),
     telefoneResidencial: Joi.string().max(18),
     telefoneContato: Joi.string().max(18),
     telefoneCelular: Joi.string().max(18),
