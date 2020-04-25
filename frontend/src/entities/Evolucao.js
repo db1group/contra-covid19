@@ -1,17 +1,17 @@
 import NotificacaoEvolucao from '@/entities/NotificacaoEvolucao';
 
 const getTelefone = (pessoa = {}) => {
-  console.log(pessoa);
-  const { telefoneResidencial, telefoneContato, telefoneCelular } = pessoa;
+  const {
+    telefoneResidencial = '',
+    telefoneContato = '',
+    telefoneCelular = ''
+  } = pessoa;
   let telefone = '';
   if (telefoneResidencial !== '') {
-    console.log('telefoneResidencial');
     telefone = telefoneResidencial;
   } else if (telefoneContato !== '') {
-    console.log('telefoneContato');
     telefone = telefoneContato;
   } else {
-    console.log('telefoneCelular');
     telefone = telefoneCelular;
   }
   return telefone;

@@ -1,5 +1,17 @@
 import NotificacaoEvolucao from '@/entities/NotificacaoEvolucao';
 
+jest.mock('moment', () => {
+  return () => ({
+    format: () => '18/04/2020 18:53',
+  });
+});
+
+jest.mock('moment', (stringDate, format) => {
+  return () => ({
+    toISOString: () => '2020-04-18T18:53:00.000Z',
+  });
+});
+
 const notifEvolucaoVazia = {
   id: null,
   notificacaoId: '',
@@ -46,9 +58,7 @@ describe('Testes para entidade NotificacaoEvolucao', () => {
   });
 
   test('Criando nova Notificação Evolução com request', () => {
-    const dataRequest = { ...dataNotifEvolucao };
-    dataRequest.dtEvolucao = '18/04/2020 18:53';
-    const result = new NotificacaoEvolucao(dataRequest).toRequest();
+    const result = new NotificacaoEvolucao(dataNotifEvolucao).toRequest();
     expect(result).toEqual(notifEvolucaoRequestValida);
   });
 });
