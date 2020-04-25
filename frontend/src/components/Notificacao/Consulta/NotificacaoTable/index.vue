@@ -37,19 +37,33 @@
         <v-card-title>
           Cadastros
           <v-spacer></v-spacer>
-          <v-text-field
-            @input="filterSearch"
-            append-icon="mdi-magnify"
-            label="Pesquisar por Documento ou Nome"
-            single-line
-            hide-details
-          ></v-text-field>
+          <v-row>
+            <v-col cols="4">
+              <v-select
+                :items="situacaoNotif"
+                :value="filtroStatus"
+                label="Situação"
+                item-text="value"
+                item-value="key"
+                @input="updateFiltroSituacao"
+              />
+            </v-col>
+            <v-col cols="8">
+              <v-text-field
+                @input="filterSearch"
+                append-icon="mdi-magnify"
+                label="Pesquisar por Documento ou Nome"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
         </v-card-title>
       </template>
       <template v-slot:item.actions="{ item }">
           <!-- A visualização ainda não funciona. Vamos deixar comentado por enquanto -->
           <!-- <v-btn text small color="#B8860B" :to="{ name: 'notificacao-form' }">VISUALIZAR</v-btn> -->
-        <v-row justify="right" align="center">
+        <v-row justify="end" align="center">
           <v-col>
             <v-btn
               v-if="isPermiteEvoluir(item)"
@@ -75,9 +89,17 @@ import NotificacaoService from '@/services/NotificacaoService';
 import NotificacaoConsulta from '@/entities/NotificacaoConsulta';
 import { isSecretariaSaude } from '@/validations/KeycloakValidations';
 
+const SITUACAO_NOTIFICACAO = [
+  { key: '', value: 'TODAS' },
+  { key: 'ABERTA', value: 'ABERTA' },
+  { key: 'ENCERRADA', value: 'ENCERRADA' },
+];
+
 export default {
   components: { ConfirmDialog },
   data: () => ({
+    situacaoNotif: SITUACAO_NOTIFICACAO,
+    filtroStatus: '',
     singleSelect: false,
     selected: [],
     items: [],
@@ -103,36 +125,14 @@ export default {
     },
   }),
   methods: {
-    getColor(situacao) {
-      switch (situacao) {
-        case 'UTI':
-          return '#FD3A5C';
-        case 'Óbito':
-          return 'black';
-        case 'Leito comum':
-          return '#FFB300';
-        case 'Isolamento domiciliar':
-          return '#64FFDA';
-        default:
-          return 'red';
-      }
-    },
-    getTextColor(situacao) {
-      switch (situacao) {
-        case 'UTI':
-        case 'Óbito':
-          return 'white';
-        default:
-          return 'black';
-      }
-    },
     consultarNotificacoes({
       page, itemsPerPage, sortBy = 'createdAt', sortDesc = 'true',
     } = this.options) {
       this.loading = true;
       const search = this.filter;
+      const status = this.filtroStatus;
       NotificacaoService.findAll({
-        page, itemsPerPage, sortBy, sortDesc, search,
+        page, itemsPerPage, sortBy, sortDesc, search, status,
       })
         .then(({ count, data }) => {
           this.totalNotif = count;
@@ -182,6 +182,10 @@ export default {
     },
     isPermiteEvoluir(item) {
       return item.status === 'ABERTA' && isSecretariaSaude(this);
+    },
+    updateFiltroSituacao(status) {
+      this.filtroStatus = status;
+      this.consultarNotificacoes();
     },
   },
   created() {

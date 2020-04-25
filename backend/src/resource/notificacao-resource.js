@@ -248,7 +248,7 @@ const obterCampoOrdenacao = async (sortBy) => {
   return ordernacaoIndice[sortBy];
 };
 
-const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '') => {
+const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '', status = '') => {
   const campoOrdenacao = await obterCampoOrdenacao(sortBy);
   if (!campoOrdenacao) throw new RegraNegocioErro(`O campo ${sortBy} não é ordenável.`);
   const ordem = sortDesc === 'true' ? 'DESC' : 'ASC';
@@ -274,6 +274,16 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
     limit,
     offset,
   };
+  if (status !== '') {
+    optionsConsulta.where.status = {
+      [Op.and]: [
+        optionsConsulta.where.status,
+        {
+          [Op.eq]: status,
+        },
+      ],
+    };
+  }
   if (search !== '') {
     optionsConsulta.where = {
       [Op.and]: [
@@ -307,7 +317,7 @@ const consultarNotificacoesWebVazia = {
 exports.consultarNotificacoesWeb = async (req, res, next) => {
   try {
     const {
-      page = 1, itemsPerPage = 10, search = '', sortBy, sortDesc,
+      page = 1, itemsPerPage = 10, search = '', sortBy, sortDesc, status,
     } = req.query;
     const notificacoes = await consultarNotificaoesWeb(
       page,
@@ -315,6 +325,7 @@ exports.consultarNotificacoesWeb = async (req, res, next) => {
       sortBy,
       sortDesc,
       search,
+      status,
     );
     if (!notificacoes) return res.json(consultarNotificacoesWebVazia);
     const notificacaoConsulta = Mappers.Notificacao.mapearParaConsulta(notificacoes.rows);
