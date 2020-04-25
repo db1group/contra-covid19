@@ -29,6 +29,7 @@
           loading-text="Carregando as evoluções do paciente."
           no-data-text="Não há evoluções até o momento."
           :footer-props="{
+            pageText: '{0}-{1} de {2}',
             itemsPerPageText: 'Linhas por página'
           }"
           class="elevation-1"

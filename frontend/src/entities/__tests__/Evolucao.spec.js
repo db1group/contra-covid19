@@ -1,5 +1,11 @@
 import Evolucao from '@/entities/Evolucao';
 
+jest.mock('moment', () => {
+  return () => ({
+    format: () => '18/04/2020 12:53',
+  });
+});
+
 const evolucaoVazia = {
   id: null,
   status: 'ABERTA',
@@ -60,7 +66,7 @@ const evolucaoRequestValida = {
     {
       id: 'd67c4ef1-eed6-4c98-b53d-f050a76dfb3a',
       notificacaoId: 'cd6286f5-dc11-4932-98e3-5ff1893885ab',
-      dataHoraAtualizacao: '18/04/2020 15:53',
+      dataHoraAtualizacao: '18/04/2020 12:53',
       local: 'Isolamento domiciliar',
       situacao: 'Suspeito',
     },

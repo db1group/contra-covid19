@@ -47,7 +47,8 @@
         </v-card-title>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-btn text small color="#B8860B" :to="{ name: 'notificacao-form' }">VISUALIZAR</v-btn>
+        <!-- A visualização ainda não funciona. Vamos deixar comentado por enquanto -->
+        <!-- <v-btn text small color="#B8860B" :to="{ name: 'notificacao-form' }">VISUALIZAR</v-btn> -->
         <v-btn
           v-if="isSecretariaSaude"
           text
@@ -95,9 +96,6 @@ export default {
       id: null,
     },
   }),
-  created() {
-    this.consultarNotificacoes();
-  },
   computed: {
     isSecretariaSaude() {
       return isSecretariaSaude(this);
@@ -137,7 +135,7 @@ export default {
       })
         .then(({ count, data }) => {
           this.totalNotif = count;
-          this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());
+          this.notificacoes = data.map((d) => new NotificacaoConsulta(d));
           this.loading = false;
         })
         .catch((error) => {
@@ -181,6 +179,9 @@ export default {
       this.filter = search;
       this.filterNotificacoes();
     },
+  },
+  created() {
+    this.consultarNotificacoes();
   },
 };
 </script>
