@@ -48,7 +48,7 @@ export default class NotificacaoEvolucao {
   toRequest() {
     return {
       notificacaoId: this.notificacaoId,
-      dtEvolucao: DateService.toMomentZoneObject(this.dataHoraAtualizacao, 'DD/MM/YYYY HH:mm').toISOString(),
+      dtEvolucao: DateService.toMomentObject(this.dataHoraAtualizacao, 'DD/MM/YYYY HH:mm').toISOString(),
       tpLocal: this.local,
       tpEvolucao: this.situacao,
     };
