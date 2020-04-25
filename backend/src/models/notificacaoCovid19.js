@@ -18,7 +18,15 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    dataHoraNotificacao: DataTypes.DATE,
+    dataHoraNotificacao: {
+      type: DataTypes.DATE,
+      validate: {
+        isDate: true,
+        naoEhMaiorQueDataAtual(value) {
+          validarMenorQueDataHoraAtual(value, 'A', 'data/hora da notificação');
+        },
+      },
+    },
     coriza: DataTypes.BOOLEAN,
     tosseSeca: DataTypes.BOOLEAN,
     dorDeGarganta: DataTypes.BOOLEAN,
