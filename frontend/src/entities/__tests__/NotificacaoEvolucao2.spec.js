@@ -1,10 +1,8 @@
 import NotificacaoEvolucao from '@/entities/NotificacaoEvolucao';
 
-jest.mock('moment', () => {
-  return () => ({
-    format: () => '18/04/2020 15:53',
-  });
-});
+jest.mock('moment', () => () => ({
+  format: () => '18/04/2020 15:53',
+}));
 
 const dataNotifEvolucao = {
   id: 'd67c4ef1-eed6-4c98-b53d-f050a76dfb3a',
