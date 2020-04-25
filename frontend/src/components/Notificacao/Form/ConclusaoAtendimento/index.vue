@@ -11,6 +11,7 @@
         <v-col cols="12" sm="10" md="8">
           <v-radio-group
             :value="conclusaoAtendimento.situacaoNoMomentoDaNotificacao"
+            :rules="rules.situacaoNoMomentoDaNotificacao"
             @change="updateSituacaoNoMomentoDaNotificacao"
           >
             <template v-slot:label>
@@ -47,6 +48,7 @@
   </div>
 </template>
 <script>
+import { required } from '@/validations/CommonValidations';
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
 
 export default {
@@ -56,6 +58,11 @@ export default {
       required: true,
     },
   },
+  data: () => ({
+    rules: {
+      situacaoNoMomentoDaNotificacao: [required],
+    },
+  }),
   methods: {
     updateSituacaoNoMomentoDaNotificacao(situacaoNoMomentoDaNotificacao) {
       this.$emit('update:situacaoNoMomentoDaNotificacao', situacaoNoMomentoDaNotificacao);
