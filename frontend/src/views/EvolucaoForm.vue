@@ -52,10 +52,6 @@ export default {
     mensagemSucesso: '',
     dataMaximaPermitida: '',
   }),
-  created() {
-    this.notificacaoId = this.$route.params.id;
-    this.consultarEvolucao();
-  },
   methods: {
     consultarEvolucao() {
       if (!isSecretariaSaude(this)) {
@@ -80,6 +76,10 @@ export default {
         this.dataMaximaPermitida = DateService.formatDateTypeToStringTypeWithMinutes(dataMaxima);
       }
     },
+  },
+  created() {
+    this.notificacaoId = this.$route.params.id;
+    this.consultarEvolucao();
   },
 };
 </script>
