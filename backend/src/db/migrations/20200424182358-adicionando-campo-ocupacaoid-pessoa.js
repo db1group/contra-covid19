@@ -8,5 +8,5 @@ module.exports = {
       allowNull: false,
     },
   }),
-  down: (queryInterface, Sequelize) => Sequelize.removeColumn('Pessoa', 'ocupacaoId'),
+  down: (queryInterface, _) => queryInterface.removeColumn('Pessoa', 'ocupacaoId'),
 };
