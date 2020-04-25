@@ -94,8 +94,8 @@ module.exports = (sequelize, DataTypes) => {
     leitoUti: DataTypes.BOOLEAN,
     prontoSocorroOuAtendimento: DataTypes.BOOLEAN,
     coletaMaterialParaDiagnostico: DataTypes.BOOLEAN,
-    laboratorioOficial: DataTypes.BOOLEAN,
-    laboratorioRedePrivada: DataTypes.BOOLEAN,
+    tipoLaboratorio: DataTypes.ENUM('OFICIAL', 'PRIVADO'),
+    nomeLaboratorioEnvioMaterial: DataTypes.STRING(30),
     dataDaColeta: {
       type: DataTypes.DATE,
       validate: {
