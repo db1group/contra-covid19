@@ -192,8 +192,8 @@ const extrairConclusaoAtendimento = (notificacaoCovid19) => {
     leitoUti,
     prontoSocorroOuAtendimento,
     coletaMaterialParaDiagnostico,
-    tipoLaboratorio,
-    nomeLaboratorioEnvioMaterial,
+    // tipoLaboratorio,
+    // nomeLaboratorioEnvioMaterial,
   } = notificacaoCovid19;
   return {
     isolamentoDomiciliar,
@@ -201,8 +201,8 @@ const extrairConclusaoAtendimento = (notificacaoCovid19) => {
     leitoUti,
     prontoSocorroOuAtendimento,
     coletaMaterialParaDiagnostico,
-    tipoLaboratorio,
-    nomeLaboratorioEnvioMaterial,
+    // tipoLaboratorio,
+    // nomeLaboratorioEnvioMaterial,
   };
 };
 
