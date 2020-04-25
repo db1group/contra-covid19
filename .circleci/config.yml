@@ -33,11 +33,11 @@ jobs:
       - run: cd backend && docker build -t notificasaude/backend:latest .
       - run: docker tag notificasaude/backend:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
-      - aws-ecs/run-task:
-          cluster: notificasaude-qa
-          task-definition: notificasaude-qa-backend
-          awsvpc: false
-          launch-type: EC2
+      - aws-ecs/update-service:
+          family: notificasaude-qa-backend
+          cluster-name: 'notificasaude-qa'
+          container-image-name-updates: 'container=notificasaude-qa-backend,tag=qa'
+          force-new-deployment: true
   deploy-backend-prod-aws:
     executor: notificasaude-executor
     steps:
@@ -47,11 +47,11 @@ jobs:
       - run: docker pull 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
       - run: docker tag 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:latest
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:latest
-      - aws-ecs/run-task:
-          cluster: notificasaude-prod
-          task-definition: notificasaude-prod-backend
-          awsvpc: false
-          launch-type: EC2
+      - aws-ecs/update-service:
+          family: notificasaude-prod-backend
+          cluster-name: 'notificasaude-prod'
+          container-image-name-updates: 'container=notificasaude-prod-backend,tag=latest'
+          force-new-deployment: true
 
   build-frontend:
     executor: notificasaude-executor
@@ -81,11 +81,11 @@ jobs:
       - run: cd frontend && docker build -t notificasaude/frontend:latest .
       - run: docker tag notificasaude/frontend:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:qa
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:qa
-      - aws-ecs/run-task:
-          cluster: notificasaude-qa
-          task-definition: notificasaude-qa-frontend
-          awsvpc: false
-          launch-type: EC2
+      - aws-ecs/update-service:
+          family: notificasaude-qa-frontend
+          cluster-name: 'notificasaude-qa'
+          container-image-name-updates: 'container=notificasaude-qa-frontend,tag=qa'
+          force-new-deployment: true
   deploy-frontend-prod-aws:
     executor: notificasaude-executor
     steps:
@@ -95,11 +95,11 @@ jobs:
       - run: docker pull 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:qa
       - run: docker tag 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:qa 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:latest
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:latest
-      - aws-ecs/run-task:
-          cluster: notificasaude-prod
-          task-definition: notificasaude-prod-frontend
-          awsvpc: false
-          launch-type: EC2
+      - aws-ecs/update-service:
+          family: notificasaude-prod-frontend
+          cluster-name: 'notificasaude-prod'
+          container-image-name-updates: 'container=notificasaude-prod-frontend,tag=latest'
+          force-new-deployment: true
 
   deploy-keycloak-qa-aws:
     executor: notificasaude-executor
@@ -111,11 +111,11 @@ jobs:
       - run: cd keycloak && docker build -t notificasaude/keycloak:latest .
       - run: docker tag notificasaude/keycloak:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
-      - aws-ecs/run-task:
-          cluster: notificasaude-qa
-          task-definition: notificasaude-qa-keycloak
-          awsvpc: false
-          launch-type: EC2
+      - aws-ecs/update-service:
+          family: notificasaude-qa-keycloak
+          cluster-name: 'notificasaude-qa'
+          container-image-name-updates: 'container=notificasaude-qa-keycloak,tag=qa'
+          force-new-deployment: true
   deploy-keycloak-prod-aws:
     executor: notificasaude-executor
     steps:
@@ -125,11 +125,11 @@ jobs:
       - run: docker pull 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
       - run: docker tag 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:latest
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:latest
-      - aws-ecs/run-task:
-          cluster: notificasaude-prod
-          task-definition: notificasaude-prod-keycloak
-          awsvpc: false
-          launch-type: EC2
+      - aws-ecs/update-service:
+          family: notificasaude-prod-keycloak
+          cluster-name: 'notificasaude-prod'
+          container-image-name-updates: 'container=notificasaude-prod-keycloak,tag=latest'
+          force-new-deployment: true
 
 orbs:
   aws-cli: circleci/aws-cli@1.0.0
