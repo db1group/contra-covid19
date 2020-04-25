@@ -37,7 +37,7 @@ const notifEvolucaoRequestValida = {
 const notifEvolucaoRequestBodyValida = {
   id: 'd67c4ef1-eed6-4c98-b53d-f050a76dfb3a',
   notificacaoId: 'cd6286f5-dc11-4932-98e3-5ff1893885ab',
-  dataHoraAtualizacao: '18/04/2020 18:53',
+  dataHoraAtualizacao: '18/04/2020 15:53',
   local: 'Isolamento domiciliar',
   situacao: 'Suspeito',
 };
