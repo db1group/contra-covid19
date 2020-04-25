@@ -14,9 +14,6 @@ export default {
   toMomentObject(stringDate, format) {
     return moment(stringDate, format);
   },
-  toMomentZoneObject(stringDate, format) {
-    return moment.parseZone(stringDate, format);
-  },
   formatStringTypeToDateTypeWithMinutes(stringDate) {
     const splitedDateTime = stringDate.split(' ');
     const splitedDate = splitedDateTime[0].split('/');
