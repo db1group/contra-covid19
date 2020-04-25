@@ -47,18 +47,24 @@
         </v-card-title>
       </template>
       <template v-slot:item.actions="{ item }">
-        <!-- A visualização ainda não funciona. Vamos deixar comentado por enquanto -->
-        <!-- <v-btn text small color="#B8860B" :to="{ name: 'notificacao-form' }">VISUALIZAR</v-btn> -->
-        <v-btn
-          v-if="isSecretariaSaude"
-          text
-          small
-          color="primary"
-          :to="{ name: 'evolucao-form', params: { id: item.id } }"
-        >
-          EVOLUÇÃO
-        </v-btn>
-        <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
+          <!-- A visualização ainda não funciona. Vamos deixar comentado por enquanto -->
+          <!-- <v-btn text small color="#B8860B" :to="{ name: 'notificacao-form' }">VISUALIZAR</v-btn> -->
+        <v-row justify="right" align="center">
+          <v-col>
+            <v-btn
+              v-if="isPermiteEvoluir(item)"
+              text
+              small
+              color="primary"
+              :to="{ name: 'evolucao-form', params: { id: item.id } }"
+            >
+              EVOLUÇÃO
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
+          </v-col>
+        </v-row>
       </template>
     </v-data-table>
   </v-container>
@@ -89,18 +95,13 @@ export default {
       { text: 'Data Notificação', value: 'dataNotificacao' },
       { text: 'Unidade Notificadora', value: 'unidade' },
       { text: 'Situação', value: 'status' },
-      { sortable: false, value: 'actions', width: '315px' },
+      { sortable: false, value: 'actions', width: '240px' },
     ],
     removingNotificationDialog: {
       showDialog: false,
       id: null,
     },
   }),
-  computed: {
-    isSecretariaSaude() {
-      return isSecretariaSaude(this);
-    },
-  },
   methods: {
     getColor(situacao) {
       switch (situacao) {
@@ -178,6 +179,9 @@ export default {
     filterSearch(search) {
       this.filter = search;
       this.filterNotificacoes();
+    },
+    isPermiteEvoluir(item) {
+      return item.status === 'ABERTA' && isSecretariaSaude(this);
     },
   },
   created() {
