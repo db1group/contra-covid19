@@ -411,7 +411,8 @@ const validarPossuiConfirmacao = async (evolucao) => {
 
   const tpEvolucaoProibidaSeJaConfirmada = (evolucao.tpEvolucao === 'SUSPEITO'
     || evolucao.tpEvolucao === 'DESCARTADO'
-    || evolucao.tpEvolucao === 'CONFIRMADO');
+    || evolucao.tpEvolucao === 'CONFIRMADO'
+    || evolucao.tpEvolucao === 'ENCERRADO');
 
   if (!(tpEvolucaoPrecisaTerConfirmacao || tpEvolucaoProibidaSeJaConfirmada)) {
     return;
@@ -426,8 +427,8 @@ const validarPossuiConfirmacao = async (evolucao) => {
   });
 
   if (evolucaoConfirmado && tpEvolucaoProibidaSeJaConfirmada) {
-    throw new RegraNegocioErro(`Não é possivel atualizar para ${evolucao.tpEvolucao}
-      pois já existe atualização de confirmação.`);
+    const msgErro = `Não é possivel atualizar para ${evolucao.tpEvolucao} pois já existe atualização de confirmação.`;
+    throw new RegraNegocioErro(msgErro);
   }
 
   if (!evolucaoConfirmado && tpEvolucaoPrecisaTerConfirmacao) {
