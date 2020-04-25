@@ -28,9 +28,7 @@ export default {
     return inputedDateTime;
   },
   formatDateTypeToStringTypeWithMinutes(date) {
-    const inputedDateTime = moment(date).format('DD/MM/YYYY HH:mm');
-
-    return inputedDateTime;
+    return moment(date).format('DD/MM/YYYY HH:mm');
   },
   isDateValid(stringDate, format) {
     return moment(stringDate, format).isValid();
