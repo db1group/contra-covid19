@@ -4,7 +4,7 @@ const getTelefone = (pessoa = {}) => {
   const {
     telefoneResidencial = '',
     telefoneContato = '',
-    telefoneCelular = ''
+    telefoneCelular = '',
   } = pessoa;
   let telefone = '';
   if (telefoneResidencial !== '') {
