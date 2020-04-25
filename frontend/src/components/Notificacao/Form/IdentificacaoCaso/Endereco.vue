@@ -151,8 +151,8 @@ export default {
     },
     searchBairros(search = '') {
       if (search === this.searchBairro) return;
-      this.searchBairro = search;
-      this.findBairros(search || '');
+      this.searchBairro = search ? search.toUpperCase() : '';
+      this.findBairros(this.searchBairro);
     },
     findMunicipios(searchMunicipio = '') {
       this.municipios.loading = true;
@@ -164,8 +164,8 @@ export default {
     },
     searchMunicipios(search = '') {
       if (search === this.searchMunicipio) return;
-      this.searchMunicipio = search;
-      this.findMunicipios(search || '');
+      this.searchMunicipio = search ? search.toUpperCase() : '';
+      this.findMunicipios(this.searchMunicipio);
     },
   },
   created() {
