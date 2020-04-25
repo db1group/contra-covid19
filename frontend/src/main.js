@@ -4,11 +4,11 @@ import App from './App.vue';
 import router from './router';
 import vuetify from './plugins/vuetify';
 import Configuration from './configuration';
+import setHotjar from './hotjar';
 
 Vue.config.productionTip = false;
 
-console.log(`Valor da env: ${process.env.VUE_APP_ANY_VARIABLE}`);
-
+setHotjar();
 Vue.use(VueKeyCloak, {
   config: {
     url: `${Configuration.value('VUE_APP_KEYCLOAK_URL')}`,
