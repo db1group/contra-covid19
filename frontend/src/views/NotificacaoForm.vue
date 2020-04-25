@@ -271,10 +271,10 @@ export default {
       if (this.$refs.form.validate()) {
         const requestNotificacao = this.notificacao.toRequestBody();
         NotificacaoService.save(requestNotificacao).then(() => {
-          this.$refs.form.reset();
           this.showSuccess = true;
-          this.notificacao = new Notificacao();
-          window.scrollTo(0, 0);
+          setTimeout(() => {
+            this.$router.go();
+          }, 500);
         }).catch(({ response }) => {
           this.showError = true;
           this.errorMessage = response.data.error;
