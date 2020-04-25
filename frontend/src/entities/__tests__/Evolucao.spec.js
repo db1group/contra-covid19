@@ -1,5 +1,13 @@
 import Evolucao from '@/entities/Evolucao';
 
+jest.mock('moment', () => {
+  return () => ({
+    format: () => {
+      return '18/04/2020 12:53';
+    },
+  });
+});
+
 const evolucaoVazia = {
   id: null,
   status: 'ABERTA',

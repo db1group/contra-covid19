@@ -61,6 +61,11 @@ describe('Testes para entidade NotificacaoEvolucao', () => {
   });
 
   test('Criando nova Notificação Evolução com request body', () => {
+    jest.mock('moment', () => {
+      return () => ({
+        format: () => '18/04/2020 15:53',
+      });
+    });
     const result = new NotificacaoEvolucao(dataNotifEvolucao).toRequestBody();
     expect(result).toEqual(notifEvolucaoRequestBodyValida);
   });
