@@ -16,7 +16,6 @@
         :value="suspeito.ocupacao"
         label="Descrição da ocupação"
         @input="updateDescricaoOcupacao"
-        :disabled="isOcupacaoDisable"
       />
     </v-col>
   </v-row>
@@ -37,7 +36,6 @@ export default {
   },
   data: () => ({
     ocupacoes: [],
-    isOcupacaoDisable: true,
     rules: {
       ocupacaoId: [required],
     },
@@ -47,7 +45,6 @@ export default {
       this.$emit('update:updateDescricaoOcupacao', descricaoOcupacao);
     },
     updateOcupacao(ocupacao) {
-      this.validateOcupacaoDisabled(ocupacao);
       this.$emit('update:ocupacao', ocupacao);
     },
     findOcupacoes() {
@@ -55,14 +52,6 @@ export default {
         .then(({ data }) => {
           this.ocupacoes = data;
         });
-    },
-    validateOcupacaoDisabled(ocupacao) {
-      const validateOcupacao = this.ocupacoes.find((ocupacaoFilter) => ocupacaoFilter.id === ocupacao);
-      if (validateOcupacao && validateOcupacao.descricao === 'Outro') {
-        this.isOcupacaoDisable = false;
-      } else {
-        this.isOcupacaoDisable = true;
-      }
     },
   },
   created() {
