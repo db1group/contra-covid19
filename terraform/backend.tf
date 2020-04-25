@@ -63,7 +63,7 @@ resource "aws_ecs_task_definition" "backend" {
         "hostPort": 0
       }
     ],
-    "memory": 512,
+    "memory": 256,
     "cpu": 100,
     "environment" : [
       {

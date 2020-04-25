@@ -102,11 +102,11 @@ resource "aws_ecs_task_definition" "frontend" {
       },
       { 
         "name" : "VUE_APP_BACKEND_URL",
-        "value" : "${var.is_production == true ? "api.${var.hosted_zone}" : "${var.environment}-api.${var.hosted_zone}"}"
+        "value" : "${var.is_production == true ? "https://api.${var.hosted_zone}/api" : "https://${var.environment}-api.${var.hosted_zone}/api"}"
       },
       { 
         "name" : "VUE_APP_KEYCLOAK_URL",
-        "value" : "${var.is_production == true ? "auth.${var.hosted_zone}" : "${var.environment}-auth.${var.hosted_zone}"}"
+        "value" : "${var.is_production == true ? "https://auth.${var.hosted_zone}/auth" : "https://${var.environment}-auth.${var.hosted_zone}/auth"}"
       },
       { 
         "name" : "VUE_APP_KEYCLOAK_REALM",

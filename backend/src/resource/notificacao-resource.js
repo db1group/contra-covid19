@@ -231,13 +231,15 @@ exports.consultarPaginado = async (req, res, next) => {
   }
 };
 
-const obterOrdemConsultarNotificacao = async (sortBy) => {
+const obterCampoOrdenacao = async (sortBy) => {
   const ordernacaoIndice = {
     createdAt: 'Notificacao.createdAt',
     nome: 'Pessoa.nome',
     documento: 'Pessoa.numeroDocumento',
     telefone: 'Pessoa.telefoneContato',
     dataNotificacao: 'NotificacaoCovid19.dataHoraNotificacao',
+    unidade: 'UnidadeSaude.nome',
+    status: 'Notificacao.status',
   };
 
   if (!sortBy) {
@@ -247,7 +249,8 @@ const obterOrdemConsultarNotificacao = async (sortBy) => {
 };
 
 const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '') => {
-  const ordernacao = await obterOrdemConsultarNotificacao(sortBy);
+  const campoOrdenacao = await obterCampoOrdenacao(sortBy);
+  if (!campoOrdenacao) throw new RegraNegocioErro(`O campo ${sortBy} não é ordenável.`);
   const ordem = sortDesc === 'true' ? 'DESC' : 'ASC';
   const offset = (page - 1) * limit;
   const optionsConsulta = {
@@ -267,7 +270,7 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
       model: models.UnidadeSaude,
       attributes: ['nome'],
     }],
-    order: [[Sequelize.col(ordernacao), ordem]],
+    order: [[Sequelize.col(campoOrdenacao), ordem]],
     limit,
     offset,
   };
