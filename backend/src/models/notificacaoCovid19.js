@@ -101,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    metodoDeExame: DataTypes.ENUM('RT-PCR', 'TESTE_RAPIDO'),
+    metodoDeExame: DataTypes.ENUM('RT-PCR', 'TESTE_RAPIDO', 'SOROLOGIA_OUTROS'),
     realizouExameDeImagem: DataTypes.BOOLEAN,
     raioXNormal: DataTypes.BOOLEAN,
     raioXInfiltrado: DataTypes.BOOLEAN,
