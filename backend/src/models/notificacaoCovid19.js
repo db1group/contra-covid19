@@ -9,16 +9,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     notificacaoId: DataTypes.INTEGER,
     sintomatico: DataTypes.BOOLEAN,
-    dataInicioDosSintomas: DataTypes.DATE,
-    dataHoraNotificacao: {
-      type: DataTypes.DATE,
+    dataInicioDosSintomas: {
+      type: DataTypes.DATEONLY,
       validate: {
         isDate: true,
         naoEhMaiorQueDataAtual(value) {
-          validarMenorQueDataHoraAtual(value, 'A', 'data/hora da notificação');
+          validarMenorQueDataHoraAtual(value, 'A', 'data do início dos sintomas');
         },
       },
     },
+    dataHoraNotificacao: DataTypes.DATE,
     coriza: DataTypes.BOOLEAN,
     tosseSeca: DataTypes.BOOLEAN,
     dorDeGarganta: DataTypes.BOOLEAN,
