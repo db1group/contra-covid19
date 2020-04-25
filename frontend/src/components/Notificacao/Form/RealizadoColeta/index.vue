@@ -35,6 +35,7 @@
           </v-radio-group>
           <v-text-field
             :value="conclusaoAtendimento.nomeLaboratorioEnvioMaterial"
+            label="Nome do laboratório"
             :disabled="conclusaoAtendimento.tipoLaboratorio!=='PRIVADO'"
             class="realizado-coleta__nome-laboratorio"
             @input="updateNomeLaboratorioEnvioMaterial"
