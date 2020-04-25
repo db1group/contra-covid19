@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-CMD ["npx", "sequelize-cli", "db:migrate", "db:seed:all"]
+RUN chmod +x entrypoint.sh
 
-ENTRYPOINT ["node", "/app/src/server.js"]
+ENTRYPOINT [ "/app/entrypoint.sh" ]
