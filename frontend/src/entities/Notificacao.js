@@ -20,7 +20,6 @@ export default class Notificacao {
     this.profissaoId = data.profissaoId || null;
     this.tipoDeContatoComCaso = data.tipoDeContatoComCaso || null;
     this.tipoDeLocalDoCaso = data.tipoDeLocalDoCaso || null;
-    this.descricaoDoLocalDoCaso = data.descricaoDoLocalDoCaso || '';
     this.nomeDoCaso = data.nomeDoCaso || '';
     this.observacoes = data.observacoes || '';
     this.suspeito = new Pessoa(data.suspeito || {});
