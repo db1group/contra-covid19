@@ -7,7 +7,7 @@ const schemas = {
     notificadorId: Joi.string().guid({ version: 'uuidv4' }).required(),
     sintomatico: Joi.bool().required(),
     realizouExamesImagem: Joi.bool(),
-    dataInicioDosSintomas: Joi.date().iso(),
+    dataInicioDosSintomas: Joi.date().iso().allow(null),
     userId: Joi.string().guid({ version: 'uuidv4' }).required(),
     nomeNotificador: Joi.string().required().min(3).max(80),
     profissaoId: Joi.string().guid({ version: 'uuidv4' }).required(),
