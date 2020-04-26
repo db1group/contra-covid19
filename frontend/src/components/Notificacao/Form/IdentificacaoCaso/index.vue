@@ -120,7 +120,7 @@ export default {
     },
     updateMunicipioId(municipioId) {
       this.$emit('update:municipioId', municipioId);
-      this.$emit('update:bairroId', '');
+      this.$emit('update:bairroId', null);
     },
   },
 };

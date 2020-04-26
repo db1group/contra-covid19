@@ -56,6 +56,7 @@
           item-value="id"
           :loading="bairros.loading"
           no-data-text="Bairro não encontrado"
+          :disabled="!suspeito.municipioId"
           @input="updateBairroId"
         />
       </v-col>
@@ -112,7 +113,7 @@ export default {
     },
     bairros: {
       items: [],
-      loading: true,
+      loading: false,
     },
     rules: {
       cep: [minLength(8)],
@@ -137,6 +138,7 @@ export default {
     },
     updateMunicipioId(municipioId) {
       this.$emit('update:municipioId', municipioId);
+      this.findBairros();
     },
     updateComplemento(complemento) {
       this.$emit('update:complemento', complemento);
@@ -172,7 +174,6 @@ export default {
   },
   created() {
     this.findMunicipios();
-    this.findBairros('');
   },
 };
 </script>
