@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
       },
       nomeNotificador: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(80),
       },
       status: {
         type: DataTypes.ENUM('ABERTA', 'ENCERRADA', 'EXCLUIDA'),
