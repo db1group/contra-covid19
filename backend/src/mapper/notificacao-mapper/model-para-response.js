@@ -1,14 +1,27 @@
 const notificacaoParaResponse = (notificacao, notificacaoCovid19, request) => {
-  const { unidadeSaudeId, notificadorId, userId } = notificacao;
-  const { dataHoraNotificacao, dataInicioDosSintomas, sintomatico } = notificacaoCovid19;
+  const {
+    nomeNotificador, unidadeSaudeId, notificadorId, userId, profissaoId,
+  } = notificacao;
+  const {
+    dataHoraNotificacao, dataInicioDosSintomas, sintomatico,
+    realizouExameDeImagem, contatoComSuspeito, localDoContatoComSuspeito, nomeSuspeito,
+    observacoes,
+  } = notificacaoCovid19;
   return {
     id: notificacao.id,
     dataHoraNotificacao,
     unidadeSaudeId,
     notificadorId,
     sintomatico,
+    realizouExamesImagem: realizouExameDeImagem,
     dataInicioDosSintomas,
     userId,
+    nomeNotificador,
+    profissaoId,
+    tipoDeContatoComCaso: contatoComSuspeito,
+    tipoDeLocalDoCaso: localDoContatoComSuspeito,
+    nomeDoCaso: nomeSuspeito,
+    observacoes,
     ...request,
   };
 };
@@ -187,22 +200,20 @@ const extrairVinculoEpidemiologico = (notificacaoCovid19) => {
 
 const extrairConclusaoAtendimento = (notificacaoCovid19) => {
   const {
-    isolamentoDomiciliar,
-    leitoComum,
-    leitoUti,
-    prontoSocorroOuAtendimento,
     coletaMaterialParaDiagnostico,
-    // tipoLaboratorio,
-    // nomeLaboratorioEnvioMaterial,
+    tipoLaboratorio,
+    nomeLaboratorioEnvioMaterial,
+    situacaoNoMomentoDaNotificacao,
+    dataDaColeta,
+    metodoDeExame,
   } = notificacaoCovid19;
   return {
-    isolamentoDomiciliar,
-    leitoComum,
-    leitoUti,
-    prontoSocorroOuAtendimento,
+    situacaoNoMomentoDaNotificacao,
     coletaMaterialParaDiagnostico,
-    // tipoLaboratorio,
-    // nomeLaboratorioEnvioMaterial,
+    tipoLaboratorio,
+    nomeLaboratorioEnvioMaterial,
+    dataDaColeta,
+    metodoDeExame,
   };
 };
 
