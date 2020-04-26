@@ -63,7 +63,7 @@
 </style>
 <script>
 import { mask } from 'vue-the-mask';
-import { dateFormat } from '@/validations/CommonValidations';
+import { dateFormat, dateMustBeLesserEqualsThanToday } from '@/validations/CommonValidations';
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
 
 export default {
@@ -76,7 +76,7 @@ export default {
   },
   data: () => ({
     rules: {
-      dataDaColeta: [dateFormat],
+      dataDaColeta: [dateFormat, dateMustBeLesserEqualsThanToday],
     },
   }),
   methods: {
