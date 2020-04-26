@@ -45,7 +45,7 @@ export default {
     },
     cancelLabel: {
       type: String,
-      default: 'Cancelear',
+      default: 'Cancelar',
     },
   },
   methods: {
