@@ -25,7 +25,18 @@ const schemas = {
     examesImagem: Joi.object(),
     informacaoComplementar: Joi.object(),
     vinculoEpidemiologico: Joi.object(),
-    conclusaoAtendimento: Joi.object(),
+    conclusaoAtendimento: Joi.object().keys({
+      situacaoNoMomentoDaNotificacao: Joi.string()
+        .pattern(/ALTA_ISOLAMENTO_DOMICILIAR|INTERNAMENTO_LEITO_COMUM|INTERNAMENTO_LEITO_UTI|EVOLUCAO_OBITO/),
+      coletaMaterialParaDiagnostico: Joi.bool().allow(null),
+      tipoLaboratorio: Joi.string()
+        .allow(null)
+        .pattern(/OFICIAL|PRIVADO/),
+      nomeLaboratorioEnvioMaterial: Joi.string().allow(null, ''),
+      dataDaColeta: Joi.date().iso().allow(null),
+      metodoDeExame: Joi.string().allow(null)
+        .pattern(/RT-PCR|TESTE_RAPIDO|SOROLOGIA_OUTROS/),
+    }),
   }),
 };
 module.exports = schemas;
