@@ -131,6 +131,7 @@
         />
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
+          @update:coletaMaterialParaDiagnostico="updateConclusaoAtendimento('coletaMaterialParaDiagnostico', $event)"
           @update:tipoLaboratorio="updateConclusaoAtendimento('tipoLaboratorio', $event)"
           @update:nomeLaboratorioEnvioMaterial="updateConclusaoAtendimento('nomeLaboratorioEnvioMaterial', $event)"
           @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"

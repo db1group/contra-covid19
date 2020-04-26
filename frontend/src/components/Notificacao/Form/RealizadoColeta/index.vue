@@ -10,7 +10,7 @@
       <v-row>
         <v-col cols="12">
           <v-checkbox
-            :input-value="realizadaColeta"
+            :input-value="conclusaoAtendimento.coletaMaterialParaDiagnostico"
             label="Sim"
             hide-details
             @change="updateRealizadaColeta"
@@ -20,14 +20,14 @@
             class="pl-8"
             label="Data da Coleta"
             v-mask="'##/##/####'"
-            :disabled="!realizadaColeta"
+            :disabled="!conclusaoAtendimento.coletaMaterialParaDiagnostico"
             :rules="rules.dataDaColeta"
             @input="updateDataDaColeta"
           />
           <v-radio-group
             :value="conclusaoAtendimento.tipoLaboratorio"
             class="pl-8"
-            :disabled="!realizadaColeta"
+            :disabled="!conclusaoAtendimento.coletaMaterialParaDiagnostico"
             @change="changeTipoLaboratorio"
           >
             <v-radio value="OFICIAL" label="Laboratório Oficial"/>
@@ -45,7 +45,7 @@
             :value="conclusaoAtendimento.metodoDeExame"
             class="pl-8"
             label="Método do exame"
-            :disabled="!realizadaColeta"
+            :disabled="!conclusaoAtendimento.coletaMaterialParaDiagnostico"
             @change="updateMetodoDeExame"
           >
             <v-radio value="RT-PCR" label="RT-PCR"/>
@@ -75,15 +75,14 @@ export default {
     },
   },
   data: () => ({
-    realizadaColeta: false,
     rules: {
       dataDaColeta: [dateFormat],
     },
   }),
   methods: {
-    updateRealizadaColeta(realizadaColeta) {
-      this.realizadaColeta = realizadaColeta;
-      if (!this.realizadaColeta) {
+    updateRealizadaColeta(coletaMaterialParaDiagnostico) {
+      this.$emit('update:coletaMaterialParaDiagnostico', coletaMaterialParaDiagnostico);
+      if (!coletaMaterialParaDiagnostico) {
         this.unselectTipoLaboratorio();
         this.updateDataDaColeta('');
         this.updateMetodoDeExame(null);
@@ -94,7 +93,6 @@ export default {
       this.$emit('update:tipoLaboratorio', tipoLaboratorio);
 
       if (tipoLaboratorio !== 'PRIVADO') {
-        console.log('Entrou');
         this.updateNomeLaboratorioEnvioMaterial('');
       }
     },
