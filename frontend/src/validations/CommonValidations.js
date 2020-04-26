@@ -25,19 +25,31 @@ export const dateFormat = (value) => !value
 export const dateHourMinuteFormat = (value) => !value
   || (DATE_HOUR_MINUTE_FORMAT.test(value) && DateService.isDateValid(value, 'DD/MM/YYYY HH:mm'))
   || 'O formato precisa ser dd/mm/aaaa hh:mm';
-// eslint-disable-next-line max-len
-export const lessThanMaximumDate = (value, valueForComparation, message = 'Informe uma data igual ou anterior.') => !value
-  || (DateService.isLessThanMaximumDate(value, valueForComparation))
+export const lessThanMaximumDate = (
+  value,
+  valueForComparation,
+  message = 'Informe uma data igual ou anterior.',
+) => !value
+  || (DateService.isLesserEqualsThanMaximumDate(value, valueForComparation))
   || message;
-// eslint-disable-next-line max-len
-export const greaterThanMinimumDate = (value, valueForComparation, message = 'Informe uma data igual ou posterior.') => !value
-  || (DateService.isGreaterThanMinimumDate(value, valueForComparation))
+export const greaterThanMinimumDate = (
+  value,
+  valueForComparation,
+  message = 'Informe uma data igual ou posterior.',
+) => !value
+  || (DateService.isGreaterEqualsThanMinimumDate(value, valueForComparation))
   || message;
-// eslint-disable-next-line max-len
-export const lessThanMaximumDateWithMinutes = (value, valueForComparation, message = 'Informe uma data igual ou anterior.') => !value
-  || (DateService.isLessThanMaximumDateWithMinutes(value, valueForComparation))
+export const lessThanMaximumDateWithMinutes = (
+  value,
+  valueForComparation,
+  message = 'Informe uma data igual ou anterior.',
+) => !value
+  || (DateService.isLesserEqualsThanMaximumDateWithMinutes(value, valueForComparation))
   || message;
-// eslint-disable-next-line max-len
-export const greaterThanMinimumDateWithMinutes = (value, valueForComparation, message = 'Informe uma data igual ou posterior.') => !value
-  || (DateService.isGreaterThanMinimumDateWithMinutes(value, valueForComparation))
+export const greaterThanMinimumDateWithMinutes = (
+  value,
+  valueForComparation,
+  message = 'Informe uma data igual ou posterior.',
+) => !value
+  || (DateService.isGreaterEqualsThanMinimumDateWithMinutes(value, valueForComparation))
   || message;

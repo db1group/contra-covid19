@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+const toMomentObject = (stringDate, format) => moment(stringDate, format);
+
 export default {
   formatNowAsStringDateTime() {
     return moment().format('DD/MM/YYYY HH:mm');
@@ -12,7 +14,7 @@ export default {
     return moment(stringDate, fromFormat).format(toFormat);
   },
   toMomentObject(stringDate, format) {
-    return moment(stringDate, format);
+    return toMomentObject(stringDate, format);
   },
   formatStringTypeToDateTypeWithMinutes(stringDate) {
     const splitedDateTime = stringDate.split(' ');
@@ -30,7 +32,7 @@ export default {
   isDateValid(stringDate, format) {
     return moment(stringDate, format).isValid();
   },
-  isLessThanMaximumDate(stringInformedDate, stringMaximumDate) {
+  isLesserEqualsThanMaximumDate(stringInformedDate, stringMaximumDate) {
     const splitedInformedValue = stringInformedDate.split('/');
     const inputedInformedDate = new Date(`
       ${splitedInformedValue[2]}-${splitedInformedValue[1]}-${splitedInformedValue[0]}
@@ -48,7 +50,7 @@ export default {
 
     return (inputedInformedDate <= maximumDate);
   },
-  isGreaterThanMinimumDate(stringInformedDate, stringMinimumDate) {
+  isGreaterEqualsThanMinimumDate(stringInformedDate, stringMinimumDate) {
     const splitedInformedValue = stringInformedDate.split('/');
     const inputedInformedDate = new Date(`
       ${splitedInformedValue[2]}-${splitedInformedValue[1]}-${splitedInformedValue[0]}
@@ -66,7 +68,7 @@ export default {
 
     return (inputedInformedDate >= minimumDate);
   },
-  isLessThanMaximumDateWithMinutes(stringInformedDate, stringMaximumDate) {
+  isLesserEqualsThanMaximumDateWithMinutes(stringInformedDate, stringMaximumDate) {
     const splitedDateTime = stringInformedDate.split(' ');
     const splitedDateValue = splitedDateTime[0].split('/');
     const splitedTimeValue = splitedDateTime[1].split(':');
@@ -86,7 +88,7 @@ export default {
 
     return (inputedInformedDate <= maximumDate);
   },
-  isGreaterThanMinimumDateWithMinutes(stringInformedDate, stringMinimumDate) {
+  isGreaterEqualsThanMinimumDateWithMinutes(stringInformedDate, stringMinimumDate) {
     const splitedDateTime = stringInformedDate.split(' ');
     const splitedDateValue = splitedDateTime[0].split('/');
     const splitedTimeValue = splitedDateTime[1].split(':');
