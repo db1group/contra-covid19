@@ -11,11 +11,15 @@ const schemas = {
     userId: Joi.string().guid({ version: 'uuidv4' }).required(),
     nomeNotificador: Joi.string().required().min(3).max(80),
     profissaoId: Joi.string().guid({ version: 'uuidv4' }).required(),
-    tipoDeContatoComCaso: Joi.string().allow(''),
-    tipoDeLocalDoCaso: Joi.string().allow(''),
-    descricaoDoLocalDoCaso: Joi.string().allow(''),
-    nomeDoCaso: Joi.string().allow('').max(120),
-    observacoes: Joi.string(),
+    tipoDeContatoComCaso: Joi.string()
+      .allow('', null)
+      .pattern(/SUSPEITO|CONFIRMADO|SEM_CONTATO/),
+    tipoDeLocalDoCaso: Joi.string()
+      .allow('', null)
+      .pattern(/DOMICILIO|UNIDADE_SAUDE|LOCAL_TRABALHO/),
+    descricaoDoLocalDoCaso: Joi.string().allow('', null),
+    nomeDoCaso: Joi.string().allow('', null).max(120),
+    observacoes: Joi.string().allow('', null),
     suspeito: Joi.object(),
     sintomas: Joi.object(),
     comorbidades: Joi.object(),
