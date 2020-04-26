@@ -17,7 +17,6 @@ const schemas = {
     tipoDeLocalDoCaso: Joi.string()
       .allow('', null)
       .pattern(/DOMICILIO|UNIDADE_SAUDE|LOCAL_TRABALHO/),
-    descricaoDoLocalDoCaso: Joi.string().allow('', null),
     nomeDoCaso: Joi.string().allow('', null).max(120),
     observacoes: Joi.string().allow('', null),
     suspeito: Joi.object(),
