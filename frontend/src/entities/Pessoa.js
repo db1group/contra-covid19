@@ -14,6 +14,7 @@ export default class Pessoa {
     this.bairroId = data.bairroId || null;
     this.nomeDaMae = data.nomeDaMae || '';
     this.ocupacao = data.ocupacao || '';
+    this.ocupacaoId = data.ocupacaoId || '';
     this.endereco = data.endereco || '';
     this.numero = data.numero || '';
     this.complemento = data.complemento || '';

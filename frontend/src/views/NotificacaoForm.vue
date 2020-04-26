@@ -1,12 +1,11 @@
 <template>
   <section style="margin-top: 75px;">
     <base-page>
-
       <h3 class="primary--text my-7 display-1">
         <v-btn large icon color="primary" :to="{ name: 'notificacao-cons' }">
           <v-icon>mdi-arrow-left</v-icon>
+          {{title}}
         </v-btn>
-        {{title}}
       </h3>
       <v-form ref="form">
         <identificacao-notificante
@@ -40,7 +39,8 @@
           @update:telefoneResidencial="updateSuspeito('telefoneResidencial', $event)"
           @update:telefoneCelular="updateSuspeito('telefoneCelular', $event)"
           @update:telefoneContato="updateSuspeito('telefoneContato', $event)"
-          @update:ocupacao="updateSuspeito('ocupacao', $event)"
+          @update:ocupacao="updateSuspeito('ocupacaoId', $event)"
+          @update:descricaoOcupacao="updateSuspeito('ocupacao', $event)"
           @update:complemento="updateSuspeito('complemento', $event)"
           @update:municipioId="updateSuspeito('municipioId', $event)"
         />
@@ -91,11 +91,12 @@
           @update:raioMisto="updateExameImagem('raioMisto', $event)"
           @update:raioOutro="updateExameImagem('raioOutro', $event)"
           @update:tomografiaNormal="updateExameImagem('tomografiaNormal', $event)"
-          @update:tomografiaVidroFoscoPredominioPerifericoBasal=
-            "updateExameImagem('tomografiaVidroFoscoPredominioPerifericoBasal', $event)"
-          @update:tomografiaAusenciaDerramePleural="updateExameImagem('tomografiaAusenciaDerramePleural', $event)"
-          @update:tomografiaAusenciaLinfonodoMediastenal=
-            "updateExameImagem('tomografiaAusenciaLinfonodoMediastenal', $event)"
+          @update:tomografiaVidroFoscoPredominioPerifericoBasal="
+          updateExameImagem('tomografiaVidroFoscoPredominioPerifericoBasal', $event)"
+          @update:tomografiaAusenciaDerramePleural="
+          updateExameImagem('tomografiaAusenciaDerramePleural', $event)"
+          @update:tomografiaAusenciaLinfonodoMediastenal="
+          updateExameImagem('tomografiaAusenciaLinfonodoMediastenal', $event)"
           @update:tomografiaOutro="updateExameImagem('tomografiaOutro', $event)"
         />
         <comorbidades
@@ -131,8 +132,8 @@
         />
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
-          @update:laboratorioOficial="updateConclusaoAtendimento('laboratorioOficial', $event)"
-          @update:laboratorioRedePrivada="updateConclusaoAtendimento('laboratorioRedePrivada', $event)"
+          @update:tipoLaboratorio="updateConclusaoAtendimento('tipoLaboratorio', $event)"
+          @update:nomeLaboratorioEnvioMaterial="updateConclusaoAtendimento('nomeLaboratorioEnvioMaterial', $event)"
           @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"
           @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
         />
@@ -158,30 +159,16 @@
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
           @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
         />
-        <observacoes v-model="notificacao.observacoes"/>
+        <observacoes v-model="notificacao.observacoes" />
       </v-form>
-      <botao-enviar @click="send"/>
-      <v-snackbar
-        v-model="showError"
-        color="error"
-        bottom
-      >
-        {{ errorMessage }}
-      </v-snackbar>
+      <botao-enviar @click="send" />
+      <v-snackbar v-model="showError" color="error" bottom>{{ errorMessage }}</v-snackbar>
       <v-snackbar
         v-model="showAlert"
         color="warning"
         bottom
-      >
-        Algum dos campos do formulário possui alguma pendência
-      </v-snackbar>
-      <v-snackbar
-        v-model="showSuccess"
-        color="success"
-        bottom
-      >
-        Notificação enviada com sucesso.
-      </v-snackbar>
+      >Algum dos campos do formulário possui alguma pendência</v-snackbar>
+      <v-snackbar v-model="showSuccess" color="success" bottom>Notificação enviada com sucesso.</v-snackbar>
     </base-page>
   </section>
 </template>
@@ -301,10 +288,10 @@ export default {
       if (this.$refs.form.validate()) {
         const requestNotificacao = this.notificacao.toRequestBody();
         NotificacaoService.save(requestNotificacao).then(() => {
-          this.$refs.form.reset();
           this.showSuccess = true;
-          this.notificacao = new Notificacao();
-          window.scrollTo(0, 0);
+          setTimeout(() => {
+            this.$router.go();
+          }, 500);
         }).catch(({ response }) => {
           this.showError = true;
           this.errorMessage = response.data.error;

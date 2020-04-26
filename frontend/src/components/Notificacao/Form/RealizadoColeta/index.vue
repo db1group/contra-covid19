@@ -25,14 +25,22 @@
             @input="updateDataDaColeta"
           />
           <v-radio-group
-            :value="tipoLaboratorio"
+            :value="conclusaoAtendimento.tipoLaboratorio"
             class="pl-8"
             :disabled="!realizadaColeta"
             @change="changeTipoLaboratorio"
           >
-            <v-radio :value="1" label="Laboratório Oficial/LACEN"/>
-            <v-radio :value="2" label="Laboratório da rede PRIVADA"/>
+            <v-radio value="OFICIAL" label="Laboratório Oficial"/>
+            <v-radio value="PRIVADO" label="Laboratório da rede PRIVADA"/>
           </v-radio-group>
+          <v-text-field
+            :value="conclusaoAtendimento.nomeLaboratorioEnvioMaterial"
+            label="Nome do laboratório"
+            :disabled="conclusaoAtendimento.tipoLaboratorio!=='PRIVADO'"
+            class="realizado-coleta__nome-laboratorio"
+            @input="updateNomeLaboratorioEnvioMaterial"
+          />
+
           <v-radio-group
             :value="conclusaoAtendimento.metodoDeExame"
             class="pl-8"
@@ -48,6 +56,11 @@
     </v-container>
   </div>
 </template>
+<style lang="sass" scoped>
+.realizado-coleta
+  &__nome-laboratorio
+    padding-left: 64px
+</style>
 <script>
 import { mask } from 'vue-the-mask';
 import { dateFormat } from '@/validations/CommonValidations';
@@ -63,7 +76,6 @@ export default {
   },
   data: () => ({
     realizadaColeta: false,
-    tipoLaboratorio: null,
     rules: {
       dataDaColeta: [dateFormat],
     },
@@ -75,36 +87,29 @@ export default {
         this.unselectTipoLaboratorio();
         this.updateDataDaColeta('');
         this.updateMetodoDeExame(null);
+        this.updateNomeLaboratorioEnvioMaterial('');
       }
     },
     changeTipoLaboratorio(tipoLaboratorio) {
-      this.tipoLaboratorio = tipoLaboratorio;
-      if (this.tipoLaboratorio === 1) {
-        this.selectOficial();
-        return;
+      this.$emit('update:tipoLaboratorio', tipoLaboratorio);
+
+      if (tipoLaboratorio !== 'PRIVADO') {
+        console.log('Entrou');
+        this.updateNomeLaboratorioEnvioMaterial('');
       }
-      if (this.tipoLaboratorio === 2) {
-        this.selectRedePrivada();
-      }
-    },
-    selectOficial() {
-      this.$emit('update:laboratorioOficial', true);
-      this.$emit('update:laboratorioRedePrivada', false);
-    },
-    selectRedePrivada() {
-      this.$emit('update:laboratorioOficial', false);
-      this.$emit('update:laboratorioRedePrivada', true);
     },
     unselectTipoLaboratorio() {
       this.tipoLaboratorio = null;
-      this.$emit('update:laboratorioOficial', false);
-      this.$emit('update:laboratorioRedePrivada', false);
+      this.$emit('update:tipoLaboratorio', null);
     },
     updateDataDaColeta(dataDaColeta) {
       this.$emit('update:dataDaColeta', dataDaColeta);
     },
     updateMetodoDeExame(metodoDeExame) {
       this.$emit('update:metodoDeExame', metodoDeExame);
+    },
+    updateNomeLaboratorioEnvioMaterial(nomeLaboratorioEnvioMaterial) {
+      this.$emit('update:nomeLaboratorioEnvioMaterial', nomeLaboratorioEnvioMaterial);
     },
   },
 };

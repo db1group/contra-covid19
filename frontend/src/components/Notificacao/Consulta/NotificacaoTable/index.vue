@@ -37,27 +37,48 @@
         <v-card-title>
           Cadastros
           <v-spacer></v-spacer>
-          <v-text-field
-            @input="filterSearch"
-            append-icon="mdi-magnify"
-            label="Pesquisar por Documento ou Nome"
-            single-line
-            hide-details
-          ></v-text-field>
+          <v-row>
+            <v-col cols="4">
+              <v-select
+                :items="situacaoNotif"
+                :value="filtroStatus"
+                label="Situação"
+                item-text="value"
+                item-value="key"
+                @input="updateFiltroSituacao"
+              />
+            </v-col>
+            <v-col cols="8">
+              <v-text-field
+                @input="filterSearch"
+                append-icon="mdi-magnify"
+                label="Pesquisar por Documento ou Nome"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
         </v-card-title>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-btn text small color="#B8860B" :to="{ name: 'notificacao-form' }">VISUALIZAR</v-btn>
-        <v-btn
-          v-if="isSecretariaSaude"
-          text
-          small
-          color="primary"
-          :to="{ name: 'evolucao-form', params: { id: item.id } }"
-        >
-          EVOLUÇÃO
-        </v-btn>
-        <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
+          <!-- A visualização ainda não funciona. Vamos deixar comentado por enquanto -->
+          <!-- <v-btn text small color="#B8860B" :to="{ name: 'notificacao-form' }">VISUALIZAR</v-btn> -->
+        <v-row justify="end" align="center">
+          <v-col>
+            <v-btn
+              v-if="isPermiteEvoluir(item)"
+              text
+              small
+              color="primary"
+              :to="{ name: 'evolucao-form', params: { id: item.id } }"
+            >
+              EVOLUÇÃO
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
+          </v-col>
+        </v-row>
       </template>
     </v-data-table>
   </v-container>
@@ -68,9 +89,17 @@ import NotificacaoService from '@/services/NotificacaoService';
 import NotificacaoConsulta from '@/entities/NotificacaoConsulta';
 import { isSecretariaSaude } from '@/validations/KeycloakValidations';
 
+const SITUACAO_NOTIFICACAO = [
+  { key: '', value: 'TODAS' },
+  { key: 'ABERTA', value: 'ABERTA' },
+  { key: 'ENCERRADA', value: 'ENCERRADA' },
+];
+
 export default {
   components: { ConfirmDialog },
   data: () => ({
+    situacaoNotif: SITUACAO_NOTIFICACAO,
+    filtroStatus: '',
     singleSelect: false,
     selected: [],
     items: [],
@@ -88,56 +117,26 @@ export default {
       { text: 'Data Notificação', value: 'dataNotificacao' },
       { text: 'Unidade Notificadora', value: 'unidade' },
       { text: 'Situação', value: 'status' },
-      { sortable: false, value: 'actions', width: '315px' },
+      { sortable: false, value: 'actions', width: '240px' },
     ],
     removingNotificationDialog: {
       showDialog: false,
       id: null,
     },
   }),
-  created() {
-    this.consultarNotificacoes();
-  },
-  computed: {
-    isSecretariaSaude() {
-      return isSecretariaSaude(this);
-    },
-  },
   methods: {
-    getColor(situacao) {
-      switch (situacao) {
-        case 'UTI':
-          return '#FD3A5C';
-        case 'Óbito':
-          return 'black';
-        case 'Leito comum':
-          return '#FFB300';
-        case 'Isolamento domiciliar':
-          return '#64FFDA';
-        default:
-          return 'red';
-      }
-    },
-    getTextColor(situacao) {
-      switch (situacao) {
-        case 'UTI':
-        case 'Óbito':
-          return 'white';
-        default:
-          return 'black';
-      }
-    },
     consultarNotificacoes({
       page, itemsPerPage, sortBy = 'createdAt', sortDesc = 'true',
     } = this.options) {
       this.loading = true;
       const search = this.filter;
+      const status = this.filtroStatus;
       NotificacaoService.findAll({
-        page, itemsPerPage, sortBy, sortDesc, search,
+        page, itemsPerPage, sortBy, sortDesc, search, status,
       })
         .then(({ count, data }) => {
           this.totalNotif = count;
-          this.notificacoes = data.map((d) => new NotificacaoConsulta(d).toRequestBody());
+          this.notificacoes = data.map((d) => new NotificacaoConsulta(d));
           this.loading = false;
         })
         .catch((error) => {
@@ -181,6 +180,16 @@ export default {
       this.filter = search;
       this.filterNotificacoes();
     },
+    isPermiteEvoluir(item) {
+      return item.status === 'ABERTA' && isSecretariaSaude(this);
+    },
+    updateFiltroSituacao(status) {
+      this.filtroStatus = status;
+      this.consultarNotificacoes();
+    },
+  },
+  created() {
+    this.consultarNotificacoes();
   },
 };
 </script>

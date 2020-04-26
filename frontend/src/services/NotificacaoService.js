@@ -5,11 +5,11 @@ export default {
     return http.post('/notificacoes', notificacaco);
   },
   findAll({
-    page, itemsPerPage, search, sortBy, sortDesc,
+    page, itemsPerPage, search, sortBy, sortDesc, status,
   }) {
     return http
       .get(`/notificacoes/consulta?page=${page}&itemsPerPage=${itemsPerPage}
-        &sortBy=${sortBy}&sortDesc=${sortDesc}&search=${search}`)
+        &sortBy=${sortBy}&sortDesc=${sortDesc}&status=${status}&search=${search}`)
       .then(({ data }) => data);
   },
   findById(notificacaoId) {

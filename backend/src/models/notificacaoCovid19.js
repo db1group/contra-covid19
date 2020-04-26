@@ -9,8 +9,24 @@ module.exports = (sequelize, DataTypes) => {
     },
     notificacaoId: DataTypes.INTEGER,
     sintomatico: DataTypes.BOOLEAN,
-    dataInicioDosSintomas: DataTypes.DATE,
-    dataHoraNotificacao: DataTypes.DATE,
+    dataInicioDosSintomas: {
+      type: DataTypes.DATEONLY,
+      validate: {
+        isDate: true,
+        naoEhMaiorQueDataAtual(value) {
+          validarMenorQueDataHoraAtual(value, 'A', 'data do início dos sintomas');
+        },
+      },
+    },
+    dataHoraNotificacao: {
+      type: DataTypes.DATE,
+      validate: {
+        isDate: true,
+        naoEhMaiorQueDataAtual(value) {
+          validarMenorQueDataHoraAtual(value, 'A', 'data/hora da notificação');
+        },
+      },
+    },
     coriza: DataTypes.BOOLEAN,
     tosseSeca: DataTypes.BOOLEAN,
     dorDeGarganta: DataTypes.BOOLEAN,
@@ -73,13 +89,9 @@ module.exports = (sequelize, DataTypes) => {
     situacao1: DataTypes.BOOLEAN,
     situacao2: DataTypes.BOOLEAN,
     nomeTeveContato: DataTypes.STRING,
-    isolamentoDomiciliar: DataTypes.BOOLEAN,
-    leitoComum: DataTypes.BOOLEAN,
-    leitoUti: DataTypes.BOOLEAN,
-    prontoSocorroOuAtendimento: DataTypes.BOOLEAN,
     coletaMaterialParaDiagnostico: DataTypes.BOOLEAN,
-    laboratorioOficial: DataTypes.BOOLEAN,
-    laboratorioRedePrivada: DataTypes.BOOLEAN,
+    tipoLaboratorio: DataTypes.ENUM('OFICIAL', 'PRIVADO'),
+    nomeLaboratorioEnvioMaterial: DataTypes.STRING(30),
     dataDaColeta: {
       type: DataTypes.DATE,
       validate: {
@@ -89,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    metodoDeExame: DataTypes.ENUM('RT-PCR', 'TESTE_RAPIDO'),
+    metodoDeExame: DataTypes.ENUM('RT-PCR', 'TESTE_RAPIDO', 'SOROLOGIA_OUTROS'),
     realizouExameDeImagem: DataTypes.BOOLEAN,
     raioXNormal: DataTypes.BOOLEAN,
     raioXInfiltrado: DataTypes.BOOLEAN,

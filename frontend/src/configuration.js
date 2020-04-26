@@ -5,6 +5,7 @@ dotenv.config();
 export default class Configuration {
   static get CONFIG() {
     return {
+      NODE_ENV: '$NODE_ENV',
       VUE_APP_BACKEND_URL: '$VUE_APP_BACKEND_URL',
       VUE_APP_KEYCLOAK_URL: '$VUE_APP_KEYCLOAK_URL',
       VUE_APP_KEYCLOAK_REALM: '$VUE_APP_KEYCLOAK_REALM',
@@ -26,7 +27,7 @@ export default class Configuration {
       return undefined;
     }
 
-    if (value.startsWith('$VUE_APP_')) {
+    if (value.startsWith('$VUE_APP_') || value === '$NODE_ENV') {
       const envName = value.substr(1);
       const envValue = process.env[envName];
       if (envValue) {

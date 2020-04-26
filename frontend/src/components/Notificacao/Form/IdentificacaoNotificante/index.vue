@@ -96,9 +96,10 @@ export default {
         .finally(() => { this.profissoes.loading = false; });
     },
     searchProfissoes(search = '') {
+      if (!search) return;
       if (search === this.searchProfissao) return;
-      this.searchProfissao = search;
-      this.findProfissoes(search);
+      this.searchProfissao = search ? search.toUpperCase() : '';
+      this.findProfissoes(this.searchProfissao);
     },
     findUnidadesDeSaude(searchUnidade = '') {
       if (this.unidadesSaude.loading) return;
@@ -110,9 +111,10 @@ export default {
         .finally(() => { this.unidadesSaude.loading = false; });
     },
     searchUnidadeSaude(search = '') {
+      if (!search) return;
       if (search === this.searchUnidade) return;
-      this.searchUnidade = search;
-      this.findUnidadesDeSaude(search);
+      this.searchUnidade = search ? search.toUpperCase() : '';
+      this.findUnidadesDeSaude(this.searchUnidade);
     },
   },
   created() {

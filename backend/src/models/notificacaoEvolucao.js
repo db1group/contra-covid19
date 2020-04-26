@@ -1,3 +1,5 @@
+const { RegraNegocioErro } = require('../lib/erros');
+
 module.exports = (sequelize, DataTypes) => {
   const NotificacaoEvolucao = sequelize.define('NotificacaoEvolucao', {
     id: {
@@ -15,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
           const actualValue = new Date(value);
           const tomorrow = new Date();
           if (actualValue >= tomorrow) {
-            throw new Error('A evolução não pode possuir data futura');
+            throw new RegraNegocioErro('A evolução não pode possuir data futura.');
           }
         },
       },

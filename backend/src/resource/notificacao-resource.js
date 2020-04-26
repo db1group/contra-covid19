@@ -236,13 +236,15 @@ exports.consultarPaginado = async (req, res, next) => {
   }
 };
 
-const obterOrdemConsultarNotificacao = async (sortBy) => {
+const obterCampoOrdenacao = async (sortBy) => {
   const ordernacaoIndice = {
     createdAt: 'Notificacao.createdAt',
     nome: 'Pessoa.nome',
     documento: 'Pessoa.numeroDocumento',
     telefone: 'Pessoa.telefoneContato',
     dataNotificacao: 'NotificacaoCovid19.dataHoraNotificacao',
+    unidade: 'UnidadeSaude.nome',
+    status: 'Notificacao.status',
   };
 
   if (!sortBy) {
@@ -251,8 +253,9 @@ const obterOrdemConsultarNotificacao = async (sortBy) => {
   return ordernacaoIndice[sortBy];
 };
 
-const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '') => {
-  const ordernacao = await obterOrdemConsultarNotificacao(sortBy);
+const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '', status = '') => {
+  const campoOrdenacao = await obterCampoOrdenacao(sortBy);
+  if (!campoOrdenacao) throw new RegraNegocioErro(`O campo ${sortBy} não é ordenável.`);
   const ordem = sortDesc === 'true' ? 'DESC' : 'ASC';
   const offset = (page - 1) * limit;
   const optionsConsulta = {
@@ -272,10 +275,20 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
       model: models.UnidadeSaude,
       attributes: ['nome'],
     }],
-    order: [[Sequelize.col(ordernacao), ordem]],
+    order: [[Sequelize.col(campoOrdenacao), ordem]],
     limit,
     offset,
   };
+  if (status !== '') {
+    optionsConsulta.where.status = {
+      [Op.and]: [
+        optionsConsulta.where.status,
+        {
+          [Op.eq]: status,
+        },
+      ],
+    };
+  }
   if (search !== '') {
     optionsConsulta.where = {
       [Op.and]: [
@@ -309,7 +322,7 @@ const consultarNotificacoesWebVazia = {
 exports.consultarNotificacoesWeb = async (req, res, next) => {
   try {
     const {
-      page = 1, itemsPerPage = 10, search = '', sortBy, sortDesc,
+      page = 1, itemsPerPage = 10, search = '', sortBy, sortDesc, status,
     } = req.query;
     const notificacoes = await consultarNotificaoesWeb(
       page,
@@ -317,6 +330,7 @@ exports.consultarNotificacoesWeb = async (req, res, next) => {
       sortBy,
       sortDesc,
       search,
+      status,
     );
     if (!notificacoes) return res.json(consultarNotificacoesWebVazia);
     const notificacaoConsulta = Mappers.Notificacao.mapearParaConsulta(notificacoes.rows);
@@ -378,7 +392,7 @@ exports.consultarNotificacaoEvolucao = async (req, res, next) => {
       attributes: ['status'],
       include: [{
         model: models.Pessoa,
-        attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
+        attributes: ['nome', 'numeroDocumento', 'telefoneResidencial', 'telefoneContato', 'telefoneCelular'],
       },
       { model: models.NotificacaoEvolucao },
       ],
@@ -413,7 +427,8 @@ const validarPossuiConfirmacao = async (evolucao) => {
 
   const tpEvolucaoProibidaSeJaConfirmada = (evolucao.tpEvolucao === 'SUSPEITO'
     || evolucao.tpEvolucao === 'DESCARTADO'
-    || evolucao.tpEvolucao === 'CONFIRMADO');
+    || evolucao.tpEvolucao === 'CONFIRMADO'
+    || evolucao.tpEvolucao === 'ENCERRADO');
 
   if (!(tpEvolucaoPrecisaTerConfirmacao || tpEvolucaoProibidaSeJaConfirmada)) {
     return;
@@ -428,8 +443,8 @@ const validarPossuiConfirmacao = async (evolucao) => {
   });
 
   if (evolucaoConfirmado && tpEvolucaoProibidaSeJaConfirmada) {
-    throw new RegraNegocioErro(`Não é possivel atualizar para ${evolucao.tpEvolucao}
-      pois já existe atualização de confirmação.`);
+    const msgErro = `Não é possivel atualizar para ${evolucao.tpEvolucao} pois já existe atualização de confirmação.`;
+    throw new RegraNegocioErro(msgErro);
   }
 
   if (!evolucaoConfirmado && tpEvolucaoPrecisaTerConfirmacao) {

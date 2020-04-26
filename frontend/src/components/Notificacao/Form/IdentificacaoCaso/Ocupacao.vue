@@ -1,16 +1,31 @@
 <template>
   <v-row dense>
-    <v-col cols="12">
+    <v-col cols="6">
+      <v-select
+        :value="suspeito.ocupacaoId"
+        :rules="rules.ocupacaoId"
+        label="Ocupação *"
+        :items="ocupacoes"
+        item-text="descricao"
+        item-value="id"
+        @input="updateOcupacao"
+      />
+    </v-col>
+    <v-col cols="6">
       <v-text-field
         :value="suspeito.ocupacao"
-        label="Ocupação"
-        @input="updateOcupacao"
+        label="Descrição da ocupação"
+        @input="updateDescricaoOcupacao"
       />
     </v-col>
   </v-row>
 </template>
 <script>
 import Pessoa from '@/entities/Pessoa';
+import OcupacaoService from '@/services/OcupacaoService';
+import {
+  required,
+} from '@/validations/CommonValidations';
 
 export default {
   props: {
@@ -19,10 +34,28 @@ export default {
       required: true,
     },
   },
+  data: () => ({
+    ocupacoes: [],
+    rules: {
+      ocupacaoId: [required],
+    },
+  }),
   methods: {
+    updateDescricaoOcupacao(descricaoOcupacao) {
+      this.$emit('update:updateDescricaoOcupacao', descricaoOcupacao);
+    },
     updateOcupacao(ocupacao) {
       this.$emit('update:ocupacao', ocupacao);
     },
+    findOcupacoes() {
+      OcupacaoService.findAll()
+        .then(({ data }) => {
+          this.ocupacoes = data;
+        });
+    },
+  },
+  created() {
+    this.findOcupacoes();
   },
 };
 </script>

@@ -4,8 +4,8 @@ export default class ConclusaoAtendimento {
   constructor(data = {}) {
     this.situacaoNoMomentoDaNotificacao = data.situacaoNoMomentoDaNotificacao || null;
     this.coletaMaterialParaDiagnostico = data.coletaMaterialParaDiagnostico || false;
-    this.laboratorioOficial = data.laboratorioOficial || false;
-    this.laboratorioRedePrivada = data.laboratorioRedePrivada || false;
+    this.tipoLaboratorio = data.tipoLaboratorio || null;
+    this.nomeLaboratorioEnvioMaterial = data.nomeLaboratorioEnvioMaterial || '';
     this.dataDaColeta = data.dataDaColeta || '';
     this.metodoDeExame = data.metodoDeExame || null;
   }

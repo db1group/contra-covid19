@@ -39,11 +39,7 @@ export default class NotificacaoEvolucao {
   toRequestBody() {
     return {
       ...this,
-      dataHoraAtualizacao: DateService.parseZone(
-        this.dataHoraAtualizacao,
-        'YYYY-MM-DDTHH:mm:ss.SSSZ',
-        'DD/MM/YYYY HH:mm',
-      ),
+      dataHoraAtualizacao: DateService.formatDateTypeToStringTypeWithMinutes(this.dataHoraAtualizacao),
       local: findItem(locaisList, this.local),
       situacao: findItem(situacoesList, this.situacao),
     };
@@ -52,7 +48,7 @@ export default class NotificacaoEvolucao {
   toRequest() {
     return {
       notificacaoId: this.notificacaoId,
-      dtEvolucao: DateService.toMomentZoneObject(this.dataHoraAtualizacao, 'DD/MM/YYYY HH:mm').toISOString(),
+      dtEvolucao: DateService.toMomentObject(this.dataHoraAtualizacao, 'DD/MM/YYYY HH:mm').toISOString(),
       tpLocal: this.local,
       tpEvolucao: this.situacao,
     };

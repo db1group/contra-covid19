@@ -132,8 +132,8 @@ exports.gerarExcel = async (req, res) => {
       // 8. Dados Laboratoriais
       coletaMaterialParaDiagnostico: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'coletaMaterialParaDiagnostico'),
       dataDaColeta: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataDaColeta'),
-      laboratorioOficial: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'laboratorioOficial'),
-      laboratorioRedePrivada: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'laboratorioRedePrivada'),
+      tipoLaboratorio: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tipoLaboratorio'),
+      nomeLaboratorioEnvioMaterial: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'nomeLaboratorioEnvioMaterial'),
       metodoDeExame: t.NotificacaoCovid19 ? t.NotificacaoCovid19.metodoDeExame : null,
       // 9. Histórico de viagem
       historicoDeViagem: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'historicoDeViagem'),
@@ -243,8 +243,8 @@ exports.gerarExcel = async (req, res) => {
       // 8. Dados Laboratoriais
       { nomeColuna: 'coletaMaterialParaDiagnostico', nomeCampo: 'coletaMaterialParaDiagnostico' },
       { nomeColuna: 'dataDaColeta', nomeCampo: 'dataDaColeta' },
-      { nomeColuna: 'laboratorioOficial', nomeCampo: 'laboratorioOficial' },
-      { nomeColuna: 'laboratorioRedePrivada', nomeCampo: 'laboratorioRedePrivada' },
+      { nomeColuna: 'tipoLaboratorio', nomeCampo: 'tipoLaboratorio' },
+      { nomeColuna: 'nomeLaboratorioEnvioMaterial', nomeCampo: 'nomeLaboratorioEnvioMaterial' },
       { nomeColuna: 'metodoDeExame', nomeCampo: 'metodoDeExame' },
       // 9. Histórico de viagem
       { nomeColuna: 'historicoDeViagem', nomeCampo: 'historicoDeViagem' },
