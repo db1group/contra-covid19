@@ -53,3 +53,10 @@ export const greaterThanMinimumDateWithMinutes = (
 ) => !value
   || (DateService.isGreaterEqualsThanMinimumDateWithMinutes(value, valueForComparation))
   || message;
+export const dateMustBeLesserEqualsThanToday = (
+  value,
+  message = 'A data informada deve ser anterior ou igual a hoje.',
+) => !value
+  || value.length < 10
+  || (DateService.isLesserEqualsThanMaximumDate(value))
+  || message;

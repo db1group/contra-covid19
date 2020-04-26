@@ -55,6 +55,10 @@ describe('Serviço de comparação de datas. Verifica se é menor', () => {
     const result = DateService.isLesserEqualsThanMaximumDate('27/04/2020', '26/04/2020');
     expect(result).toBeFalsy();
   });
+  test('Deve ser maior com mesmo dia em outro mês, retornando false', () => {
+    const result = DateService.isLesserEqualsThanMaximumDate('26/05/2020', '26/04/2020');
+    expect(result).toBeFalsy();
+  });
 });
 
 describe('Serviço de comparação de datas. Verifica se é maior, comparando horário', () => {
@@ -91,6 +95,10 @@ describe('Serviço de comparação de datas. Verifica se é maior', () => {
   });
   test('Deve ser menor, retornando false', () => {
     const result = DateService.isGreaterEqualsThanMinimumDate('26/04/2020', '27/04/2020');
+    expect(result).toBeFalsy();
+  });
+  test('Deve ser menor com mesmo dia em outro mês, retornando false', () => {
+    const result = DateService.isGreaterEqualsThanMinimumDate('26/04/2020', '26/05/2020');
     expect(result).toBeFalsy();
   });
 });
