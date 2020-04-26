@@ -187,22 +187,20 @@ const extrairVinculoEpidemiologico = (notificacaoCovid19) => {
 
 const extrairConclusaoAtendimento = (notificacaoCovid19) => {
   const {
-    isolamentoDomiciliar,
-    leitoComum,
-    leitoUti,
-    prontoSocorroOuAtendimento,
     coletaMaterialParaDiagnostico,
-    // tipoLaboratorio,
-    // nomeLaboratorioEnvioMaterial,
+    tipoLaboratorio,
+    nomeLaboratorioEnvioMaterial,
+    situacaoNoMomentoDaNotificacao,
+    dataDaColeta,
+    metodoDeExame,
   } = notificacaoCovid19;
   return {
-    isolamentoDomiciliar,
-    leitoComum,
-    leitoUti,
-    prontoSocorroOuAtendimento,
+    situacaoNoMomentoDaNotificacao,
     coletaMaterialParaDiagnostico,
-    // tipoLaboratorio,
-    // nomeLaboratorioEnvioMaterial,
+    tipoLaboratorio,
+    nomeLaboratorioEnvioMaterial,
+    dataDaColeta,
+    metodoDeExame,
   };
 };
 
