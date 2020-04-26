@@ -14,7 +14,7 @@ const schemas = {
     tipoDeContatoComCaso: Joi.string().allow(''),
     tipoDeLocalDoCaso: Joi.string().allow(''),
     descricaoDoLocalDoCaso: Joi.string().allow(''),
-    nomeDoCaso: Joi.string().allow(''),
+    nomeDoCaso: Joi.string().allow('').max(120),
     observacoes: Joi.string(),
     suspeito: Joi.object(),
     sintomas: Joi.object(),
