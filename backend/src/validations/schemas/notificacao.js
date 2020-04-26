@@ -24,7 +24,11 @@ const schemas = {
     comorbidades: Joi.object(),
     examesImagem: Joi.object(),
     informacaoComplementar: Joi.object(),
-    vinculoEpidemiologico: Joi.object(),
+    vinculoEpidemiologico: Joi.object().keys({
+      situacao1: Joi.bool().allow(null),
+      situacao2: Joi.bool().allow(null),
+      nome: Joi.string().allow(null, '').min(3).max(120),
+    }),
     conclusaoAtendimento: Joi.object(),
   }),
 };
