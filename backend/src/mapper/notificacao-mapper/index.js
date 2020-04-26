@@ -41,7 +41,6 @@ module.exports = {
       informacaoComplementar,
       vinculoEpidemiologico,
       conclusaoAtendimento,
-      observacoes: notificacao.observacoes,
     };
     return result;
   },
