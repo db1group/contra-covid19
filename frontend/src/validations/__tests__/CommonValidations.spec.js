@@ -4,6 +4,7 @@ import {
   exactLength,
   dateFormat,
   dateHourMinuteFormat,
+  dateMustBeLesserEqualsThanToday,
 } from '../CommonValidations';
 
 describe('Testes para validador de campo obrigatório', () => {
@@ -138,5 +139,40 @@ describe('Testes para validador de data/hora', () => {
   test('Data hora minuto preenchida com campos errados deve ser inválida', () => {
     const result = dateHourMinuteFormat('36/19/2020 29:50');
     expect(result).toBe('O formato precisa ser dd/mm/aaaa hh:mm');
+  });
+});
+
+describe('Testes para validador de data menor ou igual a hoje', () => {
+  test('Data não informada deve ser válida', () => {
+    const result = dateMustBeLesserEqualsThanToday('');
+    expect(result).toBeTruthy();
+  });
+  test('Data nula deve ser válida', () => {
+    const result = dateMustBeLesserEqualsThanToday(null);
+    expect(result).toBeTruthy();
+  });
+  test('Data undefined deve ser válida', () => {
+    const result = dateMustBeLesserEqualsThanToday();
+    expect(result).toBeTruthy();
+  });
+  test('Data menor que hoje deve ser válida', () => {
+    const result = dateMustBeLesserEqualsThanToday('01/04/2020');
+    expect(result).toBeTruthy();
+  });
+  test('Data ainda não terminada a digitação deve ser válida', () => {
+    const result = dateMustBeLesserEqualsThanToday('01/04/');
+    expect(result).toBeTruthy();
+  });
+  test('Data ainda não terminada a digitação com ano incompleto deve ser válida', () => {
+    const result = dateMustBeLesserEqualsThanToday('01/04/202');
+    expect(result).toBeTruthy();
+  });
+  test('Data posterior a hoje deve ser inválida', () => {
+    const result = dateMustBeLesserEqualsThanToday('01/04/2220');
+    expect(result).toBe('A data informada deve ser anterior ou igual a hoje.');
+  });
+  test('Data posterior a hoje deve ser inválida com mensagem customizada', () => {
+    const result = dateMustBeLesserEqualsThanToday('01/04/2220', 'Ih rapaz, deu ruim aqui');
+    expect(result).toBe('Ih rapaz, deu ruim aqui');
   });
 });
