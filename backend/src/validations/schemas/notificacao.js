@@ -6,7 +6,7 @@ const schemas = {
     unidadeSaudeId: Joi.string().guid({ version: 'uuidv4' }).required(),
     notificadorId: Joi.string().guid({ version: 'uuidv4' }).required(),
     sintomatico: Joi.bool().required(),
-    // realizouExamesImagem: Joi.bool(),
+    realizouExamesImagem: Joi.bool(),
     // dataInicioDosSintomas: Joi.date().iso(),
     // userId: Joi.string().guid({ version: 'uuidv4' }).required(),
     nomeNotificador: Joi.string().required().min(3).max(80),
