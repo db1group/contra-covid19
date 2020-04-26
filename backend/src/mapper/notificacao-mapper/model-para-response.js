@@ -1,14 +1,27 @@
 const notificacaoParaResponse = (notificacao, notificacaoCovid19, request) => {
-  const { unidadeSaudeId, notificadorId, userId } = notificacao;
-  const { dataHoraNotificacao, dataInicioDosSintomas, sintomatico } = notificacaoCovid19;
+  const {
+    nomeNotificador, unidadeSaudeId, notificadorId, userId, profissaoId,
+  } = notificacao;
+  const {
+    dataHoraNotificacao, dataInicioDosSintomas, sintomatico,
+    realizouExameDeImagem, contatoComSuspeito, localDoContatoComSuspeito, nomeSuspeito,
+    observacoes,
+  } = notificacaoCovid19;
   return {
     id: notificacao.id,
     dataHoraNotificacao,
     unidadeSaudeId,
     notificadorId,
     sintomatico,
+    realizouExamesImagem: realizouExameDeImagem,
     dataInicioDosSintomas,
     userId,
+    nomeNotificador,
+    profissaoId,
+    tipoDeContatoComCaso: contatoComSuspeito,
+    tipoDeLocalDoCaso: localDoContatoComSuspeito,
+    nomeDoCaso: nomeSuspeito,
+    observacoes,
     ...request,
   };
 };
