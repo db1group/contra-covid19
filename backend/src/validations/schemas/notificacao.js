@@ -3,7 +3,7 @@ const Joi = require('@hapi/joi');
 const schemas = {
   cadastrar: Joi.object().keys({
     dataHoraNotificacao: Joi.date().iso().required(),
-    // unidadeSaudeId: Joi.string().guid({ version: 'uuidv4' }).required(),
+    unidadeSaudeId: Joi.string().guid({ version: 'uuidv4' }).required(),
     // notificadorId: Joi.string().guid({ version: 'uuidv4' }).required(),
     // sintomatico: Joi.bool().required(),
     // realizouExamesImagem: Joi.bool(),
