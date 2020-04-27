@@ -83,7 +83,7 @@ module.exports = (sequelize, DataTypes) => {
     medicacaoAntiviral: DataTypes.BOOLEAN,
     nomeMedicacaoAntiviral: DataTypes.STRING,
     historicoDeViagem: DataTypes.BOOLEAN,
-    dataDaViagem: DataTypes.DATE,
+    dataDaViagem: DataTypes.DATEONLY,
     localDaViagem: DataTypes.STRING,
     recebeuVacinaDaGripeNosUltimosDozeMeses: DataTypes.ENUM('SIM', 'NAO', 'NAO_SABE'),
     situacao1: DataTypes.BOOLEAN,

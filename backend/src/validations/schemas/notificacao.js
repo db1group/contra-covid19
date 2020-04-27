@@ -23,7 +23,31 @@ const schemas = {
     sintomas: Joi.object(),
     comorbidades: Joi.object(),
     examesImagem: Joi.object(),
-    informacaoComplementar: Joi.object(),
+    informacaoComplementar: Joi.object().keys({
+      medicacaoAntitermica: Joi.bool(),
+      nomeMedicacaoAntitermica: Joi.string()
+        .allow('', null)
+        .max(120),
+      medicacaoAnalgesica: Joi.bool(),
+      nomeMedicacaoAnalgesica: Joi.string()
+        .allow('', null)
+        .max(120),
+      medicacaoAntiflamatorio: Joi.bool(),
+      nomeMedicacaoAntiflamatorio: Joi.string()
+        .allow('', null)
+        .max(120),
+      medicacaoAntiviral: Joi.bool(),
+      nomeMedicacaoAntiviral: Joi.string()
+        .allow('', null)
+        .max(120),
+      historicoDeViagem: Joi.bool(),
+      dataDaViagem: Joi.date().iso().allow(null, ''),
+      localDaViagem: Joi.string()
+        .allow('', null)
+        .max(120),
+      recebeuVacinaDaGripeNosUltimosDozeMeses: Joi.string().allow(null, '')
+        .pattern(/SIM|NAO|NAO_SABE/),
+    }),
     vinculoEpidemiologico: Joi.object().keys({
       situacao1: Joi.bool().allow(null),
       situacao2: Joi.bool().allow(null),

@@ -77,6 +77,8 @@ const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
     },
   );
 
+  if (!unidadeDeSaude) throw new Error('Unidade de saúde não encontrada');
+
   return {
     ...notificacao,
     suspeito: {
