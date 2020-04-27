@@ -2,9 +2,9 @@
   <div>
     <v-row>
       <v-col cols="12" class="mt-5 pb-0">
-        <label class="primary--text body-1 font-weight-bold">
-          Outros sinais e sintomas apresentados durante o período
-        </label>
+        <label
+          class="primary--text body-1 font-weight-bold"
+        >Outros sinais e sintomas apresentados durante o período</label>
       </v-col>
       <v-col cols="6">
         <v-checkbox
@@ -94,13 +94,6 @@
           @change="updateMialgia"
         />
         <v-checkbox
-          :input-value="sintomas.nausea"
-          label="NÁUSEA"
-          hide-details
-          :disabled="!sintomatico"
-          @change="updateNausea"
-        />
-        <v-checkbox
           :input-value="sintomas.hipotensao"
           label="SINAIS DE HIPOTENSÃO (PAS < 90mmHg e/ou PAD < 60mmHg)"
           hide-details
@@ -108,11 +101,11 @@
           @change="updateHipotensao"
         />
         <v-checkbox
-          :input-value="sintomas.vomito"
-          label="VÔMITO"
+          :input-value="sintomas.nauseaVomito"
+          label="NÁUSEA/VÔMITO"
           hide-details
           :disabled="!sintomatico"
-          @change="updateVomito"
+          @change="updateNauseaVomito"
         />
       </v-col>
       <v-col cols="12">
@@ -191,14 +184,11 @@ export default {
     updateMialgia(mialgia) {
       this.$emit('update:mialgia', mialgia);
     },
-    updateNausea(nausea) {
-      this.$emit('update:nausea', nausea);
-    },
     updateHipotensao(hipotensao) {
       this.$emit('update:hipotensao', hipotensao);
     },
-    updateVomito(vomito) {
-      this.$emit('update:vomito', vomito);
+    updateNauseaVomito(nauseaVomito) {
+      this.$emit('update:nauseaVomito', nauseaVomito);
     },
     updateOutros(outros) {
       this.$emit('update:outros', outros);

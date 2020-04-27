@@ -1,12 +1,7 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">
-      10. CONTATO COM SUSPEITO OU CONFIRMADO
-    </h4>
-    <v-container
-      fluid
-      class="pa-0"
-    >
+    <h4 class="primary--text title">10. CONTATO COM SUSPEITO OU CONFIRMADO</h4>
+    <v-container fluid class="pa-0">
       <v-row dense>
         <v-col cols="12">
           <v-select
@@ -36,7 +31,7 @@
           <v-col cols="12">
             <v-text-field
               :value="notificacao.nomeDoCaso"
-              label="Nome da pessoa suspeita"
+              label="Nome da pessoa"
               :disabled="notificacao.tipoDeContatoComCaso === 'SEM_CONTATO' || !notificacao.tipoDeContatoComCaso"
               @input="updateNomeDoCaso"
             />

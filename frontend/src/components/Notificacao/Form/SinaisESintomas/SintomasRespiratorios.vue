@@ -2,9 +2,7 @@
   <div class="mt-2">
     <v-row no-gutters>
       <v-col cols="12">
-        <label class="primary--text body-1 font-weight-bold">
-          Sintomas respiratórios
-        </label>
+        <label class="primary--text body-1 font-weight-bold">Sintomas respiratórios</label>
       </v-col>
       <v-col cols="6">
         <v-checkbox
@@ -45,15 +43,15 @@
           @change="updateCoriza"
         />
         <v-checkbox
-          :input-value="sintomas.desconfortoRespiratorio"
-          label="DESCONFORTO RESPIRATÓRIO / Dificuldade para respirar / Falta de ar"
+          :input-value="sintomas.batimentoAsasNasais"
+          label="BATIMENTO DE ASAS NASAIS"
           hide-details
           :disabled="!sintomatico"
-          @change="updateDesconfortoRespiratorio"
+          @change="updateBatimentoAsasNasais"
         />
         <v-checkbox
           :input-value="sintomas.dispneia"
-          label="DISPNEIA com batimento das asas nasais E/OU retração intercostal E/OU fúrcula external"
+          label="DISPNEIA (DIFICULDADE DE RESPIRAR)"
           hide-details
           :disabled="!sintomatico"
           @change="updateDispneia"
@@ -89,18 +87,18 @@
           @change="updateTaquipneia"
         />
         <v-checkbox
-          :input-value="sintomas.tosseProdutiva"
-          label="TOSSE PRODUTIVA"
+          :input-value="sintomas.escarro"
+          label="ESCARRO"
           hide-details
           :disabled="!sintomatico"
-          @change="updateTosseProdutiva"
+          @change="updateEscarro"
         />
         <v-checkbox
-          :input-value="sintomas.tosseSeca"
-          label="TOSSE SECA"
+          :input-value="sintomas.tosse"
+          label="TOSSE"
           hide-details
           :disabled="!sintomatico"
-          @change="updateTosseSeca"
+          @change="updateTosse"
         />
         <v-checkbox
           :input-value="sintomas.tiragemIntercostal"
@@ -151,8 +149,8 @@ export default {
     updateCoriza(coriza) {
       this.$emit('update:coriza', coriza);
     },
-    updateDesconfortoRespiratorio(desconfortoRespiratorio) {
-      this.$emit('update:desconfortoRespiratorio', desconfortoRespiratorio);
+    updateBatimentoAsasNasais(batimentoAsasNasais) {
+      this.$emit('update:batimentoAsasNasais', batimentoAsasNasais);
     },
     updateDispneia(dispneia) {
       this.$emit('update:dispneia', dispneia);
@@ -169,11 +167,11 @@ export default {
     updateTaquipneia(taquipneia) {
       this.$emit('update:taquipneia', taquipneia);
     },
-    updateTosseProdutiva(tosseProdutiva) {
-      this.$emit('update:tosseProdutiva', tosseProdutiva);
+    updateEscarro(escarro) {
+      this.$emit('update:escarro', escarro);
     },
-    updateTosseSeca(tosseSeca) {
-      this.$emit('update:tosseSeca', tosseSeca);
+    updateTosse(tosse) {
+      this.$emit('update:tosse', tosse);
     },
     updateTiragemIntercostal(tiragemIntercostal) {
       this.$emit('update:tiragemIntercostal', tiragemIntercostal);

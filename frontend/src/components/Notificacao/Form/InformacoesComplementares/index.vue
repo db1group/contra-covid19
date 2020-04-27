@@ -1,89 +1,32 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">
-      7. OUTRAS INFORMAÇÕES
-    </h4>
-    <v-container
-      fluid
-      class="pa-0"
-    >
+    <h4 class="primary--text title">7. MEDICAMENTO</h4>
+    <v-container fluid class="pa-0">
       <v-row>
-        <v-col cols="12">
-          <label class="primary--text body-1 font-weight-bold">
-            Uso de medicação antitérmica?
-          </label>
+        <v-col cols="4">
           <v-checkbox
-            :input-value="informacoesComplementares.medicacaoAntitermica"
-            label="Sim"
+            :input-value="informacoesComplementares.tamiflu"
+            label="Oseltamivir (Tamiflu)"
             hide-details
-            @change="updateMedicacaoAntitermica"
+            @change="updateTamiflu"
           />
-          <v-text-field
-            :value="informacoesComplementares.nomeMedicacaoAntitermica"
-            class="pl-8"
-            label="Especifique"
-            :disabled="!informacoesComplementares.medicacaoAntitermica"
-            @input="updateNomeMedicacaoAntitermica"
+        </v-col>
+        <v-col cols="6">
+          <v-checkbox
+            :input-value="informacoesComplementares.hidroxicloroquina"
+            label="Hidroxicloroquina"
+            hide-details
+            @change="updateHidroxicloroquina"
           />
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
-          <label class="primary--text body-1 font-weight-bold">
-            Uso de analgésico?
-          </label>
-          <v-checkbox
-            :input-value="informacoesComplementares.medicacaoAnalgesica"
-            label="Sim"
-            hide-details
-            @change="updateMedicacaoAnalgesica"
-          />
           <v-text-field
-            :value="informacoesComplementares.nomeMedicacaoAnalgesica"
+            :value="informacoesComplementares.nomeMedicamento"
             class="pl-8"
             label="Especifique"
-            :disabled="!informacoesComplementares.medicacaoAnalgesica"
-            @input="updateNomeMedicacaoAnalgesica"
-          />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12">
-          <label class="primary--text body-1 font-weight-bold">
-            Uso de anti-inflamatório?
-          </label>
-          <v-checkbox
-            :input-value="informacoesComplementares.medicacaoAntiflamatorio"
-            label="Sim"
-            hide-details
-            @change="updateMedicacaoAntiflamatorio"
-          />
-          <v-text-field
-            :value="informacoesComplementares.nomeMedicacaoAntiflamatorio"
-            class="pl-8"
-            label="Especifique"
-            :disabled="!informacoesComplementares.medicacaoAntiflamatorio"
-            @input="updateNomeMedicacaoAntiflamatorio"
-          />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12">
-          <label class="primary--text body-1 font-weight-bold">
-            Uso de medicação Antiviral?
-          </label>
-          <v-checkbox
-            :input-value="informacoesComplementares.medicacaoAntiviral"
-            label="Sim"
-            hide-details
-            @change="updateMedicacaoAntiviral"
-          />
-          <v-text-field
-            :value="informacoesComplementares.nomeMedicacaoAntiviral"
-            class="pl-8"
-            label="Especifique"
-            :disabled="!informacoesComplementares.medicacaoAntiviral"
-            @input="updateNomeMedicacaoAntiviral"
+            @input="updateNomeMedicamento"
           />
         </v-col>
       </v-row>
@@ -101,29 +44,14 @@ export default {
     },
   },
   methods: {
-    updateMedicacaoAntitermica(medicacaoAntitermica) {
-      this.$emit('update:medicacaoAntitermica', medicacaoAntitermica);
+    updateTamiflu(tamiflu) {
+      this.$emit('update:tamiflu', tamiflu);
     },
-    updateMedicacaoAnalgesica(medicacaoAnalgesica) {
-      this.$emit('update:medicacaoAnalgesica', medicacaoAnalgesica);
+    updateHidroxicloroquina(hidroxicloroquina) {
+      this.$emit('update:hidroxicloroquina', hidroxicloroquina);
     },
-    updateMedicacaoAntiflamatorio(medicacaoAntiflamatorio) {
-      this.$emit('update:medicacaoAntiflamatorio', medicacaoAntiflamatorio);
-    },
-    updateMedicacaoAntiviral(medicacaoAntiviral) {
-      this.$emit('update:medicacaoAntiviral', medicacaoAntiviral);
-    },
-    updateNomeMedicacaoAntitermica(nomeMedicacaoAntitermica) {
-      this.$emit('update:nomeMedicacaoAntitermica', nomeMedicacaoAntitermica);
-    },
-    updateNomeMedicacaoAnalgesica(nomeMedicacaoAnalgesica) {
-      this.$emit('update:nomeMedicacaoAnalgesica', nomeMedicacaoAnalgesica);
-    },
-    updateNomeMedicacaoAntiflamatorio(nomeMedicacaoAntiflamatorio) {
-      this.$emit('update:nomeMedicacaoAntiflamatorio', nomeMedicacaoAntiflamatorio);
-    },
-    updateNomeMedicacaoAntiviral(nomeMedicacaoAntiviral) {
-      this.$emit('update:nomeMedicacaoAntiviral', nomeMedicacaoAntiviral);
+    updateNomeMedicamento(nomeMedicamento) {
+      this.$emit('update:nomeMedicamento', nomeMedicamento);
     },
   },
 };

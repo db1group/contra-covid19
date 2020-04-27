@@ -12,12 +12,12 @@ export default class Sintomas {
     this.gangliosLinfaticos = data.gangliosLinfaticos || false;
     this.irritabilidadeOuConfusao = data.irritabilidadeOuConfusao || false;
     this.manchasVermelhas = data.manchasVermelhas || false;
-    this.tosseSeca = data.tosseSeca || false;
+    this.tosse = data.tosse || false;
     this.dorDeGarganta = data.dorDeGarganta || false;
     this.mialgia = data.mialgia || false;
-    this.tosseProdutiva = data.tosseProdutiva || false;
+    this.escarro = data.escarro || false;
     this.sibilo = data.sibilo || false;
-    this.desconfortoRespiratorio = data.desconfortoRespiratorio || false;
+    this.batimentoAsasNasais = data.batimentoAsasNasais || false;
     this.dispneia = data.dispneia || false;
     this.taquipneia = data.taquipneia || false;
     this.saturacaoDeOximetriaDePulso = data.saturacaoDeOximetriaDePulso || false;
@@ -26,8 +26,7 @@ export default class Sintomas {
     this.hipotensao = data.hipotensao || false;
     this.diarreia = data.diarreia || false;
     this.cefaleia = data.cefaleia || false;
-    this.nausea = data.nausea || false;
-    this.vomito = data.vomito || false;
+    this.nauseaVomito = data.nauseaVomito || false;
     this.tiragemIntercostal = data.tiragemIntercostal || false;
     this.outros = data.outros || '';
   }
