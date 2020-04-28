@@ -10,6 +10,7 @@ const {
   extrairInformacaoComplementar,
   extrairVinculoEpidemiologico,
   extrairConclusaoAtendimento,
+  extrairExamesImagem,
 } = require('./model-para-response');
 const mapearParaConsulta = require('./consulta');
 
@@ -32,12 +33,14 @@ module.exports = {
     const informacaoComplementar = extrairInformacaoComplementar(notificacaoCovid19);
     const vinculoEpidemiologico = extrairVinculoEpidemiologico(notificacaoCovid19);
     const conclusaoAtendimento = extrairConclusaoAtendimento(notificacaoCovid19);
+    const examesImagem = extrairExamesImagem(notificacaoCovid19);
     result = notificacaoParaResponse(notificacao, notificacaoCovid19, result);
     result = {
       ...result,
       suspeito,
       sintomas,
       comorbidades,
+      examesImagem,
       informacaoComplementar,
       vinculoEpidemiologico,
       conclusaoAtendimento,
