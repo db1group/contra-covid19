@@ -59,6 +59,7 @@
           item-value="id"
           :loading="bairros.loading"
           no-data-text="Bairro não encontrado"
+          :disabled="!suspeito.municipioId"
           @input="updateBairroId"
           :disabled="disabled"
         />
@@ -121,7 +122,7 @@ export default {
     },
     bairros: {
       items: [],
-      loading: true,
+      loading: false,
     },
     rules: {
       cep: [minLength(8)],

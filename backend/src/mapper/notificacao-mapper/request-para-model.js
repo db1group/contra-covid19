@@ -41,10 +41,34 @@ const mapearVinculoEpidemiologico = (vinculoEpidemiologico) => {
   };
 };
 
+const mapearExamesImage = ({
+  raioNormal,
+  raioInfiltradoIntersticial,
+  raioConsolidacao,
+  raioMisto,
+  raioOutro,
+  tomografiaNormal,
+  tomografiaVidroFoscoPredominioPerifericoBasal,
+  tomografiaAusenciaDerramePleural,
+  tomografiaAusenciaLinfonodoMediastenal,
+  tomografiaOutro,
+}) => ({
+  raioXNormal: raioNormal,
+  raioXInfiltrado: raioInfiltradoIntersticial,
+  raioXConsolidacao: raioConsolidacao,
+  raioXMisto: raioMisto,
+  raioXOutro: raioOutro,
+  tomografiaNormal,
+  tomografiaVitro: tomografiaVidroFoscoPredominioPerifericoBasal,
+  tomografiaDerrame: tomografiaAusenciaDerramePleural,
+  tomografiaLinfonodo: tomografiaAusenciaLinfonodoMediastenal,
+  tomografiaOutro,
+});
+
 const requestParaModeloNotificacaoCovid19 = (objetoRequest) => {
   const {
     sintomas, comorbidades, informacaoComplementar,
-    vinculoEpidemiologico, conclusaoAtendimento,
+    vinculoEpidemiologico, conclusaoAtendimento, examesImagem,
     tipoDeContatoComCaso, tipoDeLocalDoCaso,
     nomeDoCaso, realizouExamesImagem,
   } = objetoRequest;
@@ -52,6 +76,7 @@ const requestParaModeloNotificacaoCovid19 = (objetoRequest) => {
   const sintomasAferidos = mapearSintomas(sintomas);
   const comorbidadesAferidas = mapearComorbidades(comorbidades);
   const vinculoEpidemiologicoAferido = mapearVinculoEpidemiologico(vinculoEpidemiologico);
+  const exameImagemAferido = mapearExamesImage({ ...examesImagem });
 
   return {
     sintomatico: !!sintomas,
@@ -62,6 +87,7 @@ const requestParaModeloNotificacaoCovid19 = (objetoRequest) => {
     ...informacaoComplementar,
     ...vinculoEpidemiologicoAferido,
     ...conclusaoAtendimento,
+    ...exameImagemAferido,
     observacoes: objetoRequest.observacoes,
     contatoComSuspeito: tipoDeContatoComCaso,
     localDoContatoComSuspeito: tipoDeLocalDoCaso,

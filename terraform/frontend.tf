@@ -96,31 +96,27 @@ resource "aws_ecs_task_definition" "frontend" {
     "memory": 256,
     "cpu": 100,
     "environment" : [
-      { 
+      {
         "name" : "NODE_ENV",
         "value" : "${var.environment}"
       },
-      { 
+      {
         "name" : "VUE_APP_BACKEND_URL",
         "value" : "${var.is_production == true ? "https://api.${var.hosted_zone}/api" : "https://${var.environment}-api.${var.hosted_zone}/api"}"
       },
-      { 
+      {
         "name" : "VUE_APP_KEYCLOAK_URL",
         "value" : "${var.is_production == true ? "https://auth.${var.hosted_zone}/auth" : "https://${var.environment}-auth.${var.hosted_zone}/auth"}"
       },
-      { 
+      {
         "name" : "VUE_APP_KEYCLOAK_REALM",
         "value" : "${var.project}"
       },
-      { 
+      {
         "name" : "VUE_APP_KEYCLOAK_CLIENT_ID",
         "value" : "${var.project}"
       },
-      { 
-        "name" : "VUE_APP_MUNICIPIO_ID",
-        "value" : "fcf83c0a-8de6-43a5-9845-907f597f56ce"
-      },
-      { 
+      {
         "name" : "PORT",
         "value" : "8282"
       }

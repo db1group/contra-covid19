@@ -10,7 +10,7 @@
       <v-row>
         <v-col cols="12">
           <v-checkbox
-            :input-value="conclusaoAtendimento.realizadaColeta"
+            :input-value="conclusaoAtendimento.coletaMaterialParaDiagnostico"
             label="Sim"
             hide-details
             @change="updateRealizadaColeta"
@@ -64,7 +64,7 @@
 </style>
 <script>
 import { mask } from 'vue-the-mask';
-import { dateFormat } from '@/validations/CommonValidations';
+import { dateFormat, dateMustBeLesserEqualsThanToday } from '@/validations/CommonValidations';
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
 
 export default {
@@ -81,13 +81,13 @@ export default {
   },
   data: () => ({
     rules: {
-      dataDaColeta: [dateFormat],
+      dataDaColeta: [dateFormat, dateMustBeLesserEqualsThanToday],
     },
   }),
   computed: {
     disableFields() {
       if (this.disabled) return true;
-      return !this.conclusaoAtendimento.realizadaColeta;
+      return !this.conclusaoAtendimento.coletaMaterialParaDiagnostico;
     },
     disableNomeLab() {
       if (this.disabled) return true;
@@ -95,9 +95,9 @@ export default {
     },
   },
   methods: {
-    updateRealizadaColeta(realizadaColeta) {
-      this.conclusaoAtendimento.realizadaColeta = realizadaColeta;
-      if (!this.conclusaoAtendimento.realizadaColeta) {
+    updateRealizadaColeta(coletaMaterialParaDiagnostico) {
+      this.$emit('update:coletaMaterialParaDiagnostico', coletaMaterialParaDiagnostico);
+      if (!coletaMaterialParaDiagnostico) {
         this.unselectTipoLaboratorio();
         this.updateDataDaColeta('');
         this.updateMetodoDeExame(null);
@@ -108,7 +108,6 @@ export default {
       this.$emit('update:tipoLaboratorio', tipoLaboratorio);
 
       if (tipoLaboratorio !== 'PRIVADO') {
-        console.log('Entrou');
         this.updateNomeLaboratorioEnvioMaterial('');
       }
     },

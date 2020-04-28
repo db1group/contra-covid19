@@ -8,16 +8,16 @@ Fique a vontade para ajudar!!
 
 #### Ambientes de Homologação
 
-[Frontend](qa-www.notificasaude.com.br)
+[Frontend](https://qa-app.notificasaude.com.br)
 
-[Backend](qa-api.notificasaude.com.br)
+[Backend](https://qa-api.notificasaude.com.br)
 
-[Keycloak](qa-auth.notificasaude.com.br)
+[Keycloak](https://qa-auth.notificasaude.com.br)
 
 #### Ambientes de Produção
 
-[Frontend](www.notificasaude.com.br)
+[Frontend](https://www.notificasaude.com.br)
 
-[Backend](api.notificasaude.com.br)
+[Backend](https://api.notificasaude.com.br)
 
-[Keycloak](auth.notificasaude.com.br)
+[Keycloak](https://auth.notificasaude.com.br)

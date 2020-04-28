@@ -13,11 +13,11 @@ export default class Pessoa {
     this.bairroId = data.bairroId || null;
     this.nomeDaMae = data.nomeDaMae || '';
     this.ocupacao = data.ocupacao || '';
-    this.ocupacaoId = data.ocupacaoId || '';
+    this.ocupacaoId = data.ocupacaoId || null;
     this.endereco = data.endereco || '';
     this.numero = data.numero || '';
     this.complemento = data.complemento || '';
-    this.municipioId = data.municipioId || '';
+    this.municipioId = data.municipioId || null;
     this.telefoneResidencial = data.telefoneResidencial || '';
     this.telefoneContato = data.telefoneContato || '';
     this.telefoneCelular = data.telefoneCelular || '';

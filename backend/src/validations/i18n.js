@@ -11,6 +11,8 @@ module.exports = ({ context }) => ({
     'number.base': `"${context.label}" deve ser  um número`,
     'string.guid': `"${context.label}" deve ser uma GUID válida`,
     'object.base': `"${context.label}" deve ser um objeto`,
+    'date.base': `"${context.label}" deve ser uma data válida`,
     'any.required': `"${context.label}" é obrigatório`,
+    'boolean.base': `"${context.label}" dever conter um valor lógico`,
   },
 });
