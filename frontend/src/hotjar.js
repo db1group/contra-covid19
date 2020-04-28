@@ -9,6 +9,7 @@ import Configuration from './configuration';
 
 export default () => {
   const environment = Configuration.value('NODE_ENV');
+  console.log(`Abrindo site em ambiente ${environment}`);
   if (environment === 'prod') {
     console.log('Carregando Hotjar');
     (function (h, o, t, j, a, r) {
@@ -19,6 +20,7 @@ export default () => {
       r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
       a.appendChild(r);
     })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    console.log('Hotjar carregado com sucesso');
     return;
   }
   console.log('Hotjar não foi carregado neste ambiente');
