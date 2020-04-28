@@ -34,6 +34,7 @@ const schemas = {
       .pattern(/BRANCA|PRETA|AMARELA|PARDA|INDIGENA|IGNORADO/),
     complemento: Joi.string().allow(null, ''),
     ocupacaoId: Joi.string().guid().required(),
+    cep: Joi.string().max(8),
   }),
   consultarId: Joi.object().keys({
     id: Joi.string().guid({ version: 'uuidv4' }),

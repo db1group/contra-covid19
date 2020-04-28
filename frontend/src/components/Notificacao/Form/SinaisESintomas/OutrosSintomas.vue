@@ -11,56 +11,56 @@
           :input-value="sintomas.adiamiaOuFraqueza"
           label="ADINAMIA / FRAQUEZA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateAdiamiaOuFraqueza"
         />
         <v-checkbox
           :input-value="sintomas.artralgia"
           label="ARTRALGIA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateArtralgia"
         />
         <v-checkbox
           :input-value="sintomas.calafrios"
           label="CALAFRIOS"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateCalafrios"
         />
         <v-checkbox
           :input-value="sintomas.cefaleia"
           label="CEFALÉIA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateCefaleia"
         />
         <v-checkbox
           :input-value="sintomas.conjuntivite"
           label="CONJUNTIVITE"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateConjuntivite"
         />
         <v-checkbox
           :input-value="sintomas.diarreia"
           label="DIARRÉIA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateDiarreia"
         />
         <v-checkbox
           :input-value="sintomas.dificuldadeDeglutir"
           label="DIFICULDADE DE DEGLUTIR"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateDificuldadeDeglutir"
         />
         <v-checkbox
           :input-value="sintomas.diminuicaoDePulsoPeriferico"
           label="DIMINUIÇÃO DE PULSO PERIFÉRICO"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateDiminuicaoDePulsoPeriferico"
         />
       </v-col>
@@ -69,65 +69,65 @@
           :input-value="sintomas.gangliosLinfaticos"
           label="GÂNGLIOS LINFÁTICOS"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateGangliosLinfaticos"
         />
         <v-checkbox
           :input-value="sintomas.irritabilidadeOuConfusao"
           label="IRRITABILIDADE / CONFUSÃO"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateIrritabilidadeOuConfusao"
         />
         <v-checkbox
           :input-value="sintomas.manchasVermelhas"
           label="MANCHAS VERMELHAS"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateManchasVermelhas"
         />
         <v-checkbox
           :input-value="sintomas.mialgia"
           label="MIALGIA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateMialgia"
         />
         <v-checkbox
           :input-value="sintomas.nausea"
           label="NÁUSEA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateNausea"
         />
         <v-checkbox
           :input-value="sintomas.hipotensao"
           label="SINAIS DE HIPOTENSÃO (PAS < 90mmHg e/ou PAD < 60mmHg)"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateHipotensao"
         />
         <v-checkbox
           :input-value="sintomas.vomito"
           label="VÔMITO"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateVomito"
         />
       </v-col>
       <v-col cols="12">
         <v-checkbox
-          :input-value="existemOutrosSintomas"
+          :input-value="sintomas.existemOutrosSintomas"
           label="Outros sintomas"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateExistemOutrosSintomas"
         />
         <v-text-field
           :value="sintomas.outros"
           class="pl-8"
           label="Especifique"
-          :disabled="!existemOutrosSintomas || !sintomatico"
+          :disabled="disableOutros"
           @input="updateOutros"
         />
       </v-col>
@@ -147,13 +147,24 @@ export default {
       type: Boolean,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
-  data: () => ({
-    existemOutrosSintomas: false,
-  }),
+  computed: {
+    disableFields() {
+      if (this.disabled) return true;
+      return !this.sintomatico;
+    },
+    disableOutros() {
+      if (this.disabled) return true;
+      return !this.sintomas.existemOutrosSintomas || !this.sintomatico;
+    },
+  },
   methods: {
     updateExistemOutrosSintomas(existemOutrosSintomas) {
-      this.existemOutrosSintomas = existemOutrosSintomas;
+      this.sintomas.existemOutrosSintomas = existemOutrosSintomas;
     },
     updateAdiamiaOuFraqueza(adiamiaOuFraqueza) {
       this.$emit('update:adiamiaOuFraqueza', adiamiaOuFraqueza);

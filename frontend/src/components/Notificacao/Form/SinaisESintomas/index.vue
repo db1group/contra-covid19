@@ -9,6 +9,7 @@
         :data-inicio-dos-sintomas="dataInicioDosSintomas"
         @update:sintomatico="updateSintomatico"
         @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
+        :disabled="disabled"
       />
       <sintomas-respiratorios
         :sintomatico="sintomatico"
@@ -27,6 +28,7 @@
         @update:tosseProdutiva="updateTosseProdutiva"
         @update:tosseSeca="updateTosseSeca"
         @update:tiragemIntercostal="updateTiragemIntercostal"
+        :disabled="disabled"
       />
       <outros-sintomas
         :sintomatico="sintomatico"
@@ -47,6 +49,7 @@
         @update:hipotensao="updateHipotensao"
         @update:vomito="updateVomito"
         @update:outros="updateOutros"
+        :disabled="disabled"
       />
     </v-container>
   </div>
@@ -75,6 +78,10 @@ export default {
     sintomas: {
       type: Sintomas,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   methods: {

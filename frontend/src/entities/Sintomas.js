@@ -30,5 +30,6 @@ export default class Sintomas {
     this.vomito = data.vomito || false;
     this.tiragemIntercostal = data.tiragemIntercostal || false;
     this.outros = data.outros || '';
+    this.existemOutrosSintomas = !!data.outros || false;
   }
 }

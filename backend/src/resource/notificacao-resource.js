@@ -77,8 +77,6 @@ const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
     },
   );
 
-  if (!unidadeDeSaude) throw new Error('Unidade de saúde não encontrada');
-
   return {
     ...notificacao,
     suspeito: {
@@ -99,14 +97,19 @@ const consultarNotificacaoPorId = async (id) => models.Notificacao.findOne({
   include: [
     {
       model: models.Pessoa,
-      include: {
-        model: models.Bairro,
-        include: {
-          model: models.Municipio,
-        },
-      },
+      include: [
+        { model: models.Bairro },
+        { model: models.Municipio },
+        { model: models.Ocupacao },
+      ],
     },
     { model: models.NotificacaoCovid19 },
+    { model: models.Bairro },
+    { model: models.Municipio },
+    { model: models.UnidadeSaude },
+    { model: models.User },
+    { model: models.ProfissionalSaude },
+    { model: models.Profissao },
   ],
 });
 
@@ -261,10 +264,11 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
         [Op.ne]: 'EXCLUIDA',
       },
     },
-    attributes: ['id', 'status'],
+    attributes: ['id', 'status', 'createdAt'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
+      include: models.Municipio,
     }, {
       model: models.NotificacaoCovid19,
       attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao'],
@@ -386,7 +390,7 @@ exports.consultarNotificacaoEvolucao = async (req, res, next) => {
     const { id } = req.params;
     const notificacaoEvolucao = await models.Notificacao.findOne({
       where: { id },
-      attributes: ['status'],
+      attributes: ['id', 'status'],
       include: [{
         model: models.Pessoa,
         attributes: ['nome', 'numeroDocumento', 'telefoneResidencial', 'telefoneContato', 'telefoneCelular'],

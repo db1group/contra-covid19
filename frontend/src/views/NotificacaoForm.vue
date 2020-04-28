@@ -4,7 +4,8 @@
       <h3 class="primary--text my-7 display-1">
         <v-btn large icon color="primary" :to="{ name: 'notificacao-cons' }">
           <v-icon>mdi-arrow-left</v-icon>
-        </v-btn>Cadastro de notificação
+        </v-btn>
+        {{title}}
       </h3>
       <v-form ref="form">
         <identificacao-notificante
@@ -12,12 +13,14 @@
           @update:unidadeSaudeId="updateUnidadeSaude"
           @update:nomeNotificador="updateNomeNotificador"
           @update:profissaoId="updateProfissaoId"
+          :disabled="disableFields"
         />
         <vinculo-epidemiologico
           :vinculo-epidemiologico="notificacao.vinculoEpidemiologico"
           @update:situacao1="updateVinculoEpidemiologico('situacao1', $event)"
           @update:situacao2="updateVinculoEpidemiologico('situacao2', $event)"
           @update:nome="updateVinculoEpidemiologico('nome', $event)"
+          :disabled="disableFields"
         />
         <identificacao-caso
           :data-hora-notificacao="notificacao.dataHoraNotificacao"
@@ -34,6 +37,7 @@
           @update:cep="updateSuspeito('cep', $event)"
           @update:endereco="updateSuspeito('endereco', $event)"
           @update:numero="updateSuspeito('numero', $event)"
+          @update:municipioId="updateSuspeito('municipioId', $event)"
           @update:bairroId="updateSuspeito('bairroId', $event)"
           @update:telefoneResidencial="updateSuspeito('telefoneResidencial', $event)"
           @update:telefoneCelular="updateSuspeito('telefoneCelular', $event)"
@@ -41,7 +45,7 @@
           @update:ocupacao="updateSuspeito('ocupacaoId', $event)"
           @update:descricaoOcupacao="updateSuspeito('ocupacao', $event)"
           @update:complemento="updateSuspeito('complemento', $event)"
-          @update:municipioId="updateSuspeito('municipioId', $event)"
+          :disabled="disableFields"
         />
         <sinais-e-sintomas
           :sintomatico="notificacao.sintomatico"
@@ -79,11 +83,13 @@
           @update:irritabilidadeOuConfusao="updateSintoma('irritabilidadeOuConfusao', $event)"
           @update:manchasVermelhas="updateSintoma('manchasVermelhas', $event)"
           @update:outrosSintomas="updateSintoma('outros', $event)"
+          :disabled="disableFields"
         />
         <exames-imagem
           :realizouExamesImagem="notificacao.realizouExamesImagem"
           :examesImagem="notificacao.examesImagem"
           @update:realizouExamesImagem="updateRealizouExamesImagem"
+          @update:realizouOutroRaioTorax="updateExameImagem('realizouOutroRaioTorax', $event)"
           @update:raioNormal="updateExameImagem('raioNormal', $event)"
           @update:raioInfiltradoIntersticial="updateExameImagem('raioInfiltradoIntersticial', $event)"
           @update:raioConsolidacao="updateExameImagem('raioConsolidacao', $event)"
@@ -97,6 +103,7 @@
           @update:tomografiaAusenciaLinfonodoMediastenal="
           updateExameImagem('tomografiaAusenciaLinfonodoMediastenal', $event)"
           @update:tomografiaOutro="updateExameImagem('tomografiaOutro', $event)"
+          :disabled="disableFields"
         />
         <comorbidades
           :comorbidades="notificacao.comorbidades"
@@ -117,6 +124,7 @@
           @update:neoplasia="updateComorbidade('neoplasia', $event)"
           @update:tabagismo="updateComorbidade('tabagismo', $event)"
           @update:outros="updateComorbidade('outros', $event)"
+          :disabled="disableFields"
         />
         <informacoes-complementares
           :informacoes-complementares="notificacao.informacaoComplementar"
@@ -128,6 +136,7 @@
           @update:nomeMedicacaoAntiflamatorio="updateInformacaoComplementar('nomeMedicacaoAntiflamatorio', $event)"
           @update:medicacaoAntiviral="updateInformacaoComplementar('medicacaoAntiviral', $event)"
           @update:nomeMedicacaoAntiviral="updateInformacaoComplementar('nomeMedicacaoAntiviral', $event)"
+          :disabled="disableFields"
         />
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
@@ -136,32 +145,39 @@
           @update:nomeLaboratorioEnvioMaterial="updateConclusaoAtendimento('nomeLaboratorioEnvioMaterial', $event)"
           @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"
           @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
+          :disabled="disableFields"
         />
         <historico-de-viagem
           :informacoes-complementares="notificacao.informacaoComplementar"
           @update:historicoDeViagem="updateInformacaoComplementar('historicoDeViagem', $event)"
           @update:dataDaViagem="updateInformacaoComplementar('dataDaViagem', $event)"
           @update:localDaViagem="updateInformacaoComplementar('localDaViagem', $event)"
+          :disabled="disableFields"
         />
         <contato-com-suspeito-ou-confirmado
           :notificacao="notificacao"
           @update:tipoDeContatoComCaso="updateTipoDeContatoComCaso"
           @update:tipoDeLocalDoCaso="updateTipoDeLocalDoCaso"
           @update:nomeDoCaso="updateNomeDoCaso"
+          :disabled="disableFields"
         />
         <outras-informacoes
           :informacoes-complementares="notificacao.informacaoComplementar"
           @update:recebeuVacinaDaGripeNosUltimosDozeMeses="
             updateInformacaoComplementar('recebeuVacinaDaGripeNosUltimosDozeMeses', $event)
           "
+          :disabled="disableFields"
         />
         <conclusao-atendimento
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
           @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
+          :disabled="disableFields"
         />
-        <observacoes v-model="notificacao.observacoes" />
+        <observacoes
+          v-model="notificacao.observacoes"
+          :disabled="disableFields" />
       </v-form>
-      <botao-enviar @click="send" />
+      <botao-enviar v-if="stateForm !== 'VIEW'" @click="send" />
       <v-snackbar v-model="showError" color="error" bottom>{{ errorMessage }}</v-snackbar>
       <v-snackbar
         v-model="showAlert"
@@ -191,6 +207,12 @@ import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
 
+const StateForm = {
+  NEW: 'NEW',
+  VIEW: 'VIEW',
+  EDIT: 'EDIT',
+};
+
 export default {
   components: {
     BasePage,
@@ -215,7 +237,20 @@ export default {
     showAlert: false,
     showSuccess: false,
     errorMessage: '',
+    stateForm: StateForm.NEW,
   }),
+  computed: {
+    title() {
+      switch (this.stateForm) {
+        case StateForm.VIEW: return 'Visualizar notificação';
+        case StateForm.EDIT: return 'Editar notificação';
+        default: return 'Cadastrar notificação';
+      }
+    },
+    disableFields() {
+      return this.stateForm === StateForm.VIEW;
+    },
+  },
   methods: {
     updateUnidadeSaude(unidadeSaudeId) {
       this.notificacao.unidadeSaudeId = unidadeSaudeId;
@@ -269,6 +304,7 @@ export default {
       this.notificacao.conclusaoAtendimento[campo] = valor;
     },
     send() {
+      if (this.stateForm === StateForm.VIEW) return;
       if (this.$refs.form.validate()) {
         const requestNotificacao = this.notificacao.toRequestBody();
         NotificacaoService.save(requestNotificacao).then(() => {
@@ -284,6 +320,34 @@ export default {
         this.showAlert = true;
       }
     },
+    visualizarNotificacao(notificacaoId) {
+      this.stateForm = StateForm.VIEW;
+      this.buscarNotiticacao(notificacaoId);
+    },
+    editarNotificacao(notificacaoId) {
+      this.stateForm = StateForm.EDIT;
+      this.buscarNotiticacao(notificacaoId);
+    },
+    buscarNotiticacao(notificacaoId) {
+      NotificacaoService.findById(notificacaoId)
+        .then(({ data }) => {
+          this.notificacao = new Notificacao(data).toView();
+        })
+        .catch(({ response }) => {
+          this.showError = true;
+          this.errorMessage = response.data.error;
+        });
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    const { id, edit } = to.params;
+    let enter = true;
+    if (edit) {
+      enter = (vm) => vm.editarNotificacao(id);
+    } else if (id) {
+      enter = (vm) => vm.visualizarNotificacao(id);
+    }
+    next(enter);
   },
 };
 </script>
