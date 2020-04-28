@@ -13,6 +13,7 @@
       @update:gestante="updateGestante"
       @update:racaCor="updateRacaCor"
       @update:dataDeNascimento="updateDataDeNascimento"
+      :disabled="disabled"
     />
     <endereco
       :suspeito="suspeito"
@@ -22,17 +23,20 @@
       @update:bairroId="updateBairroId"
       @update:complemento="updateComplemento"
       @update:municipioId="updateMunicipioId"
+      :disabled="disabled"
     />
     <contato
       :suspeito="suspeito"
       @update:telefoneResidencial="updateTelefoneResidencial"
       @update:telefoneCelular="updateTelefoneCelular"
       @update:telefoneContato="updateTelefoneContato"
+      :disabled="disabled"
     />
     <ocupacao
       :suspeito="suspeito"
       @update:ocupacao="updateOcupacao"
       @update:updateDescricaoOcupacao="updateDescricaoOcupacao"
+      :disabled="disabled"
     />
   </div>
 </template>
@@ -58,6 +62,10 @@ export default {
     suspeito: {
       type: Pessoa,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   methods: {
@@ -120,7 +128,6 @@ export default {
     },
     updateMunicipioId(municipioId) {
       this.$emit('update:municipioId', municipioId);
-      this.$emit('update:bairroId', null);
     },
   },
 };

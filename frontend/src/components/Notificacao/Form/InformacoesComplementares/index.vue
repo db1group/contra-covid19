@@ -14,6 +14,7 @@
             label="Oseltamivir (Tamiflu)"
             hide-details
             @change="updateTamiflu"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="6">
@@ -22,6 +23,7 @@
             label="Hidroxicloroquina"
             hide-details
             @change="updateHidroxicloroquina"
+            :disabled="disabled"
           />
         </v-col>
       </v-row>
@@ -32,6 +34,7 @@
             class="pl-8"
             label="Especifique"
             @input="updateNomeMedicamento"
+            :disabled="disabled"
           />
         </v-col>
       </v-row>
@@ -46,6 +49,10 @@ export default {
     informacoesComplementares: {
       type: InformacoesComplementares,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   methods: {

@@ -9,15 +9,15 @@
           :input-value="sintomas.febreAferidaReferida"
           label="Febre (aferida/referida)"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateFebreAferidaReferida"
         />
         <v-text-field
-          :input-value="sintomas.temperaturaFebre"
+          :value="sintomas.temperaturaFebre"
           class="px-8"
           label="Informar temperatura"
           suffix="°C"
-          :disabled="!sintomatico || !sintomas.febreAferidaReferida"
+          :disabled="disableFebre"
           v-mask="'##,#'"
           @input="updateTemperaturaFebre"
         />
@@ -25,42 +25,42 @@
           :input-value="sintomas.cianoseCentral"
           label="CIANOSE CENTRAL"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateCianoseCentral"
         />
         <v-checkbox
           :input-value="sintomas.congestaoNasal"
           label="CONGESTÃO NASAL"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateCongestaoNasal"
         />
         <v-checkbox
           :input-value="sintomas.coriza"
           label="CORIZA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateCoriza"
         />
         <v-checkbox
           :input-value="sintomas.batimentoAsasNasais"
           label="BATIMENTO DE ASAS NASAIS"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateBatimentoAsasNasais"
         />
         <v-checkbox
           :input-value="sintomas.dispneia"
           label="DISPNEIA (DIFICULDADE DE RESPIRAR)"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateDispneia"
         />
         <v-checkbox
           :input-value="sintomas.dorDeGarganta"
           label="DOR DE GARGANTA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateDorDeGarganta"
         />
       </v-col>
@@ -69,42 +69,42 @@
           :input-value="sintomas.saturacaoDeOximetriaDePulso"
           label="SATURAÇÃO DE OXIMETRIA DE PULSO < 95% EM AR AMBIENTE"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateSaturacaoDeOximetriaDePulso"
         />
         <v-checkbox
           :input-value="sintomas.sibilo"
           label="SIBILO / Chiado no peito"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateSibilo"
         />
         <v-checkbox
           :input-value="sintomas.taquipneia"
           label="TAQUIPNEIA (>30 IPM)"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateTaquipneia"
         />
         <v-checkbox
           :input-value="sintomas.escarro"
           label="ESCARRO"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateEscarro"
         />
         <v-checkbox
           :input-value="sintomas.tosse"
           label="TOSSE"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateTosse"
         />
         <v-checkbox
           :input-value="sintomas.tiragemIntercostal"
           label="TIRAGEM INTERCOSTAL"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateTiragemIntercostal"
         />
       </v-col>
@@ -126,10 +126,21 @@ export default {
       type: Boolean,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
-  data: () => ({
-    existemOutrosSintomas: false,
-  }),
+  computed: {
+    disableFields() {
+      if (this.disabled) return true;
+      return !this.sintomatico;
+    },
+    disableFebre() {
+      if (this.disabled) return true;
+      return !this.sintomatico || !this.sintomas.febreAferidaReferida;
+    },
+  },
   methods: {
     updateFebreAferidaReferida(febreAferidaReferida) {
       this.$emit('update:febreAferidaReferida', febreAferidaReferida);

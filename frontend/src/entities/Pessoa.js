@@ -13,7 +13,7 @@ export default class Pessoa {
     this.bairroId = data.bairroId || null;
     this.nomeDaMae = data.nomeDaMae || '';
     this.ocupacao = data.ocupacao || '';
-    this.ocupacaoId = data.ocupacaoId || '';
+    this.ocupacaoId = data.ocupacaoId || null;
     this.endereco = data.endereco || '';
     this.numero = data.numero || '';
     this.complemento = data.complemento || '';
@@ -21,8 +21,11 @@ export default class Pessoa {
     this.telefoneResidencial = data.telefoneResidencial || '';
     this.telefoneContato = data.telefoneContato || '';
     this.telefoneCelular = data.telefoneCelular || '';
-    this.gestante = data.gestante || '';
+    this.gestante = data.gestante === 'SIM' ? 'true' : 'false';
     this.racaCor = data.racaCor || 'IGNORADO';
+    this.uf = data.uf || 'PR';
+    this.bairroNome = data.bairro || '';
+    this.municipioNome = data.municipio || '';
   }
 
   toRequestBody() {

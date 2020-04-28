@@ -12,6 +12,7 @@
             class="mt-0"
             label="Sim"
             hide-details
+            :disabled="disabled"
           />
         </v-col>
       </v-row>
@@ -19,6 +20,7 @@
         <v-col cols="12">
           <v-radio-group
             label="Local do contato"
+            :disabled="disabled"
           >
             <v-radio
               v-for="localContato in locaisContato"
@@ -41,6 +43,12 @@
 import locaisContato from '@/entities/enums/LocaisContato.json';
 
 export default {
+  props: {
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
+  },
   data: () => ({
     locaisContato,
   }),

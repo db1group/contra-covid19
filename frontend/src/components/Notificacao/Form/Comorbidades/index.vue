@@ -14,6 +14,7 @@
             label="Puérpera até 45 dias do parto"
             hide-details
             @change="updatePuerperaAte45DiasDoParto"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -22,6 +23,7 @@
             label="Doença neurológica crônica"
             hide-details
             @change="updateDoencaNeurologicaCronica"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -30,6 +32,7 @@
             label="Síndrome de Down"
             hide-details
             @change="updateSindromeDeDown"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -38,6 +41,7 @@
             label="Doença renal crônica"
             hide-details
             @change="updateDoencaRenalCronica"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -46,6 +50,7 @@
             label="Diabetes Mellitus"
             hide-details
             @change="updateDiabetesMellitus"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -54,6 +59,7 @@
             label="Doença hematológica crônica"
             hide-details
             @change="updateDoencaHematologicaCronica"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -62,6 +68,7 @@
             label="Imunodeficiência/imunodepressão"
             hide-details
             @change="updateImunodeficiencia"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -70,6 +77,7 @@
             label="Asma"
             hide-details
             @change="updateAsma"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -78,6 +86,7 @@
             label="Doença cardiovascular crônica"
             hide-details
             @change="updateDoencaCardioVascularCronica"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -86,6 +95,7 @@
             label="Outra pneumopatia crônica"
             hide-details
             @change="updateOutraPneumopatiaCronica"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -94,6 +104,7 @@
             label="Doença hepática crônica"
             hide-details
             @change="updateDoencaHepaticaCronica"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -102,6 +113,7 @@
             label="Obesidade"
             hide-details
             @change="updateObesidade"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -110,6 +122,7 @@
             label="Hipertensão"
             hide-details
             @change="updateHipertensao"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -118,6 +131,7 @@
             label="Infecção HIV"
             hide-details
             @change="updateInfeccaoHIV"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -126,6 +140,7 @@
             label="Neoplasia"
             hide-details
             @change="updateNeoplasia"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" md="6">
@@ -134,6 +149,7 @@
             label="Tabagismo"
             hide-details
             @change="updateTabagismo"
+            :disabled="disabled"
           />
         </v-col>
         <v-col
@@ -141,16 +157,17 @@
           md="6"
         >
           <v-checkbox
-            :input-value="outrasComorbidades"
+            :input-value="comorbidades.outrasComorbidades"
             label="Outros"
             hide-details
             @change="updateOutrasComorbidades"
+            :disabled="disabled"
           />
           <v-text-field
             :value="comorbidades.outros"
             class="pl-8"
             label="Especifique"
-            :disabled="!outrasComorbidades"
+            :disabled="disableOutro"
             @input="updateOutros"
           />
         </v-col>
@@ -167,10 +184,17 @@ export default {
       type: Comorbidades,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
-  data: () => ({
-    outrasComorbidades: false,
-  }),
+  computed: {
+    disableOutro() {
+      if (this.disabled) return true;
+      return !this.comorbidades.outrasComorbidades;
+    },
+  },
   methods: {
     updatePuerperaAte45DiasDoParto(puerperaAte45DiasDoParto) {
       this.$emit('update:puerperaAte45DiasDoParto', puerperaAte45DiasDoParto);
@@ -224,7 +248,7 @@ export default {
       this.$emit('update:tabagismo', tabagismo);
     },
     updateOutrasComorbidades(outrasComorbidades) {
-      this.outrasComorbidades = outrasComorbidades;
+      this.comorbidades.outrasComorbidades = outrasComorbidades;
     },
   },
 };

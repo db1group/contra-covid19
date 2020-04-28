@@ -102,7 +102,7 @@ exports.gerarExcel = async (req, res) => {
       realizouExameDeImagem: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'realizouExameDeImagem'),
       raioXNormal: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'raioXNormal'),
       raioXInfiltrado: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'raioXInfiltrado'),
-      raioxXConsolidacao: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'raioxXConsolidacao'),
+      raioXConsolidacao: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'raioXConsolidacao'),
       raioXMisto: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'raioXMisto'),
       raioXOutro: t.NotificacaoCovid19 ? t.NotificacaoCovid19.raioXOutro : null,
       // Tomografia de tórax
@@ -212,7 +212,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'realizouExameDeImagem', nomeCampo: 'realizouExameDeImagem' },
       { nomeColuna: 'raioXNormal', nomeCampo: 'raioXNormal' },
       { nomeColuna: 'raioXInfiltrado', nomeCampo: 'raioXInfiltrado' },
-      { nomeColuna: 'raioxXConsolidacao', nomeCampo: 'raioxXConsolidacao' },
+      { nomeColuna: 'raioXConsolidacao', nomeCampo: 'raioXConsolidacao' },
       { nomeColuna: 'raioXMisto', nomeCampo: 'raioXMisto' },
       { nomeColuna: 'raioXOutro', nomeCampo: 'raioXOutro' },
       // Tomografia de tórax

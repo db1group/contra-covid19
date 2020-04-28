@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     dataDeNascimento: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       validate: {
         isDate: true,
         isNotGreaterTomorrow(value) {
@@ -60,6 +60,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
+    cep: DataTypes.STRING(8),
   });
   Pessoa.associate = (models) => {
     Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });

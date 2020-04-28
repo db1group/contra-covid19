@@ -10,10 +10,11 @@
             Recebeu vacina contra Gripe nos últimos doze meses? *
           </label>
           <v-radio-group
-            :input-value="informacoesComplementares.recebeuVacinaDaGripeNosUltimosDozeMeses"
+            :value="informacoesComplementares.recebeuVacinaDaGripeNosUltimosDozeMeses"
             row
             :rules="rules.recebeuVacinaDaGripeNosUltimosDozeMeses"
             @change="updateRecebeuVacinaDaGripeNosUltimosDozeMeses"
+            :disabled="disabled"
           >
             <v-radio value="NAO" label="Não"/>
             <v-radio value="SIM" label="Sim"/>
@@ -33,6 +34,10 @@ export default {
     informacoesComplementares: {
       type: InformacoesComplementares,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   data: () => ({
