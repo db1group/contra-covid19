@@ -5,35 +5,35 @@
       :value="examesImagem.tomografiaNormal"
       label="NORMAL"
       hide-details
-      :disabled="!realizouExamesImagem"
+      :disabled="disableFields"
       @change="updateTomografiaNormal"
     />
     <v-checkbox
       :value="examesImagem.tomografiaVidroFoscoPredominioPerifericoBasal"
       label="VIDRO FOSCO DE PREDOMÍNIO PERIFÉRICO E BASAL"
       hide-details
-      :disabled="!realizouExamesImagem"
+      :disabled="disableFields"
       @change="updateTomografiaVidroFoscoPredominioPerifericoBasal"
     />
     <v-checkbox
       :value="examesImagem.tomografiaAusenciaDerramePleural"
       label="AUSÊNCIA DE DERRAME PLEURAL"
       hide-details
-      :disabled="!realizouExamesImagem"
+      :disabled="disableFields"
       @change="updateTomografiaAusenciaDerramePleural"
     />
     <v-checkbox
       :value="examesImagem.tomografiaAusenciaLinfonodoMediastenal"
       label="AUSÊNCIA DE LINFONODO MEDIASTENAL"
       hide-details
-      :disabled="!realizouExamesImagem"
+      :disabled="disableFields"
       @change="updateTomografiaAusenciaLinfonodoMediastenal"
     />
     <v-checkbox
-      :input-value="realizouOutraTomografiaTorax"
+      :input-value="examesImagem.realizouOutraTomografiaTorax"
       label="OUTRO"
       hide-details
-      :disabled="!realizouExamesImagem"
+      :disabled="disableFields"
       @change="updateRealizouOutraTomografiaTorax"
     />
     <v-text-field
@@ -44,7 +44,7 @@
       class="pl-8"
       label="Especifique *"
       validate-on-blur
-      :disabled="!realizouOutraTomografiaTorax || !realizouExamesImagem"
+      :disabled="disableOutro"
       @input="updateTomografiaOutro"
     />
   </div>
@@ -63,19 +63,32 @@ export default {
       type: ExamesImagem,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   data: () => ({
-    realizouOutraTomografiaTorax: false,
     rules: {
       tomografiaOutro: [],
     },
   }),
+  computed: {
+    disableFields() {
+      if (this.disabled) return true;
+      return !this.realizouExamesImagem;
+    },
+    disableOutro() {
+      if (this.disabled) return true;
+      return !this.examesImagem.realizouOutraTomografiaTorax || !this.realizouExamesImagem;
+    },
+  },
   methods: {
     validarRealizouExamesImagem() {
       this.$emit('update:validarRealizouExamesImagem');
     },
     updateRealizouOutraTomografiaTorax(realizouOutraTomografiaTorax) {
-      this.realizouOutraTomografiaTorax = realizouOutraTomografiaTorax;
+      this.examesImagem.realizouOutraTomografiaTorax = realizouOutraTomografiaTorax;
       this.$emit('update:tomografiaNormal', false);
       this.updateTomografiaOutro();
       this.validarTomografiaOutro();
@@ -87,7 +100,7 @@ export default {
       this.$emit('update:tomografiaAusenciaDerramePleural', false);
       this.$emit('update:tomografiaAusenciaLinfonodoMediastenal', false);
       this.$emit('update:tomografiaOutro', '');
-      this.realizouOutraTomografiaTorax = false;
+      this.examesImagem.realizouOutraTomografiaTorax = false;
       this.validarRealizouExamesImagem();
     },
     updateTomografiaVidroFoscoPredominioPerifericoBasal(tomografiaVidroFoscoPredominioPerifericoBasal) {
@@ -114,7 +127,7 @@ export default {
       this.$refs.tomografiaOutro.validate();
     },
     requiredIfRealizouOutraTomografiaTorax(value) {
-      if (!this.realizouOutraTomografiaTorax) {
+      if (!this.examesImagem.realizouOutraTomografiaTorax) {
         return true;
       }
       return required(value);

@@ -24,6 +24,11 @@ const routes = [
     component: NotificacaoForm,
   },
   {
+    path: '/notificacoes/:id',
+    name: 'notificacao-view',
+    component: NotificacaoForm,
+  },
+  {
     path: '/notificacoes/:id/evolucoes',
     name: 'evolucao-form',
     component: EvolucaoForm,

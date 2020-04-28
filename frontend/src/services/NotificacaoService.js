@@ -12,6 +12,11 @@ export default {
         &sortBy=${sortBy}&sortDesc=${sortDesc}&status=${status}&search=${search}`)
       .then(({ data }) => data);
   },
+  findById(notificacaoId) {
+    return http
+      .get(`/notificacoes/${notificacaoId}`)
+      .then(({ data }) => data);
+  },
   delete(id) {
     return http.delete(`/notificacoes/${id}`);
   },

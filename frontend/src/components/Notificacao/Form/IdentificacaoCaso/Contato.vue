@@ -12,6 +12,7 @@
         v-mask="'(##) ####-####'"
         :rules="rules.telefoneResidencial"
         @input="updateTelefoneResidencial"
+        :disabled="disabled"
       />
     </v-col>
     <v-col
@@ -26,6 +27,7 @@
         v-mask="'(##) #####-####'"
         :rules="rules.telefoneCelular"
         @input="updateTelefoneCelular"
+        :disabled="disabled"
       />
     </v-col>
     <v-col
@@ -40,6 +42,7 @@
         v-mask="['(##) ####-####', '(##) #####-####']"
         :rules="rules.telefoneContato"
         @input="updateTelefoneContato"
+        :disabled="disabled"
       />
     </v-col>
   </v-row>
@@ -54,6 +57,10 @@ export default {
     suspeito: {
       type: Pessoa,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   data: () => ({

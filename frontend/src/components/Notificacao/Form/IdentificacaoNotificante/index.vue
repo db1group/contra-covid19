@@ -15,6 +15,7 @@
             :loading="unidadesSaude.loading"
             no-data-text="Unidade de saúde não encontrada"
             @input="updateUnidadeSaude"
+            :disabled="disabled"
           />
         </v-col>
       </v-row>
@@ -25,6 +26,7 @@
             :rules="rules.nomeNotificador"
             label="Nome do notificador *"
             @input="updateNomeNotificador"
+            :disabled="disabled"
           />
         </v-col>
         <v-col cols="12" sm="6">
@@ -39,6 +41,7 @@
             :loading="profissoes.loading"
             no-data-text="Profissão não encontrada"
             @input="updateProfissaoId"
+            :disabled="disabled"
           />
         </v-col>
       </v-row>
@@ -56,6 +59,10 @@ export default {
     notificacao: {
       type: Notificacao,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   data: () => ({
@@ -77,6 +84,11 @@ export default {
       nomeNotificador: [required],
     },
   }),
+  watch: {
+    notificacao(notificacao) {
+      this.findUnidadesDeSaude(notificacao.unidadeSaudeNome);
+    },
+  },
   methods: {
     updateUnidadeSaude(unidadeSaudeId) {
       this.$emit('update:unidadeSaudeId', unidadeSaudeId);
@@ -119,7 +131,7 @@ export default {
   },
   created() {
     this.findProfissoes();
-    this.findUnidadesDeSaude('');
+    this.findUnidadesDeSaude();
   },
 };
 </script>

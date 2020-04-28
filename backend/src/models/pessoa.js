@@ -60,6 +60,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
+    cep: DataTypes.STRING(8),
   });
   Pessoa.associate = (models) => {
     Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });

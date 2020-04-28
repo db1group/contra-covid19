@@ -18,15 +18,22 @@ const requestParaModeloNotificacao = (objetoRequest) => {
 };
 
 const mapearSintomas = (sintomas) => {
-  const { outros, ...sintomasAferidos } = sintomas;
+  const {
+    outros, adiamiaOuFraqueza, irritabilidadeOuConfusao, manchasVermelhas, ...sintomasAferidos
+  } = sintomas;
   return {
     ...sintomasAferidos,
+    adiamiaFraqueza: adiamiaOuFraqueza,
+    irritabilidadeConfusao: irritabilidadeOuConfusao,
+    manchasVermelhar: manchasVermelhas,
     outrosSintomas: outros,
   };
 };
 
 const mapearComorbidades = (comorbidades) => {
-  const { outros, ...comorbidadesAferidas } = comorbidades;
+  const {
+    outros, ...comorbidadesAferidas
+  } = comorbidades;
   return {
     ...comorbidadesAferidas,
     outrosComorbidades: outros,

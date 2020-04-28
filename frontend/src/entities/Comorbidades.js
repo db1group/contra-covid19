@@ -17,5 +17,6 @@ export default class Comorbidades {
     this.neoplasia = data.neoplasia || false;
     this.tabagismo = data.tabagismo || false;
     this.outros = data.outros || '';
+    this.outrasComorbidades = !!data.outros || false;
   }
 }

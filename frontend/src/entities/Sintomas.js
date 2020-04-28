@@ -29,5 +29,6 @@ export default class Sintomas {
     this.nauseaVomito = data.nauseaVomito || false;
     this.tiragemIntercostal = data.tiragemIntercostal || false;
     this.outros = data.outros || '';
+    this.existemOutrosSintomas = !!data.outros || false;
   }
 }

@@ -13,6 +13,7 @@
             :value="value"
             solo
             @input="input"
+            :disabled="disabled"
           />
         </v-col>
       </v-row>
@@ -25,6 +26,10 @@ export default {
     value: {
       type: String,
       default: '',
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   methods: {
