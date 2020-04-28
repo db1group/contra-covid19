@@ -1,7 +1,12 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">7. MEDICAMENTO</h4>
-    <v-container fluid class="pa-0">
+    <h4 class="primary--text title">
+      7. MEDICAMENTO
+    </h4>
+    <v-container
+      fluid
+      class="pa-0"
+    >
       <v-row>
         <v-col cols="4">
           <v-checkbox
