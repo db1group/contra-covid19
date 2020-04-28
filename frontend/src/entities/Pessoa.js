@@ -1,6 +1,5 @@
 import Utils from '@/services/Utils';
 import DateService from '@/services/DateService';
-import Configuration from '@/configuration';
 
 export default class Pessoa {
   constructor(data = {}) {
@@ -18,12 +17,13 @@ export default class Pessoa {
     this.endereco = data.endereco || '';
     this.numero = data.numero || '';
     this.complemento = data.complemento || '';
-    this.municipioId = data.municipioId || Configuration.value('VUE_APP_MUNICIPIO_ID');
+    this.municipioId = data.municipioId || '';
     this.telefoneResidencial = data.telefoneResidencial || '';
     this.telefoneContato = data.telefoneContato || '';
     this.telefoneCelular = data.telefoneCelular || '';
     this.gestante = data.gestante || '';
     this.racaCor = data.racaCor || 'IGNORADO';
+    this.uf = data.uf || '';
   }
 
   toRequestBody() {

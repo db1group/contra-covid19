@@ -8,6 +8,7 @@ export default class ConclusaoAtendimento {
     this.nomeLaboratorioEnvioMaterial = data.nomeLaboratorioEnvioMaterial || '';
     this.dataDaColeta = data.dataDaColeta || '';
     this.metodoDeExame = data.metodoDeExame || null;
+    this.realizadaColeta = !!data.dataDaColeta || false;
   }
 
   toRequestBody() {

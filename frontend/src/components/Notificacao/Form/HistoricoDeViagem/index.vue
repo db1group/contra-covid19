@@ -11,6 +11,7 @@
             label="Sim"
             hide-details
             @change="updateHistoricoDeViagem"
+            :disabled="disabled"
           />
           <v-text-field
             :value="informacoesComplementares.dataDaViagem"
@@ -20,7 +21,7 @@
             v-mask="'##/##/####'"
             :rules="rules.dataDaViagem"
             validate-on-blur
-            :disabled="!informacoesComplementares.historicoDeViagem"
+            :disabled="disableFields"
             @input="updateDataDaViagem"
           />
           <v-text-field
@@ -29,7 +30,7 @@
             label="Local da viagem *"
             append-icon="mdi-map-marker"
             :rules="rules.localDaViagem"
-            :disabled="!informacoesComplementares.historicoDeViagem"
+            :disabled="disableFields"
             @input="updateLocalDaViagem"
           />
         </v-col>
@@ -49,6 +50,10 @@ export default {
       type: InformacoesComplementares,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   data: () => ({
     rules: {
@@ -56,6 +61,12 @@ export default {
       localDaViagem: [],
     },
   }),
+  computed: {
+    disableFields() {
+      if (this.disabled) return true;
+      return !this.informacoesComplementares.historicoDeViagem;
+    },
+  },
   methods: {
     updateHistoricoDeViagem(historicoDeViagem) {
       this.$emit('update:historicoDeViagem', historicoDeViagem);

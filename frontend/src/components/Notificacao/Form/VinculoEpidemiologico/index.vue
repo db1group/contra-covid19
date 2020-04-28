@@ -13,6 +13,7 @@
             :value="situacao"
             @change="updateSituacao"
             :rules="rules.situacao"
+            :disabled="disabled"
           >
             <v-radio :value="1">
               <template v-slot:label>
@@ -58,6 +59,10 @@ export default {
       type: VinculoEpidemiologico,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   data: () => ({
     situacao: null,
@@ -66,6 +71,11 @@ export default {
       nome: [],
     },
   }),
+  watch: {
+    vinculoEpidemiologico() {
+      this.updateStateSituacao();
+    },
+  },
   methods: {
     updateSituacao(situacao) {
       this.situacao = situacao;

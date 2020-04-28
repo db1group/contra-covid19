@@ -17,12 +17,14 @@
             item-text="value"
             item-value="key"
             @input="updateTipoDeContato"
+            :disabled="disabled"
           />
           <v-col cols="12">
             <v-radio-group
               :value="notificacao.tipoDeLocalDoCaso"
               label="Local do contato"
               @change="updateTipoDeLocalDoCaso"
+              :disabled="disabled"
             >
               <v-radio
                 v-for="localContato in locaisContato"
@@ -37,7 +39,7 @@
             <v-text-field
               :value="notificacao.nomeDoCaso"
               label="Nome da pessoa suspeita"
-              :disabled="notificacao.tipoDeContatoComCaso === 'SEM_CONTATO' || !notificacao.tipoDeContatoComCaso"
+              :disabled="disableNomeCaso"
               @input="updateNomeDoCaso"
             />
           </v-col>
@@ -63,6 +65,10 @@ export default {
       type: Notificacao,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   data: () => ({
     locaisContato,
@@ -71,6 +77,13 @@ export default {
       tipoDeContatoComCaso: [required],
     },
   }),
+  computed: {
+    disableNomeCaso() {
+      if (this.disabled) return true;
+      return !this.notificacao.tipoDeContatoComCaso === 'SEM_CONTATO'
+        || !this.notificacao.tipoDeContatoComCaso;
+    },
+  },
   methods: {
     updateTipoDeContato(tipoDeContatoComCaso) {
       this.$emit('update:tipoDeContatoComCaso', tipoDeContatoComCaso);

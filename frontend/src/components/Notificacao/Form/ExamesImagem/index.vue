@@ -12,6 +12,7 @@
           class="mt-0"
           :rules="rules.realizouExamesImagem"
           @change="updateRealizouExamesImagem"
+          :disabled="disabled"
         >
           <v-radio label="Sim" :value="true"/>
           <v-radio label="Não" :value="false"/>
@@ -30,6 +31,7 @@
             @update:raioConsolidacao="updateRaioConsolidacao"
             @update:raioMisto="updateRaioMisto"
             @update:raioOutro="updateRaioOutro"
+            :disabled="disabled"
           />
         </v-col>
         <v-col col="6">
@@ -42,6 +44,7 @@
             @update:tomografiaAusenciaDerramePleural="updateTomografiaAusenciaDerramePleural"
             @update:tomografiaAusenciaLinfonodoMediastenal="updateTomografiaAusenciaLinfonodoMediastenal"
             @update:tomografiaOutro="updateTomografiaOutro"
+            :disabled="disabled"
           />
         </v-col>
       </v-row>
@@ -67,12 +70,22 @@ export default {
       type: ExamesImagem,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   data: () => ({
     rules: {
       realizouExamesImagem: [],
     },
   }),
+  computed: {
+    disableFields() {
+      if (this.disabled) return true;
+      return !this.sintomatico;
+    },
+  },
   methods: {
     updateRealizouExamesImagem(realizouExamesImagem) {
       this.$emit('update:realizouExamesImagem', realizouExamesImagem);

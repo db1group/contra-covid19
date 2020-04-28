@@ -268,6 +268,7 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
+      include: models.Municipio,
     }, {
       model: models.NotificacaoCovid19,
       attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao'],

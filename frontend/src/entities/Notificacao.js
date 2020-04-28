@@ -9,6 +9,8 @@ import ConclusaoAtendimento from './ConclusaoAtendimento';
 
 export default class Notificacao {
   constructor(data = {}) {
+    this.id = data.id || null;
+    this.status = data.status || 'ABERTA';
     this.dataHoraNotificacao = data.dataHoraNotificacao || DateService.formatNowAsStringDateTime();
     this.unidadeSaudeId = data.unidadeSaudeId || null;
     this.notificadorId = data.notificadorId || 'ac3227a1-8a09-4b5f-93cd-d6ca43b637a4';
@@ -20,7 +22,6 @@ export default class Notificacao {
     this.profissaoId = data.profissaoId || null;
     this.tipoDeContatoComCaso = data.tipoDeContatoComCaso || null;
     this.tipoDeLocalDoCaso = data.tipoDeLocalDoCaso || null;
-    this.descricaoDoLocalDoCaso = data.descricaoDoLocalDoCaso || '';
     this.nomeDoCaso = data.nomeDoCaso || '';
     this.observacoes = data.observacoes || '';
     this.suspeito = new Pessoa(data.suspeito || {});
@@ -41,5 +42,30 @@ export default class Notificacao {
       informacaoComplementar: this.informacaoComplementar.toRequestBody(),
       conclusaoAtendimento: this.conclusaoAtendimento.toRequestBody(),
     };
+  }
+
+  toView() {
+    this.dataInicioDosSintomas = DateService.changeFormat(this.dataInicioDosSintomas, 'YYYY-MM-DD', 'DD/MM/YYYY');
+    this.dataHoraNotificacao = DateService.changeFormat(
+      this.dataHoraNotificacao,
+      'YYYY-MM-DDTHH:mm',
+      'DD/MM/YYYY HH:mm',
+    );
+    this.suspeito.dataDeNascimento = DateService.changeFormat(
+      this.suspeito.dataDeNascimento,
+      'YYYY-MM-DD',
+      'DD/MM/YYYY',
+    );
+    this.conclusaoAtendimento.dataDaColeta = DateService.changeFormat(
+      this.conclusaoAtendimento.dataDaColeta,
+      'YYYY-MM-DD',
+      'DD/MM/YYYY',
+    );
+    this.informacaoComplementar.dataDaViagem = DateService.changeFormat(
+      this.informacaoComplementar.dataDaViagem,
+      'YYYY-MM-DD',
+      'DD/MM/YYYY',
+    );
+    return this;
   }
 }

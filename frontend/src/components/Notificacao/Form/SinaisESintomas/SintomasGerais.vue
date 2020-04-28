@@ -8,6 +8,7 @@
           label="Sintomático"
           hide-details
           @change="updateSintomatico"
+          :disabled="disabled"
         />
       </v-col>
       <v-col
@@ -21,7 +22,7 @@
           label="Data de início dos sintomas *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           :rules="rules.dataInicioDosSintomas"
           validate-on-blur
           @input="updateDataInicioDosSintomas"
@@ -44,6 +45,16 @@ export default {
     dataInicioDosSintomas: {
       type: String,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
+  },
+  computed: {
+    disableFields() {
+      if (this.disabled) return true;
+      return !this.sintomatico;
     },
   },
   data: () => ({

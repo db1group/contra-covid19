@@ -13,16 +13,29 @@
             :value="conclusaoAtendimento.situacaoNoMomentoDaNotificacao"
             :rules="rules.situacaoNoMomentoDaNotificacao"
             @change="updateSituacaoNoMomentoDaNotificacao"
+            :disabled="disabled"
           >
             <template v-slot:label>
               <label class="primary--text body-1 font-weight-bold">
                 Situação no momento da notificação
               </label>
             </template>
-            <v-radio value="ALTA_ISOLAMENTO_DOMICILIAR" label="Alta com determinação de ISOLAMENTO DOMICILIAR *"/>
-            <v-radio value="INTERNAMENTO_LEITO_COMUM" label="Encaminhado para INTERNAMENTO EM LEITO COMUM **"/>
-            <v-radio value="INTERNAMENTO_LEITO_UTI" label="Encaminhado para INTERNAMENTO EM LEITO DE UTI **"/>
-            <v-radio value="EVOLUCAO_OBITO" label="Evolução para ÓBITO"/>
+            <v-radio
+              value="ALTA_ISOLAMENTO_DOMICILIAR"
+              label="Alta com determinação de ISOLAMENTO DOMICILIAR *"
+              :disabled="disabled" />
+            <v-radio
+              value="INTERNAMENTO_LEITO_COMUM"
+              label="Encaminhado para INTERNAMENTO EM LEITO COMUM **"
+              :disabled="disabled"/>
+            <v-radio
+              value="INTERNAMENTO_LEITO_UTI"
+              label="Encaminhado para INTERNAMENTO EM LEITO DE UTI **"
+              :disabled="disabled" />
+            <v-radio
+              value="EVOLUCAO_OBITO"
+              label="Evolução para ÓBITO"
+              :disabled="disabled" />
           </v-radio-group>
           <div v-show="isIsolamentoDomiciliar">
             <p>
@@ -56,6 +69,10 @@ export default {
     conclusaoAtendimento: {
       type: ConclusaoAtendimento,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   data: () => ({

@@ -7,6 +7,7 @@ const {
   extrairSuspeito,
   extrairSintomas,
   extrairComorbidades,
+  extrairExamesImagem,
   extrairInformacaoComplementar,
   extrairVinculoEpidemiologico,
   extrairConclusaoAtendimento,
@@ -29,6 +30,7 @@ module.exports = {
     const suspeito = extrairSuspeito(notificacao);
     const sintomas = extrairSintomas(notificacaoCovid19);
     const comorbidades = extrairComorbidades(notificacaoCovid19);
+    const examesImagem = extrairExamesImagem(notificacaoCovid19);
     const informacaoComplementar = extrairInformacaoComplementar(notificacaoCovid19);
     const vinculoEpidemiologico = extrairVinculoEpidemiologico(notificacaoCovid19);
     const conclusaoAtendimento = extrairConclusaoAtendimento(notificacaoCovid19);
@@ -38,6 +40,7 @@ module.exports = {
       suspeito,
       sintomas,
       comorbidades,
+      examesImagem,
       informacaoComplementar,
       vinculoEpidemiologico,
       conclusaoAtendimento,

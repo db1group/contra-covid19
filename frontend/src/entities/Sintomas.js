@@ -10,7 +10,7 @@ export default class Sintomas {
     this.congestaoNasal = data.congestaoNasal || false;
     this.dificuldadeDeglutir = data.dificuldadeDeglutir || false;
     this.gangliosLinfaticos = data.gangliosLinfaticos || false;
-    this.irritabilidadeOuConfusao = data.irritabilidadeOuConfusao || false;
+    this.irritabilidadeOuConfusao = data.irritabilidadeConfusao || false;
     this.manchasVermelhas = data.manchasVermelhas || false;
     this.tosseSeca = data.tosseSeca || false;
     this.dorDeGarganta = data.dorDeGarganta || false;
@@ -30,5 +30,6 @@ export default class Sintomas {
     this.vomito = data.vomito || false;
     this.tiragemIntercostal = data.tiragemIntercostal || false;
     this.outros = data.outros || '';
+    this.existemOutrosSintomas = !!data.outros || false;
   }
 }

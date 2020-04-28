@@ -5,35 +5,35 @@
       :input-value="examesImagem.raioNormal"
       label="NORMAL"
       hide-details
-      :disabled="!realizouExamesImagem"
+      :disabled="disableFields"
       @change="updateRaioNormal"
     />
     <v-checkbox
       :input-value="examesImagem.raioInfiltradoIntersticial"
       label="INFILTRADO INTERSTICIAL"
       hide-details
-      :disabled="!realizouExamesImagem"
+      :disabled="disableFields"
       @change="updateRaioInfiltradoIntersticial"
     />
     <v-checkbox
       :input-value="examesImagem.raioConsolidacao"
       label="CONSOLIDAÇÃO"
       hide-details
-      :disabled="!realizouExamesImagem"
+      :disabled="disableFields"
       @change="updateRaioConsolidacao"
     />
     <v-checkbox
       :input-value="examesImagem.raioMisto"
       label="MISTO"
       hide-details
-      :disabled="!realizouExamesImagem"
+      :disabled="disableFields"
       @change="updateRaioMisto"
     />
     <v-checkbox
-      :input-value="realizouOutroRaioTorax"
+      :input-value="examesImagem.realizouOutroRaioTorax"
       label="OUTRO"
       hide-details
-      :disabled="!realizouExamesImagem"
+      :disabled="disableFields"
       @change="updateRealizouOutroRaioTorax"
     />
     <v-text-field
@@ -44,7 +44,7 @@
       class="pl-8"
       label="Especifique *"
       validate-on-blur
-      :disabled="!realizouOutroRaioTorax || !realizouExamesImagem"
+      :disabled="disableOutro"
       @input="updateRaioOutro"
     />
   </div>
@@ -63,19 +63,32 @@ export default {
       type: ExamesImagem,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   data: () => ({
-    realizouOutroRaioTorax: false,
     rules: {
       raioOutro: [],
     },
   }),
+  computed: {
+    disableFields() {
+      if (this.disabled) return true;
+      return !this.realizouExamesImagem;
+    },
+    disableOutro() {
+      if (this.disabled) return true;
+      return !this.examesImagem.realizouOutroRaioTorax || !this.realizouExamesImagem;
+    },
+  },
   methods: {
     validarRealizouExamesImagem() {
       this.$emit('update:validarRealizouExamesImagem');
     },
     updateRealizouOutroRaioTorax(realizouOutroRaioTorax) {
-      this.realizouOutroRaioTorax = realizouOutroRaioTorax;
+      this.examesImagem.realizouOutroRaioTorax = realizouOutroRaioTorax;
       this.$emit('update:raioNormal', false);
       this.updateRaioOutro();
       this.validarRaioOutro();
@@ -87,7 +100,7 @@ export default {
       this.$emit('update:raioConsolidacao', false);
       this.$emit('update:raioMisto', false);
       this.$emit('update:raioOutro', '');
-      this.realizouOutroRaioTorax = false;
+      this.examesImagem.realizouOutroRaioTorax = false;
       this.validarRealizouExamesImagem();
     },
     updateRaioInfiltradoIntersticial(raioInfiltradoIntersticial) {
@@ -114,7 +127,7 @@ export default {
       this.$refs.raioOutro.validate();
     },
     requiredIfRealizouOutroRaioTorax(value) {
-      if (!this.realizouOutroRaioTorax) {
+      if (!this.examesImagem.realizouOutroRaioTorax) {
         return true;
       }
       return required(value);

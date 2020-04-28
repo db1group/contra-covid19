@@ -9,6 +9,7 @@
           validate-on-blur
           :rules="rules.dataHoraNotificacao"
           @input="updateDataHoraNotificacao"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -22,6 +23,7 @@
           item-text="value"
           item-value="key"
           @input="updateTipoDocumento"
+          :disabled="disabled"
         />
       </v-col>
       <v-col cols="12" sm="5" md="5">
@@ -30,6 +32,7 @@
           :rules="rules.numeroDocumento"
           label="Número do documento *"
           @input="updateNumeroDocumento"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -42,6 +45,7 @@
           @change="updateSexo"
           :rules="rules.sexo"
           row
+          :disabled="disabled"
         >
           <v-radio label="Masculino" value="M"/>
           <v-radio label="Feminino" value="F"/>
@@ -55,6 +59,7 @@
           @change="updateGestante"
           :rules="rules.gestante"
           row
+          :disabled="disabled"
         >
           <v-radio label="Sim" value="true"/>
           <v-radio label="Não" value="false"/>
@@ -68,6 +73,7 @@
           :rules="rules.nome"
           label="Nome completo *"
           @input="updateNome"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -78,6 +84,7 @@
           label="Nome da mãe *"
           @input="updateNomeDaMae"
           :rules="rules.nomeDaMae"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -91,6 +98,7 @@
           :rules="rules.dataDeNascimento"
           validate-on-blur
           @input="updateDataDeNascimento"
+          :disabled="disabled"
         />
       </v-col>
       <v-spacer/>
@@ -103,6 +111,7 @@
           item-text="value"
           item-value="key"
           @input="updateRacaCor"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -141,6 +150,10 @@ export default {
     suspeito: {
       type: Pessoa,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   data: () => ({

@@ -10,24 +10,25 @@
       <v-row>
         <v-col cols="12">
           <v-checkbox
-            :input-value="realizadaColeta"
+            :input-value="conclusaoAtendimento.realizadaColeta"
             label="Sim"
             hide-details
             @change="updateRealizadaColeta"
+            :disabled="disabled"
           />
           <v-text-field
             :value="conclusaoAtendimento.dataDaColeta"
             class="pl-8"
             label="Data da Coleta"
             v-mask="'##/##/####'"
-            :disabled="!realizadaColeta"
+            :disabled="disableFields"
             :rules="rules.dataDaColeta"
             @input="updateDataDaColeta"
           />
           <v-radio-group
             :value="conclusaoAtendimento.tipoLaboratorio"
             class="pl-8"
-            :disabled="!realizadaColeta"
+            :disabled="disableFields"
             @change="changeTipoLaboratorio"
           >
             <v-radio value="OFICIAL" label="Laboratório Oficial"/>
@@ -36,7 +37,7 @@
           <v-text-field
             :value="conclusaoAtendimento.nomeLaboratorioEnvioMaterial"
             label="Nome do laboratório"
-            :disabled="conclusaoAtendimento.tipoLaboratorio!=='PRIVADO'"
+            :disabled="disableNomeLab"
             class="realizado-coleta__nome-laboratorio"
             @input="updateNomeLaboratorioEnvioMaterial"
           />
@@ -45,7 +46,7 @@
             :value="conclusaoAtendimento.metodoDeExame"
             class="pl-8"
             label="Método do exame"
-            :disabled="!realizadaColeta"
+            :disabled="disableFields"
             @change="updateMetodoDeExame"
           >
             <v-radio value="RT-PCR" label="RT-PCR"/>
@@ -73,17 +74,30 @@ export default {
       type: ConclusaoAtendimento,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   data: () => ({
-    realizadaColeta: false,
     rules: {
       dataDaColeta: [dateFormat],
     },
   }),
+  computed: {
+    disableFields() {
+      if (this.disabled) return true;
+      return !this.conclusaoAtendimento.realizadaColeta;
+    },
+    disableNomeLab() {
+      if (this.disabled) return true;
+      return !this.conclusaoAtendimento.tipoLaboratorio !== 'PRIVADO';
+    },
+  },
   methods: {
     updateRealizadaColeta(realizadaColeta) {
-      this.realizadaColeta = realizadaColeta;
-      if (!this.realizadaColeta) {
+      this.conclusaoAtendimento.realizadaColeta = realizadaColeta;
+      if (!this.conclusaoAtendimento.realizadaColeta) {
         this.unselectTipoLaboratorio();
         this.updateDataDaColeta('');
         this.updateMetodoDeExame(null);

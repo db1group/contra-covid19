@@ -17,12 +17,13 @@
             label="Sim"
             hide-details
             @change="updateMedicacaoAntitermica"
+            :disabled="disabled"
           />
           <v-text-field
             :value="informacoesComplementares.nomeMedicacaoAntitermica"
             class="pl-8"
             label="Especifique"
-            :disabled="!informacoesComplementares.medicacaoAntitermica"
+            :disabled="disableMedicacaoAntitermica"
             @input="updateNomeMedicacaoAntitermica"
           />
         </v-col>
@@ -37,12 +38,13 @@
             label="Sim"
             hide-details
             @change="updateMedicacaoAnalgesica"
+            :disabled="disabled"
           />
           <v-text-field
             :value="informacoesComplementares.nomeMedicacaoAnalgesica"
             class="pl-8"
             label="Especifique"
-            :disabled="!informacoesComplementares.medicacaoAnalgesica"
+            :disabled="disableMedicacaoAnalgesica"
             @input="updateNomeMedicacaoAnalgesica"
           />
         </v-col>
@@ -57,12 +59,13 @@
             label="Sim"
             hide-details
             @change="updateMedicacaoAntiflamatorio"
+            :disabled="disabled"
           />
           <v-text-field
             :value="informacoesComplementares.nomeMedicacaoAntiflamatorio"
             class="pl-8"
             label="Especifique"
-            :disabled="!informacoesComplementares.medicacaoAntiflamatorio"
+            :disabled="disableMedicacaoAntiflamatorio"
             @input="updateNomeMedicacaoAntiflamatorio"
           />
         </v-col>
@@ -77,12 +80,13 @@
             label="Sim"
             hide-details
             @change="updateMedicacaoAntiviral"
+            :disabled="disabled"
           />
           <v-text-field
             :value="informacoesComplementares.nomeMedicacaoAntiviral"
             class="pl-8"
             label="Especifique"
-            :disabled="!informacoesComplementares.medicacaoAntiviral"
+            :disabled="disableMedicacaoAntiviral"
             @input="updateNomeMedicacaoAntiviral"
           />
         </v-col>
@@ -98,6 +102,28 @@ export default {
     informacoesComplementares: {
       type: InformacoesComplementares,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
+  },
+  computed: {
+    disableMedicacaoAntitermica() {
+      if (this.disabled) return true;
+      return !this.informacoesComplementares.medicacaoAntitermica;
+    },
+    disableMedicacaoAnalgesica() {
+      if (this.disabled) return true;
+      return !this.informacoesComplementares.medicacaoAnalgesica;
+    },
+    disableMedicacaoAntiflamatorio() {
+      if (this.disabled) return true;
+      return !this.informacoesComplementares.medicacaoAntiflamatorio;
+    },
+    disableMedicacaoAntiviral() {
+      if (this.disabled) return true;
+      return !this.informacoesComplementares.medicacaoAntiviral;
     },
   },
   methods: {
