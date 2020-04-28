@@ -34,6 +34,8 @@ const schemas = {
       .pattern(/BRANCA|PRETA|AMARELA|PARDA|INDIGENA|IGNORADO/),
     complemento: Joi.string().allow(null, ''),
     ocupacaoId: Joi.string().guid().required(),
+    tipoClassificacaoPessoa: Joi.string()
+      .pattern(/CRIANCA_ATE_12_ANOS|EM_SITUACAO_RUA|ESTRANGEIRO|INDIGENA|OUTRO/),
   }),
   consultarId: Joi.object().keys({
     id: Joi.string().guid({ version: 'uuidv4' }),

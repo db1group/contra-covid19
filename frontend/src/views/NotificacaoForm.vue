@@ -42,6 +42,7 @@
           @update:descricaoOcupacao="updateSuspeito('ocupacao', $event)"
           @update:complemento="updateSuspeito('complemento', $event)"
           @update:municipioId="updateSuspeito('municipioId', $event)"
+          @update:tipoClassificacaoPessoa="updateSuspeito('tipoClassificacaoPessoa', $event)"
         />
         <sinais-e-sintomas
           :sintomatico="notificacao.sintomatico"

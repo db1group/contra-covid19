@@ -13,6 +13,7 @@
       @update:gestante="updateGestante"
       @update:racaCor="updateRacaCor"
       @update:dataDeNascimento="updateDataDeNascimento"
+      @update:tipoClassificacaoPessoa="updateTipoClassificacaoPessoa"
     />
     <endereco
       :suspeito="suspeito"
@@ -121,6 +122,9 @@ export default {
     updateMunicipioId(municipioId) {
       this.$emit('update:municipioId', municipioId);
       this.$emit('update:bairroId', null);
+    },
+    updateTipoClassificacaoPessoa(tipoClassificacaoPessoa) {
+      this.$emit('update:tipoClassificacaoPessoa', tipoClassificacaoPessoa);
     },
   },
 };
