@@ -45,7 +45,10 @@ export default {
   },
   methods: {
     executeLogout() {
-      this.$keycloak.logoutFn();
+      const { origin } = window.location;
+      const homePage = this.$router.resolve({ name: 'home-page' }).href;
+      const url = this.$keycloak.createLogoutUrl({ redirectUri: `${origin}${homePage}` });
+      window.location.href = url;
     },
     goToHomePage() {
       this.$router.push({ name: 'home-page' });
