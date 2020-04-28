@@ -99,7 +99,7 @@ module.exports = (sequelize, DataTypes) => {
     realizouExameDeImagem: DataTypes.BOOLEAN,
     raioXNormal: DataTypes.BOOLEAN,
     raioXInfiltrado: DataTypes.BOOLEAN,
-    raioxXConsolidacao: DataTypes.BOOLEAN,
+    raioXConsolidacao: DataTypes.BOOLEAN,
     raioXMisto: DataTypes.BOOLEAN,
     raioXOutro: DataTypes.TEXT,
     tomografiaNormal: DataTypes.BOOLEAN,

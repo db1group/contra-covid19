@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     dataDeNascimento: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       validate: {
         isDate: true,
         isNotGreaterTomorrow(value) {

@@ -22,7 +22,25 @@ const schemas = {
     suspeito: Joi.object(),
     sintomas: Joi.object(),
     comorbidades: Joi.object(),
-    examesImagem: Joi.object(),
+    examesImagem: Joi.object().keys({
+      raioNormal: Joi.bool(),
+      raioInfiltradoIntersticial: Joi.bool().allow(null),
+      raioConsolidacao: Joi.bool().allow(null),
+      raioMisto: Joi.bool().allow(null),
+      raioOutro: Joi.string()
+        .allow(null, '')
+        .min(3)
+        .max(255),
+      tomografiaNormal: Joi.bool()
+        .allow(null),
+      tomografiaVidroFoscoPredominioPerifericoBasal: Joi.bool().allow(null),
+      tomografiaAusenciaDerramePleural: Joi.bool().allow(null),
+      tomografiaAusenciaLinfonodoMediastenal: Joi.bool().allow(null),
+      tomografiaOutro: Joi.string()
+        .allow(null, '')
+        .min(3)
+        .max(255),
+    }),
     informacaoComplementar: Joi.object().keys({
       tamiflu: Joi.bool(),
       hidroxicloroquina: Joi.bool(),

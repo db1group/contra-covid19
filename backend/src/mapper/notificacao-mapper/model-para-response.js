@@ -205,6 +205,30 @@ const extrairConclusaoAtendimento = (notificacaoCovid19) => {
   };
 };
 
+const extrairExamesImagem = ({
+  raioXNormal,
+  raioXInfiltrado,
+  raioXConsolidacao,
+  raioXMisto,
+  raioXOutro,
+  tomografiaNormal,
+  tomografiaVitro,
+  tomografiaDerrame,
+  tomografiaLinfonodo,
+  tomografiaOutro,
+}) => ({
+  raioNormal: raioXNormal,
+  raioInfiltradoIntersticial: raioXInfiltrado,
+  raioConsolidacao: raioXConsolidacao,
+  raioMisto: raioXMisto,
+  raioOutro: raioXOutro,
+  tomografiaNormal,
+  tomografiaVidroFoscoPredominioPerifericoBasal: tomografiaVitro,
+  tomografiaAusenciaDerramePleural: tomografiaDerrame,
+  tomografiaAusenciaLinfonodoMediastenal: tomografiaLinfonodo,
+  tomografiaOutro,
+});
+
 module.exports = {
   notificacaoParaResponse,
   extrairSuspeito,
@@ -213,4 +237,5 @@ module.exports = {
   extrairInformacaoComplementar,
   extrairVinculoEpidemiologico,
   extrairConclusaoAtendimento,
+  extrairExamesImagem,
 };
