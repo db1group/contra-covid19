@@ -25,16 +25,16 @@ module.exports = {
       await queryInterface.addColumn('NotificacaoCovid19', 'nomeMedicacaoAntitermica', {
         type: Sequelize.STRING(120),
       });
-      await queryInterface.removeColun('NotificacaoCovid19', 'medicacaoAnalgesica', {
+      await queryInterface.addColumn('NotificacaoCovid19', 'medicacaoAnalgesica', {
         type: Sequelize.BOOLEAN,
       });
-      await queryInterface.removeColun('NotificacaoCovid19', 'nomeMedicacaoAnalgesica', {
+      await queryInterface.addColumn('NotificacaoCovid19', 'nomeMedicacaoAnalgesica', {
         type: Sequelize.STRING(120),
       });
-      await queryInterface.removeColun('NotificacaoCovid19', 'medicacaoAntiviral', {
+      await queryInterface.addColumn('NotificacaoCovid19', 'medicacaoAntiviral', {
         type: Sequelize.BOOLEAN,
       });
-      await queryInterface.removeColun('NotificacaoCovid19', 'nomeMedicacaoAntiviral', {
+      await queryInterface.addColumn('NotificacaoCovid19', 'nomeMedicacaoAntiviral', {
         type: Sequelize.STRING(120),
       });
       await transaction.commit();
