@@ -2,15 +2,13 @@
   <div>
     <v-row>
       <v-col cols="12">
-        <label class="primary--text body-1 font-weight-bold">
-          Sintomas respiratórios GRAVES
-        </label>
+        <label class="primary--text body-1 font-weight-bold">Sintomas respiratórios GRAVES</label>
         <v-checkbox
-          :input-value="sintomas.tosseProdutiva"
-          label="TOSSE PRODUTIVA"
+          :input-value="sintomas.escarro"
+          label="ESCARRO"
           hide-details
           :disabled="!sintomatico"
-          @change="updateTosseProdutiva"
+          @change="updateEscarro"
         />
         <v-checkbox
           :input-value="sintomas.sibilo"
@@ -20,15 +18,15 @@
           @change="updateSibilo"
         />
         <v-checkbox
-          :input-value="sintomas.desconfortoRespiratorio"
-          label="DESCONFORTO RESPIRATÓRIO / Dificuldade para respirar / Falta de ar"
+          :input-value="sintomas.batimentoAsasNasais"
+          label="Batimento de asas nasais"
           hide-details
           :disabled="!sintomatico"
-          @change="updateDesconfortoRespiratorio"
+          @change="updateBatimentoAsasNasais"
         />
         <v-checkbox
           :input-value="sintomas.dispneia"
-          label="DISPNEIA com batimento das asas nasais E/OU retração intercostal E/OU fúrcula external"
+          label="Dispneia (dificuldade de respirar)"
           hide-details
           :disabled="!sintomatico"
           @change="updateDispneia"
@@ -87,14 +85,14 @@ export default {
     },
   },
   methods: {
-    updateTosseProdutiva(tosseProdutiva) {
-      this.$emit('update:tosseProdutiva', tosseProdutiva);
+    updateEscarro(escarro) {
+      this.$emit('update:escarro', escarro);
     },
     updateSibilo(sibilo) {
       this.$emit('update:sibilo', sibilo);
     },
-    updateDesconfortoRespiratorio(desconfortoRespiratorio) {
-      this.$emit('update:desconfortoRespiratorio', desconfortoRespiratorio);
+    updateBatimentoAsasNasais(batimentoAsasNasais) {
+      this.$emit('update:batimentoAsasNasais', batimentoAsasNasais);
     },
     updateDispneia(dispneia) {
       this.$emit('update:dispneia', dispneia);

@@ -3,7 +3,10 @@
     <h4 class="primary--text title">
       4. SINAIS E SINTOMAS
     </h4>
-    <v-container fluid class="pa-0">
+    <v-container
+      fluid
+      class="pa-0"
+    >
       <sintomas-gerais
         :sintomatico="sintomatico"
         :data-inicio-dos-sintomas="dataInicioDosSintomas"
@@ -18,14 +21,14 @@
         @update:cianoseCentral="updateCianoseCentral"
         @update:congestaoNasal="updateCongestaoNasal"
         @update:coriza="updateCoriza"
-        @update:desconfortoRespiratorio="updateDesconfortoRespiratorio"
+        @update:batimentoAsasNasais="updateBatimentoAsasNasais"
         @update:dispneia="updateDispneia"
         @update:dorDeGarganta="updateDorDeGarganta"
         @update:saturacaoDeOximetriaDePulso="updateSaturacaoDeOximetriaDePulso"
         @update:sibilo="updateSibilo"
         @update:taquipneia="updateTaquipneia"
-        @update:tosseProdutiva="updateTosseProdutiva"
-        @update:tosseSeca="updateTosseSeca"
+        @update:escarro="updateEscarro"
+        @update:tosse="updateTosse"
         @update:tiragemIntercostal="updateTiragemIntercostal"
       />
       <outros-sintomas
@@ -43,9 +46,8 @@
         @update:irritabilidadeOuConfusao="updateIrritabilidadeOuConfusao"
         @update:manchasVermelhas="updateManchasVermelhas"
         @update:mialgia="updateMialgia"
-        @update:nausea="updateNausea"
+        @update:nauseaVomito="updateNauseaVomito"
         @update:hipotensao="updateHipotensao"
-        @update:vomito="updateVomito"
         @update:outros="updateOutros"
       />
     </v-container>
@@ -99,8 +101,8 @@ export default {
     updateCoriza(coriza) {
       this.$emit('update:sintomaCoriza', coriza);
     },
-    updateDesconfortoRespiratorio(desconfortoRespiratorio) {
-      this.$emit('update:desconfortoRespiratorio', desconfortoRespiratorio);
+    updateBatimentoAsasNasais(batimentoAsasNasais) {
+      this.$emit('update:batimentoAsasNasais', batimentoAsasNasais);
     },
     updateDispneia(dispneia) {
       this.$emit('update:dispneia', dispneia);
@@ -117,16 +119,15 @@ export default {
     updateSaturacaoDeOximetriaDePulso(saturacaoDeOximetriaDePulso) {
       this.$emit('update:saturacaoDeOximetriaDePulso', saturacaoDeOximetriaDePulso);
     },
-    updateTosseProdutiva(tosseProdutiva) {
-      this.$emit('update:tosseProdutiva', tosseProdutiva);
+    updateEscarro(escarro) {
+      this.$emit('update:escarro', escarro);
     },
-    updateTosseSeca(tosseSeca) {
-      this.$emit('update:sintomaTosseSeca', tosseSeca);
+    updateTosse(tosse) {
+      this.$emit('update:sintomaTosse', tosse);
     },
     updateTiragemIntercostal(tiragemIntercostal) {
       this.$emit('update:tiragemIntercostal', tiragemIntercostal);
     },
-
     updateAdiamiaOuFraqueza(adiamiaOuFraqueza) {
       this.$emit('update:adiamiaOuFraqueza', adiamiaOuFraqueza);
     },
@@ -163,14 +164,11 @@ export default {
     updateMialgia(mialgia) {
       this.$emit('update:sintomaMialgia', mialgia);
     },
-    updateNausea(nausea) {
-      this.$emit('update:nausea', nausea);
+    updateNauseaVomito(nauseaVomito) {
+      this.$emit('update:nauseaVomito', nauseaVomito);
     },
     updateHipotensao(hipotensao) {
       this.$emit('update:hipotensao', hipotensao);
-    },
-    updateVomito(vomito) {
-      this.$emit('update:vomito', vomito);
     },
     updateOutros(outros) {
       this.$emit('update:outrosSintomas', outros);

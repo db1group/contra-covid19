@@ -42,20 +42,9 @@ const schemas = {
         .max(255),
     }),
     informacaoComplementar: Joi.object().keys({
-      medicacaoAntitermica: Joi.bool(),
-      nomeMedicacaoAntitermica: Joi.string()
-        .allow('', null)
-        .max(120),
-      medicacaoAnalgesica: Joi.bool(),
-      nomeMedicacaoAnalgesica: Joi.string()
-        .allow('', null)
-        .max(120),
-      medicacaoAntiflamatorio: Joi.bool(),
-      nomeMedicacaoAntiflamatorio: Joi.string()
-        .allow('', null)
-        .max(120),
-      medicacaoAntiviral: Joi.bool(),
-      nomeMedicacaoAntiviral: Joi.string()
+      tamiflu: Joi.bool(),
+      hidroxicloroquina: Joi.bool(),
+      nomeMedicamento: Joi.string()
         .allow('', null)
         .max(120),
       historicoDeViagem: Joi.bool(),

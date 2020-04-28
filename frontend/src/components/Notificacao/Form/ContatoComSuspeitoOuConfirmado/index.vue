@@ -36,7 +36,7 @@
           <v-col cols="12">
             <v-text-field
               :value="notificacao.nomeDoCaso"
-              label="Nome da pessoa suspeita"
+              label="Nome da pessoa"
               :disabled="notificacao.tipoDeContatoComCaso === 'SEM_CONTATO' || !notificacao.tipoDeContatoComCaso"
               @input="updateNomeDoCaso"
             />

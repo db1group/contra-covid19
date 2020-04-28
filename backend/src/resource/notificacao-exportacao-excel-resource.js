@@ -79,8 +79,8 @@ exports.gerarExcel = async (req, res) => {
       sibilo: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'sibilo'),
       taquipneia: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'taquipneia'),
       tiragemIntercostal: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tiragemIntercostal'),
-      tosseSeca: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tosseSeca'),
-      tosseProdutiva: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tosseProdutiva'),
+      tosse: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tosse'),
+      escarro: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'escarro'),
       // 4.2 OUTROS SINTOMAS
       adiamiaFraqueza: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'adiamiaFraqueza'),
       artralgia: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'artralgia'),
@@ -94,8 +94,7 @@ exports.gerarExcel = async (req, res) => {
       irritabilidadeConfusao: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'irritabilidadeConfusao'),
       manchasVermelhar: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'manchasVermelhar'),
       mialgia: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'mialgia'),
-      nausea: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'nausea'),
-      vomito: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'vomito'),
+      nauseaVomito: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'nauseaVomito'),
       hipotensao: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'hipotensao'),
       outrosSintomas: t.NotificacaoCovid19 ? t.NotificacaoCovid19.outrosSintomas : null,
       // 5. Realizou exame de imagem
@@ -190,8 +189,8 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'sibilo', nomeCampo: 'sibilo' },
       { nomeColuna: 'taquipneia', nomeCampo: 'taquipneia' },
       { nomeColuna: 'tiragemIntercostal', nomeCampo: 'tiragemIntercostal' },
-      { nomeColuna: 'tosseSeca', nomeCampo: 'tosseSeca' },
-      { nomeColuna: 'tosseProdutiva', nomeCampo: 'tosseProdutiva' },
+      { nomeColuna: 'tosse', nomeCampo: 'tosse' },
+      { nomeColuna: 'escarro', nomeCampo: 'escarro' },
       // 4.2 OUTROS SINTOMAS
       { nomeColuna: 'adiamiaFraqueza', nomeCampo: 'adiamiaFraqueza' },
       { nomeColuna: 'artralgia', nomeCampo: 'artralgia' },
@@ -205,8 +204,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'irritabilidadeConfusao', nomeCampo: 'irritabilidadeConfusao' },
       { nomeColuna: 'manchasVermelhar', nomeCampo: 'manchasVermelhar' },
       { nomeColuna: 'mialgia', nomeCampo: 'mialgia' },
-      { nomeColuna: 'nausea', nomeCampo: 'nausea' },
-      { nomeColuna: 'vomito', nomeCampo: 'vomito' },
+      { nomeColuna: 'nauseaVomito', nomeCampo: 'nauseaVomito' },
       { nomeColuna: 'hipotensao', nomeCampo: 'hipotensao' },
       { nomeColuna: 'outrosSintomas', nomeCampo: 'outrosSintomas' },
       // 5. Realizou exame de imagem

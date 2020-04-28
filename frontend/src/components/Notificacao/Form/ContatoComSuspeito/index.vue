@@ -5,10 +5,9 @@
     </h4>
     <v-container
       fluid
-      class="pa-0"
-    >
+      class="pa-0">
       <v-row dense>
-        <v-col cols=12>
+        <v-col cols="12">
           <v-checkbox
             class="mt-0"
             label="Sim"
@@ -31,7 +30,7 @@
         </v-col>
         <v-col cols="12">
           <v-text-field
-            label="Nome da pessoa suspeita"
+            label="Nome da pessoa"
           />
         </v-col>
       </v-row>
