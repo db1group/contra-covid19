@@ -1,6 +1,6 @@
 const notificacaoParaResponse = (notificacao, notificacaoCovid19, request) => {
   const {
-    nomeNotificador, unidadeSaudeId, notificadorId, userId, profissaoId,
+    nomeNotificador, unidadeSaudeId, notificadorId, userId, profissaoId, UnidadeSaude,
   } = notificacao;
   const {
     dataHoraNotificacao, dataInicioDosSintomas, sintomatico,
@@ -11,6 +11,7 @@ const notificacaoParaResponse = (notificacao, notificacaoCovid19, request) => {
     id: notificacao.id,
     dataHoraNotificacao,
     unidadeSaudeId,
+    unidadeSaudeNome: UnidadeSaude.nome,
     notificadorId,
     sintomatico,
     realizouExamesImagem: realizouExameDeImagem,
@@ -27,16 +28,19 @@ const notificacaoParaResponse = (notificacao, notificacaoCovid19, request) => {
 };
 
 const extrairSuspeitoDaNotificacao = ({
-  pessoaId, bairroId, municipioId, profissaoId,
+  pessoaId, bairroId, municipioId, profissaoId, ocupacaoId,
 }) => ({
   pessoaId,
   bairroId,
   municipioId,
   profissaoId,
+  ocupacaoId,
 });
 
 const extrairSuspeitoDaPessoa = ({
   id,
+  tipoDocumento,
+  numeroDocumento,
   nome,
   dataDeNascimento,
   sexo,
@@ -52,8 +56,15 @@ const extrairSuspeitoDaPessoa = ({
   telefoneCelular,
   complemento,
   Bairro,
+  gestante,
+  racaCor,
+  Municipio,
+  cep,
+  tipoClassificacaoPessoa,
 }, bairro) => ({
   pessoaId: id,
+  tipoDocumento,
+  numeroDocumento,
   nome,
   dataDeNascimento,
   sexo,
@@ -70,6 +81,12 @@ const extrairSuspeitoDaPessoa = ({
   telefoneResidencial,
   telefoneContato,
   telefoneCelular,
+  gestante,
+  racaCor,
+  uf: Municipio ? Municipio.uf : 'PR',
+  cep,
+  municipio: Municipio ? Municipio.nome : '',
+  tipoClassificacaoPessoa,
 });
 
 const extrairSuspeito = (notificacao) => {
@@ -80,13 +97,24 @@ const extrairSuspeito = (notificacao) => {
 
 const extrairSintomas = (notificacaoCovid19) => {
   const {
+    febreAferidaReferida,
+    temperaturaFebre,
+    adiamiaFraqueza,
+    artralgia,
+    calafrios,
+    conjuntivite,
     coriza,
+    congestaoNasal,
+    dificuldadeDeglutir,
+    gangliosLinfaticos,
+    irritabilidadeConfusao,
+    manchasVermelhar,
     tosse,
     dorDeGarganta,
     mialgia,
     escarro,
     sibilo,
-    batimentoDeAsasNasais,
+    batimentoAsasNasais,
     dispneia,
     taquipneia,
     saturacaoDeOximetriaDePulso,
@@ -96,16 +124,28 @@ const extrairSintomas = (notificacaoCovid19) => {
     diarreia,
     cefaleia,
     nauseaVomito,
+    tiragemIntercostal,
     outrosSintomas,
   } = notificacaoCovid19;
   return {
+    febreAferidaReferida,
+    temperaturaFebre,
+    adiamiaOuFraqueza: adiamiaFraqueza,
+    artralgia,
+    calafrios,
+    conjuntivite,
     coriza,
+    congestaoNasal,
+    dificuldadeDeglutir,
+    gangliosLinfaticos,
+    irritabilidadeOuConfusao: irritabilidadeConfusao,
+    manchasVermelhas: manchasVermelhar,
     tosse,
     dorDeGarganta,
     mialgia,
     escarro,
     sibilo,
-    batimentoDeAsasNasais,
+    batimentoAsasNasais,
     dispneia,
     taquipneia,
     saturacaoDeOximetriaDePulso,
@@ -115,6 +155,7 @@ const extrairSintomas = (notificacaoCovid19) => {
     diarreia,
     cefaleia,
     nauseaVomito,
+    tiragemIntercostal,
     outros: outrosSintomas,
   };
 };
@@ -133,6 +174,10 @@ const extrairComorbidades = (notificacaoCovid19) => {
     asma,
     outraPneumopatiaCronica,
     obesidade,
+    hipertensao,
+    infeccaoHIV,
+    neoplasia,
+    tabagismo,
     outrosComorbidades,
   } = notificacaoCovid19;
   return {
@@ -148,6 +193,10 @@ const extrairComorbidades = (notificacaoCovid19) => {
     asma,
     outraPneumopatiaCronica,
     obesidade,
+    hipertensao,
+    infeccaoHIV,
+    neoplasia,
+    tabagismo,
     outros: outrosComorbidades,
   };
 };
@@ -234,8 +283,8 @@ module.exports = {
   extrairSuspeito,
   extrairSintomas,
   extrairComorbidades,
+  extrairExamesImagem,
   extrairInformacaoComplementar,
   extrairVinculoEpidemiologico,
   extrairConclusaoAtendimento,
-  extrairExamesImagem,
 };

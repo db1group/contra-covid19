@@ -36,6 +36,7 @@ const schemas = {
     ocupacaoId: Joi.string().guid().required(),
     tipoClassificacaoPessoa: Joi.string()
       .pattern(/CRIANCA_ATE_12_ANOS|EM_SITUACAO_RUA|ESTRANGEIRO|INDIGENA|OUTRO/),
+    cep: Joi.string().max(8),
   }),
   consultarId: Joi.object().keys({
     id: Joi.string().guid({ version: 'uuidv4' }),

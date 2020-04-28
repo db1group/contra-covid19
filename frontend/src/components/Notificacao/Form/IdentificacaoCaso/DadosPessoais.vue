@@ -9,6 +9,7 @@
           validate-on-blur
           :rules="rules.dataHoraNotificacao"
           @input="updateDataHoraNotificacao"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -20,6 +21,7 @@
           @change="updateTipoClassificacaoPessoa"
           :rules="rules.tipoClassificacaoPessoa"
           row
+          :disabled="disabled"
         >
           <v-radio label="Criança até 12 anos" value="CRIANCA_ATE_12_ANOS" />
           <v-radio label="Em situação de Rua" value="EM_SITUACAO_RUA" />
@@ -48,6 +50,7 @@
           :rules="rules.numeroDocumento"
           label="Número do documento *"
           @input="updateNumeroDocumento"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -59,6 +62,7 @@
           @change="updateSexo"
           :rules="rules.sexo"
           row
+          :disabled="disabled"
         >
           <v-radio label="Masculino" value="M" />
           <v-radio label="Feminino" value="F" />
@@ -72,6 +76,7 @@
           @change="updateGestante"
           :rules="rules.gestante"
           row
+          :disabled="disabled"
         >
           <v-radio label="Sim" value="true" />
           <v-radio label="Não" value="false" />
@@ -85,6 +90,7 @@
           :rules="rules.nome"
           label="Nome completo *"
           @input="updateNome"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -95,6 +101,7 @@
           label="Nome da mãe *"
           @input="updateNomeDaMae"
           :rules="rules.nomeDaMae"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -108,6 +115,7 @@
           :rules="rules.dataDeNascimento"
           validate-on-blur
           @input="updateDataDeNascimento"
+          :disabled="disabled"
         />
       </v-col>
       <v-spacer />
@@ -120,6 +128,7 @@
           item-text="value"
           item-value="key"
           @input="updateRacaCor"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -158,6 +167,10 @@ export default {
     suspeito: {
       type: Pessoa,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   data: () => ({
@@ -226,6 +239,11 @@ export default {
       return lessThanMaximumDate(value, null, 'Informe uma data igual ou anterior ao dia de hoje.');
     },
     disbleTipoDocumento(tipoClassificacaoPessoa) {
+      if (this.disabled) {
+        this.disbleTipoDocumento = true;
+        return;
+      }
+
       if (tipoClassificacaoPessoa === 'OUTRO') {
         this.disabledTipoDocumento = true;
         this.updateTipoDocumento('CPF');

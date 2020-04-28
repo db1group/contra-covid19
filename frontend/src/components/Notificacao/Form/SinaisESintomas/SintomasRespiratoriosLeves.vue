@@ -9,28 +9,28 @@
           :input-value="sintomas.coriza"
           label="CORIZA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateCoriza"
         />
         <v-checkbox
           :input-value="sintomas.tosseSeca"
           label="TOSSE SECA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateTosseSeca"
         />
         <v-checkbox
           :input-value="sintomas.dorDeGarganta"
           label="DOR DE GARGANTA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateDorDeGarganta"
         />
         <v-checkbox
           :input-value="sintomas.mialgia"
           label="MIALGIA"
           hide-details
-          :disabled="!sintomatico"
+          :disabled="disableFields"
           @change="updateMialgia"
         />
       </v-col>
@@ -49,6 +49,16 @@ export default {
     sintomatico: {
       type: Boolean,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
+  },
+  computed: {
+    disableFields() {
+      if (this.disabled) return true;
+      return !this.sintomatico;
     },
   },
   methods: {

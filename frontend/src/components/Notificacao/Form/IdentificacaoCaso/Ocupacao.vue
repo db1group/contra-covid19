@@ -9,6 +9,7 @@
         item-text="descricao"
         item-value="id"
         @input="updateOcupacao"
+        :disabled="disabled"
       />
     </v-col>
     <v-col cols="6">
@@ -16,6 +17,7 @@
         :value="suspeito.ocupacao"
         label="Descrição da ocupação"
         @input="updateDescricaoOcupacao"
+        :disabled="disabled"
       />
     </v-col>
   </v-row>
@@ -32,6 +34,10 @@ export default {
     suspeito: {
       type: Pessoa,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   data: () => ({

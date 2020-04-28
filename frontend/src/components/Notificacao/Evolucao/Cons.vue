@@ -17,6 +17,18 @@
             <p>{{evolucao.telefone}}</p>
           </v-col>
         </v-row>
+        <v-row dense>
+          <v-col cols="auto">
+            <v-btn
+              text
+              small
+              color="primary"
+              :to="{ name: 'notificacao-view', params: { id: evolucao.id } }"
+              >
+                Ver ficha completa
+              </v-btn>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
     <v-row>

@@ -14,21 +14,22 @@
             label="Sim"
             hide-details
             @change="updateRealizadaColeta"
+            :disabled="disabled"
           />
           <v-text-field
             :value="conclusaoAtendimento.dataDaColeta"
             class="pl-8"
             label="Data da Coleta"
             v-mask="'##/##/####'"
-            :disabled="!conclusaoAtendimento.coletaMaterialParaDiagnostico"
+            :disabled="disableFields"
             :rules="rules.dataDaColeta"
             @input="updateDataDaColeta"
           />
           <v-radio-group
             :value="conclusaoAtendimento.tipoLaboratorio"
             class="pl-8"
-            :disabled="!conclusaoAtendimento.coletaMaterialParaDiagnostico"
             @change="changeTipoLaboratorio"
+            :disabled="disableFields"
           >
             <v-radio value="OFICIAL" label="Laboratório Oficial"/>
             <v-radio value="PRIVADO" label="Laboratório da rede PRIVADA"/>
@@ -36,7 +37,7 @@
           <v-text-field
             :value="conclusaoAtendimento.nomeLaboratorioEnvioMaterial"
             label="Nome do laboratório"
-            :disabled="conclusaoAtendimento.tipoLaboratorio!=='PRIVADO'"
+            :disabled="disableNomeLab"
             class="realizado-coleta__nome-laboratorio"
             @input="updateNomeLaboratorioEnvioMaterial"
           />
@@ -45,7 +46,7 @@
             :value="conclusaoAtendimento.metodoDeExame"
             class="pl-8"
             label="Método do exame"
-            :disabled="!conclusaoAtendimento.coletaMaterialParaDiagnostico"
+            :disabled="disableFields"
             @change="updateMetodoDeExame"
           >
             <v-radio value="RT-PCR" label="RT-PCR"/>
@@ -73,12 +74,26 @@ export default {
       type: ConclusaoAtendimento,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   data: () => ({
     rules: {
       dataDaColeta: [dateFormat, dateMustBeLesserEqualsThanToday],
     },
   }),
+  computed: {
+    disableFields() {
+      if (this.disabled) return true;
+      return !this.conclusaoAtendimento.coletaMaterialParaDiagnostico;
+    },
+    disableNomeLab() {
+      if (this.disabled) return true;
+      return this.conclusaoAtendimento.tipoLaboratorio !== 'PRIVADO';
+    },
+  },
   methods: {
     updateRealizadaColeta(coletaMaterialParaDiagnostico) {
       this.$emit('update:coletaMaterialParaDiagnostico', coletaMaterialParaDiagnostico);
@@ -97,7 +112,6 @@ export default {
       }
     },
     unselectTipoLaboratorio() {
-      this.tipoLaboratorio = null;
       this.$emit('update:tipoLaboratorio', null);
     },
     updateDataDaColeta(dataDaColeta) {

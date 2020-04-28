@@ -61,12 +61,19 @@
         </v-card-title>
       </template>
       <template v-slot:item.actions="{ item }">
-          <!-- A visualização ainda não funciona. Vamos deixar comentado por enquanto -->
-          <!-- <v-btn text small color="#B8860B" :to="{ name: 'notificacao-form' }">VISUALIZAR</v-btn> -->
-        <v-row justify="end" align="center">
+        <v-row justify="end" align="center" dense>
           <v-col>
             <v-btn
-              v-if="isPermiteEvoluir(item)"
+              text
+              small
+              color="#B8860B"
+              :to="{ name: 'notificacao-view', params: { id: item.id } }"
+              >
+              VISUALIZAR
+            </v-btn>
+          </v-col>
+          <v-col v-if="isPermiteEvoluir(item)">
+            <v-btn
               text
               small
               color="primary"
@@ -83,6 +90,11 @@
     </v-data-table>
   </v-container>
 </template>
+<style scoped>
+  .hideCreatedAt {
+    display: none;
+  }
+</style>
 <script>
 import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import NotificacaoService from '@/services/NotificacaoService';
@@ -107,6 +119,8 @@ export default {
     options: {
       page: 1,
       itemsPerPage: 10,
+      sortBy: ['createdAt'],
+      sortDesc: 'true',
     },
     totalNotif: 0,
     notificacoes: [],

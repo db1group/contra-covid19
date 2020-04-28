@@ -10,6 +10,7 @@
           :rules="rules.endereco"
           label="Endereço *"
           @input="updateEndereco"
+          :disabled="disabled"
         />
       </v-col>
       <v-col
@@ -21,6 +22,7 @@
           :rules="rules.numero"
           label="Número *"
           @input="updateNumero"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -40,6 +42,7 @@
           :loading="municipios.loading"
           no-data-text="Município não encontrado"
           @input="updateMunicipioId"
+          :disabled="disabled"
         />
       </v-col>
       <v-col
@@ -56,7 +59,7 @@
           item-value="id"
           :loading="bairros.loading"
           no-data-text="Bairro não encontrado"
-          :disabled="!suspeito.municipioId"
+          :disabled="disableBairro"
           @input="updateBairroId"
         />
       </v-col>
@@ -67,13 +70,13 @@
           :value="suspeito.complemento"
           label="Complemento"
           @input="updateComplemento"
+          :disabled="disabled"
         />
       </v-col>
       <v-col cols="3">
-        <v-select
-          value="PR"
-          label="UF *"
-          :items="['PR']"
+        <v-text-field
+          :value="suspeito.uf"
+          label="UF"
           disabled
         />
       </v-col>
@@ -84,6 +87,7 @@
           v-mask="'########'"
           :rules="rules.cep"
           @input="updateCep"
+          :disabled="disabled"
         />
       </v-col>
     </v-row>
@@ -102,6 +106,10 @@ export default {
     suspeito: {
       type: Pessoa,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defaultValue: false,
     },
   },
   data: () => ({
@@ -123,6 +131,17 @@ export default {
       municipioId: [required],
     },
   }),
+  watch: {
+    suspeito(suspeito) {
+      this.carregarDadosSuspeito(suspeito);
+    },
+  },
+  computed: {
+    disableBairro() {
+      if (this.disabled) return true;
+      return !this.suspeito.municipioId;
+    },
+  },
   methods: {
     updateCep(cep) {
       this.$emit('update:cep', cep);
@@ -137,13 +156,24 @@ export default {
       this.$emit('update:bairroId', bairroId);
     },
     updateMunicipioId(municipioId) {
+      this.$emit('update:bairroId', '');
       this.$emit('update:municipioId', municipioId);
       this.findBairros();
+      this.updateUF(municipioId);
+    },
+    updateUF(municipioId) {
+      const municipio = this.municipios.items.find((m) => m.id === municipioId);
+      if (!municipio) {
+        this.suspeito.uf = 'PR';
+        return;
+      }
+      this.suspeito.uf = municipio.uf;
     },
     updateComplemento(complemento) {
       this.$emit('update:complemento', complemento);
     },
     findBairros(searchBairro = '') {
+      if (!this.suspeito.municipioId) return;
       this.bairros.loading = true;
       BairroService.findAllPorMunicipio(this.suspeito.municipioId, searchBairro)
         .then(({ data }) => {
@@ -171,9 +201,14 @@ export default {
       this.searchMunicipio = search ? search.toUpperCase() : '';
       this.findMunicipios(this.searchMunicipio);
     },
+    carregarDadosSuspeito(suspeito) {
+      this.findMunicipios(suspeito.municipioNome);
+      this.findBairros(suspeito.bairroNome);
+    },
   },
   created() {
     this.findMunicipios();
+    this.findBairros();
   },
 };
 </script>

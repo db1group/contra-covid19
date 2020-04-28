@@ -9,6 +9,7 @@ export default class NotificacaoConsulta {
     this.dataNotificacao = DateService.formatDateTypeToStringTypeWithMinutes(data.dataNotificacao) || '';
     this.telefone = data.telefone || '';
     this.situacao = data.situacao || '';
-    this.status = data.status;
+    this.status = data.status || 'ABERTA';
+    this.createdAt = data.createdAt || '';
   }
 }
