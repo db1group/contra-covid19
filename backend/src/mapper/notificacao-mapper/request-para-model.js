@@ -77,7 +77,7 @@ const requestParaModeloNotificacaoCovid19 = (objetoRequest) => {
     sintomas, comorbidades, informacaoComplementar,
     vinculoEpidemiologico, conclusaoAtendimento, examesImagem,
     tipoDeContatoComCaso, tipoDeLocalDoCaso,
-    nomeDoCaso, realizouExamesImagem,
+    nomeDoCaso, realizouExamesImagem, sintomatico,
   } = objetoRequest;
 
   const sintomasAferidos = mapearSintomas(sintomas);
@@ -86,7 +86,7 @@ const requestParaModeloNotificacaoCovid19 = (objetoRequest) => {
   const exameImagemAferido = mapearExamesImage({ ...examesImagem });
 
   return {
-    sintomatico: !!sintomas,
+    sintomatico,
     dataInicioDosSintomas: objetoRequest.dataInicioDosSintomas,
     dataHoraNotificacao: objetoRequest.dataHoraNotificacao,
     ...sintomasAferidos,
