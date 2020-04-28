@@ -76,7 +76,7 @@ const requestParaModeloNotificacaoCovid19 = (objetoRequest) => {
   const sintomasAferidos = mapearSintomas(sintomas);
   const comorbidadesAferidas = mapearComorbidades(comorbidades);
   const vinculoEpidemiologicoAferido = mapearVinculoEpidemiologico(vinculoEpidemiologico);
-  const exameImagemAferido = mapearExamesImage(examesImagem);
+  const exameImagemAferido = mapearExamesImage({ ...examesImagem });
 
   return {
     sintomatico: !!sintomas,
