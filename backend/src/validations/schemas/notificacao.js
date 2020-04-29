@@ -86,7 +86,69 @@ const schemas = {
         .allow(null, '')
         .length(2),
     }),
-    sintomas: Joi.object(),
+    sintomas: Joi.object().keys({
+      febreAferidaReferida: Joi.bool()
+        .allow(null),
+      temperaturaFebre: Joi.number()
+        .allow(null),
+      adiamiaOuFraqueza: Joi.bool()
+        .allow(null),
+      artralgia: Joi.bool()
+        .allow(null),
+      calafrios: Joi.bool()
+        .allow(null),
+      conjuntivite: Joi.bool()
+        .allow(null),
+      coriza: Joi.bool()
+        .allow(null),
+      congestaoNasal: Joi.bool()
+        .allow(null),
+      dificuldadeDeglutir: Joi.bool()
+        .allow(null),
+      gangliosLinfaticos: Joi.bool()
+        .allow(null),
+      irritabilidadeOuConfusao: Joi.bool()
+        .allow(null),
+      manchasVermelhas: Joi.bool()
+        .allow(null),
+      tosse: Joi.bool()
+        .allow(null),
+      dorDeGarganta: Joi.bool()
+        .allow(null),
+      mialgia: Joi.bool()
+        .allow(null),
+      escarro: Joi.bool()
+        .allow(null),
+      sibilo: Joi.bool()
+        .allow(null),
+      batimentoAsasNasais: Joi.bool()
+        .allow(null),
+      dispneia: Joi.bool()
+        .allow(null),
+      taquipneia: Joi.bool()
+        .allow(null),
+      saturacaoDeOximetriaDePulso: Joi.bool()
+        .allow(null),
+      cianoseCentral: Joi.bool()
+        .allow(null),
+      diminuicaoDePulsoPeriferico: Joi.bool()
+        .allow(null),
+      hipotensao: Joi.bool()
+        .allow(null),
+      diarreia: Joi.bool()
+        .allow(null),
+      cefaleia: Joi.bool()
+        .allow(null),
+      nauseaVomito: Joi.bool()
+        .allow(null),
+      tiragemIntercostal: Joi.bool()
+        .allow(null),
+      outros: Joi.string()
+        .allow(null, ''),
+      existemOutrosSintomas: Joi.bool()
+        .allow(null),
+    }),
+
     comorbidades: Joi.object().keys({
       puerperaAte45DiasDoParto: Joi.bool()
         .allow(null),
