@@ -13,6 +13,7 @@
       @update:gestante="updateGestante"
       @update:racaCor="updateRacaCor"
       @update:dataDeNascimento="updateDataDeNascimento"
+      @update:tipoClassificacaoPessoa="updateTipoClassificacaoPessoa"
       :disabled="disabled"
     />
     <endereco
@@ -128,6 +129,9 @@ export default {
     },
     updateMunicipioId(municipioId) {
       this.$emit('update:municipioId', municipioId);
+    },
+    updateTipoClassificacaoPessoa(tipoClassificacaoPessoa) {
+      this.$emit('update:tipoClassificacaoPessoa', tipoClassificacaoPessoa);
     },
   },
 };
