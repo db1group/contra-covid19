@@ -60,6 +60,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
+    tipoClassificacaoPessoa: DataTypes.ENUM('CRIANCA_ATE_12_ANOS', 'EM_SITUACAO_RUA', 'ESTRANGEIRO', 'INDIGENA', 'OUTRO'),
     cep: DataTypes.STRING(8),
   });
   Pessoa.associate = (models) => {

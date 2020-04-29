@@ -60,6 +60,7 @@ const extrairSuspeitoDaPessoa = ({
   racaCor,
   Municipio,
   cep,
+  tipoClassificacaoPessoa,
 }, bairro) => ({
   pessoaId: id,
   tipoDocumento,
@@ -85,6 +86,7 @@ const extrairSuspeitoDaPessoa = ({
   uf: Municipio ? Municipio.uf : 'PR',
   cep,
   municipio: Municipio ? Municipio.nome : '',
+  tipoClassificacaoPessoa,
 });
 
 const extrairSuspeito = (notificacao) => {
