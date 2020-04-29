@@ -1,10 +1,7 @@
 <template>
   <div>
     <v-row dense>
-      <v-col
-        cols="12"
-        sm="8"
-      >
+      <v-col cols="12" sm="8">
         <v-text-field
           :value="suspeito.endereco"
           :rules="rules.endereco"
@@ -13,10 +10,7 @@
           :disabled="disabled"
         />
       </v-col>
-      <v-col
-        cols="12"
-        sm="4"
-      >
+      <v-col cols="12" sm="4">
         <v-text-field
           :value="suspeito.numero"
           :rules="rules.numero"
@@ -27,10 +21,7 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col
-        cols="12"
-        sm="6"
-      >
+      <v-col cols="12" sm="6">
         <v-autocomplete
           :value="suspeito.municipioId"
           :rules="rules.municipioId"
@@ -45,10 +36,7 @@
           :disabled="disabled"
         />
       </v-col>
-      <v-col
-        cols="12"
-        sm="6"
-      >
+      <v-col cols="12" sm="6">
         <v-autocomplete
           :value="suspeito.bairroId"
           :rules="rules.bairroId"
@@ -69,16 +57,13 @@
         <v-text-field
           :value="suspeito.complemento"
           label="Complemento"
+          :rules="rules.complemento"
           @input="updateComplemento"
           :disabled="disabled"
         />
       </v-col>
       <v-col cols="3">
-        <v-text-field
-          :value="suspeito.uf"
-          label="UF"
-          disabled
-        />
+        <v-text-field :value="suspeito.uf" label="UF" disabled />
       </v-col>
       <v-col cols="3">
         <v-text-field
@@ -129,6 +114,7 @@ export default {
       numero: [required],
       bairroId: [required],
       municipioId: [required],
+      complemento: [],
     },
   }),
   watch: {
@@ -153,6 +139,7 @@ export default {
       this.$emit('update:numero', numero);
     },
     updateBairroId(bairroId) {
+      this.updateRuleComplemento(bairroId);
       this.$emit('update:bairroId', bairroId);
     },
     updateMunicipioId(municipioId) {
@@ -204,6 +191,17 @@ export default {
     carregarDadosSuspeito(suspeito) {
       this.findMunicipios(suspeito.municipioNome);
       this.findBairros(suspeito.bairroNome);
+    },
+    requiredBairroGeral(value) {
+      return required(value, 'Complemento é obrigatório para o bairro GERAL.');
+    },
+    updateRuleComplemento(bairroId) {
+      const bairro = this.bairros.items.find((b) => b.id === bairroId);
+      this.rules.complemento.pop();
+      if (!bairro) return;
+      if (bairro.nome === 'GERAL') {
+        this.rules.complemento.push(this.requiredBairroGeral);
+      }
     },
   },
   created() {
