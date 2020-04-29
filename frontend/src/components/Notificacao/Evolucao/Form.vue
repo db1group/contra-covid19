@@ -16,6 +16,7 @@
               @input="updateDataHoraAtualizacao"
               required
               append-icon="mdi-calendar-blank"
+              autofocus
             />
           </v-col>
         </v-row>
@@ -89,7 +90,7 @@ export default {
       loading: true,
     },
     rules: {
-      dataHoraAtualizacao: [required, dateHourMinuteFormat],
+      dataHoraAtualizacao: [dateHourMinuteFormat],
       local: [required],
       situacao: [required],
     },
@@ -125,6 +126,7 @@ export default {
       return 'Notificação encerrada com sucesso.';
     },
     cadastrarEvolucao() {
+      this.rules.dataHoraAtualizacao.push(required);
       if (this.$refs.form.validate()) {
         const requestEvolucao = this.evolucao.toRequest();
         requestEvolucao.notificacaoId = this.notificacaoId;
@@ -140,6 +142,7 @@ export default {
           this.$emit('error:cadastroEvolucao', data.error);
         });
       }
+      this.rules.dataHoraAtualizacao.pop();
     },
   },
   created() {
