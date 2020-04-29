@@ -61,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     cep: DataTypes.STRING(8),
+    tipoPeriodoGestacional: DataTypes.ENUM('PRIMEIRO_TRIMESTRE', 'SEGUNDO_TRIMESTRE', 'TERCEIRO_TRIMESTRE', 'IDADE_GESTACIONAL_IGNORADA'),
   });
   Pessoa.associate = (models) => {
     Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });

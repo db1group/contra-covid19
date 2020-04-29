@@ -22,6 +22,7 @@ export default class Pessoa {
     this.telefoneContato = data.telefoneContato || '';
     this.telefoneCelular = data.telefoneCelular || '';
     this.gestante = data.gestante === 'SIM' ? 'true' : 'false';
+    this.tipoPeriodoGestacional = data.tipoPeriodoGestacional || null;
     this.racaCor = data.racaCor || 'IGNORADO';
     this.uf = data.uf || 'PR';
     this.bairroNome = data.bairro || '';

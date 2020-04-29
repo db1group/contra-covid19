@@ -66,6 +66,36 @@
         </v-radio-group>
       </v-col>
     </v-row>
+
+    <v-row dense v-show="suspeito.sexo === 'F' && suspeito.gestante === 'true'">
+        <v-col cols="12" >
+          <v-radio-group
+            :value="suspeito.tipoPeriodoGestacional"
+            :rules="rules.tipoPeriodoGestacional"
+            @change="updateTipoPeriodoGestacional"
+            :disabled="disabled"
+          >
+            <template v-slot:label>
+              <label class="primary--text body-1 font-weight-bold">
+                Período de gestação *
+              </label>
+            </template>
+            <v-radio
+              value="PRIMEIRO_TRIMESTRE"
+              label="1º Trimestre" />
+            <v-radio
+              value="SEGUNDO_TRIMESTRE"
+              label="2º Trimestre" />
+            <v-radio
+              value="TERCEIRO_TRIMESTRE"
+              label="3º Trimestre" />
+            <v-radio
+              value="IDADE_GESTACIONAL_IGNORADA"
+              label="Idade gestacional ignorada" />
+          </v-radio-group>
+        </v-col>
+    </v-row>
+
     <v-row dense>
       <v-col cols="12">
         <v-text-field
@@ -168,6 +198,7 @@ export default {
       dataDeNascimento: [required, dateFormat],
       sexo: [required],
       gestante: [],
+      tipoPeriodoGestacional: [],
       racaCor: [required],
     },
   }),
@@ -193,6 +224,7 @@ export default {
     },
     updateGestante(gestante) {
       this.$emit('update:gestante', gestante);
+      this.unselectTipoPeriodoGestacional();
     },
     updateRacaCor(racaCor) {
       this.$emit('update:racaCor', racaCor);
@@ -200,12 +232,27 @@ export default {
     updateDataDeNascimento(dataDeNascimento) {
       this.$emit('update:dataDeNascimento', dataDeNascimento);
     },
+    updateTipoPeriodoGestacional(tipoPeriodoGestacional) {
+      this.$emit('update:tipoPeriodoGestacional', tipoPeriodoGestacional);
+    },
+    unselectTipoPeriodoGestacional() {
+      if (this.suspeito.sexo === 'M' || this.suspeito.gestante) {
+        this.$emit('update:tipoPeriodoGestacional', null);
+      }
+    },
     requiredIfSexoForFeminino(value) {
       if (this.suspeito.sexo === 'M') {
         return true;
       }
       return required(value);
     },
+    requiredIfGestante(value) {
+      if (this.suspeito.sexo === 'M' || !this.suspeito.gestante) {
+        return true;
+      }
+      return required(value);
+    },
+
     maxLengthIfCPF(value) {
       if (this.suspeito.tipoDocumento !== 'CPF') {
         return true;
@@ -218,6 +265,7 @@ export default {
   },
   created() {
     this.rules.gestante.push(this.requiredIfSexoForFeminino);
+    this.rules.tipoPeriodoGestacional.push(this.requiredIfGestante);
     this.rules.numeroDocumento.push(this.maxLengthIfCPF);
     this.rules.dataDeNascimento.push(this.validateFutureDate);
   },
