@@ -19,7 +19,7 @@
               <template v-slot:label>
                 <p class="mb-0">
                   <span class="font-weight-bold">CASO SUSPEITO</span>
-                  <span v-if="situacao === 1">
+                  <span>
                     &nbsp;
                     <b>Situação 1:</b> Febre E pelo menos um sinal
                     ou sintoma respiratório (tosse, dificuldade para respirar, batimento das asas nasais, dor
@@ -32,7 +32,7 @@
               <template v-slot:label>
                 <p class="mb-0">
                   <span class="font-weight-bold">CONTATO DE CASO SUSPEITO OU CONFIRMADO</span>
-                  <span v-if="situacao === 2">
+                  <span>
                     &nbsp;
                     <b> Situação 2:</b> Febre E/OU pelo menos um sinal ou sintoma respiratório
                     (tosse, dificuldade para respirar, batimento das asas nasais, dor de garganta,

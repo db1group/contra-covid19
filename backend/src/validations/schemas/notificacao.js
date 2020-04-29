@@ -19,7 +19,73 @@ const schemas = {
       .pattern(/DOMICILIO|UNIDADE_SAUDE|LOCAL_TRABALHO/),
     nomeDoCaso: Joi.string().allow('', null).max(120),
     observacoes: Joi.string().allow('', null),
-    suspeito: Joi.object(),
+    suspeito: Joi.object().keys({
+      numeroDocumento: Joi.string()
+        .length(11)
+        .required(),
+      bairroId: Joi.string().guid({ version: 'uuidv4' }).required(),
+      ocupacaoId: Joi.string().guid({ version: 'uuidv4' }).required(),
+      municipioId: Joi.string().guid({ version: 'uuidv4' }).required(),
+      pessoaId: Joi.string().guid({ version: 'uuidv4' }).allow(null),
+      tipoDocumento: Joi.string()
+        .pattern(/CPF|RG|CNH|SUS/)
+        .required(),
+      nome: Joi.string()
+        .min(3)
+        .max(150)
+        .required(),
+      dataDeNascimento: Joi.date().iso().required(),
+      sexo: Joi.string()
+        .pattern(/F|M/)
+        .required(),
+      cep: Joi.string()
+        .allow(null, '')
+        .length(8),
+      nomeDaMae: Joi.string()
+        .min(3)
+        .max(150)
+        .required(),
+      ocupacao: Joi.string()
+        .allow(null, '')
+        .min(3)
+        .max(60),
+      endereco: Joi.string()
+        .min(3)
+        .max(150)
+        .required(),
+      numero: Joi.string()
+        .min(2)
+        .max(12)
+        .required(),
+      complemento: Joi.string()
+        .allow(null, '')
+        .min(3)
+        .max(150),
+      telefoneResidencial: Joi.string()
+        .allow(null, '')
+        .min(10)
+        .max(11),
+      telefoneContato: Joi.string()
+        .allow(null, '')
+        .min(10)
+        .max(11),
+      telefoneCelular: Joi.string()
+        .allow(null, '')
+        .min(10)
+        .max(11),
+      gestante: Joi.string()
+        .pattern(/SIM|NAO|NAO_APLICADO/)
+        .required(),
+      racaCor: Joi.string()
+        .pattern(/BRANCA|PRETA|AMARELA|PARDA|INDIGENA|IGNORADO/)
+        .required(),
+      tipoClassificacaoPessoa: Joi.string()
+        .pattern(/CRIANCA_ATE_12_ANOS|EM_SITUACAO_RUA|ESTRANGEIRO|INDIGENA|OUTRO/)
+        .required(),
+      uf: Joi.string()
+        .allow(null, '')
+        .length(2),
+    }),
     sintomas: Joi.object(),
     comorbidades: Joi.object(),
     examesImagem: Joi.object().keys({
