@@ -16,7 +16,6 @@
               @input="updateDataHoraAtualizacao"
               required
               append-icon="mdi-calendar-blank"
-              autofocus
             />
           </v-col>
         </v-row>
