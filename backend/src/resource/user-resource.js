@@ -36,3 +36,12 @@ exports.delete = async (req, res) => {
   });
   return res.status(204).send();
 };
+
+exports.findByEmail = async (req, res) => {
+  const { email } = req.params;
+  const user = await models.User.findOne({
+    where: { email },
+  });
+  if (user === null) return res.status(404).json({ error: 'User not found!' });
+  return res.json({ data: user });
+};

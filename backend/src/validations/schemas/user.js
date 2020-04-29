@@ -24,6 +24,11 @@ const schemas = {
       .email({ tlds: false })
       .required(),
   }),
+  findByEmail: Joi.object().keys({
+    email: Joi.string()
+      .email({ tlds: false })
+      .required(),
+  }),
 };
 
 module.exports = schemas;
