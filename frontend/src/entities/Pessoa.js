@@ -24,6 +24,7 @@ export default class Pessoa {
     this.gestante = data.gestante === 'SIM' ? 'true' : 'false';
     this.tipoPeriodoGestacional = data.tipoPeriodoGestacional || null;
     this.racaCor = data.racaCor || 'IGNORADO';
+    this.tipoClassificacaoPessoa = data.tipoClassificacaoPessoa || 'OUTRO';
     this.uf = data.uf || 'PR';
     this.bairroNome = data.bairro || '';
     this.municipioNome = data.municipio || '';

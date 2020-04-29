@@ -144,9 +144,10 @@ module.exports = {
       await queryInterface.removeColumn('NotificacaoCovid19', 'localDoContatoComSuspeitoOutro', { transaction });
       await queryInterface.removeColumn('NotificacaoCovid19', 'nomeSuspeito', { transaction });
       await queryInterface.removeColumn('NotificacaoCovid19', 'situacaoNoMomentoDaNotificacao', { transaction });
-      await queryInterface.removeColumn('NotificacaoCovid19', 'feberAferidaReferida', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'febreAferidaReferida', { transaction });
       await queryInterface.removeColumn('NotificacaoCovid19', 'temperaturaFebre', { transaction });
-      await queryInterface.changeColumn('NotificacaoCovid19', 'recebeuVacinaDaGripeNosUltimosDozeMeses', {
+      await queryInterface.removeColumn('NotificacaoCovid19', 'recebeuVacinaDaGripeNosUltimosDozeMeses', { transaction });
+      await queryInterface.addColumn('NotificacaoCovid19', 'recebeuVacinaDaGripeNosUltimosDozeMeses', {
         type: Sequelize.BOOLEAN,
       }, { transaction });
       await transaction.commit();

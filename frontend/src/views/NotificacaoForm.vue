@@ -46,6 +46,7 @@
           @update:ocupacao="updateSuspeito('ocupacaoId', $event)"
           @update:descricaoOcupacao="updateSuspeito('ocupacao', $event)"
           @update:complemento="updateSuspeito('complemento', $event)"
+          @update:tipoClassificacaoPessoa="updateSuspeito('tipoClassificacaoPessoa', $event)"
           :disabled="disableFields"
         />
         <sinais-e-sintomas
