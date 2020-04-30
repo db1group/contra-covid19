@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     diminuicaoDePulsoPeriferico: DataTypes.BOOLEAN,
     hipotensao: DataTypes.BOOLEAN,
     diarreia: DataTypes.BOOLEAN,
-    adiamiaFraqueza: DataTypes.BOOLEAN,
+    adinamiaFraqueza: DataTypes.BOOLEAN,
     artralgia: DataTypes.BOOLEAN,
     calafrios: DataTypes.BOOLEAN,
     conjuntivite: DataTypes.BOOLEAN,
