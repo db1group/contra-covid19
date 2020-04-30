@@ -19,4 +19,11 @@ export default class Comorbidades {
     this.outros = data.outros || '';
     this.outrasComorbidades = !!data.outros || false;
   }
+
+  toRequestBody() {
+    return {
+      ...this,
+      outros: this.outros ? this.outros : null,
+    };
+  }
 }
