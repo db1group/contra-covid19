@@ -76,6 +76,9 @@ const schemas = {
       gestante: Joi.string()
         .pattern(/SIM|NAO|NAO_APLICADO/)
         .required(),
+      tipoPeriodoGestacional: Joi.string()
+        .pattern(/PRIMEIRO_TRIMESTRE|SEGUNDO_TRIMESTRE|TERCEIRO_TRIMESTRE|IDADE_GESTACIONAL_IGNORADA/)
+        .allow(null, ''),
       racaCor: Joi.string()
         .pattern(/BRANCA|PRETA|AMARELA|PARDA|INDIGENA|IGNORADO/)
         .required(),
