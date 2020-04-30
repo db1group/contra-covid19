@@ -82,7 +82,7 @@ exports.gerarExcel = async (req, res) => {
       tosse: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tosse'),
       escarro: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'escarro'),
       // 4.2 OUTROS SINTOMAS
-      adiamiaFraqueza: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'adiamiaFraqueza'),
+      adinamiaFraqueza: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'adinamiaFraqueza'),
       artralgia: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'artralgia'),
       calafrios: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'calafrios'),
       cefaleia: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'cefaleia'),
@@ -192,7 +192,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'tosse', nomeCampo: 'tosse' },
       { nomeColuna: 'escarro', nomeCampo: 'escarro' },
       // 4.2 OUTROS SINTOMAS
-      { nomeColuna: 'adiamiaFraqueza', nomeCampo: 'adiamiaFraqueza' },
+      { nomeColuna: 'adinamiaFraqueza', nomeCampo: 'adinamiaFraqueza' },
       { nomeColuna: 'artralgia', nomeCampo: 'artralgia' },
       { nomeColuna: 'calafrios', nomeCampo: 'calafrios' },
       { nomeColuna: 'cefaleia', nomeCampo: 'cefaleia' },
