@@ -87,7 +87,44 @@ const schemas = {
         .length(2),
     }),
     sintomas: Joi.object(),
-    comorbidades: Joi.object(),
+    comorbidades: Joi.object().keys({
+      puerperaAte45DiasDoParto: Joi.bool()
+        .allow(null),
+      sindromeDeDown: Joi.bool()
+        .allow(null),
+      diabetesMellitus: Joi.bool()
+        .allow(null),
+      imunodeficiencia: Joi.bool()
+        .allow(null),
+      doencaCardioVascularCronica: Joi.bool()
+        .allow(null),
+      doencaHepaticaCronica: Joi.bool()
+        .allow(null),
+      doencaNeurologicaCronica: Joi.bool()
+        .allow(null),
+      doencaRenalCronica: Joi.bool()
+        .allow(null),
+      doencaHematologicaCronica: Joi.bool()
+        .allow(null),
+      asma: Joi.bool()
+        .allow(null),
+      outraPneumopatiaCronica: Joi.bool()
+        .allow(null),
+      obesidade: Joi.bool()
+        .allow(null),
+      hipertensao: Joi.bool()
+        .allow(null),
+      infeccaoHIV: Joi.bool()
+        .allow(null),
+      neoplasia: Joi.bool()
+        .allow(null),
+      tabagismo: Joi.bool()
+        .allow(null),
+      outros: Joi.string()
+        .allow(null),
+      outrasComorbidades: Joi.bool()
+        .allow(null),
+    }),
     examesImagem: Joi.object().keys({
       raioNormal: Joi.bool(),
       raioInfiltradoIntersticial: Joi.bool().allow(null),
