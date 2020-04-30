@@ -7,6 +7,11 @@ import InformacoesComplementares from './InformacoesComplementares';
 import VinculoEpidemiologico from './VinculoEpidemiologico';
 import ConclusaoAtendimento from './ConclusaoAtendimento';
 
+const getDateToView = (date) => {
+  if (!date) return date;
+  return DateService.changeFormat(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
+};
+
 export default class Notificacao {
   constructor(data = {}) {
     this.id = data.id || null;
@@ -55,27 +60,11 @@ export default class Notificacao {
   }
 
   toView() {
-    this.dataInicioDosSintomas = DateService.changeFormat(this.dataInicioDosSintomas, 'YYYY-MM-DD', 'DD/MM/YYYY');
-    this.dataHoraNotificacao = DateService.changeFormat(
-      this.dataHoraNotificacao,
-      'YYYY-MM-DDTHH:mm',
-      'DD/MM/YYYY HH:mm',
-    );
-    this.suspeito.dataDeNascimento = DateService.changeFormat(
-      this.suspeito.dataDeNascimento,
-      'YYYY-MM-DD',
-      'DD/MM/YYYY',
-    );
-    this.conclusaoAtendimento.dataDaColeta = DateService.changeFormat(
-      this.conclusaoAtendimento.dataDaColeta,
-      'YYYY-MM-DD',
-      'DD/MM/YYYY',
-    );
-    this.informacaoComplementar.dataDaViagem = DateService.changeFormat(
-      this.informacaoComplementar.dataDaViagem,
-      'YYYY-MM-DD',
-      'DD/MM/YYYY',
-    );
+    this.dataInicioDosSintomas = getDateToView(this.dataInicioDosSintomas);
+    this.dataHoraNotificacao = getDateToView(this.dataHoraNotificacao);
+    this.suspeito.dataDeNascimento = getDateToView(this.suspeito.dataDeNascimento);
+    this.conclusaoAtendimento.dataDaColeta = getDateToView(this.conclusaoAtendimento.dataDaColeta);
+    this.informacaoComplementar.dataDaViagem = getDateToView(this.informacaoComplementar.dataDaViagem);
     return this;
   }
 }
