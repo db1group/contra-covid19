@@ -38,6 +38,15 @@ export default class Pessoa {
       telefoneResidencial: Utils.numbersOnly(this.telefoneResidencial),
       telefoneContato: Utils.numbersOnly(this.telefoneContato),
       telefoneCelular: Utils.numbersOnly(this.telefoneCelular),
+      gestante: this.aplicarCampoGestante(),
     };
+  }
+
+  aplicarCampoGestante() {
+    if (this.sexo === 'M') {
+      return 'NAO_APLICADO';
+    }
+
+    return this.gestante === 'true' ? 'SIM' : 'NAO';
   }
 }
