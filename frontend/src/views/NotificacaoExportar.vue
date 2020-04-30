@@ -38,7 +38,6 @@ export default {
       this.exportar[campo] = valor;
     },
     send() {
-      console.log(this.exportar);
       if (this.$refs.form.validate()) {
         const link = NotificacaoService.getExcelLink(this.exportar);
         if (link) {

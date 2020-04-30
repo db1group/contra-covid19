@@ -3,7 +3,7 @@
     <v-row dense>
       <v-col cols="4">
         <v-text-field
-          :value="exportar.dataDeNascimento"
+          :value="exportar.dataInicial"
           label="Data inicial *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
@@ -14,7 +14,7 @@
       </v-col>
       <v-col cols="4">
         <v-text-field
-          :value="exportar.dataDeNascimento"
+          :value="exportar.dataFinal"
           label="Data final *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
