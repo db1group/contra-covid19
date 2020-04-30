@@ -52,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     dificuldadeDeglutir: DataTypes.BOOLEAN,
     gangliosLinfaticos: DataTypes.BOOLEAN,
     irritabilidadeConfusao: DataTypes.BOOLEAN,
-    manchasVermelhar: DataTypes.BOOLEAN,
+    manchasVermelhas: DataTypes.BOOLEAN,
     cefaleia: DataTypes.BOOLEAN,
     nauseaVomito: DataTypes.BOOLEAN,
     outrosSintomas: DataTypes.TEXT,
