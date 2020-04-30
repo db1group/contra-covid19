@@ -5,7 +5,7 @@ module.exports = {
       await queryInterface.bulkUpdate('Pessoa', {
         tipoPeriodoGestacional: 'IDADE_GESTACIONAL_IGNORADA',
       }, {
-        sexo: 'M',
+        sexo: 'F',
         gestante: 'SIM',
       }, {
         transaction,
@@ -23,7 +23,7 @@ module.exports = {
       await queryInterface.bulkUpdate('Pessoa', {
         tipoPeriodoGestacional: null,
       }, {
-        sexo: 'M',
+        sexo: 'F',
         gestante: 'SIM',
       }, {
         transaction,
