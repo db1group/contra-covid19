@@ -36,7 +36,7 @@
         <v-select
           :value="suspeito.tipoDocumento"
           :rules="rules.tipoDocumento"
-          label="Tipo de documento *"
+          :label="'Tipo de documento *'"
           :items="tiposDocumento"
           item-text="value"
           item-value="key"
@@ -48,7 +48,7 @@
         <v-text-field
           :value="suspeito.numeroDocumento"
           :rules="rules.numeroDocumento"
-          label="Número do documento *"
+          :label="labelNumeroDocumento"
           @input="updateNumeroDocumento"
           :disabled="disabled"
         />
@@ -202,6 +202,7 @@ export default {
       type: Boolean,
       defaultValue: false,
     },
+
   },
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
@@ -220,6 +221,7 @@ export default {
       tipoClassificacaoPessoa: [required],
     },
     disabledTipoDocumento: true,
+    labelNumeroDocumento: 'Número do documento *',
   }),
   methods: {
     updateDataHoraNotificacao(dataHoraNotificacao) {
@@ -293,10 +295,29 @@ export default {
 
       if (tipoClassificacaoPessoa === 'OUTRO') {
         this.disabledTipoDocumento = true;
+        this.changeRulesNumeroDocumento(true);
+        this.changeLabelNumeroDocumento(true);
         this.updateTipoDocumento('CPF');
         return;
       }
+
+      this.changeLabelNumeroDocumento(false);
+      this.changeRulesNumeroDocumento(false);
       this.disabledTipoDocumento = false;
+    },
+    changeRulesNumeroDocumento(isRequired) {
+      if (isRequired) {
+        this.rules.numeroDocumento.push(required);
+        return;
+      }
+      this.rules.numeroDocumento.splice(this.rules.numeroDocumento.indexOf(required), 1);
+    },
+    changeLabelNumeroDocumento(isRequired) {
+      if (isRequired) {
+        this.labelNumeroDocumento = 'Número do documento *';
+        return;
+      }
+      this.labelNumeroDocumento = 'Número do documento';
     },
   },
   created() {

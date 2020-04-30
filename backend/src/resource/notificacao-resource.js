@@ -34,10 +34,7 @@ const obterGestante = (sexo, gestante) => {
   if (sexo === 'M') {
     return 'NAO_APLICADO';
   }
-  if (gestante) {
-    return 'SIM';
-  }
-  return 'NAO';
+  return gestante;
 };
 
 const consolidarSuspeito = async (suspeito) => {
