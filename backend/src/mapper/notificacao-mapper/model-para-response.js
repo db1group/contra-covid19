@@ -99,7 +99,7 @@ const extrairSintomas = (notificacaoCovid19) => {
   const {
     febreAferidaReferida,
     temperaturaFebre,
-    adiamiaFraqueza,
+    adinamiaFraqueza,
     artralgia,
     calafrios,
     conjuntivite,
@@ -130,7 +130,7 @@ const extrairSintomas = (notificacaoCovid19) => {
   return {
     febreAferidaReferida,
     temperaturaFebre,
-    adiamiaOuFraqueza: adiamiaFraqueza,
+    adinamiaFraqueza,
     artralgia,
     calafrios,
     conjuntivite,

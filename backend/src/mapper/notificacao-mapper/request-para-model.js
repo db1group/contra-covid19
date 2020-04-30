@@ -19,11 +19,11 @@ const requestParaModeloNotificacao = (objetoRequest) => {
 
 const mapearSintomas = (sintomas) => {
   const {
-    outros, adiamiaOuFraqueza, irritabilidadeOuConfusao, manchasVermelhas, ...sintomasAferidos
+    outros, adinamiaFraqueza, irritabilidadeOuConfusao, manchasVermelhas, ...sintomasAferidos
   } = sintomas;
   return {
     ...sintomasAferidos,
-    adiamiaFraqueza: adiamiaOuFraqueza,
+    adinamiaFraqueza,
     irritabilidadeConfusao: irritabilidadeOuConfusao,
     manchasVermelhas,
     outrosSintomas: outros,
