@@ -257,7 +257,7 @@ export default {
       this.$emit('update:tipoPeriodoGestacional', tipoPeriodoGestacional);
     },
     unselectTipoPeriodoGestacional() {
-      if (this.suspeito.sexo === 'M' || this.suspeito.gestante === 'false') {
+      if (this.suspeito.sexo === 'M' || this.suspeito.gestante !== 'true') {
         this.$emit('update:tipoPeriodoGestacional', null);
       }
     },
