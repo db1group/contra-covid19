@@ -25,7 +25,7 @@ const mapearSintomas = (sintomas) => {
     ...sintomasAferidos,
     adiamiaFraqueza: adiamiaOuFraqueza,
     irritabilidadeConfusao: irritabilidadeOuConfusao,
-    manchasVermelhar: manchasVermelhas,
+    manchasVermelhas,
     outrosSintomas: outros,
   };
 };
