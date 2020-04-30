@@ -257,7 +257,7 @@ export default {
       this.$emit('update:tipoPeriodoGestacional', tipoPeriodoGestacional);
     },
     unselectTipoPeriodoGestacional() {
-      if (this.suspeito.sexo === 'M' || this.suspeito.gestante) {
+      if (this.suspeito.sexo === 'M' || this.suspeito.gestante === 'false') {
         this.$emit('update:tipoPeriodoGestacional', null);
       }
     },
@@ -272,7 +272,7 @@ export default {
       return required(value);
     },
     requiredIfGestante(value) {
-      if (this.suspeito.sexo === 'M' || this.suspeito.gestante !== 'true') {
+      if (this.suspeito.sexo === 'M' || this.suspeito.gestante === 'false') {
         return true;
       }
       return required(value);
