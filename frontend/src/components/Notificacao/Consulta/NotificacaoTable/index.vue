@@ -8,14 +8,12 @@
       <div class="pa-5">
         <h4 class="headline">Confirmação</h4>
         <div class="mt-3">
-          Deseja mesmo <span class="font-weight-bold">excluir</span> a notificação?
+          Deseja mesmo
+          <span class="font-weight-bold">excluir</span> a notificação?
         </div>
       </div>
     </confirm-dialog>
     <v-data-table
-      v-model="selected"
-      :single-select="false"
-      show-select
       :headers="headers"
       :items="notificacoes"
       item-key="id"
@@ -68,9 +66,7 @@
               small
               color="#B8860B"
               :to="{ name: 'notificacao-view', params: { id: item.id } }"
-              >
-              VISUALIZAR
-            </v-btn>
+            >VISUALIZAR</v-btn>
           </v-col>
           <v-col v-if="isPermiteEvoluir(item)">
             <v-btn
@@ -78,9 +74,7 @@
               small
               color="primary"
               :to="{ name: 'evolucao-form', params: { id: item.id } }"
-            >
-              EVOLUÇÃO
-            </v-btn>
+            >EVOLUÇÃO</v-btn>
           </v-col>
           <v-col>
             <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
@@ -112,8 +106,6 @@ export default {
   data: () => ({
     situacaoNotif: SITUACAO_NOTIFICACAO,
     filtroStatus: '',
-    singleSelect: false,
-    selected: [],
     items: [],
     loading: true,
     options: {
@@ -168,7 +160,6 @@ export default {
     excluirItem(id) {
       NotificacaoService.delete(id)
         .then(() => {
-          this.selected = this.selected.filter((n) => n.id !== id);
           const page = this.notificacoes.length === 1 ? 1 : this.options.page;
           this.options = { ...this.options, page };
           this.$emit('delete:notificacao', 'Notificação excluída com sucesso.');
@@ -199,6 +190,7 @@ export default {
     },
     updateFiltroSituacao(status) {
       this.filtroStatus = status;
+      this.options = { ...this.options, page: 1 };
       this.consultarNotificacoes();
     },
   },
