@@ -272,7 +272,7 @@ export default {
       return required(value);
     },
     requiredIfGestante(value) {
-      if (this.suspeito.sexo === 'M' || !this.suspeito.gestante) {
+      if (this.suspeito.sexo === 'M' || this.suspeito.gestante !== 'true') {
         return true;
       }
       return required(value);
