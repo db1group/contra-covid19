@@ -8,7 +8,7 @@ module.exports = ({ context }) => ({
     'string.max': `"${context.label}" deve conter no máximo ${context.limit} caracteres`,
     'string.empty': `"${context.label}" não pode ser vazio`,
     'string.pattern.base': `"${context.label}" não possui o formato válido ${context.regex}`,
-    'number.base': `"${context.label}" deve ser  um número`,
+    'number.base': `"${context.label}" deve ser um número`,
     'string.guid': `"${context.label}" deve ser uma GUID válida`,
     'object.base': `"${context.label}" deve ser um objeto`,
     'date.base': `"${context.label}" deve ser uma data válida`,
