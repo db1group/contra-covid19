@@ -36,7 +36,7 @@
       <outros-sintomas
         :sintomatico="sintomatico"
         :sintomas="sintomas"
-        @update:adiamiaOuFraqueza="updateAdiamiaOuFraqueza"
+        @update:adinamiaFraqueza="updateAdinamiaFraqueza"
         @update:artralgia="updateArtralgia"
         @update:calafrios="updateCalafrios"
         @update:cefaleia="updateCefaleia"
@@ -135,8 +135,8 @@ export default {
     updateTiragemIntercostal(tiragemIntercostal) {
       this.$emit('update:tiragemIntercostal', tiragemIntercostal);
     },
-    updateAdiamiaOuFraqueza(adiamiaOuFraqueza) {
-      this.$emit('update:adiamiaOuFraqueza', adiamiaOuFraqueza);
+    updateAdinamiaFraqueza(adinamiaFraqueza) {
+      this.$emit('update:adinamiaFraqueza', adinamiaFraqueza);
     },
     updateArtralgia(artralgia) {
       this.$emit('update:artralgia', artralgia);

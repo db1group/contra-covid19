@@ -2,7 +2,7 @@ export default class Sintomas {
   constructor(data = {}) {
     this.febreAferidaReferida = data.febreAferidaReferida || false;
     this.temperaturaFebre = data.temperaturaFebre || '';
-    this.adiamiaOuFraqueza = data.adiamiaOuFraqueza || false;
+    this.adinamiaFraqueza = data.adinamiaFraqueza || false;
     this.artralgia = data.artralgia || false;
     this.calafrios = data.calafrios || false;
     this.conjuntivite = data.conjuntivite || false;

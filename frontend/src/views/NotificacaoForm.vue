@@ -74,7 +74,7 @@
           @update:diarreia="updateSintoma('diarreia', $event)"
           @update:cefaleia="updateSintoma('cefaleia', $event)"
           @update:nauseaVomito="updateSintoma('nauseaVomito', $event)"
-          @update:adiamiaOuFraqueza="updateSintoma('adiamiaOuFraqueza', $event)"
+          @update:adinamiaFraqueza="updateSintoma('adinamiaFraqueza', $event)"
           @update:artralgia="updateSintoma('artralgia', $event)"
           @update:calafrios="updateSintoma('calafrios', $event)"
           @update:conjuntivite="updateSintoma('conjuntivite', $event)"
