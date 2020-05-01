@@ -85,7 +85,6 @@
           @update:outrosSintomas="updateSintoma('outros', $event)"
           :disabled="disableFields"
         />
-        <pre>{{ notificacao.sintomas }}</pre>
         <exames-imagem
           :realizouExamesImagem="notificacao.realizouExamesImagem"
           :examesImagem="notificacao.examesImagem"
