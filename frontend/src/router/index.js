@@ -25,7 +25,7 @@ const routes = [
     component: NotificacaoForm,
   },
   {
-    path: '/notificacoes/:id',
+    path: '/notificacoes/:id/view',
     name: 'notificacao-view',
     component: NotificacaoForm,
   },
