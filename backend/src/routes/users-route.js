@@ -15,6 +15,12 @@ router.get(
   validate(schemas.user.get, 'params'),
   UserResource.get,
 );
+router.get(
+  '/users/email/:email',
+  validate(schemas.user.findByEmail, 'params'),
+  UserResource.findByEmail,
+);
+
 router.put(
   '/users/',
   validate(schemas.user.update),

@@ -168,9 +168,7 @@
           @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
           :disabled="disableFields"
         />
-        <observacoes
-          v-model="notificacao.observacoes"
-          :disabled="disableFields" />
+        <observacoes v-model="notificacao.observacoes" :disabled="disableFields" />
       </v-form>
       <botao-enviar v-if="stateForm !== 'VIEW'" @click="send" />
       <v-snackbar v-model="showError" color="error" bottom>{{ errorMessage }}</v-snackbar>
@@ -301,11 +299,12 @@ export default {
     send() {
       if (this.stateForm === StateForm.VIEW) return;
       if (this.$refs.form.validate()) {
+        this.notificacao.userId = this.$logged.userId;
         const requestNotificacao = this.notificacao.toRequestBody();
         NotificacaoService.save(requestNotificacao).then(() => {
           this.showSuccess = true;
           setTimeout(() => {
-            this.$router.go();
+            this.$router.back();
           }, 500);
         }).catch(({ response }) => {
           this.showError = true;
