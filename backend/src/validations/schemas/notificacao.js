@@ -21,15 +21,13 @@ const schemas = {
     observacoes: Joi.string().allow('', null),
     suspeito: Joi.object().keys({
       numeroDocumento: Joi.string()
-        .length(11)
-        .required(),
+        .allow('', null),
       bairroId: Joi.string().guid({ version: 'uuidv4' }).required(),
       ocupacaoId: Joi.string().guid({ version: 'uuidv4' }).required(),
       municipioId: Joi.string().guid({ version: 'uuidv4' }).required(),
       pessoaId: Joi.string().guid({ version: 'uuidv4' }).allow(null),
       tipoDocumento: Joi.string()
-        .pattern(/CPF|RG|CNH|SUS/)
-        .required(),
+        .pattern(/CPF|RG|CNH|SUS/),
       nome: Joi.string()
         .min(3)
         .max(150)
@@ -91,7 +89,7 @@ const schemas = {
         .allow(null),
       temperaturaFebre: Joi.number()
         .allow(null),
-      adiamiaOuFraqueza: Joi.bool()
+      adinamiaFraqueza: Joi.bool()
         .allow(null),
       artralgia: Joi.bool()
         .allow(null),

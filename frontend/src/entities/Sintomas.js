@@ -1,3 +1,5 @@
+import Utils from '@/services/Utils';
+
 export default class Sintomas {
   constructor(data = {}) {
     this.febreAferidaReferida = data.febreAferidaReferida || false;
@@ -30,5 +32,22 @@ export default class Sintomas {
     this.tiragemIntercostal = data.tiragemIntercostal || false;
     this.outros = data.outros || '';
     this.existemOutrosSintomas = !!data.outros || false;
+  }
+
+  toRequestBody() {
+    return {
+      ...this,
+      temperaturaFebre: this.aplicarTemperaturaFebre(),
+    };
+  }
+
+  aplicarTemperaturaFebre() {
+    const temperaturaFebre = Utils.numbersOnly(this.temperaturaFebre);
+
+    if (!temperaturaFebre || temperaturaFebre.length <= 0) {
+      return null;
+    }
+
+    return temperaturaFebre;
   }
 }
