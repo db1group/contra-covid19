@@ -57,6 +57,7 @@ const extrairSuspeitoDaPessoa = ({
   complemento,
   Bairro,
   gestante,
+  tipoPeriodoGestacional,
   racaCor,
   Municipio,
   cep,
@@ -87,6 +88,7 @@ const extrairSuspeitoDaPessoa = ({
   uf: Municipio ? Municipio.uf : 'PR',
   idade,
   gestante,
+  tipoPeriodoGestacional,
 });
 
 const extrairSuspeito = (notificacao) => {
