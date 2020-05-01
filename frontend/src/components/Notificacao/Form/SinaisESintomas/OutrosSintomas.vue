@@ -8,11 +8,11 @@
       </v-col>
       <v-col cols="6">
         <v-checkbox
-          :input-value="sintomas.adiamiaOuFraqueza"
+          :input-value="sintomas.adinamiaFraqueza"
           label="ADINAMIA / FRAQUEZA"
           hide-details
           :disabled="disableFields"
-          @change="updateAdiamiaOuFraqueza"
+          @change="updateAdinamiaFraqueza"
         />
         <v-checkbox
           :input-value="sintomas.artralgia"
@@ -159,8 +159,8 @@ export default {
     updateExistemOutrosSintomas(existemOutrosSintomas) {
       this.sintomas.existemOutrosSintomas = existemOutrosSintomas;
     },
-    updateAdiamiaOuFraqueza(adiamiaOuFraqueza) {
-      this.$emit('update:adiamiaOuFraqueza', adiamiaOuFraqueza);
+    updateAdinamiaFraqueza(adinamiaFraqueza) {
+      this.$emit('update:adinamiaFraqueza', adinamiaFraqueza);
     },
     updateArtralgia(artralgia) {
       this.$emit('update:artralgia', artralgia);
