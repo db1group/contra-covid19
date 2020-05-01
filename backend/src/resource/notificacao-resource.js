@@ -25,7 +25,7 @@ const cadastrarSuspeito = async (suspeito) => {
   return suspeitoCadastrado;
 };
 
-const buscarPessoaDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findAll({
+const buscarPessoasDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findAll({
   where: { nome, nomeDaMae },
 });
 
@@ -35,6 +35,18 @@ const obterGestante = (sexo, gestante) => {
     return 'NAO_APLICADO';
   }
   return gestante;
+};
+
+const buscarPessoaPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
+  if (!tipoDocumento || tipoDocumento.trim() === '') return null;
+  if (!numeroDocumento || numeroDocumento.trim() === '') return null;
+  const pessoaLocalizada = await models.Pessoa.findOne({
+    where: {
+      tipoDocumento,
+      numeroDocumento,
+    },
+  });
+  return pessoaLocalizada;
 };
 
 const consolidarSuspeito = async (suspeito) => {
@@ -51,8 +63,11 @@ const consolidarSuspeito = async (suspeito) => {
   suspeitoAlterado.gestante = obterGestante(sexo, gestante);
   suspeitoPrototipo = { ...suspeitoPrototipo, gestante };
 
-  const pessoasLocalizadas = await buscarPessoaDadosBasicos(nome, nomeDaMae);
-  if (pessoasLocalizadas.length === 1) {
+  const pessoaLocalizada = await buscarPessoaPorDocumento(suspeito);
+  if (pessoaLocalizada) return { ...suspeitoPrototipo, pessoaId: pessoaLocalizada.id };
+
+  const pessoasLocalizadas = await buscarPessoasDadosBasicos(nome, nomeDaMae);
+  if (pessoasLocalizadas.length >= 1) {
     return { ...suspeitoPrototipo, pessoaId: pessoasLocalizadas[0].id };
   }
 
@@ -150,7 +165,10 @@ const consultarNotificaoesPaginado = async (page, limit) => {
   });
 };
 
-const notificacaoAbertaJaExisteParaOPaciente = async (tipoDocumento, numeroDocumento) => {
+const notificacaoAbertaJaExisteParaOPaciente = async ({ tipoDocumento, numeroDocumento }) => {
+  if (!tipoDocumento) return false;
+  if (!numeroDocumento) return false;
+
   const status = 'ABERTA';
   const notificacao = await models.Notificacao.count({
     where: {
@@ -174,8 +192,7 @@ const notificacaoAbertaJaExisteParaOPaciente = async (tipoDocumento, numeroDocum
 
 const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
   const existeNotificacaoAbertaParaOPaciente = await notificacaoAbertaJaExisteParaOPaciente(
-    notificacaoRequest.suspeito.tipoDocumento,
-    notificacaoRequest.suspeito.numeroDocumento,
+    notificacaoRequest.suspeito,
   );
 
   if (existeNotificacaoAbertaParaOPaciente) {
