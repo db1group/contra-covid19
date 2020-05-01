@@ -39,7 +39,7 @@ export default {
     },
     send() {
       if (this.$refs.form.validate()) {
-        const link = NotificacaoService.getExcelLink(this.exportar);
+        const link = NotificacaoService.getExcelLink(this.exportar.toRequestBody());
         if (link) {
           const url = decodeURI(link);
           window.open(url, '_blank');
