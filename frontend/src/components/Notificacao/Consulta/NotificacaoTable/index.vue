@@ -92,8 +92,8 @@
 <script>
 import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import NotificacaoService from '@/services/NotificacaoService';
+import keycloak from '@/services/KeycloakService';
 import NotificacaoConsulta from '@/entities/NotificacaoConsulta';
-import { isSecretariaSaude } from '@/validations/KeycloakValidations';
 
 const SITUACAO_NOTIFICACAO = [
   { key: '', value: 'TODAS' },
@@ -129,6 +129,7 @@ export default {
       showDialog: false,
       id: null,
     },
+    isSecretariaSaude: false,
   }),
   methods: {
     consultarNotificacoes({
@@ -186,7 +187,7 @@ export default {
       this.filterNotificacoes();
     },
     isPermiteEvoluir(item) {
-      return item.status === 'ABERTA' && isSecretariaSaude(this);
+      return item.status === 'ABERTA' && this.isSecretariaSaude;
     },
     updateFiltroSituacao(status) {
       this.filtroStatus = status;
@@ -196,6 +197,7 @@ export default {
   },
   created() {
     this.consultarNotificacoes();
+    this.isSecretariaSaude = keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
   },
 };
 </script>

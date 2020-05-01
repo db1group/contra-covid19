@@ -2,7 +2,7 @@
   <v-app class="covid-app">
     <v-content fluid>
       <v-app-bar color="white" absolute>
-        <unidade-header />
+        <unidade-header/>
         <v-container fluid>
           <v-row
             class="covid-app__logo-container"
@@ -17,7 +17,6 @@
         </v-container>
         <v-tabs fixed-tabs>
           <v-tab :to="{ name: 'notificacao-cons' }">Notificações</v-tab>
-          <!-- <v-tab>Relatório</v-tab> -->
         </v-tabs>
         <v-btn text @click="executeLogout">Sair</v-btn>
       </v-app-bar>
@@ -34,6 +33,7 @@
       cursor: pointer
 </style>
 <script>
+import keycloak from '@/services/KeycloakService';
 import UnidadeHeader from '@/components/commons/UnidadeHeader.vue';
 
 export default {
@@ -45,8 +45,7 @@ export default {
     executeLogout() {
       const { origin } = window.location;
       const homePage = this.$router.resolve({ name: 'home-page' }).href;
-      const url = this.$keycloak.createLogoutUrl({ redirectUri: `${origin}${homePage}` });
-      window.location.href = url;
+      keycloak.logout({ redirectUri: `${origin}${homePage}` });
     },
     goToHomePage() {
       this.$router.push({ name: 'home-page' });
