@@ -2,6 +2,7 @@ const { Sequelize } = require('sequelize');
 const models = require('../models');
 const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
+const { normalizarTexto } = require('../lib/normalizar-texto');
 
 
 const { Op } = Sequelize;
@@ -26,7 +27,10 @@ const cadastrarSuspeito = async (suspeito) => {
 };
 
 const buscarPessoasDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findAll({
-  where: { nome, nomeDaMae },
+  where: {
+    nome: normalizarTexto(nome),
+    nomeDaMae: normalizarTexto(nomeDaMae),
+  },
 });
 
 
