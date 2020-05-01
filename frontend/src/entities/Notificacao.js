@@ -50,6 +50,7 @@ export default class Notificacao {
       informacaoComplementar: this.informacaoComplementar.toRequestBody(),
       conclusaoAtendimento: this.conclusaoAtendimento.toRequestBody(),
       comorbidades: this.comorbidades.toRequestBody(),
+      sintomas: this.sintomas.toRequestBody(),
     };
 
     delete notificacao.id;
