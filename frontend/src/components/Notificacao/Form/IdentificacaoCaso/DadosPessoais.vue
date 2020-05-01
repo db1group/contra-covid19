@@ -249,7 +249,7 @@ export default {
     },
     disableTipoDocumento(tipoClassificacaoPessoa) {
       if (this.disabled) {
-        this.disableTipoDocumento = true;
+        this.disabledTipoDocumento = true;
         return;
       }
 
