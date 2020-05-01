@@ -27,6 +27,7 @@
           :suspeito="notificacao.suspeito"
           @update:dataHoraNotificacao="updateDataHoraNotificacao"
           @update:tipoDocumento="updateSuspeito('tipoDocumento', $event)"
+          @update:numeroCpf="updateSuspeito('numeroCpf', $event)"
           @update:numeroDocumento="updateSuspeito('numeroDocumento', $event)"
           @update:nome="updateSuspeito('nome', $event)"
           @update:nomeDaMae="updateSuspeito('nomeDaMae', $event)"

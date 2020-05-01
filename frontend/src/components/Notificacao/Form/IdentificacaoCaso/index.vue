@@ -6,6 +6,7 @@
       :suspeito="suspeito"
       @update:dataHoraNotificacao="updateDataHoraNotificacao"
       @update:tipoDocumento="updateTipoDocumento"
+      @update:numeroCpf="updateNumeroCpf"
       @update:numeroDocumento="updateNumeroDocumento"
       @update:nome="updateNome"
       @update:nomeDaMae="updateNomeDaMae"
@@ -75,6 +76,9 @@ export default {
     },
     updateTipoDocumento(tipoDocumento) {
       this.$emit('update:tipoDocumento', tipoDocumento);
+    },
+    updateNumeroCpf(numeroCpf) {
+      this.$emit('update:numeroCpf', numeroCpf);
     },
     updateNumeroDocumento(numeroDocumento) {
       this.$emit('update:numeroDocumento', numeroDocumento);
