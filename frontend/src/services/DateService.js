@@ -13,6 +13,10 @@ export default {
     if (!stringDate) return null;
     return moment(stringDate, fromFormat).format(toFormat);
   },
+  changeISOFormat(isoFormatted, toFormat) {
+    if (!isoFormatted) return null;
+    return moment(isoFormatted).format(toFormat);
+  },
   toMomentObject(stringDate, format) {
     return toMomentObject(stringDate, format);
   },

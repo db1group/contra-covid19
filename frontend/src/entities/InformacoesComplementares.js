@@ -6,7 +6,11 @@ export default class InformacoesComplementares {
     this.hidroxicloroquina = data.hidroxicloroquina || false;
     this.nomeMedicamento = data.nomeMedicamento || '';
     this.historicoDeViagem = data.historicoDeViagem || false;
-    this.dataDaViagem = data.dataDaViagem || '';
+    this.dataDaViagem = DateService.changeFormat(
+      data.dataDaViagem,
+      'YYYY-MM-DD',
+      'DD/MM/YYYY',
+    ) || '';
     this.localDaViagem = data.localDaViagem || '';
     this.recebeuVacinaDaGripeNosUltimosDozeMeses = data.recebeuVacinaDaGripeNosUltimosDozeMeses || '';
   }

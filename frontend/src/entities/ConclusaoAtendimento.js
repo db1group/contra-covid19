@@ -6,7 +6,11 @@ export default class ConclusaoAtendimento {
     this.coletaMaterialParaDiagnostico = data.coletaMaterialParaDiagnostico || false;
     this.tipoLaboratorio = data.tipoLaboratorio || null;
     this.nomeLaboratorioEnvioMaterial = data.nomeLaboratorioEnvioMaterial || '';
-    this.dataDaColeta = data.dataDaColeta || '';
+    this.dataDaColeta = DateService.changeFormat(
+      data.dataDaColeta,
+      'YYYY-MM-DD',
+      'DD/MM/YYYY',
+    ) || '';
     this.metodoDeExame = data.metodoDeExame || null;
   }
 

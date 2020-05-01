@@ -1,13 +1,23 @@
 import Utils from '@/services/Utils';
 import DateService from '@/services/DateService';
 
+const formatContactNumber = (contactNumber) => {
+  if (!contactNumber) return '';
+  if (contactNumber.length === 10) return Utils.telephoneMask(contactNumber);
+  return Utils.cellphoneMask(contactNumber);
+};
+
 export default class Pessoa {
   constructor(data = {}) {
     this.pessoaId = data.pessoaId || null;
     this.tipoDocumento = data.tipoDocumento || 'CPF';
     this.numeroDocumento = data.numeroDocumento || '';
     this.nome = data.nome || '';
-    this.dataDeNascimento = data.dataDeNascimento || '';
+    this.dataDeNascimento = DateService.changeFormat(
+      data.dataDeNascimento,
+      'YYYY-MM-DD',
+      'DD/MM/YYYY',
+    ) || '';
     this.sexo = data.sexo || '';
     this.cep = data.cep || '';
     this.bairroId = data.bairroId || null;
@@ -18,15 +28,19 @@ export default class Pessoa {
     this.numero = data.numero || '';
     this.complemento = data.complemento || '';
     this.municipioId = data.municipioId || null;
-    this.telefoneResidencial = data.telefoneResidencial || '';
-    this.telefoneContato = data.telefoneContato || '';
-    this.telefoneCelular = data.telefoneCelular || '';
+    this.telefoneResidencial = Utils.telephoneMask(data.telefoneResidencial) || '';
+    this.telefoneContato = formatContactNumber(data.telefoneContato);
+    this.telefoneCelular = Utils.cellphoneMask(data.telefoneCelular) || '';
     this.gestante = data.gestante === 'SIM' ? 'true' : 'false';
     this.racaCor = data.racaCor || 'IGNORADO';
     this.tipoClassificacaoPessoa = data.tipoClassificacaoPessoa || 'OUTRO';
     this.uf = data.uf || 'PR';
     this.bairroNome = data.bairro || '';
     this.municipioNome = data.municipio || '';
+
+    if (this.tipoDocumento === 'CPF') {
+      this.numeroDocumento = Utils.cpfMask(this.numeroDocumento);
+    }
   }
 
   toRequestBody() {

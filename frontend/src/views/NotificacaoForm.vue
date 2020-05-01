@@ -326,7 +326,7 @@ export default {
     buscarNotiticacao(notificacaoId) {
       NotificacaoService.findById(notificacaoId)
         .then(({ data }) => {
-          this.notificacao = new Notificacao(data).toView();
+          this.notificacao = new Notificacao(data);
         })
         .catch(({ response }) => {
           this.showError = true;

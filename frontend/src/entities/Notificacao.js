@@ -7,21 +7,23 @@ import InformacoesComplementares from './InformacoesComplementares';
 import VinculoEpidemiologico from './VinculoEpidemiologico';
 import ConclusaoAtendimento from './ConclusaoAtendimento';
 
-const getDateToView = (date) => {
-  if (!date) return date;
-  return DateService.changeFormat(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
-};
-
 export default class Notificacao {
   constructor(data = {}) {
     this.id = data.id || null;
     this.status = data.status || 'ABERTA';
-    this.dataHoraNotificacao = data.dataHoraNotificacao || DateService.formatNowAsStringDateTime();
+    this.dataHoraNotificacao = DateService.changeISOFormat(
+      data.dataHoraNotificacao,
+      'DD/MM/YYYY HH:mm',
+    ) || DateService.formatNowAsStringDateTime();
     this.unidadeSaudeId = data.unidadeSaudeId || null;
     this.notificadorId = data.notificadorId || 'ac3227a1-8a09-4b5f-93cd-d6ca43b637a4';
     this.sintomatico = data.sintomatico || false;
     this.realizouExamesImagem = data.realizouExamesImagem || false;
-    this.dataInicioDosSintomas = data.dataInicioDosSintomas || '';
+    this.dataInicioDosSintomas = DateService.changeFormat(
+      data.dataInicioDosSintomas,
+      'YYYY-MM-DD',
+      'DD/MM/YYYY',
+    ) || '';
     this.userId = data.userId || '2e439917-3f2a-45b2-9143-aac3bea760d6';
     this.nomeNotificador = data.nomeNotificador || '';
     this.profissaoId = data.profissaoId || null;
@@ -47,6 +49,7 @@ export default class Notificacao {
       suspeito: this.suspeito.toRequestBody(),
       informacaoComplementar: this.informacaoComplementar.toRequestBody(),
       conclusaoAtendimento: this.conclusaoAtendimento.toRequestBody(),
+      comorbidades: this.comorbidades.toRequestBody(),
     };
 
     delete notificacao.id;
@@ -57,14 +60,5 @@ export default class Notificacao {
     delete notificacao.suspeito.bairroNome;
     delete notificacao.suspeito.municipioNome;
     return notificacao;
-  }
-
-  toView() {
-    this.dataInicioDosSintomas = getDateToView(this.dataInicioDosSintomas);
-    this.dataHoraNotificacao = getDateToView(this.dataHoraNotificacao);
-    this.suspeito.dataDeNascimento = getDateToView(this.suspeito.dataDeNascimento);
-    this.conclusaoAtendimento.dataDaColeta = getDateToView(this.conclusaoAtendimento.dataDaColeta);
-    this.informacaoComplementar.dataDaViagem = getDateToView(this.informacaoComplementar.dataDaViagem);
-    return this;
   }
 }
