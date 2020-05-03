@@ -17,7 +17,17 @@ module.exports = {
     };
   },
   mapearParaResponse: (notificacao, notificacaoCovid19) => {
-    const mapeador = new NotificacaoResponseMapper(notificacao, notificacaoCovid19);
+    let notificacaoDataValues = { ...notificacao };
+    let notificacaoCovid19DataValues = { ...notificacaoCovid19 };
+    if (notificacao.dataValues) {
+      notificacaoDataValues = { ...notificacao.dataValues };
+    }
+    if (notificacaoCovid19.dataValues) {
+      notificacaoCovid19DataValues = { ...notificacaoCovid19.dataValues };
+    }
+
+    const mapeador = new NotificacaoResponseMapper(notificacaoDataValues,
+      notificacaoCovid19DataValues);
 
     return mapeador.pegarResponse();
   },
