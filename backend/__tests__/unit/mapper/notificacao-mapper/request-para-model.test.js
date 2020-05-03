@@ -1,20 +1,38 @@
 const { requestParaModeloNotificacao, requestParaModeloNotificacaoCovid19 } = require('../../../../src/mapper/notificacao-mapper/request-para-model');
-const notificacaoRequestJSON = require('./notificacao-request.json');
-const notificacaoModeloJSON = require('./notificacaoModelo');
+const { notificacaoRequest, notificacaoModeloMapeado } = require('./dadosRequest');
 
-describe('Transformar request de notificação para modelo', () => {
+describe('Mapear Notificacao', () => {
+    //Está divergindo do modelo -> response
+    it('Deve mapear o bairro da notificacao à partir do suspeito', async () => {
+        const modelo = requestParaModeloNotificacao(notificacaoRequest);
+
+        expect(modelo.bairroId).toBe(notificacaoRequest.suspeito.bairroId);
+    });
+
+    it('Deve mapear o bairro da notificacao à partir do bairro da unidade de saúde', async () => {
+        const modelo = requestParaModeloNotificacao(notificacaoRequest);
+
+        expect(modelo.municipioId).toBe(notificacaoRequest.unidadeDeSaude.municipioId);
+    });
+
+    it('Deve Notificacao.pessoaId deve ser o Suspeito.pessoaId', async () => {
+        const modelo = requestParaModeloNotificacao(notificacaoRequest);
+
+        expect(modelo.pessoaId).toBe(notificacaoRequest.suspeito.pessoaId);
+    });
+
     it('deve transformar o request em Notificacao', async () => {
-        const notificacao = { ...notificacaoRequestJSON };
+        const notificacao = { ...notificacaoRequest };
         const notificacaoEsperada = {
-            bairroId: notificacaoRequestJSON.suspeito.bairroId,
-            municipioId: notificacaoRequestJSON.unidadeDeSaude.municipioId,
-            nomeNotificador: notificacaoRequestJSON.nomeNotificador,
-            notificadorId: notificacaoRequestJSON.notificadorId,
-            pessoaId: notificacaoRequestJSON.suspeito.pessoaId,
-            profissaoId: notificacaoRequestJSON.profissaoId,
-            status: notificacaoRequestJSON.status,
-            unidadeSaudeId: notificacaoRequestJSON.unidadeSaudeId,
-            userId: notificacaoRequestJSON.userId,
+            bairroId: notificacaoRequest.suspeito.bairroId,
+            municipioId: notificacaoRequest.unidadeDeSaude.municipioId,
+            nomeNotificador: notificacaoRequest.nomeNotificador,
+            notificadorId: notificacaoRequest.notificadorId,
+            pessoaId: notificacaoRequest.suspeito.pessoaId,
+            profissaoId: notificacaoRequest.profissaoId,
+            status: notificacaoRequest.status,
+            unidadeSaudeId: notificacaoRequest.unidadeSaudeId,
+            userId: notificacaoRequest.userId,
         };
 
         const modeloNotificacao = requestParaModeloNotificacao(notificacao);
@@ -22,12 +40,21 @@ describe('Transformar request de notificação para modelo', () => {
         expect(modeloNotificacao).toEqual(notificacaoEsperada);
     });
 
+    it('Deve informar pessoaId: null se não existente', async () => {
+        const notificacaoSemPessoa = { ...notificacaoRequest };
+        notificacaoSemPessoa.suspeito.pessoaId = undefined;
+
+        const modelo = requestParaModeloNotificacao(notificacaoSemPessoa);
+
+        expect(modelo.pessoaId).toBe(undefined);
+    });
+});
+
+describe('Mapear NotificacaoCovid19', () => {
+
     it('deve transformar o request em notificacaoCovid19', async () => {
-        const notificacao = { ...notificacaoRequestJSON };
+        const notificacaoCovid19 = requestParaModeloNotificacaoCovid19(notificacaoRequest);
 
-        const notificacaoCovid19 = requestParaModeloNotificacaoCovid19(notificacao);
-
-        expect(notificacaoCovid19).toEqual(notificacaoModeloJSON.notificacaoCovid19);
-    })
-
+        expect(notificacaoCovid19).toEqual(notificacaoModeloMapeado.notificacaoCovid19);
+    });
 });
