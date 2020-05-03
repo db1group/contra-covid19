@@ -1,38 +1,40 @@
-const notificacaoRequestJSON = require('./notificacao-request.json');
-const notificacaoModeloJSON = require('./notificacaoModelo');
-const { mapearParaNotificacao } = require('../../../../src/mapper/notificacao-mapper');
+const { notificacaoModeloMapeado, notificacaoRequest } = require('./dadosRequest');
+const { mapearParaNotificacao, mapearParaResponse } = require('../../../../src/mapper/notificacao-mapper');
+const { notificacaoModelo, notificacaoMapeadoResponse, suspeitoMapeadoResponse,
+    sintomasMapeadoResponse, comorbidadesMapeadoResponse, examesImagemMapedoResponse,
+    informacaoComplementarMapeadoResponse, vinculoEpidemiologicoMapeadoResponse,
+    conclusaoAtendimentoMapeadoResponse } = require('./dadosResponse');
 
 
 describe('Testando mapeamento de notificacao', () => {
     it('Deve transformar um request consolidado em Notificacao', async () => {
-        const notificacao = { ...notificacaoRequestJSON };
+        const notificacao = { ...notificacaoRequest };
 
         const modeloNotificacao = mapearParaNotificacao(notificacao);
 
-        expect(modeloNotificacao).toEqual(notificacaoModeloJSON);
+        expect(modeloNotificacao).toEqual(notificacaoModeloMapeado);
     });
 
     it('Deve transformar um request consolidado em NotificacaoCovid19', async () => {
-        const notificacao = { ...notificacaoRequestJSON };
+        const notificacao = { ...notificacaoRequest };
 
         const notificacaoModelo = mapearParaNotificacao(notificacao);
 
-        expect(notificacaoModelo.notificacaoCovid19).toEqual(notificacaoModeloJSON.notificacaoCovid19);
+        expect(notificacaoModelo.notificacaoCovid19).toEqual(notificacaoModeloMapeado.notificacaoCovid19);
     });
 
-    it('Deve buscar pessoa id informado', async () => {
-        const { suspeito: { pessoaId: pessoaIdEsperado } } = notificacaoRequestJSON;
-        const { pessoaId } = mapearParaNotificacao(notificacaoRequestJSON);
-        expect(pessoaId).toBe(pessoaIdEsperado);
-    });
-
-    it('Deve informar pessoaId: null se não existente', async () => {
-        const { suspeito: { pessoaId, ...suspeitoSemPessoa } } = notificacaoRequestJSON;
-        const requestSemPessoa = {
-            ...notificacaoRequestJSON,
-            suspeito: suspeitoSemPessoa
+    it('Deve transformar um modelo em response', async () => {
+        const response = mapearParaResponse(notificacaoModelo, notificacaoModelo.NotificacaoCovid19);
+        const responseEsperado = {
+            ...notificacaoMapeadoResponse,
+            suspeito: suspeitoMapeadoResponse,
+            sintomas: sintomasMapeadoResponse,
+            comorbidades: comorbidadesMapeadoResponse,
+            examesImagem: examesImagemMapedoResponse,
+            informacaoComplementar: informacaoComplementarMapeadoResponse,
+            vinculoEpidemiologico: vinculoEpidemiologicoMapeadoResponse,
+            conclusaoAtendimento: conclusaoAtendimentoMapeadoResponse,
         };
-        const response = mapearParaNotificacao(requestSemPessoa);
-        expect(response.pessoaId).toBe(undefined);
+        expect(response).toEqual(responseEsperado);
     });
 });
