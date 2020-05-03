@@ -5,7 +5,10 @@
     "node": true,
     "jest": true
   },
-  "extends": ["airbnb-base"],
+  "extends": [
+    "airbnb-base",
+    "plugin:sonarjs/recommended"
+  ],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -17,11 +20,26 @@
   "rules": {
     "no-unused-vars": [
       "error",
-      { "ignoreRestSiblings": true, "argsIgnorePattern": "^_" }
+      {
+        "ignoreRestSiblings": true,
+        "argsIgnorePattern": "^_"
+      }
     ],
     "no-restricted-modules": "error",
     "global-require": "error",
     "import/prefer-default-export": "off",
-    "no-console": ["error", { "allow": ["info", "warn", "error"] }]
-  }
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "info",
+          "warn",
+          "error"
+        ]
+      }
+    ]
+  },
+  "plugins": [
+    "sonarjs"
+  ]
 }
