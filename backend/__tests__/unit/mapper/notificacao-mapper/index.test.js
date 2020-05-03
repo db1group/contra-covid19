@@ -1,5 +1,7 @@
 const { notificacaoModeloMapeado, notificacaoRequest } = require('./dadosRequest');
+const NotificacaoResponseMapper = require('../../../../src/mapper/notificacao-mapper/model-para-response');
 const { mapearParaNotificacao, mapearParaResponse } = require('../../../../src/mapper/notificacao-mapper');
+
 const { notificacaoModelo, notificacaoMapeadoResponse, suspeitoMapeadoResponse,
     sintomasMapeadoResponse, comorbidadesMapeadoResponse, examesImagemMapedoResponse,
     informacaoComplementarMapeadoResponse, vinculoEpidemiologicoMapeadoResponse,
@@ -22,9 +24,10 @@ describe('Testando mapeamento de notificacao', () => {
 
         expect(notificacaoModelo.notificacaoCovid19).toEqual(notificacaoModeloMapeado.notificacaoCovid19);
     });
+});
 
+describe('Testar mapeamento Modelo->Response', () => {
     it('Deve transformar um modelo em response', async () => {
-        const response = mapearParaResponse(notificacaoModelo, notificacaoModelo.NotificacaoCovid19);
         const responseEsperado = {
             ...notificacaoMapeadoResponse,
             suspeito: suspeitoMapeadoResponse,
@@ -35,6 +38,9 @@ describe('Testando mapeamento de notificacao', () => {
             vinculoEpidemiologico: vinculoEpidemiologicoMapeadoResponse,
             conclusaoAtendimento: conclusaoAtendimentoMapeadoResponse,
         };
+
+        const response = mapearParaResponse(notificacaoModelo, notificacaoModelo.NotificacaoCovid19);
+
         expect(response).toEqual(responseEsperado);
     });
 });
