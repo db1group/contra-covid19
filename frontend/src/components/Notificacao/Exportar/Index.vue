@@ -25,10 +25,7 @@
       </v-col>
       <v-spacer />
       <v-col cols="3">
-        <v-btn
-        color="primary"
-        rounded :to="{ name: 'exportar' }"
-        @click="onClick">
+        <v-btn color="primary" rounded :to="{ name: 'exportar' }" @click="onClick">
           <v-icon>mdi-download</v-icon>exportar
         </v-btn>
       </v-col>
@@ -40,7 +37,6 @@
 import { mask } from 'vue-the-mask';
 import NotificacaoExportar from '@/entities/NotificacaoExportar';
 import { required } from '@/validations/CommonValidations';
-import DateService from '@/services/DateService';
 
 export default {
   directives: { mask },
@@ -55,16 +51,13 @@ export default {
   }),
   methods: {
     updateDataInicial(dataInicial) {
-      this.$emit('update:dataInicial', this.formatDate(dataInicial));
+      this.$emit('update:dataInicial', dataInicial);
     },
     updateDataFinal(dataFinal) {
-      this.$emit('update:dataFinal', this.formatDate(dataFinal));
+      this.$emit('update:dataFinal', dataFinal);
     },
     onClick() {
       this.$emit('click');
-    },
-    formatDate(date) {
-      return DateService.formatDateTypeToString(date);
     },
   },
 };
