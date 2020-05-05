@@ -120,7 +120,6 @@ const consultarNotificacaoPorId = async (id) => models.Notificacao.findOne({
       ],
     },
     { model: models.NotificacaoCovid19 },
-    { model: models.Bairro },
     { model: models.Municipio },
     { model: models.UnidadeSaude },
     { model: models.User },
