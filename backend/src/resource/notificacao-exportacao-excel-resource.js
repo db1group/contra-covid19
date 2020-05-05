@@ -54,6 +54,7 @@ exports.gerarExcel = async (req, res) => {
       idadeDoPaciente: t.Pessoa ? t.Pessoa.idade : null,
       dataDeNascimentoDoPaciente: geraExcel.retornarDataSemHora(t.Pessoa, 'dataDeNascimento'),
       gestante: t.Pessoa ? t.Pessoa.gestante : null,
+      tipoPeriodoGestacional: this.retornarTipoPeriodoGestacional(t),
       racaCorDoPaciente: t.Pessoa ? t.Pessoa.racaCor : null,
       nomeDaMaeDoPaciente: t.Pessoa ? t.Pessoa.nomeDaMae : null,
       enderecoDoPaciente: t.Pessoa ? t.Pessoa.endereco : null,
@@ -164,6 +165,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'idadeDoPaciente', nomeCampo: 'idadeDoPaciente' },
       { nomeColuna: 'dataDeNascimentoDoPaciente', nomeCampo: 'dataDeNascimentoDoPaciente' },
       { nomeColuna: 'gestante', nomeCampo: 'gestante' },
+      { nomeColuna: 'tipoPeriodoGestacional', nomeCampo: 'tipoPeriodoGestacional' },
       { nomeColuna: 'racaCorDoPaciente', nomeCampo: 'racaCorDoPaciente' },
       { nomeColuna: 'nomeDaMaeDoPaciente', nomeCampo: 'nomeDaMaeDoPaciente' },
       { nomeColuna: 'enderecoDoPaciente', nomeCampo: 'enderecoDoPaciente' },
@@ -263,6 +265,29 @@ exports.gerarExcel = async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(400).json({ error: err.message });
+  }
+};
+
+this.retornarTipoPeriodoGestacional = (notificacao) => {
+  if (!notificacao) {
+    return null;
+  }
+
+  if (!notificacao.Pessoa) {
+    return null;
+  }
+
+  switch (notificacao.Pessoa.tipoPeriodoGestacional) {
+    case 'PRIMEIRO_TRIMESTRE':
+      return '1º Trimestre';
+    case 'SEGUNDO_TRIMESTRE':
+      return '2º Trimestre';
+    case 'TERCEIRO_TRIMESTRE':
+      return '3º Trimestre';
+    case 'IDADE_GESTACIONAL_IGNORADA':
+      return 'Idade gestacional ignorada';
+    default:
+      return null;
   }
 };
 
