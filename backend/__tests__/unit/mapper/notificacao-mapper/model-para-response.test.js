@@ -66,19 +66,6 @@ describe('Mapeamento de suspeito', () => {
         expect(suspeito.bairroId).toBe(notificacaoModelo.Pessoa.bairroId);
     });
 
-    //Parece estar errado. Acho que deveria dar erro
-    it('deve usar nome do Bairro da pessoa QUANDO notificacao não possuir essas informações', async () => {
-        const notificacao = { ...notificacaoModelo };
-        delete notificacao.Bairro;
-        const mapeador = new NotificacaoResponseMapper(notificacao, notificacao.NotificacaoCovid19);
-
-
-
-        const suspeito = mapeador._extrairSuspeito(notificacao);
-
-        expect(suspeito.bairro).toEqual(notificacao.Pessoa.Bairro.nome);
-    });
-
     it('deve mapear ocupacaoId do suspeito à partir de Notificacao.Pessoa.ocupacaoId', async () => {
         const mapeador = new NotificacaoResponseMapper(notificacaoModelo, notificacaoModelo.NotificacaoCovid19);
 
