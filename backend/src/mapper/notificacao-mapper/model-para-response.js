@@ -1,4 +1,6 @@
 
+const RegraNegocioErro = require('../../lib/erros/RegraNegocioErro');
+
 class NotificacaoResponseMapper {
   constructor(notificacao, notificacaoCovid19) {
     this.notificacao = { ...notificacao };
@@ -56,9 +58,14 @@ class NotificacaoResponseMapper {
   }
 
   _extrairSuspeito() {
-    const { Pessoa, Bairro } = this.notificacao;
-    if (Pessoa) { return this._extrairSuspeitoDaPessoa(Pessoa, Bairro); }
-    return this._extrairSuspeitoDaNotificacao(this.notificacao);
+    const { Pessoa } = this.notificacao;
+    if (!Pessoa) {
+      throw new RegraNegocioErro('O relacionamento "Pessoa" precisa ser carregado para o suspeito. Contate o suporte');
+    }
+    if (!Pessoa.Bairro) {
+      throw new RegraNegocioErro('O relacionamento "Bairro" precisa ser carregado para o suspeito. Contate o suporte');
+    }
+    return this._extrairSuspeitoDaPessoa(Pessoa);
   }
 
   _extrairSuspeitoDaPessoa({
@@ -86,7 +93,7 @@ class NotificacaoResponseMapper {
     Municipio,
     cep,
     tipoClassificacaoPessoa,
-  }, bairro) {
+  }) {
     return {
       pessoaId: id,
       tipoDocumento,
@@ -103,7 +110,7 @@ class NotificacaoResponseMapper {
       endereco,
       numero,
       complemento,
-      municipioId: bairro ? bairro.municipioId : Bairro.id,
+      municipioId: Bairro.municipioId,
       municipio: Municipio ? Municipio.nome : '',
       telefoneResidencial,
       telefoneContato,
@@ -114,18 +121,6 @@ class NotificacaoResponseMapper {
       idade,
       gestante,
       tipoPeriodoGestacional,
-    };
-  }
-
-  _extrairSuspeitoDaNotificacao({
-    pessoaId, bairroId, municipioId, profissaoId, ocupacaoId,
-  }) {
-    return {
-      pessoaId,
-      bairroId,
-      municipioId,
-      profissaoId,
-      ocupacaoId,
     };
   }
 
