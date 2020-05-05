@@ -325,7 +325,6 @@ export default {
     this.rules.numeroCpf.push(this.requiredIfCpfAndTipoOutros);
     this.rules.gestante.push(this.requiredIfSexoForFeminino);
     this.rules.tipoPeriodoGestacional.push(this.requiredIfGestante);
-    this.rules.numeroDocumento.push(this.maxLengthIfCPF);
     this.rules.dataDeNascimento.push(this.validateFutureDate);
   },
 };
