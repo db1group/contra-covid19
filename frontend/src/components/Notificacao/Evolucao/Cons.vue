@@ -10,11 +10,11 @@
           </v-col>
           <v-col>
             <span class="font-weight-bold">Documento</span>
-            <p>{{evolucao.documento}}</p>
+            <p>{{ evolucao.documento | FormatDocument(evolucao.tipoDocumento) }}</p>
           </v-col>
           <v-col>
             <span class="font-weight-bold">Telefone</span>
-            <p>{{evolucao.telefone}}</p>
+            <p>{{evolucao.telefone | FormatPhone }}</p>
           </v-col>
         </v-row>
         <v-row dense>
@@ -24,9 +24,7 @@
               small
               color="primary"
               :to="{ name: 'notificacao-view', params: { id: evolucao.id } }"
-              >
-                Ver ficha completa
-              </v-btn>
+            >Ver ficha completa</v-btn>
           </v-col>
         </v-row>
       </v-col>

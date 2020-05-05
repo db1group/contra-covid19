@@ -7,6 +7,8 @@ import Configuration from './configuration';
 import onReadyApp from './ready';
 import setHotjar from './hotjar';
 import Logged from './plugins/logged';
+import FormatDocument from './plugins/document-mask';
+import FormatPhone from './plugins/phone-mask';
 
 Vue.config.productionTip = false;
 
@@ -20,6 +22,8 @@ const loggedReady = (scoped) => {
   }).$mount('#app');
 };
 
+Vue.use(FormatDocument);
+Vue.use(FormatPhone);
 Vue.use(VueKeyCloak, {
   config: {
     url: `${Configuration.value('VUE_APP_KEYCLOAK_URL')}`,
