@@ -5,6 +5,9 @@ const { notificacaoMapeadoResponse, notificacaoModelo, suspeitoMapeadoResponse,
     informacaoComplementarMapeadoResponse, vinculoEpidemiologicoMapeadoResponse,
     conclusaoAtendimentoMapeadoResponse } = require('./dadosResponse');
 
+const PegarCopiaNotificacaoModelo = () => {
+    return JSON.parse(JSON.stringify(notificacaoModelo));
+}
 
 describe('Testar mapeamento de modelo para response', () => {
 
