@@ -1,3 +1,4 @@
+import Configuration from '@/configuration';
 import http from './Http';
 
 export default {
@@ -22,5 +23,9 @@ export default {
   },
   deleteLote(ids) {
     return http.delete('/notificacoes', { data: ids });
+  },
+  getExcelLink({ dataInicial, dataFinal }) {
+    return `${Configuration
+      .value('VUE_APP_BACKEND_URL')}/notificacao-gera-excel?dataInicial=${dataInicial}&dataFinal=${dataFinal}`;
   },
 };

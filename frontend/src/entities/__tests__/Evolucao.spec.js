@@ -8,6 +8,7 @@ const evolucaoVazia = {
   id: null,
   status: 'ABERTA',
   nome: '',
+  tipoDocumento: '',
   documento: '',
   telefone: '',
   items: [],
@@ -17,6 +18,7 @@ const dataEvolucao = {
   status: 'ABERTA',
   Pessoa: {
     nome: 'Francisco Thiago de Almeida',
+    tipoDocumento: 'CPF',
     numeroDocumento: '32201501874',
     telefoneContato: '111111111111',
   },
@@ -38,6 +40,7 @@ const evolucaoValida = {
   id: null,
   status: 'ABERTA',
   nome: 'Francisco Thiago de Almeida',
+  tipoDocumento: 'CPF',
   documento: '32201501874',
   telefone: '111111111111',
   items: [
@@ -58,6 +61,7 @@ const evolucaoRequestValida = {
   id: null,
   status: 'ABERTA',
   nome: 'Francisco Thiago de Almeida',
+  tipoDocumento: 'CPF',
   documento: '32201501874',
   telefone: '111111111111',
   items: [

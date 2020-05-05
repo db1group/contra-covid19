@@ -12,6 +12,7 @@
       @update:nomeDaMae="updateNomeDaMae"
       @update:sexo="updateSexo"
       @update:gestante="updateGestante"
+      @update:tipoPeriodoGestacional="updateTipoPeriodoGestacional"
       @update:racaCor="updateRacaCor"
       @update:dataDeNascimento="updateDataDeNascimento"
       @update:tipoClassificacaoPessoa="updateTipoClassificacaoPessoa"
@@ -94,6 +95,9 @@ export default {
     },
     updateGestante(gestante) {
       this.$emit('update:gestante', gestante);
+    },
+    updateTipoPeriodoGestacional(tipoPeriodoGestacional) {
+      this.$emit('update:tipoPeriodoGestacional', tipoPeriodoGestacional);
     },
     updateRacaCor(racaCor) {
       this.$emit('update:racaCor', racaCor);

@@ -33,6 +33,9 @@ export default {
   formatDateTypeToStringTypeWithMinutes(date) {
     return moment(date).format('DD/MM/YYYY HH:mm');
   },
+  formatDateTypeToString(date) {
+    return moment(date).format('YYYY-MM-DD');
+  },
   isDateValid(stringDate, format) {
     return moment(stringDate, format).isValid();
   },

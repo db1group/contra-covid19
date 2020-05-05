@@ -4,6 +4,7 @@ import Home from '../views/Home.vue';
 import NotificacaoForm from '../views/NotificacaoForm.vue';
 import NotificacaoCons from '../views/NotificacaoCons.vue';
 import EvolucaoForm from '../views/EvolucaoForm.vue';
+import NotificacaoExportar from '../views/NotificacaoExportar.vue';
 
 Vue.use(VueRouter);
 
@@ -24,7 +25,7 @@ const routes = [
     component: NotificacaoForm,
   },
   {
-    path: '/notificacoes/:id',
+    path: '/notificacoes/:id/view',
     name: 'notificacao-view',
     component: NotificacaoForm,
   },
@@ -32,6 +33,11 @@ const routes = [
     path: '/notificacoes/:id/evolucoes',
     name: 'evolucao-form',
     component: EvolucaoForm,
+  },
+  {
+    path: '/notificacoes/exportar',
+    name: 'exportar',
+    component: NotificacaoExportar,
   },
 ];
 

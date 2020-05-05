@@ -44,7 +44,7 @@ exports.gerarExcel = async (req, res) => {
       horaDaNotificacao: geraExcel.retornarHoraDaData(t, 'createdAt'),
       unidadeNotificante: t.UnidadeSaude ? t.UnidadeSaude.nome : null,
       cNES: t.UnidadeSaude ? t.UnidadeSaude.cnes : null,
-      nomeDoNotificador: t.ProfissionalSaude ? t.ProfissionalSaude.nome : t.nomeNotificador,
+      nomeDoNotificador: t.nomeNotificador,
       profissaoDoNotificador: this.retornarProfissionalNotificador(t),
       situacao1CasoSuspeito: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'situacao1'),
       situacao2ContatoDeCasoSuspeitoOuConfirmado: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'situacao2'),

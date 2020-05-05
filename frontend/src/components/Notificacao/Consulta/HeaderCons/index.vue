@@ -12,6 +12,13 @@
       >
       <v-icon>mdi-plus</v-icon> Cadastrar
       </v-btn>
+      <v-btn
+        color="primary"
+        rounded
+        :to="{ name: 'exportar' }"
+      >
+      <v-icon>mdi-download</v-icon> exportar
+      </v-btn>
     </v-col>
   </v-row>
 </v-container>

@@ -19,19 +19,17 @@
           <v-tab :to="{ name: 'notificacao-cons' }">Notificações</v-tab>
           <!-- <v-tab>Relatório</v-tab> -->
         </v-tabs>
-        <v-btn text @click="executeLogout">
-          Sair
-        </v-btn>
+        <v-btn text @click="executeLogout">Sair</v-btn>
       </v-app-bar>
       <v-spacer></v-spacer>
-      <router-view/>
+      <router-view />
     </v-content>
   </v-app>
 </template>
 <style lang="sass" scoped>
-  .covid-app
-    &.v-application
-      background-color: #FAFAFA
+.covid-app
+  &.v-application
+    background-color: #FAFAFA
     &__logo-container
       cursor: pointer
 </style>
