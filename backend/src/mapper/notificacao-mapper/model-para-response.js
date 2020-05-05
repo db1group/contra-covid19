@@ -96,7 +96,7 @@ class NotificacaoResponseMapper {
       sexo,
       cep,
       bairroId,
-      bairro: bairro ? bairro.nome : Bairro.nome,
+      bairro: Bairro.nome,
       nomeDaMae,
       ocupacao,
       ocupacaoId,
