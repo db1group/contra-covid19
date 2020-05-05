@@ -48,12 +48,13 @@ describe('Mapeamento de suspeito', () => {
     });
 
     //Parece estar errado - Não deveria pegar o bairro da pessoa?
-    it('deve mapear o nome do bairro à partir do bairro da notificacao', async () => {
-        const mapeador = new NotificacaoResponseMapper(notificacaoModelo, notificacaoModelo.NotificacaoCovid19);
+    it('deve emitir erro se notificacao.Pessoa.Bairro for undefined', async () => {
+        const notificacao = PegarCopiaNotificacaoModelo();
+        delete notificacao.Pessoa.Bairro;
 
-        const suspeito = mapeador._extrairSuspeito();
+        const mapeador = new NotificacaoResponseMapper(notificacao, notificacao.NotificacaoCovid19);
 
-        expect(suspeito.bairro).toBe(notificacaoModelo.Bairro.nome);
+        expect(() => { mapeador._extrairSuspeito() }).toThrow(RegraNegocioErro);
     });
 
     //Todas as info do bairro vem do modelo. Aqui vem da Pessoa.
@@ -95,26 +96,16 @@ describe('Mapeamento de suspeito', () => {
     });
 
     //Parece estar errado - Deveria lançar um erro se a pessoa não estiver presente.
-    it('deve montar o suspeito à partir da notificacao se modelo não tiver pessoa', async () => {
-        const notificacao = { ...notificacaoModelo };
+    it('deve lançar erro se pessoa não existir', async () => {
+        const notificacao = PegarCopiaNotificacaoModelo();
         delete notificacao.Pessoa;
         const mapeador = new NotificacaoResponseMapper(notificacao, notificacao.NotificacaoCovid19);
-        const suspeitoEsperado = {
-            pessoaId: notificacao.pessoaId,
-            bairroId: notificacao.bairroId,
-            municipioId: notificacao.municipioId,
-            profissaoId: notificacao.profissaoId,
-            ocupacaoId: notificacao.ocupacaoId,
-        };
 
-        const suspeito = mapeador._extrairSuspeito(notificacao);
-
-        expect(suspeito).toEqual(suspeitoEsperado);
+        expect(() => { mapeador._extrairSuspeito(notificacao); }).toThrow(RegraNegocioErro);
     });
 
     it('deve deixar dados de município em branco se não existir na Notificacao.Pessoa', async () => {
         const mapeador = new NotificacaoResponseMapper(notificacaoModelo, notificacaoModelo.NotificacaoCovid19);
-
         const notificacao = { ...notificacaoModelo };
         notificacao.Pessoa.Municipio = undefined;
 
