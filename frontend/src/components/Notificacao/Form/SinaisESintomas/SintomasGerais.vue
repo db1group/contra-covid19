@@ -7,8 +7,8 @@
           :input-value="sintomatico"
           label="Sintomático"
           hide-details
-          @change="updateSintomatico"
           :disabled="disabled"
+          @change="updateSintomatico"
         />
       </v-col>
       <v-col
@@ -65,6 +65,9 @@ export default {
   methods: {
     updateSintomatico(sintomatico) {
       this.$emit('update:sintomatico', sintomatico);
+      if (!sintomatico) {
+        this.updateDataInicioDosSintomas('');
+      }
     },
     updateDataInicioDosSintomas(dataInicioDosSintomas) {
       this.$emit('update:dataInicioDosSintomas', dataInicioDosSintomas);
