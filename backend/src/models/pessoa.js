@@ -4,7 +4,7 @@ const { normalizarTexto } = require('../lib/normalizar-texto');
 const normalizarTextoPessoa = (pessoa) => {
   pessoa.nome = normalizarTexto(pessoa.nome);
   pessoa.nomeDaMae = normalizarTexto(pessoa.nomeDaMae);
-  pessoa.ocupacao = normalizarTexto(pessoa.ocupacao);
+  pessoa.ocupacao = pessoa.ocupacao != undefined ? normalizarTexto(pessoa.ocupacao) : pessoa.ocupacao;
   pessoa.endereco = normalizarTexto(pessoa.endereco);
 };
 
