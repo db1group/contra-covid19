@@ -22,6 +22,7 @@ export default class Evolucao {
     this.id = data.id || null;
     this.status = data.status || 'ABERTA';
     this.nome = data.Pessoa ? data.Pessoa.nome : '';
+    this.tipoDocumento = data.Pessoa ? data.Pessoa.tipoDocumento : '';
     this.documento = data.Pessoa ? data.Pessoa.numeroDocumento : '';
     this.telefone = getTelefone(data.Pessoa || {});
     this.items = data.NotificacaoEvolucaos || [];

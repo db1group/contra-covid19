@@ -411,7 +411,7 @@ exports.consultarNotificacaoEvolucao = async (req, res, next) => {
       attributes: ['id', 'status'],
       include: [{
         model: models.Pessoa,
-        attributes: ['nome', 'numeroDocumento', 'telefoneResidencial', 'telefoneContato', 'telefoneCelular'],
+        attributes: ['nome', 'tipoDocumento', 'numeroDocumento', 'telefoneResidencial', 'telefoneContato', 'telefoneCelular'],
       },
       { model: models.NotificacaoEvolucao },
       ],
