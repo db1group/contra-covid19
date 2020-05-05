@@ -2,5 +2,8 @@
 
 node_modules
 
-src/db/databases/dev.sqlite
-src/db/databases/test.sqlite
+src/db/databases/*.sqlite
+
+## Artefatos de test/sonar
+__tests__/coverage/**
+**/.scannerwork/**
