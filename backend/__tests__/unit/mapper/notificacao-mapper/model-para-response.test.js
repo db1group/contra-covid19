@@ -1,3 +1,4 @@
+const RegraNegocioErro = require('../../../../src/lib/erros/RegraNegocioErro');
 const NotificacaoResponseMapper = require('../../../../src/mapper/notificacao-mapper/model-para-response');
 const { notificacaoMapeadoResponse, notificacaoModelo, suspeitoMapeadoResponse,
     sintomasMapeadoResponse, comorbidadesMapeadoResponse, examesImagemMapedoResponse,
