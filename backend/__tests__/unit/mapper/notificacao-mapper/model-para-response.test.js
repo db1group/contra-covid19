@@ -35,12 +35,12 @@ describe('Mapeamento de suspeito', () => {
     });
 
     //Precisa confirmar - Talvez deveria ser notificacao.Pessoa.[bairro].municipioId
-    it('deve mapear municipioId à partir da notificacao.bairro.municipioId', async () => {
+    it('deve mapear municipioId à partir da notificacao.pessoa.bairro.municipioId', async () => {
         const mapeador = new NotificacaoResponseMapper(notificacaoModelo, notificacaoModelo.NotificacaoCovid19);
 
         const suspeito = mapeador._extrairSuspeito();
 
-        expect(suspeito.municipioId).toBe(notificacaoModelo.Bairro.municipioId);
+        expect(suspeito.municipioId).toBe(notificacaoModelo.Pessoa.Bairro.municipioId);
     });
 
     //Parece estar errado - Não deveria pegar o bairro da pessoa?

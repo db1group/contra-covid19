@@ -223,7 +223,7 @@ module.exports = {
         endereco: "ENDERECO",
         numero: "545445",
         complemento: "COMPLEMENTO",
-        municipioId: "notificacao-bairro-municipioId",
+        municipioId: "notificacao-pessoa-bairro-municipioId",
         municipio: "MARINGA",
         telefoneResidencial: "4430355965",
         telefoneContato: "4430356985",
