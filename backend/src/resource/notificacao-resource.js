@@ -54,14 +54,32 @@ const buscarPessoaPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
   return pessoaLocalizada;
 };
 
+const buscarPessoaId = async (suspeito) => {
+  const { nome, nomeDaMae } = suspeito;
+
+  if (suspeito.numeroDocumento !== '') {
+    let pessoaId;
+    const pessoaLocalizada = await buscarPessoaPorDocumento(suspeito);
+    if (pessoaLocalizada) pessoaId = pessoaLocalizada.id;
+    return pessoaId;
+  }
+
+  const pessoasLocalizadas = await buscarPessoasDadosBasicos(nome, nomeDaMae);
+  if (pessoasLocalizadas.length >= 1) {
+    throw new RegraNegocioErro(`A pessoa ${nome} (sem documento informado) já possui cadastro no sistema e não poderá ser criado um novo.`);
+  }
+  return null;
+};
+
 const consolidarSuspeito = async (suspeito) => {
   const {
-    pessoaId, bairroId, municipioId, nome, nomeDaMae,
-    sexo, gestante, tipoDocumento, numeroDocumento
+    pessoaId, bairroId, municipioId, sexo, gestante, tipoDocumento,
+    numeroDocumento,
   } = suspeito;
 
-  if (tipoDocumento == DocumentValidator.Docs().CPF && !DocumentValidator.IsCpfValid(numeroDocumento)) {
-    throw new RegraNegocioErro(tipoDocumento + ' inválido.');
+  if (tipoDocumento === DocumentValidator.Docs().CPF
+    && !DocumentValidator.IsCpfValid(numeroDocumento)) {
+    throw new RegraNegocioErro(`${tipoDocumento} inválido.`);
   }
 
   let suspeitoPrototipo = { bairroId, municipioId };
@@ -72,12 +90,9 @@ const consolidarSuspeito = async (suspeito) => {
   suspeitoAlterado.gestante = obterGestante(sexo, gestante);
   suspeitoPrototipo = { ...suspeitoPrototipo, gestante };
 
-  const pessoaLocalizada = await buscarPessoaPorDocumento(suspeito);
-  if (pessoaLocalizada) return { ...suspeitoPrototipo, pessoaId: pessoaLocalizada.id };
-
-  const pessoasLocalizadas = await buscarPessoasDadosBasicos(nome, nomeDaMae);
-  if (pessoasLocalizadas.length >= 1) {
-    return { ...suspeitoPrototipo, pessoaId: pessoasLocalizadas[0].id };
+  const pessoaIdLocalizada = await buscarPessoaId(suspeito);
+  if (pessoaIdLocalizada) {
+    return { ...suspeitoPrototipo, pessoaId: pessoaIdLocalizada };
   }
 
   const novaPessoaCadastrada = await cadastrarSuspeito(suspeitoAlterado);
