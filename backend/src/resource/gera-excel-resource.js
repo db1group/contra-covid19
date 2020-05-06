@@ -98,11 +98,12 @@ exports.retornarHoraDaData = (objeto, nomeDaPropriedade) => {
   }
 
   const data = objeto[nomeDaPropriedade];
+  if (!data) {
+    return null;
+  }
+
   const dataHora = moment(data);
-  const hora = dataHora.format('HH:mm');
-
-
-  return hora;
+  return dataHora.format('HH:mm');
 };
 
 exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
@@ -111,6 +112,10 @@ exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
   }
 
   const data = objeto[nomeDaPropriedade];
+  if (!data) {
+    return null;
+  }
+
   return moment(data).format('DD/MM/YYYY');
 };
 
