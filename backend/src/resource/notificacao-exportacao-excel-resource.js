@@ -136,7 +136,7 @@ exports.gerarExcel = async (req, res) => {
       nomeMedicamento: geraExcel.retornarCampo(t.NotificacaoCovid19, 'nomeMedicamento'),
       // 8. Dados Laboratoriais
       coletaMaterialParaDiagnostico: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'coletaMaterialParaDiagnostico'),
-      dataDaColeta: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataDaColeta'),
+      dataDaColeta: this.retornarDataDaColeta(t),
       tipoLaboratorio: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tipoLaboratorio'),
       nomeLaboratorioEnvioMaterial: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'nomeLaboratorioEnvioMaterial'),
       metodoDeExame: t.NotificacaoCovid19 ? t.NotificacaoCovid19.metodoDeExame : null,
@@ -298,6 +298,24 @@ this.retornarTipoPeriodoGestacional = (notificacao) => {
     default:
       return null;
   }
+};
+
+this.retornarDataDaColeta = (notificacao) => {
+  if (!notificacao) {
+    return null;
+  }
+
+  if (!notificacao.NotificacaoCovid19) {
+    return null;
+  }
+
+  const { dataDaColeta } = notificacao.NotificacaoCovid19;
+  if (!dataDaColeta) {
+    return null;
+  }
+
+  const dataFormatada = moment(dataDaColeta, 'YYYY-MM-DD HH:mm:ss').toISOString();
+  return moment(dataFormatada).format('DD/MM/YYYY');
 };
 
 this.retornarOutroTelefone = (notificacao) => {
