@@ -10,7 +10,6 @@ const requestParaModeloNotificacao = (objetoRequest) => {
     notificadorId,
     municipioId: unidadeDeSaude.municipioId,
     pessoaId: suspeito.pessoaId,
-    bairroId: suspeito.bairroId,
     profissaoId,
     nomeNotificador,
     status,

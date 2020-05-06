@@ -46,15 +46,25 @@
       </v-col>
       <v-col cols="12" sm="5" md="5">
         <v-text-field
+          v-show="suspeito.tipoDocumento === 'CPF'"
+          :value="suspeito.numeroCpf"
+          label="Número do documento *"
+          v-mask="'###.###.###-##'"
+          :rules="rules.numeroCpf"
+          @input="updateNumeroCpf"
+          :disabled="disabled"
+        />
+        <v-text-field
+          v-show="suspeito.tipoDocumento !== 'CPF'"
           :value="suspeito.numeroDocumento"
-          :rules="rules.numeroDocumento"
-          :label="labelNumeroDocumento"
+          label="Número do documento"
           @input="updateNumeroDocumento"
           :disabled="disabled"
         />
       </v-col>
     </v-row>
-    <v-row dense><v-col cols="12" sm="6" md="5">
+    <v-row dense>
+      <v-col cols="12" sm="6" md="5">
         <label class="primary--text body-1 font-weight-bold">Sexo *</label>
         <v-radio-group
           :value="suspeito.sexo"
@@ -210,7 +220,7 @@ export default {
     rules: {
       dataHoraNotificacao: [required, dateHourMinuteFormat],
       tipoDocumento: [required],
-      numeroDocumento: [required],
+      numeroCpf: [exactLength(14)],
       nome: [required],
       nomeDaMae: [required],
       dataDeNascimento: [required, dateFormat],
@@ -232,6 +242,9 @@ export default {
     },
     updateNumeroDocumento(numeroDocumento) {
       this.$emit('update:numeroDocumento', numeroDocumento);
+    },
+    updateNumeroCpf(numeroCpf) {
+      this.$emit('update:numeroCpf', numeroCpf);
     },
     updateNome(nome) {
       this.$emit('update:nome', nome);
@@ -262,7 +275,7 @@ export default {
       }
     },
     updateTipoClassificacaoPessoa(tipoClassificacaoPessoa) {
-      this.disbleTipoDocumento(tipoClassificacaoPessoa);
+      this.disableTipoDocumento(tipoClassificacaoPessoa);
       this.$emit('update:tipoClassificacaoPessoa', tipoClassificacaoPessoa);
     },
     requiredIfSexoForFeminino(value) {
@@ -287,43 +300,31 @@ export default {
     validateFutureDate(value) {
       return lessThanMaximumDate(value, null, 'Informe uma data igual ou anterior ao dia de hoje.');
     },
-    disbleTipoDocumento(tipoClassificacaoPessoa) {
+    disableTipoDocumento(tipoClassificacaoPessoa) {
       if (this.disabled) {
-        this.disbleTipoDocumento = true;
+        this.disabledTipoDocumento = true;
         return;
       }
 
       if (tipoClassificacaoPessoa === 'OUTRO') {
         this.disabledTipoDocumento = true;
-        this.changeRulesNumeroDocumento(true);
-        this.changeLabelNumeroDocumento(true);
         this.updateTipoDocumento('CPF');
         return;
       }
 
-      this.changeLabelNumeroDocumento(false);
-      this.changeRulesNumeroDocumento(false);
       this.disabledTipoDocumento = false;
     },
-    changeRulesNumeroDocumento(isRequired) {
-      if (isRequired) {
-        this.rules.numeroDocumento.push(required);
-        return;
+    requiredIfCpfAndTipoOutros(value) {
+      if (this.suspeito.tipoDocumento !== 'CPF' || this.suspeito.tipoClassificacaoPessoa !== 'OUTROS') {
+        return true;
       }
-      this.rules.numeroDocumento.splice(this.rules.numeroDocumento.indexOf(required), 1);
-    },
-    changeLabelNumeroDocumento(isRequired) {
-      if (isRequired) {
-        this.labelNumeroDocumento = 'Número do documento *';
-        return;
-      }
-      this.labelNumeroDocumento = 'Número do documento';
+      return required(value);
     },
   },
   created() {
+    this.rules.numeroCpf.push(this.requiredIfCpfAndTipoOutros);
     this.rules.gestante.push(this.requiredIfSexoForFeminino);
     this.rules.tipoPeriodoGestacional.push(this.requiredIfGestante);
-    this.rules.numeroDocumento.push(this.maxLengthIfCPF);
     this.rules.dataDeNascimento.push(this.validateFutureDate);
   },
 };

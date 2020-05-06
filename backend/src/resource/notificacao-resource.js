@@ -3,6 +3,7 @@ const models = require('../models');
 const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
 const { normalizarTexto } = require('../lib/normalizar-texto');
+const DocumentValidator = require('../validations/custom/document-validator');
 
 
 const { Op } = Sequelize;
@@ -55,11 +56,15 @@ const buscarPessoaPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
 
 const consolidarSuspeito = async (suspeito) => {
   const {
-    pessoaId, bairroId, MunicipioId, nome, nomeDaMae,
-    sexo, gestante,
+    pessoaId, bairroId, municipioId, nome, nomeDaMae,
+    sexo, gestante, tipoDocumento, numeroDocumento
   } = suspeito;
 
-  let suspeitoPrototipo = { bairroId, MunicipioId };
+  if (tipoDocumento == DocumentValidator.Docs().CPF && !DocumentValidator.IsCpfValid(numeroDocumento)) {
+    throw new RegraNegocioErro(tipoDocumento + ' inválido.');
+  }
+
+  let suspeitoPrototipo = { bairroId, municipioId };
 
   if (pessoaId) return { ...suspeitoPrototipo, pessoaId };
 
@@ -120,7 +125,6 @@ const consultarNotificacaoPorId = async (id) => models.Notificacao.findOne({
       ],
     },
     { model: models.NotificacaoCovid19 },
-    { model: models.Bairro },
     { model: models.Municipio },
     { model: models.UnidadeSaude },
     { model: models.User },
