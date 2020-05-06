@@ -60,16 +60,19 @@ const schemas = {
         .min(3)
         .max(150),
       telefoneResidencial: Joi.string()
+        .label('Telefone residencial')
         .allow(null, '')
         .min(10)
         .max(11),
       telefoneContato: Joi.string()
+        .label('Telefone contato')
         .allow(null, '')
         .min(10)
         .max(11),
       telefoneCelular: Joi.string()
+        .label('Telefone celular')
         .allow(null, '')
-        .min(10)
+        .min(11)
         .max(11),
       gestante: Joi.string()
         .pattern(/SIM|NAO|NAO_APLICADO/)
