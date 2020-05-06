@@ -15,6 +15,9 @@
           <!-- </v-form> -->
         </v-row>
       </v-container>
+      <v-snackbar v-model="showError" color="error" bottom>
+        A data inicial não pode ser posterior à data final
+      </v-snackbar>
     </base-page>
   </section>
 </template>
@@ -24,6 +27,7 @@ import BasePage from '@/components/commons/BasePage.vue';
 import Exportar from '@/components/Notificacao/Exportar/Index.vue';
 import NotificacaoExportar from '@/entities/NotificacaoExportar';
 import NotificacaoService from '@/services/NotificacaoService';
+import DateService from '@/services/DateService';
 
 export default {
   components: {
@@ -32,6 +36,7 @@ export default {
   },
   data: () => ({
     exportar: new NotificacaoExportar(),
+    showError: false,
   }),
   methods: {
     updateExportar(campo, valor) {
@@ -39,12 +44,21 @@ export default {
     },
     send() {
       if (this.$refs.form.validate()) {
+        if (!this.validarPeriodo()) {
+          this.showError = true;
+          return;
+        }
+
         const link = NotificacaoService.getExcelLink(this.exportar.toRequestBody());
         if (link) {
           const url = decodeURI(link);
           window.open(url, '_blank');
         }
       }
+    },
+    validarPeriodo() {
+      const { dataInicial, dataFinal } = this.exportar;
+      return DateService.isLesserEqualsThanMaximumDate(dataInicial, dataFinal);
     },
   },
 };
