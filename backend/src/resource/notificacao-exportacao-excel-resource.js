@@ -129,7 +129,7 @@ exports.gerarExcel = async (req, res) => {
       tabagismo: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tabagismo'),
       outrosComorbidades: t.NotificacaoCovid19 ? t.NotificacaoCovid19.outrosComorbidades : null,
       // 7.Usou medicamento
-      // NÃO FOI ACHADO
+      tamiflu: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tamiflu'),
       // 8. Dados Laboratoriais
       coletaMaterialParaDiagnostico: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'coletaMaterialParaDiagnostico'),
       dataDaColeta: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataDaColeta'),
@@ -241,7 +241,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'tabagismo', nomeCampo: 'tabagismo' },
       { nomeColuna: 'outrosComorbidades', nomeCampo: 'outrosComorbidades' },
       // 7.Usou medicamento
-      // NÃO FOI ACHADO
+      { nomeColuna: 'tamiflu', nomeCampo: 'tamiflu' },
       // 8. Dados Laboratoriais
       { nomeColuna: 'coletaMaterialParaDiagnostico', nomeCampo: 'coletaMaterialParaDiagnostico' },
       { nomeColuna: 'dataDaColeta', nomeCampo: 'dataDaColeta' },
