@@ -88,7 +88,7 @@ export default {
       this.$emit('update:validarRealizouExamesImagem');
     },
     updateRealizouOutraTomografiaTorax(realizouOutraTomografiaTorax) {
-      this.examesImagem.realizouOutraTomografiaTorax = realizouOutraTomografiaTorax;
+      this.$emit('update:realizouOutraTomografiaTorax', realizouOutraTomografiaTorax);
       this.$emit('update:tomografiaNormal', false);
       this.updateTomografiaOutro();
       this.validarTomografiaOutro();
@@ -100,7 +100,7 @@ export default {
       this.$emit('update:tomografiaAusenciaDerramePleural', false);
       this.$emit('update:tomografiaAusenciaLinfonodoMediastenal', false);
       this.$emit('update:tomografiaOutro', '');
-      this.examesImagem.realizouOutraTomografiaTorax = false;
+      this.$emit('update:realizouOutraTomografiaTorax', false);
       this.validarRealizouExamesImagem();
     },
     updateTomografiaVidroFoscoPredominioPerifericoBasal(tomografiaVidroFoscoPredominioPerifericoBasal) {

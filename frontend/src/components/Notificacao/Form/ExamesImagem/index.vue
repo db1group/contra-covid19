@@ -23,8 +23,9 @@
       <v-row>
         <v-col col="6">
           <raio-torax
-            :realizouExamesImagem="realizouExamesImagem"
-            :examesImagem="examesImagem"
+            :realizou-exames-imagem="realizouExamesImagem"
+            :exames-imagem="examesImagem"
+            :disabled="disabled"
             @update:validarRealizouExamesImagem="validarRealizouExamesImagem"
             @update:realizouOutroRaioTorax="updateRealizouOutroRaioTorax"
             @update:raioNormal="updateRaioNormal"
@@ -32,20 +33,20 @@
             @update:raioConsolidacao="updateRaioConsolidacao"
             @update:raioMisto="updateRaioMisto"
             @update:raioOutro="updateRaioOutro"
-            :disabled="disabled"
           />
         </v-col>
         <v-col col="6">
           <tomografia-torax
-            :realizouExamesImagem="realizouExamesImagem"
-            :examesImagem="examesImagem"
+            :realizou-exames-imagem="realizouExamesImagem"
+            :exames-imagem="examesImagem"
+            :disabled="disabled"
             @update:validarRealizouExamesImagem="validarRealizouExamesImagem"
             @update:tomografiaNormal="updateTomografiaNormal"
             @update:tomografiaVidroFoscoPredominioPerifericoBasal="updateTomografiaVidroFoscoPredominioPerifericoBasal"
             @update:tomografiaAusenciaDerramePleural="updateTomografiaAusenciaDerramePleural"
             @update:tomografiaAusenciaLinfonodoMediastenal="updateTomografiaAusenciaLinfonodoMediastenal"
             @update:tomografiaOutro="updateTomografiaOutro"
-            :disabled="disabled"
+            @update:realizouOutraTomografiaTorax="updateRealizouOutraTomografiaTorax"
           />
         </v-col>
       </v-row>
@@ -90,6 +91,20 @@ export default {
   methods: {
     updateRealizouExamesImagem(realizouExamesImagem) {
       this.$emit('update:realizouExamesImagem', realizouExamesImagem);
+      if (!realizouExamesImagem) {
+        this.updateRaioNormal(false);
+        this.updateRaioInfiltradoIntersticial(false);
+        this.updateRaioConsolidacao(false);
+        this.updateRaioMisto(false);
+        this.updateRealizouOutroRaioTorax(false);
+        this.updateRaioOutro();
+        this.updateTomografiaNormal(false);
+        this.updateTomografiaVidroFoscoPredominioPerifericoBasal(false);
+        this.updateTomografiaAusenciaDerramePleural(false);
+        this.updateTomografiaAusenciaLinfonodoMediastenal(false);
+        this.updateRealizouOutraTomografiaTorax(false);
+        this.updateTomografiaOutro();
+      }
     },
     updateRaioNormal(raioNormal) {
       this.$emit('update:raioNormal', raioNormal);
@@ -120,6 +135,9 @@ export default {
     },
     updateTomografiaOutro(tomografiaOutro) {
       this.$emit('update:tomografiaOutro', tomografiaOutro);
+    },
+    updateRealizouOutraTomografiaTorax(realizouOutraTomografiaTorax) {
+      this.$emit('update:realizouOutraTomografiaTorax', realizouOutraTomografiaTorax);
     },
     validarRealizouExamesImagem() {
       this.$refs.realizouExamesImagem.validate();
