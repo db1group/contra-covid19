@@ -131,6 +131,7 @@ exports.gerarExcel = async (req, res) => {
       // 7.Usou medicamento
       tamiflu: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tamiflu'),
       hidroxicloroquina: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'hidroxicloroquina'),
+      nomeMedicamento: geraExcel.retornarCampo(t.NotificacaoCovid19, 'nomeMedicamento'),
       // 8. Dados Laboratoriais
       coletaMaterialParaDiagnostico: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'coletaMaterialParaDiagnostico'),
       dataDaColeta: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataDaColeta'),
@@ -244,6 +245,7 @@ exports.gerarExcel = async (req, res) => {
       // 7.Usou medicamento
       { nomeColuna: 'tamiflu', nomeCampo: 'tamiflu' },
       { nomeColuna: 'hidroxicloroquina', nomeCampo: 'hidroxicloroquina' },
+      { nomeColuna: 'nomeMedicamento', nomeCampo: 'nomeMedicamento' },
       // 8. Dados Laboratoriais
       { nomeColuna: 'coletaMaterialParaDiagnostico', nomeCampo: 'coletaMaterialParaDiagnostico' },
       { nomeColuna: 'dataDaColeta', nomeCampo: 'dataDaColeta' },
