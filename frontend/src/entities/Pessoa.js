@@ -11,6 +11,7 @@ export default class Pessoa {
   constructor(data = {}) {
     this.pessoaId = data.pessoaId || null;
     this.tipoDocumento = data.tipoDocumento || 'CPF';
+    this.numeroCpf = '';
     this.numeroDocumento = data.numeroDocumento || '';
     this.nome = data.nome || '';
     this.dataDeNascimento = DateService.changeFormat(
@@ -40,21 +41,23 @@ export default class Pessoa {
     this.municipioNome = data.municipio || '';
 
     if (this.tipoDocumento === 'CPF') {
-      this.numeroDocumento = Utils.cpfMask(this.numeroDocumento);
+      this.numeroCpf = Utils.cpfMask(data.numeroDocumento) || '';
     }
   }
 
   toRequestBody() {
-    return {
+    const body = {
       ...this,
       dataDeNascimento: DateService.changeFormat(this.dataDeNascimento, 'DD/MM/YYYY', 'YYYY-MM-DD'),
-      numeroDocumento: Utils.numbersOnly(this.numeroDocumento),
+      numeroDocumento: Utils.numbersOnly(this.tipoDocumento === 'CPF' ? this.numeroCpf : this.numeroDocumento),
       cep: Utils.numbersOnly(this.cep),
       telefoneResidencial: Utils.numbersOnly(this.telefoneResidencial),
       telefoneContato: Utils.numbersOnly(this.telefoneContato),
       telefoneCelular: Utils.numbersOnly(this.telefoneCelular),
       gestante: this.aplicarCampoGestante(),
     };
+    delete body.numeroCpf;
+    return body;
   }
 
   aplicarCampoGestante() {
