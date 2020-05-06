@@ -155,6 +155,7 @@ exports.gerarExcel = async (req, res) => {
       // 12. Outras informações:
       recebeuVacinaDaGripeNosUltimosDozeMeses: geraExcel.retornarCampo(t.NotificacaoCovid19, 'recebeuVacinaDaGripeNosUltimosDozeMeses'),
       situacaoNoMomentoDaNotificacao: geraExcel.retornarCampo(t.NotificacaoCovid19, 'situacaoNoMomentoDaNotificacao'),
+      observacoes: geraExcel.retornarCampo(t.NotificacaoCovid19, 'observacoes'),
     }
     ));
 
@@ -273,6 +274,7 @@ exports.gerarExcel = async (req, res) => {
       // 12. Outras informações'
       { nomeColuna: 'recebeuVacinaDaGripeNosUltimosDozeMeses', nomeCampo: 'recebeuVacinaDaGripeNosUltimosDozeMeses' },
       { nomeColuna: 'situacaoNoMomentoDaNotificacao', nomeCampo: 'situacaoNoMomentoDaNotificacao' },
+      { nomeColuna: 'observacoes', nomeCampo: 'observacoes' },
     ];
 
     await geraExcel.gerarExcel(colunas, lista, res);
