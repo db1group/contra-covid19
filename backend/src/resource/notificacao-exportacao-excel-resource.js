@@ -140,8 +140,8 @@ exports.gerarExcel = async (req, res) => {
       // 8. Dados Laboratoriais
       coletaMaterialParaDiagnostico: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'coletaMaterialParaDiagnostico'),
       dataDaColeta: this.retornarDataDaColeta(t),
-      tipoLaboratorio: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tipoLaboratorio'),
-      nomeLaboratorioEnvioMaterial: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'nomeLaboratorioEnvioMaterial'),
+      tipoLaboratorio: geraExcel.retornarCampo(t.NotificacaoCovid19, 'tipoLaboratorio'),
+      nomeLaboratorioEnvioMaterial: geraExcel.retornarCampo(t.NotificacaoCovid19, 'nomeLaboratorioEnvioMaterial'),
       metodoDeExame: t.NotificacaoCovid19 ? t.NotificacaoCovid19.metodoDeExame : null,
       // 9. Histórico de viagem
       historicoDeViagem: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'historicoDeViagem'),
