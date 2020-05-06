@@ -98,9 +98,11 @@ exports.retornarHoraDaData = (objeto, nomeDaPropriedade) => {
   }
 
   const data = objeto[nomeDaPropriedade];
-  const horasFuso = data instanceof Date ? data.getTimezoneOffset() / 60 : 0;
+  const dataHora = moment(data);
+  const hora = dataHora.format('HH:mm');
 
-  return moment(data).locale('pt-BR').add(horasFuso, 'hours').format('LT');
+
+  return hora;
 };
 
 exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
@@ -109,9 +111,7 @@ exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
   }
 
   const data = objeto[nomeDaPropriedade];
-  const horasFuso = data instanceof Date ? data.getTimezoneOffset() / 60 : 0;
-
-  return moment(data).add(horasFuso, 'hours').format('DD/MM/YYYY');
+  return moment(data).format('DD/MM/YYYY');
 };
 
 exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {

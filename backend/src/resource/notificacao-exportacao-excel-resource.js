@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const moment = require('moment');
 const geraExcel = require('./gera-excel-resource');
 const models = require('../models');
 
@@ -10,8 +11,8 @@ exports.gerarExcel = async (req, res) => {
     const paisBrasil = 'Brasil';
     const { dataInicial, dataFinal } = req.query;
 
-    const dataInicialFiltro = `${dataInicial}T00:00:00.000-00:00`;
-    const dataFinalFiltro = `${dataFinal}T23:59:59.000-00:00`;
+    const dataInicialFiltro = moment(`${dataInicial} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').toISOString();
+    const dataFinalFiltro = moment(`${dataFinal} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').endOf('day').toISOString();
 
     const notificacoes = await models.Notificacao.findAll({
       where: {
@@ -40,8 +41,8 @@ exports.gerarExcel = async (req, res) => {
 
     const listaTemp = notificacoes.map((t) => t.dataValues);
     const lista = listaTemp.map((t) => ({
-      dataDaNotificacao: geraExcel.retornarDataSemHora(t, 'createdAt'),
-      horaDaNotificacao: geraExcel.retornarHoraDaData(t, 'createdAt'),
+      dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
+      horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       unidadeNotificante: t.UnidadeSaude ? t.UnidadeSaude.nome : null,
       cNES: t.UnidadeSaude ? t.UnidadeSaude.cnes : null,
       nomeDoNotificador: t.nomeNotificador,
