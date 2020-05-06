@@ -129,6 +129,7 @@ exports.gerarExcel = async (req, res) => {
       obesidade: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'obesidade'),
       puerperaAte45DiasDoParto: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'puerperaAte45DiasDoParto'),
       tabagismo: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tabagismo'),
+      sindromeDeDown: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'sindromeDeDown'),
       outrosComorbidades: t.NotificacaoCovid19 ? t.NotificacaoCovid19.outrosComorbidades : null,
       // 7.Usou medicamento
       tamiflu: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tamiflu'),
@@ -244,6 +245,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'obesidade', nomeCampo: 'obesidade' },
       { nomeColuna: 'puerperaAte45DiasDoParto', nomeCampo: 'puerperaAte45DiasDoParto' },
       { nomeColuna: 'tabagismo', nomeCampo: 'tabagismo' },
+      { nomeColuna: 'sindromeDeDown', nomeCampo: 'sindromeDeDown' },
       { nomeColuna: 'outrosComorbidades', nomeCampo: 'outrosComorbidades' },
       // 7.Usou medicamento
       { nomeColuna: 'tamiflu', nomeCampo: 'tamiflu' },
