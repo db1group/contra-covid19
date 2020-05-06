@@ -67,6 +67,7 @@ exports.gerarExcel = async (req, res) => {
       telefoneDoPaciente: t.Pessoa ? t.Pessoa.telefoneResidencial : null,
       outroTelefoneDoPaciente: this.retornarOutroTelefone(t),
       ocupacaoDoPaciente: t.Pessoa ? t.Pessoa.ocupacao : null,
+      tipoClassificacaoPessoa: geraExcel.retornarCampo(t.Pessoa, 'tipoClassificacaoPessoa'),
       // 4. SINAIS E SINTOMAS:
       // 4.1. SINTOMAS RESPIRATÓRIOS
       dataDeInicioDosSintomas: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataInicioDosSintomas'),
@@ -181,6 +182,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'telefoneDoPaciente', nomeCampo: 'telefoneDoPaciente' },
       { nomeColuna: 'outroTelefoneDoPaciente', nomeCampo: 'outroTelefoneDoPaciente' },
       { nomeColuna: 'ocupacaoDoPaciente', nomeCampo: 'ocupacaoDoPaciente' },
+      { nomeColuna: 'tipoClassificacaoPessoa', nomeCampo: 'tipoClassificacaoPessoa' },
       // 4. SINAIS E SINTOMAS'
       // 4.1. SINTOMAS RESPIRATÓRIOS
       { nomeColuna: 'dataDeInicioDosSintomas', nomeCampo: 'dataDeInicioDosSintomas' },
