@@ -300,7 +300,6 @@ export default {
     send() {
       if (this.stateForm === StateForm.VIEW) return;
       if (this.$refs.form.validate()) {
-        this.notificacao.userId = this.$logged.userId;
         const requestNotificacao = this.notificacao.toRequestBody();
         NotificacaoService.save(requestNotificacao).then(() => {
           this.showSuccess = true;

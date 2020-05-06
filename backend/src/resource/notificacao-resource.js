@@ -204,10 +204,20 @@ const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
   }
 };
 
+const retornarUsuarioLogado = async (email) => {
+  const user = await models.User.findOne({
+    attributes: ['id'],
+    where: { email },
+  });
+  if (!user) throw new RegraNegocioErro('Usuário não encontrado!');
+  return user.id;
+};
 
 exports.salvar = async (req, res, next) => {
   const notificacaoRequest = req.body;
   try {
+    const { email } = req.kauth.grant.access_token.content;
+    notificacaoRequest.userId = await retornarUsuarioLogado(email);
     await validarNotificacaoUnicaPorPaciente(notificacaoRequest);
 
     const notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);

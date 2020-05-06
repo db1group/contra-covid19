@@ -89,7 +89,11 @@ resource "aws_ecs_task_definition" "backend" {
       { 
         "name" : "PORT",
         "value" : "8181"
-      }
+      },
+      {
+        "name" : "KEYCLOAK_URL",
+        "value" : "${var.is_production == true ? "https://auth.${var.hosted_zone}/auth" : "https://${var.environment}-auth.${var.hosted_zone}/auth"}"
+      },
     ],
     "requiresAttributes": [
         {
