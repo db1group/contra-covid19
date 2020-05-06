@@ -16,9 +16,6 @@ module.exports = (sequelize, DataTypes) => {
       notificadorId: {
         type: DataTypes.UUID,
       },
-      bairroId: {
-        type: DataTypes.UUID,
-      },
       pessoaId: {
         type: DataTypes.UUID,
       },
@@ -47,9 +44,6 @@ module.exports = (sequelize, DataTypes) => {
     });
     Notificacao.belongsTo(models.ProfissionalSaude, {
       foreignKey: 'notificadorId',
-    });
-    Notificacao.belongsTo(models.Bairro, {
-      foreignKey: 'bairroId',
     });
     Notificacao.belongsTo(models.Municipio, {
       foreignKey: 'municipioId',
