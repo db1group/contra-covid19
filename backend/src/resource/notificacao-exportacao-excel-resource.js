@@ -19,6 +19,9 @@ exports.gerarExcel = async (req, res) => {
         createdAt: {
           [Op.between]: [dataInicialFiltro, dataFinalFiltro],
         },
+        status: {
+          [Op.ne]: 'EXCLUIDA',
+        },
       },
       include: [
         {
