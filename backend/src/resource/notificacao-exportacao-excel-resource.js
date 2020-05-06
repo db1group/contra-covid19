@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const moment = require('moment');
 const geraExcel = require('./gera-excel-resource');
 const models = require('../models');
 
@@ -10,13 +11,16 @@ exports.gerarExcel = async (req, res) => {
     const paisBrasil = 'Brasil';
     const { dataInicial, dataFinal } = req.query;
 
-    const dataInicialFiltro = `${dataInicial}T00:00:00.000-00:00`;
-    const dataFinalFiltro = `${dataFinal}T23:59:59.000-00:00`;
+    const dataInicialFiltro = moment(`${dataInicial} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').toISOString();
+    const dataFinalFiltro = moment(`${dataFinal} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').endOf('day').toISOString();
 
     const notificacoes = await models.Notificacao.findAll({
       where: {
         createdAt: {
           [Op.between]: [dataInicialFiltro, dataFinalFiltro],
+        },
+        status: {
+          [Op.ne]: 'EXCLUIDA',
         },
       },
       include: [
@@ -29,6 +33,7 @@ exports.gerarExcel = async (req, res) => {
                 models.Municipio,
               ],
             },
+            { model: models.Ocupacao },
           ],
         },
         { model: models.UnidadeSaude },
@@ -40,8 +45,8 @@ exports.gerarExcel = async (req, res) => {
 
     const listaTemp = notificacoes.map((t) => t.dataValues);
     const lista = listaTemp.map((t) => ({
-      dataDaNotificacao: geraExcel.retornarDataSemHora(t, 'createdAt'),
-      horaDaNotificacao: geraExcel.retornarHoraDaData(t, 'createdAt'),
+      dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
+      horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       unidadeNotificante: t.UnidadeSaude ? t.UnidadeSaude.nome : null,
       cNES: t.UnidadeSaude ? t.UnidadeSaude.cnes : null,
       nomeDoNotificador: t.nomeNotificador,
@@ -49,11 +54,13 @@ exports.gerarExcel = async (req, res) => {
       situacao1CasoSuspeito: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'situacao1'),
       situacao2ContatoDeCasoSuspeitoOuConfirmado: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'situacao2'),
       nomeDoPaciente: t.Pessoa ? t.Pessoa.nome : null,
-      cPFDoPaciente: t.Pessoa && t.Pessoa.tipoDocumento === 'CPF' ? t.Pessoa.numeroDocumento : null,
+      tipoDocumentoDoPaciente: geraExcel.retornarCampo(t.Pessoa, 'tipoDocumento'),
+      documentoDoPaciente: geraExcel.retornarCampo(t.Pessoa, 'numeroDocumento'),
       sexoDoPaciente: t.Pessoa ? t.Pessoa.sexo : null,
       idadeDoPaciente: t.Pessoa ? t.Pessoa.idade : null,
       dataDeNascimentoDoPaciente: geraExcel.retornarDataSemHora(t.Pessoa, 'dataDeNascimento'),
       gestante: t.Pessoa ? t.Pessoa.gestante : null,
+      tipoPeriodoGestacional: this.retornarTipoPeriodoGestacional(t),
       racaCorDoPaciente: t.Pessoa ? t.Pessoa.racaCor : null,
       nomeDaMaeDoPaciente: t.Pessoa ? t.Pessoa.nomeDaMae : null,
       enderecoDoPaciente: t.Pessoa ? t.Pessoa.endereco : null,
@@ -64,12 +71,15 @@ exports.gerarExcel = async (req, res) => {
       paisDoPaciente: paisBrasil,
       telefoneDoPaciente: t.Pessoa ? t.Pessoa.telefoneResidencial : null,
       outroTelefoneDoPaciente: this.retornarOutroTelefone(t),
-      ocupacaoDoPaciente: t.Pessoa ? t.Pessoa.ocupacao : null,
+      ocupacaoDoPaciente: geraExcel.retornarCampo(t.Pessoa, 'ocupacao'),
+      tipoOcupacaoDoPaciente: geraExcel.retornarCampo(t.Pessoa.Ocupacao, 'descricao'),
+      tipoClassificacaoPessoa: geraExcel.retornarCampo(t.Pessoa, 'tipoClassificacaoPessoa'),
       // 4. SINAIS E SINTOMAS:
       // 4.1. SINTOMAS RESPIRATÓRIOS
       dataDeInicioDosSintomas: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataInicioDosSintomas'),
       febreAferidaReferida: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'febreAferidaReferida'),
       temperaturaFebre: t.NotificacaoCovid19 ? t.NotificacaoCovid19.temperaturaFebre : null,
+      batimentoAsasNasais: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'batimentoAsasNasais'),
       cianoseCentral: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'cianoseCentral'),
       congestaoNasal: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'congestaoNasal'),
       coriza: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'coriza'),
@@ -125,14 +135,19 @@ exports.gerarExcel = async (req, res) => {
       obesidade: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'obesidade'),
       puerperaAte45DiasDoParto: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'puerperaAte45DiasDoParto'),
       tabagismo: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tabagismo'),
+      sindromeDeDown: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'sindromeDeDown'),
+      asma: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'asma'),
+      outraPneumopatiaCronica: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'outraPneumopatiaCronica'),
       outrosComorbidades: t.NotificacaoCovid19 ? t.NotificacaoCovid19.outrosComorbidades : null,
       // 7.Usou medicamento
-      // NÃO FOI ACHADO
+      tamiflu: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tamiflu'),
+      hidroxicloroquina: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'hidroxicloroquina'),
+      nomeMedicamento: geraExcel.retornarCampo(t.NotificacaoCovid19, 'nomeMedicamento'),
       // 8. Dados Laboratoriais
       coletaMaterialParaDiagnostico: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'coletaMaterialParaDiagnostico'),
-      dataDaColeta: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataDaColeta'),
-      tipoLaboratorio: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tipoLaboratorio'),
-      nomeLaboratorioEnvioMaterial: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'nomeLaboratorioEnvioMaterial'),
+      dataDaColeta: this.retornarDataDaColeta(t),
+      tipoLaboratorio: geraExcel.retornarCampo(t.NotificacaoCovid19, 'tipoLaboratorio'),
+      nomeLaboratorioEnvioMaterial: geraExcel.retornarCampo(t.NotificacaoCovid19, 'nomeLaboratorioEnvioMaterial'),
       metodoDeExame: t.NotificacaoCovid19 ? t.NotificacaoCovid19.metodoDeExame : null,
       // 9. Histórico de viagem
       historicoDeViagem: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'historicoDeViagem'),
@@ -146,6 +161,7 @@ exports.gerarExcel = async (req, res) => {
       // 12. Outras informações:
       recebeuVacinaDaGripeNosUltimosDozeMeses: geraExcel.retornarCampo(t.NotificacaoCovid19, 'recebeuVacinaDaGripeNosUltimosDozeMeses'),
       situacaoNoMomentoDaNotificacao: geraExcel.retornarCampo(t.NotificacaoCovid19, 'situacaoNoMomentoDaNotificacao'),
+      observacoes: geraExcel.retornarCampo(t.NotificacaoCovid19, 'observacoes'),
     }
     ));
 
@@ -159,11 +175,13 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'situacao1CasoSuspeito', nomeCampo: 'situacao1CasoSuspeito' },
       { nomeColuna: 'situacao2ContatoDeCasoSuspeitoOuConfirmado', nomeCampo: 'situacao2ContatoDeCasoSuspeitoOuConfirmado' },
       { nomeColuna: 'nomeDoPaciente', nomeCampo: 'nomeDoPaciente' },
-      { nomeColuna: 'cPFDoPaciente', nomeCampo: 'cPFDoPaciente' },
+      { nomeColuna: 'tipoDocumentoDoPaciente', nomeCampo: 'tipoDocumentoDoPaciente' },
+      { nomeColuna: 'documentoDoPaciente', nomeCampo: 'documentoDoPaciente' },
       { nomeColuna: 'sexoDoPaciente', nomeCampo: 'sexoDoPaciente' },
       { nomeColuna: 'idadeDoPaciente', nomeCampo: 'idadeDoPaciente' },
       { nomeColuna: 'dataDeNascimentoDoPaciente', nomeCampo: 'dataDeNascimentoDoPaciente' },
       { nomeColuna: 'gestante', nomeCampo: 'gestante' },
+      { nomeColuna: 'tipoPeriodoGestacional', nomeCampo: 'tipoPeriodoGestacional' },
       { nomeColuna: 'racaCorDoPaciente', nomeCampo: 'racaCorDoPaciente' },
       { nomeColuna: 'nomeDaMaeDoPaciente', nomeCampo: 'nomeDaMaeDoPaciente' },
       { nomeColuna: 'enderecoDoPaciente', nomeCampo: 'enderecoDoPaciente' },
@@ -175,11 +193,14 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'telefoneDoPaciente', nomeCampo: 'telefoneDoPaciente' },
       { nomeColuna: 'outroTelefoneDoPaciente', nomeCampo: 'outroTelefoneDoPaciente' },
       { nomeColuna: 'ocupacaoDoPaciente', nomeCampo: 'ocupacaoDoPaciente' },
+      { nomeColuna: 'tipoOcupacaoDoPaciente', nomeCampo: 'tipoOcupacaoDoPaciente' },
+      { nomeColuna: 'tipoClassificacaoPessoa', nomeCampo: 'tipoClassificacaoPessoa' },
       // 4. SINAIS E SINTOMAS'
       // 4.1. SINTOMAS RESPIRATÓRIOS
       { nomeColuna: 'dataDeInicioDosSintomas', nomeCampo: 'dataDeInicioDosSintomas' },
       { nomeColuna: 'febreAferidaReferida', nomeCampo: 'febreAferidaReferida' },
       { nomeColuna: 'temperaturaFebre', nomeCampo: 'temperaturaFebre' },
+      { nomeColuna: 'batimentoAsasNasais', nomeCampo: 'batimentoAsasNasais' },
       { nomeColuna: 'cianoseCentral', nomeCampo: 'cianoseCentral' },
       { nomeColuna: 'congestaoNasal', nomeCampo: 'congestaoNasal' },
       { nomeColuna: 'coriza', nomeCampo: 'coriza' },
@@ -235,9 +256,14 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'obesidade', nomeCampo: 'obesidade' },
       { nomeColuna: 'puerperaAte45DiasDoParto', nomeCampo: 'puerperaAte45DiasDoParto' },
       { nomeColuna: 'tabagismo', nomeCampo: 'tabagismo' },
+      { nomeColuna: 'sindromeDeDown', nomeCampo: 'sindromeDeDown' },
+      { nomeColuna: 'asma', nomeCampo: 'asma' },
+      { nomeColuna: 'outraPneumopatiaCronica', nomeCampo: 'outraPneumopatiaCronica' },
       { nomeColuna: 'outrosComorbidades', nomeCampo: 'outrosComorbidades' },
       // 7.Usou medicamento
-      // NÃO FOI ACHADO
+      { nomeColuna: 'tamiflu', nomeCampo: 'tamiflu' },
+      { nomeColuna: 'hidroxicloroquina', nomeCampo: 'hidroxicloroquina' },
+      { nomeColuna: 'nomeMedicamento', nomeCampo: 'nomeMedicamento' },
       // 8. Dados Laboratoriais
       { nomeColuna: 'coletaMaterialParaDiagnostico', nomeCampo: 'coletaMaterialParaDiagnostico' },
       { nomeColuna: 'dataDaColeta', nomeCampo: 'dataDaColeta' },
@@ -256,6 +282,7 @@ exports.gerarExcel = async (req, res) => {
       // 12. Outras informações'
       { nomeColuna: 'recebeuVacinaDaGripeNosUltimosDozeMeses', nomeCampo: 'recebeuVacinaDaGripeNosUltimosDozeMeses' },
       { nomeColuna: 'situacaoNoMomentoDaNotificacao', nomeCampo: 'situacaoNoMomentoDaNotificacao' },
+      { nomeColuna: 'observacoes', nomeCampo: 'observacoes' },
     ];
 
     await geraExcel.gerarExcel(colunas, lista, res);
@@ -264,6 +291,47 @@ exports.gerarExcel = async (req, res) => {
     console.error(err);
     return res.status(400).json({ error: err.message });
   }
+};
+
+this.retornarTipoPeriodoGestacional = (notificacao) => {
+  if (!notificacao) {
+    return null;
+  }
+
+  if (!notificacao.Pessoa) {
+    return null;
+  }
+
+  switch (notificacao.Pessoa.tipoPeriodoGestacional) {
+    case 'PRIMEIRO_TRIMESTRE':
+      return '1º Trimestre';
+    case 'SEGUNDO_TRIMESTRE':
+      return '2º Trimestre';
+    case 'TERCEIRO_TRIMESTRE':
+      return '3º Trimestre';
+    case 'IDADE_GESTACIONAL_IGNORADA':
+      return 'Idade gestacional ignorada';
+    default:
+      return null;
+  }
+};
+
+this.retornarDataDaColeta = (notificacao) => {
+  if (!notificacao) {
+    return null;
+  }
+
+  if (!notificacao.NotificacaoCovid19) {
+    return null;
+  }
+
+  const { dataDaColeta } = notificacao.NotificacaoCovid19;
+  if (!dataDaColeta) {
+    return null;
+  }
+
+  const dataFormatada = moment(dataDaColeta, 'YYYY-MM-DD HH:mm:ss').toISOString();
+  return moment(dataFormatada).format('DD/MM/YYYY');
 };
 
 this.retornarOutroTelefone = (notificacao) => {
