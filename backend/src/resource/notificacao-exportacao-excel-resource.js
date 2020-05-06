@@ -30,6 +30,7 @@ exports.gerarExcel = async (req, res) => {
                 models.Municipio,
               ],
             },
+            { model: models.Ocupacao },
           ],
         },
         { model: models.UnidadeSaude },
@@ -50,7 +51,8 @@ exports.gerarExcel = async (req, res) => {
       situacao1CasoSuspeito: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'situacao1'),
       situacao2ContatoDeCasoSuspeitoOuConfirmado: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'situacao2'),
       nomeDoPaciente: t.Pessoa ? t.Pessoa.nome : null,
-      cPFDoPaciente: t.Pessoa && t.Pessoa.tipoDocumento === 'CPF' ? t.Pessoa.numeroDocumento : null,
+      tipoDocumentoDoPaciente: geraExcel.retornarCampo(t.Pessoa, 'tipoDocumento'),
+      documentoDoPaciente: geraExcel.retornarCampo(t.Pessoa, 'numeroDocumento'),
       sexoDoPaciente: t.Pessoa ? t.Pessoa.sexo : null,
       idadeDoPaciente: t.Pessoa ? t.Pessoa.idade : null,
       dataDeNascimentoDoPaciente: geraExcel.retornarDataSemHora(t.Pessoa, 'dataDeNascimento'),
@@ -66,7 +68,8 @@ exports.gerarExcel = async (req, res) => {
       paisDoPaciente: paisBrasil,
       telefoneDoPaciente: t.Pessoa ? t.Pessoa.telefoneResidencial : null,
       outroTelefoneDoPaciente: this.retornarOutroTelefone(t),
-      ocupacaoDoPaciente: t.Pessoa ? t.Pessoa.ocupacao : null,
+      ocupacaoDoPaciente: geraExcel.retornarCampo(t.Pessoa, 'ocupacao'),
+      tipoOcupacaoDoPaciente: geraExcel.retornarCampo(t.Pessoa.Ocupacao, 'descricao'),
       tipoClassificacaoPessoa: geraExcel.retornarCampo(t.Pessoa, 'tipoClassificacaoPessoa'),
       // 4. SINAIS E SINTOMAS:
       // 4.1. SINTOMAS RESPIRATÓRIOS
@@ -169,7 +172,8 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'situacao1CasoSuspeito', nomeCampo: 'situacao1CasoSuspeito' },
       { nomeColuna: 'situacao2ContatoDeCasoSuspeitoOuConfirmado', nomeCampo: 'situacao2ContatoDeCasoSuspeitoOuConfirmado' },
       { nomeColuna: 'nomeDoPaciente', nomeCampo: 'nomeDoPaciente' },
-      { nomeColuna: 'cPFDoPaciente', nomeCampo: 'cPFDoPaciente' },
+      { nomeColuna: 'tipoDocumentoDoPaciente', nomeCampo: 'tipoDocumentoDoPaciente' },
+      { nomeColuna: 'documentoDoPaciente', nomeCampo: 'documentoDoPaciente' },
       { nomeColuna: 'sexoDoPaciente', nomeCampo: 'sexoDoPaciente' },
       { nomeColuna: 'idadeDoPaciente', nomeCampo: 'idadeDoPaciente' },
       { nomeColuna: 'dataDeNascimentoDoPaciente', nomeCampo: 'dataDeNascimentoDoPaciente' },
@@ -186,6 +190,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'telefoneDoPaciente', nomeCampo: 'telefoneDoPaciente' },
       { nomeColuna: 'outroTelefoneDoPaciente', nomeCampo: 'outroTelefoneDoPaciente' },
       { nomeColuna: 'ocupacaoDoPaciente', nomeCampo: 'ocupacaoDoPaciente' },
+      { nomeColuna: 'tipoOcupacaoDoPaciente', nomeCampo: 'tipoOcupacaoDoPaciente' },
       { nomeColuna: 'tipoClassificacaoPessoa', nomeCampo: 'tipoClassificacaoPessoa' },
       // 4. SINAIS E SINTOMAS'
       // 4.1. SINTOMAS RESPIRATÓRIOS
