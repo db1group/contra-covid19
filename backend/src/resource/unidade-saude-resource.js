@@ -20,20 +20,6 @@ exports.consultaPorNome = async (req, res) => {
 exports.consultarPorUserEmail = async (request, response) => {
   const { email } = request.params;
 
-  // const unidadesSaude = await models.UnidadeSaude.findAll({
-  //   include: [
-  //     {
-  //       model: models.UserUnidadeSaude,
-  //       where: {
-  //         email: email
-  //       }
-  //     },
-  //     {
-  //       model: models.UnidadeSaude
-  //     }
-  //   ]
-  // });
-
   const userUnidadesSaude = await models.UserUnidadeSaude.findAll({
     include: [
       {
