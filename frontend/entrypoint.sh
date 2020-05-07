@@ -6,7 +6,7 @@ join_by()
 }
 
 # Find vue env vars
-vars=$(env | grep VUE_APP_ | awk -F = '{print "$"$1}')
+vars=$(env | grep 'VUE_APP_\|NODE_' | awk -F = '{print "$"$1}')
 vars=$(join_by ' ' $vars)
 echo "Found variables $vars"
 
