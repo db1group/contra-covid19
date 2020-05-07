@@ -2,19 +2,6 @@ const { requestParaModeloNotificacao, requestParaModeloNotificacaoCovid19 } = re
 const { notificacaoRequest, notificacaoModeloMapeado } = require('./dadosRequest');
 
 describe('Mapear Notificacao', () => {
-  // Está divergindo do modelo -> response
-  it('Deve mapear o bairro da notificacao à partir do suspeito', async () => {
-    const modelo = requestParaModeloNotificacao(notificacaoRequest);
-
-    expect(modelo.bairroId).toBe(notificacaoRequest.suspeito.bairroId);
-  });
-
-  it('Deve mapear o bairro da notificacao à partir do bairro da unidade de saúde', async () => {
-    const modelo = requestParaModeloNotificacao(notificacaoRequest);
-
-    expect(modelo.municipioId).toBe(notificacaoRequest.unidadeDeSaude.municipioId);
-  });
-
   it('Deve Notificacao.pessoaId deve ser o Suspeito.pessoaId', async () => {
     const modelo = requestParaModeloNotificacao(notificacaoRequest);
 
@@ -24,7 +11,6 @@ describe('Mapear Notificacao', () => {
   it('deve transformar o request em Notificacao', async () => {
     const notificacao = { ...notificacaoRequest };
     const notificacaoEsperada = {
-      bairroId: notificacaoRequest.suspeito.bairroId,
       municipioId: notificacaoRequest.unidadeDeSaude.municipioId,
       nomeNotificador: notificacaoRequest.nomeNotificador,
       notificadorId: notificacaoRequest.notificadorId,

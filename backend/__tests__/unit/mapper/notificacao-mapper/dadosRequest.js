@@ -134,7 +134,6 @@ module.exports = {
     notificadorId: 'e1eddb03-8e61-4911-b554-1147e787ac01',
     municipioId: '53953789-76cb-40eb-a485-fe2d84072dd5',
     pessoaId: 'eb83e151-1b4f-4ef5-af88-5fea4d16bc1a',
-    bairroId: '22144d3e-5921-4827-9bac-53243d2ff629',
     profissaoId: '53b8082e-59e5-44fb-b1d1-dcc98a022e1c',
     nomeNotificador: 'FRANCISCO THIAGO DE ALMEIDA DOS SANTOS SILVA E ANATÁSIO TERCEIRO DE MELO JUNIOR',
     status: undefined,
