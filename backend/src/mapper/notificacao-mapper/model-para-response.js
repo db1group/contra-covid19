@@ -78,7 +78,7 @@ const extrairSuspeitoDaPessoa = ({
   endereco,
   numero,
   complemento,
-  municipioId: bairro ? bairro.municipioId : Bairro.id,
+  municipioId: Municipio.id,
   municipio: Municipio ? Municipio.nome : '',
   telefoneResidencial,
   telefoneContato,
