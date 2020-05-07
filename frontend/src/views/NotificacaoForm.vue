@@ -90,6 +90,7 @@
         <exames-imagem
           :realizouExamesImagem="notificacao.realizouExamesImagem"
           :examesImagem="notificacao.examesImagem"
+          :disabled="disableFields"
           @update:realizouExamesImagem="updateRealizouExamesImagem"
           @update:realizouOutroRaioTorax="updateExameImagem('realizouOutroRaioTorax', $event)"
           @update:raioNormal="updateExameImagem('raioNormal', $event)"
@@ -105,7 +106,7 @@
           @update:tomografiaAusenciaLinfonodoMediastenal="
           updateExameImagem('tomografiaAusenciaLinfonodoMediastenal', $event)"
           @update:tomografiaOutro="updateExameImagem('tomografiaOutro', $event)"
-          :disabled="disableFields"
+          @update:realizouOutraTomografiaTorax="updateExameImagem('realizouOutraTomografiaTorax', $event)"
         />
         <comorbidades
           :comorbidades="notificacao.comorbidades"
