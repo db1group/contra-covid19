@@ -136,7 +136,7 @@
         <subsystem xmlns="urn:jboss:domain:datasources:5.0">
             <datasources>
                 <datasource jndi-name="java:jboss/datasources/KeycloakDS" pool-name="KeycloakDS" enabled="true" use-java-context="true" use-ccm="true" statistics-enabled="${wildfly.datasources.statistics-enabled:${wildfly.statistics-enabled:false}}">
-                    <connection-url>jdbc:postgresql://${env.DATABASE_URL:localhost}:5432/kc</connection-url>
+                    <connection-url>jdbc:postgresql://${env.DATABASE_URL:localhost}:5432/keycloak</connection-url>
                     <driver>postgresql</driver>
                     <pool>
                         <flush-strategy>IdleConnections</flush-strategy>
