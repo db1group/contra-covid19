@@ -9,7 +9,7 @@ const DocumentValidator = require('../validations/custom/document-validator');
 const { Op } = Sequelize;
 
 /*
-  Refatorar para repositÃ³rio de pessoas ou outro local apropriado
+  Refatorar para repositório de pessoas ou outro local apropriado
 */
 const cadastrarPessoa = async (pessoa) => {
   const pessoaCadastrada = await models.Pessoa.create(pessoa);
