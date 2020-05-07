@@ -51,6 +51,7 @@ exports.gerarExcel = async (req, res) => {
     const lista = listaTemp.map((t) => ({
       dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
+      statusNotificacao: geraExcel.retornarCampo(t, 'status'),
       unidadeNotificante: t.UnidadeSaude ? t.UnidadeSaude.nome : null,
       cNES: t.UnidadeSaude ? t.UnidadeSaude.cnes : null,
       nomeDoNotificador: t.nomeNotificador,
@@ -172,6 +173,7 @@ exports.gerarExcel = async (req, res) => {
     const colunas = [
       { nomeColuna: 'Data da Notificação', nomeCampo: 'dataDaNotificacao' },
       { nomeColuna: 'horaDaNotificacao', nomeCampo: 'horaDaNotificacao' },
+      { nomeColuna: 'statusNotificacao', nomeCampo: 'statusNotificacao' },
       { nomeColuna: 'unidadeNotificante', nomeCampo: 'unidadeNotificante' },
       { nomeColuna: 'cNES', nomeCampo: 'cNES' },
       { nomeColuna: 'nomeDoNotificador', nomeCampo: 'nomeDoNotificador' },
