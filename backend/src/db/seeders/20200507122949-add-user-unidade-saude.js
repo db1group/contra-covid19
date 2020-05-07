@@ -2,14 +2,17 @@ const uuidv4 = require('uuid/v4');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const userTest = await queryInterface
-      .sequelize.query('SELECT id FROM User WHERE email = "robson.cachoeira@db1.com.br"',
+    const userEmailTest = 'robson.cachoeira@db1.com.br';
+    const userEmailTest2 = 'jessica.gracino@db1.com.br';
+
+    const [userTest, userTest2] = await queryInterface
+      .sequelize.query(`SELECT id FROM "User" WHERE "email" in ('${userEmailTest}','${userEmailTest2}')`,
         {
           type: Sequelize.QueryTypes.SELECT,
         });
 
     const unidadeSaude = await queryInterface
-      .sequelize.query('SELECT id FROM UnidadeSaude',
+      .sequelize.query('SELECT id FROM "UnidadeSaude"',
         {
           type: Sequelize.QueryTypes.SELECT,
         });
@@ -17,8 +20,15 @@ module.exports = {
     const usersUnidadeSaude = [
       {
         id: uuidv4(),
-        userId: userTest[0].id,
+        userId: userTest.id,
         unidadeSaudeId: unidadeSaude[0].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: uuidv4(),
+        userId: userTest2.id,
+        unidadeSaudeId: unidadeSaude[1].id,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
