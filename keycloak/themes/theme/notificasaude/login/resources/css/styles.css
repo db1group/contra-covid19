@@ -1,0 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap");
+
+body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  font-family: "Roboto", sans-serif;
+}
+
+body > div {
+  background-color: #fafafa;
+  width: 400px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#kc-header-wrapper {
+  display: none;
+}
+
+#kc-header {
+  background: #fafafa url("../img/logo.png") no-repeat center;
+  width: 111px;
+  height: 85px;
+  margin-top: 72px;
+  margin-bottom: 64px;
+}
+
+#kc-content {
+  height: 100%;
+  width: 320px;
+}
+
+form > div {
+  margin: 24px 0;
+}
+
+form label {
+  font-size: 12px;
+  color: #0034bc;
+  line-height: 22px;
+}
+
+form input[type="text"],
+form input[type="password"] {
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  color: #0034bc;
+  line-height: 22px;
+  border: 0;
+  border-bottom: 1px solid #0034bc;
+  outline: none;
+  background-color: #fafafa;
+  box-sizing: border-box;
+}
+
+form input[type="password"] {
+  background: #fafafa url("../img/pass.png") no-repeat right center;
+  padding-right: 30px;
+}
+
+div span a {
+  display: block;
+  text-align: right;
+}
+
+#kc-form-options > div > span {
+  display: block;
+  margin-bottom: 24px;
+}
+
+span.kc-feedback-text {
+  color: #0034bc;
+}
+
+span.kc-feedback-text:before {
+  display: inline-block;
+  content: " * ";
+  margin-right: 5px;
+  color: red;
+}
+
+#kc-login,
+form input[type="submit"] {
+  display: block;
+  width: 320px;
+  height: 34px;
+  background-color: #0034bc;
+  border-radius: 200px;
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
+  font-weight: 500;
+}
+
+body:after {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 400px;
+  bottom: 0;
+  right: 0;
+  z-index: -999;
+  background: #0034bc url("../img/background.png") no-repeat center center fixed;
+  background-size: 100vw 100vh;
+  overflow: hidden;
+}
