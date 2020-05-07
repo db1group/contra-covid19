@@ -57,11 +57,12 @@ const buscarPessoaPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
 const consolidarSuspeito = async (suspeito) => {
   const {
     pessoaId, bairroId, municipioId, nome, nomeDaMae,
-    sexo, gestante, tipoDocumento, numeroDocumento
+    sexo, gestante, tipoDocumento, numeroDocumento,
   } = suspeito;
 
-  if (tipoDocumento == DocumentValidator.Docs().CPF && !DocumentValidator.IsCpfValid(numeroDocumento)) {
-    throw new RegraNegocioErro(tipoDocumento + ' inválido.');
+  if (tipoDocumento === DocumentValidator.Docs().CPF
+    && !DocumentValidator.IsCpfValid(numeroDocumento)) {
+    throw new RegraNegocioErro(`${tipoDocumento} inválido.`);
   }
 
   let suspeitoPrototipo = { bairroId, municipioId };
@@ -286,7 +287,7 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
         [Op.ne]: 'EXCLUIDA',
       },
     },
-    attributes: ['id', 'status', 'createdAt'],
+    attributes: ['id', 'unidadeSaudeId', 'status', 'createdAt'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],

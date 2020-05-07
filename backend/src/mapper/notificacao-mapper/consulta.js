@@ -15,6 +15,7 @@ module.exports = (notificacoes) => notificacoes.map((n) => ({
   telefone: n.Pessoa ? n.Pessoa.telefoneContato : '',
   situacao: mapearSituacao(n.NotificacaoCovid19 ? n.NotificacaoCovid19.situacaoNoMomentoDaNotificacao : ''),
   unidade: n.UnidadeSaude ? n.UnidadeSaude.nome : '',
+  unidadeSaudeId: n.unidadeSaudeId || '',
   status: n.status || '',
   createdAt: n.createdAt || '',
 }));
