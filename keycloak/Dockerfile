@@ -1,7 +1,4 @@
-FROM jboss/keycloak:7.0.1
-USER root
-RUN cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
-
+FROM jboss/keycloak:10.0.0
 USER jboss
 
 COPY bin/keycloak-health-checks.jar /opt/jboss/keycloak-health-checks.jar
@@ -11,6 +8,7 @@ RUN /opt/jboss/keycloak/bin/jboss-cli.sh --command="module add --name=de.tdlabs.
 
 COPY standalone-ha.xml /opt/jboss/keycloak/standalone/configuration/standalone-ha.xml
 COPY config/notificasaude.json /opt/jboss/keycloak/config/notificasaude.json
+COPY themes/notificasaude.jar /opt/jboss/keycloak/standalone/deployments/notificasaude.jar
 ENV KEYCLOAK_IMPORT="/opt/jboss/keycloak/config/notificasaude.json"
 
 EXPOSE 8080 8009 9990 7600 8888

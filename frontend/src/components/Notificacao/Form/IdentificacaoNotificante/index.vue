@@ -15,7 +15,7 @@
             :loading="unidadesSaude.loading"
             no-data-text="Unidade de saúde não encontrada"
             @input="updateUnidadeSaude"
-            :disabled="disabled"
+            :disabled="!isPermiteEscolherUnidadeSaudade() || disabled"
           />
         </v-col>
       </v-row>
@@ -53,6 +53,7 @@ import { required } from '@/validations/CommonValidations';
 import Notificacao from '@/entities/Notificacao';
 import ProfissaoService from '@/services/ProfissaoService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
+import keycloak from '@/services/KeycloakService';
 
 export default {
   props: {
@@ -86,6 +87,7 @@ export default {
   }),
   watch: {
     notificacao(notificacao) {
+      this.notificacao.unidadeSaudeId = notificacao.unidadeSaudeId;
       this.findUnidadesDeSaude(notificacao.unidadeSaudeNome);
     },
   },
@@ -120,7 +122,22 @@ export default {
         .then(({ data }) => {
           this.unidadesSaude.items = data;
         })
-        .finally(() => { this.unidadesSaude.loading = false; });
+        .finally(() => {
+          this.unidadesSaude.loading = false;
+        });
+    },
+    loadUnidadesDeSaudeUserLogged() {
+      if (this.unidadesSaude.loading) return;
+      this.unidadesSaude.loading = true;
+      UnidadeSaudeService.findByUserEmail(keycloak.tokenParsed.email)
+        .then(({ data }) => {
+          this.notificacao.unidadeSaudeId = data[0].id;
+          this.searchUnidade = data[0].nome;
+          this.unidadesSaude.items = data;
+        })
+        .finally(() => {
+          this.unidadesSaude.loading = false;
+        });
     },
     searchUnidadeSaude(search = '') {
       if (!search) return;
@@ -128,10 +145,13 @@ export default {
       this.searchUnidade = search ? search.toUpperCase() : '';
       this.findUnidadesDeSaude(this.searchUnidade);
     },
+    isPermiteEscolherUnidadeSaudade() {
+      return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
+    },
   },
   created() {
     this.findProfissoes();
-    this.findUnidadesDeSaude();
+    this.loadUnidadesDeSaudeUserLogged();
   },
 };
 </script>
