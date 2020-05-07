@@ -6,18 +6,19 @@
     </v-col>
     <v-col cols="auto">
       <v-btn
+        class="mr-2"
         color="primary"
         rounded
         :to="{ name: 'notificacao-form' }"
       >
-      <v-icon>mdi-plus</v-icon> Cadastrar
+        <v-icon>mdi-plus</v-icon> Cadastrar
       </v-btn>
       <v-btn
         color="primary"
         rounded
         :to="{ name: 'exportar' }"
       >
-      <v-icon>mdi-download</v-icon> exportar
+        <v-icon>mdi-download</v-icon> exportar
       </v-btn>
     </v-col>
   </v-row>

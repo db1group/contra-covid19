@@ -53,7 +53,7 @@ import { required } from '@/validations/CommonValidations';
 import Notificacao from '@/entities/Notificacao';
 import ProfissaoService from '@/services/ProfissaoService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
-import { isSecretariaSaude } from '@/validations/KeycloakValidations';
+import keycloak from '@/services/KeycloakService';
 
 export default {
   props: {
@@ -129,7 +129,7 @@ export default {
     loadUnidadesDeSaudeUserLogged() {
       if (this.unidadesSaude.loading) return;
       this.unidadesSaude.loading = true;
-      UnidadeSaudeService.findByUserEmail(this.$logged.email)
+      UnidadeSaudeService.findByUserEmail(keycloak.tokenParsed.email)
         .then(({ data }) => {
           this.notificacao.unidadeSaudeId = data[0].id;
           this.searchUnidade = data[0].nome;
@@ -146,7 +146,7 @@ export default {
       this.findUnidadesDeSaude(this.searchUnidade);
     },
     isPermiteEscolherUnidadeSaudade() {
-      return isSecretariaSaude(this);
+      return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
     },
   },
   created() {

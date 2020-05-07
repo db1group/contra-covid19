@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 exports.gerarExcel = async (colunas, lista, res) => {
   try {
     const diretorio = 'excel';
@@ -125,7 +126,7 @@ exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {
   }
 
   const valorDaPropriedade = objeto[nomeDaPropriedade];
-  if (!(typeof valorDaPropriedade === 'boolean')) {
+  if (typeof valorDaPropriedade !== 'boolean') {
     return null;
   }
 

@@ -11,7 +11,7 @@
       </v-row>
       <v-row dense>
         <v-col cols="auto">
-          <span class="body-2">{{this.$keycloak.fullName}}</span>
+          <span class="body-2">{{ fullName }}</span>
         </v-col>
       </v-row>
     </v-col>
@@ -21,3 +21,14 @@
   .unidadeHeader
     min-width: 350px
 </style>
+<script>
+import KeycloakService from '@/services/KeycloakService';
+
+export default {
+  computed: {
+    fullName() {
+      return KeycloakService.tokenParsed.name;
+    },
+  },
+};
+</script>

@@ -6,11 +6,13 @@ const models = require('../models');
 const { Op } = Sequelize;
 
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 exports.gerarExcel = async (req, res) => {
   try {
     const paisBrasil = 'Brasil';
     const { dataInicial, dataFinal } = req.query;
 
+    // eslint-disable-next-line sonarjs/no-duplicate-string
     const dataInicialFiltro = moment(`${dataInicial} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').toISOString();
     const dataFinalFiltro = moment(`${dataFinal} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').endOf('day').toISOString();
 
