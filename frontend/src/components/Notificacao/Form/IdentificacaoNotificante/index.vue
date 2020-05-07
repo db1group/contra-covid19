@@ -125,7 +125,7 @@ export default {
     searchUnidadeSaude(search = '') {
       if (!search) return;
       if (search === this.searchUnidade) return;
-      this.searchUnidade = search ? search.toUpperCase() : '';
+      this.searchUnidade = search ? search.trim().toUpperCase() : '';
       this.findUnidadesDeSaude(this.searchUnidade);
     },
   },
