@@ -16,9 +16,6 @@ exports.gerarExcel = async (req, res) => {
 
     const notificacoes = await models.Notificacao.findAll({
       where: {
-        createdAt: {
-          [Op.between]: [dataInicialFiltro, dataFinalFiltro],
-        },
         status: {
           [Op.ne]: 'EXCLUIDA',
         },
@@ -36,10 +33,17 @@ exports.gerarExcel = async (req, res) => {
             { model: models.Ocupacao },
           ],
         },
+        {
+          model: models.NotificacaoCovid19,
+          where: {
+            dataHoraNotificacao: {
+              [Op.between]: [dataInicialFiltro, dataFinalFiltro],
+            },
+          },
+        },
         { model: models.UnidadeSaude },
         { model: models.ProfissionalSaude },
         { model: models.Profissao },
-        { model: models.NotificacaoCovid19 },
       ],
     });
 
