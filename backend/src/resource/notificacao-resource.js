@@ -79,7 +79,7 @@ const consolidarSuspeito = async (suspeito) => {
 
   if (tipoDocumento === DocumentValidator.Docs().CPF
     && !DocumentValidator.IsCpfValid(numeroDocumento)) {
-    throw new RegraNegocioErro(`${tipoDocumento} invÃ¡lido.`);
+    throw new RegraNegocioErro(`${tipoDocumento} inválido.`);
   }
 
   let suspeitoPrototipo = { bairroId, municipioId };
