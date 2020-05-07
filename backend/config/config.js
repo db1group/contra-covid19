@@ -7,6 +7,14 @@ module.exports = {
       dateStrings: true,
     },
   },
+  test: {
+    dialect: 'sqlite',
+    storage: './src/db/databases/dev_test.sqlite',
+    dialectOptions: {
+      useUTC: true,
+      dateStrings: true,
+    },
+  },
   qa: {
     host: process.env.DATABASE_URL,
     database: process.env.DATABASE_NAME,
