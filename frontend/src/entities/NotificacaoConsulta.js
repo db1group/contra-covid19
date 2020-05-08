@@ -6,6 +6,7 @@ export default class NotificacaoConsulta {
     this.nome = data.nome || '';
     this.documento = data.documento || '';
     this.unidade = data.unidade || '';
+    this.unidadeSaudeId = data.unidadeSaudeId || '';
     this.dataNotificacao = DateService.formatDateTypeToStringTypeWithMinutes(data.dataNotificacao) || '';
     this.telefone = data.telefone || '';
     this.situacao = data.situacao || '';

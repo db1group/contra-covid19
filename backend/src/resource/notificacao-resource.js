@@ -78,7 +78,8 @@ const validarDocumento = ({ tipoDocumento, numeroDocumento }) => {
 
 const consolidarSuspeito = async (suspeito) => {
   const {
-    pessoaId, bairroId, municipioId, sexo, gestante, tipoDocumento,
+    pessoaId, bairroId, municipioId, 
+    sexo, gestante, tipoDocumento,
   } = suspeito;
 
   if (!validarDocumento(suspeito)) {
@@ -318,7 +319,7 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
         [Op.ne]: 'EXCLUIDA',
       },
     },
-    attributes: ['id', 'status', 'createdAt'],
+    attributes: ['id', 'unidadeSaudeId', 'status', 'createdAt'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],
