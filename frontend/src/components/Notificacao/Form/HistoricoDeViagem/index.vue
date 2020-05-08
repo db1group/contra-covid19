@@ -70,6 +70,10 @@ export default {
   methods: {
     updateHistoricoDeViagem(historicoDeViagem) {
       this.$emit('update:historicoDeViagem', historicoDeViagem);
+      if (!historicoDeViagem) {
+        this.updateLocalDaViagem('');
+        this.updateDataDaViagem('');
+      }
     },
     updateDataDaViagem(dataDaViagem) {
       this.$emit('update:dataDaViagem', dataDaViagem);
