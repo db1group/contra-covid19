@@ -192,10 +192,10 @@ export default {
       return item.status === 'ABERTA' && this.isSecretariaSaude;
     },
     isPermiteVisualizar(item) {
-      return this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || isSecretariaSaude(this);
+      return this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude;
     },
     isPermiteExcluir() {
-      return isSecretariaSaude(this);
+      return this.isSecretariaSaude;
     },
     updateFiltroSituacao(status) {
       this.filtroStatus = status;
@@ -207,17 +207,17 @@ export default {
     },
     consultarUnidadesSaudeUsuario() {
       UnidadeSaudeService.findByUserEmail(keycloak.tokenParsed.email)
-      .then(({ data }) => {
-        this.unidadesSaudeUserLogged = data;
-      })
-      .finally(() => {
-        this.consultarNotificacoes();
-      });  
+        .then(({ data }) => {
+          this.unidadesSaudeUserLogged = data;
+        })
+        .finally(() => {
+          this.consultarNotificacoes();
+        });
     },
   },
-  created() {    
+  created() {
     this.isSecretariaSaude = keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
-    this.consultarUnidadesSaudeUsuario();    
+    this.consultarUnidadesSaudeUsuario();
   },
 };
 </script>
