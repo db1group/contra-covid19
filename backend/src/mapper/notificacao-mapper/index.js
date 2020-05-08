@@ -2,16 +2,7 @@ const {
   requestParaModeloNotificacao,
   requestParaModeloNotificacaoCovid19,
 } = require('./request-para-model');
-const {
-  notificacaoParaResponse,
-  extrairSuspeito,
-  extrairSintomas,
-  extrairComorbidades,
-  extrairExamesImagem,
-  extrairInformacaoComplementar,
-  extrairVinculoEpidemiologico,
-  extrairConclusaoAtendimento,
-} = require('./model-para-response');
+const NotificacaoResponseMapper = require('./model-para-response');
 const mapearParaConsulta = require('./consulta');
 
 module.exports = {
@@ -26,26 +17,19 @@ module.exports = {
     };
   },
   mapearParaResponse: (notificacao, notificacaoCovid19) => {
-    let result = {};
-    const suspeito = extrairSuspeito(notificacao);
-    const sintomas = extrairSintomas(notificacaoCovid19);
-    const comorbidades = extrairComorbidades(notificacaoCovid19);
-    const examesImagem = extrairExamesImagem(notificacaoCovid19);
-    const informacaoComplementar = extrairInformacaoComplementar(notificacaoCovid19);
-    const vinculoEpidemiologico = extrairVinculoEpidemiologico(notificacaoCovid19);
-    const conclusaoAtendimento = extrairConclusaoAtendimento(notificacaoCovid19);
-    result = notificacaoParaResponse(notificacao, notificacaoCovid19, result);
-    result = {
-      ...result,
-      suspeito,
-      sintomas,
-      comorbidades,
-      examesImagem,
-      informacaoComplementar,
-      vinculoEpidemiologico,
-      conclusaoAtendimento,
-    };
-    return result;
+    let notificacaoDataValues = { ...notificacao };
+    let notificacaoCovid19DataValues = { ...notificacaoCovid19 };
+    if (notificacao.dataValues) {
+      notificacaoDataValues = { ...notificacao.dataValues };
+    }
+    if (notificacaoCovid19.dataValues) {
+      notificacaoCovid19DataValues = { ...notificacaoCovid19.dataValues };
+    }
+
+    const mapeador = new NotificacaoResponseMapper(notificacaoDataValues,
+      notificacaoCovid19DataValues);
+
+    return mapeador.pegarResponse();
   },
   mapearParaConsulta,
 };

@@ -15,7 +15,6 @@ module.exports = {
             model: 'Bairro',
             key: 'id',
           },
-          allowNull: false,
         },
         { transaction: t }),
     ]));
