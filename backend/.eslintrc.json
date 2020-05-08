@@ -37,7 +37,9 @@
           "error"
         ]
       }
-    ]
+    ],
+    "no-underscore-dangle": "off",
+    "class-methods-use-this": "off"
   },
   "plugins": [
     "sonarjs"

@@ -21,10 +21,9 @@ const cadastrarSuspeito = async (suspeito) => {
 
   const pessoaCadastrada = await cadastrarPessoa(pessoa);
 
-  const suspeitoCadastrado = Mappers.Pessoa.mapearParaSuspeito(
+  return Mappers.Pessoa.mapearParaSuspeito(
     pessoaCadastrada,
   );
-  return suspeitoCadastrado;
 };
 
 const buscarPessoasDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findAll({
@@ -45,13 +44,12 @@ const obterGestante = (sexo, gestante) => {
 const buscarPessoaPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
   if (!tipoDocumento || tipoDocumento.trim() === '') return null;
   if (!numeroDocumento || numeroDocumento.trim() === '') return null;
-  const pessoaLocalizada = await models.Pessoa.findOne({
+  return models.Pessoa.findOne({
     where: {
       tipoDocumento,
       numeroDocumento,
     },
   });
-  return pessoaLocalizada;
 };
 
 const buscarPessoaId = async (suspeito) => {
@@ -223,10 +221,20 @@ const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
   }
 };
 
+const retornarUsuarioLogado = async (email) => {
+  const user = await models.User.findOne({
+    attributes: ['id'],
+    where: { email },
+  });
+  if (!user) throw new RegraNegocioErro('Usuário não encontrado!');
+  return user.id;
+};
 
 exports.salvar = async (req, res, next) => {
   const notificacaoRequest = req.body;
   try {
+    const { email } = req.kauth.grant.access_token.content;
+    notificacaoRequest.userId = await retornarUsuarioLogado(email);
     await validarNotificacaoUnicaPorPaciente(notificacaoRequest);
 
     const notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);
