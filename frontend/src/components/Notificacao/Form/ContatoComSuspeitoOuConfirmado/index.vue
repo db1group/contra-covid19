@@ -80,7 +80,7 @@ export default {
   computed: {
     disableNomeCaso() {
       if (this.disabled) return true;
-      return !this.notificacao.tipoDeContatoComCaso === 'SEM_CONTATO'
+      return this.notificacao.tipoDeContatoComCaso === 'SEM_CONTATO'
         || !this.notificacao.tipoDeContatoComCaso;
     },
   },
