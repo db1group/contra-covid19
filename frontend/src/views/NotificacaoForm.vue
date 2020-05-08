@@ -180,7 +180,9 @@
         color="warning"
         bottom
       >Algum dos campos do formulário possui alguma pendência</v-snackbar>
-      <v-snackbar v-model="showSuccess" color="success" bottom>Notificação enviada com sucesso.</v-snackbar>
+      <v-snackbar class="notificacao__snack-success" v-model="showSuccess" color="success" bottom>
+        Notificação enviada com sucesso.
+      </v-snackbar>
     </base-page>
   </section>
 </template>
@@ -347,3 +349,10 @@ export default {
   },
 };
 </script>
+<style lang="sass" scoped>
+.notificacao
+  &__snack-success
+    &::v-deep .v-snack__content
+      display: flex
+      justify-content: center
+</style>
