@@ -16,6 +16,9 @@ export const requiredObjectId = (value, message = 'O campo é obrigatório.') =>
 export const minLength = (length) => (value) => !value
   || value.length >= length
   || `O campo precisa de pelo menos ${length} caracteres.`;
+export const maxLength = (length) => (value) => !value
+  || value.length <= length
+  || `O campo tem limite máximo de ${length} caracteres.`;
 export const exactLength = (length) => (value) => !value
   || value.length === length
   || `O campo deve possuir ${length} caracteres.`;

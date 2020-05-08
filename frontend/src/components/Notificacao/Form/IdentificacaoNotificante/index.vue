@@ -49,7 +49,7 @@
   </div>
 </template>
 <script>
-import { required } from '@/validations/CommonValidations';
+import { required, maxLength } from '@/validations/CommonValidations';
 import Notificacao from '@/entities/Notificacao';
 import ProfissaoService from '@/services/ProfissaoService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
@@ -82,7 +82,7 @@ export default {
     rules: {
       unidadeSaudeId: [required],
       profissaoId: [required],
-      nomeNotificador: [required],
+      nomeNotificador: [required, maxLength(80)],
     },
   }),
   watch: {
