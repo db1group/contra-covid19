@@ -110,7 +110,7 @@ export default {
     },
     rules: {
       cep: [minLength(8)],
-      endereco: [required],
+      endereco: [required, minLength(3)],
       numero: [required],
       bairroId: [required],
       municipioId: [required],

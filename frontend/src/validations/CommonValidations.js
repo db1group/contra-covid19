@@ -2,6 +2,7 @@ import DateService from '@/services/DateService';
 
 const DATE_FORMAT = /^[0-3]{1}[0-9]{1}\/[0-1]{1}[0-9]{1}\/[0-9]{4}$/;
 const DATE_HOUR_MINUTE_FORMAT = /^[0-3]{1}[0-9]{1}\/[0-1]{1}[0-9]{1}\/[0-9]{4} [0-2]{1}[0-9]{1}:[0-5]{1}[0-9]{1}$/;
+const ONLY_LETTERS = new RegExp(/^[a-zA-Z\s.\u00C0-\u00FC]*$/);
 
 export const required = (value, message = 'O campo é obrigatório.') => (
   (value && typeof value === 'string' && value.trim().length > 0)
@@ -12,6 +13,11 @@ export const required = (value, message = 'O campo é obrigatório.') => (
 export const requiredObjectId = (value, message = 'O campo é obrigatório.') => (
   (value && typeof value === 'object' && !!value.id)
 ) || message;
+
+export const onlyLetters = (
+  value,
+  message = 'É permitido somente letras.',
+) => !value || (value && ONLY_LETTERS.test(value)) || message;
 
 export const minLength = (length) => (value) => !value
   || value.length >= length
