@@ -245,7 +245,7 @@ const retornarUsuarioLogado = async (email) => {
 exports.salvar = async (req, res, next) => {
   const notificacaoRequest = req.body;
   try {
-    const email = 'robson.cachoeira@db1.com.br';
+    const { email } = req.kauth.grant.access_token.content;
     notificacaoRequest.userId = await retornarUsuarioLogado(email);
     await validarNotificacaoUnicaPorPaciente(notificacaoRequest);
 
