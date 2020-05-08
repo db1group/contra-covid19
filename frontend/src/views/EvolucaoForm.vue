@@ -1,13 +1,14 @@
 <template>
  <section style="margin-top: 35px;">
-    <header-title title="Evolução dos pacientes" backRoute="notificacao-cons" />
+    <header-title title="Evolução dos pacientes" back-route="notificacao-cons" />
     <v-container fluid>
       <v-row justify="space-around" align="center">
         <v-col cols="auto">
           <evolucao-form
             :notificacao-id="notificacaoId"
-            :dataMaximaPermitida="dataMaximaPermitida"
-            @error:cadastroEvolucao="mostrarMensagemErro" />
+            :data-maxima-permitida="dataMaximaPermitida"
+            @error:cadastroEvolucao="mostrarMensagemErro"
+          />
         </v-col>
         <v-col cols="auto">
           <evolucao-consulta v-if="evolucao !== null" :evolucao="evolucao" />

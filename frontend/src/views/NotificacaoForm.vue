@@ -180,7 +180,6 @@
         color="warning"
         bottom
       >Algum dos campos do formulário possui alguma pendência</v-snackbar>
-      <v-snackbar v-model="showSuccess" color="success" bottom>Notificação enviada com sucesso.</v-snackbar>
     </base-page>
   </section>
 </template>
@@ -231,7 +230,6 @@ export default {
     notificacao: new Notificacao(),
     showError: false,
     showAlert: false,
-    showSuccess: false,
     errorMessage: '',
     stateForm: StateForm.NEW,
   }),
@@ -304,10 +302,10 @@ export default {
       if (this.$refs.form.validate()) {
         const requestNotificacao = this.notificacao.toRequestBody();
         NotificacaoService.save(requestNotificacao).then(() => {
-          this.showSuccess = true;
-          setTimeout(() => {
-            this.$router.back();
-          }, 500);
+          this.$router.push({
+            name: 'notificacao-cons',
+            params: { msg: 'Notificação enviada com sucesso.' },
+          });
         }).catch(({ response }) => {
           this.showError = true;
           this.errorMessage = response.data.error;
