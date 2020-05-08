@@ -69,14 +69,19 @@ const buscarPessoaId = async (suspeito) => {
   return null;
 };
 
+const validarDocumento = ({ tipoDocumento, numeroDocumento }) => {
+  if (!numeroDocumento) return true;
+  if (tipoDocumento !== DocumentValidator.Docs().CPF) return true;
+
+  return DocumentValidator.IsCpfValid(numeroDocumento);
+};
+
 const consolidarSuspeito = async (suspeito) => {
   const {
     pessoaId, bairroId, municipioId, sexo, gestante, tipoDocumento,
-    numeroDocumento,
   } = suspeito;
 
-  if (tipoDocumento === DocumentValidator.Docs().CPF
-    && !DocumentValidator.IsCpfValid(numeroDocumento)) {
+  if (!validarDocumento(suspeito)) {
     throw new RegraNegocioErro(`${tipoDocumento} inválido.`);
   }
 
@@ -110,6 +115,10 @@ const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
       where: { id: unidadeSaudeId },
     },
   );
+
+  if (!unidadeDeSaude) {
+    throw new RegraNegocioErro(`Não foi localizada a unidade de saúde com o código ${unidadeSaudeId}`);
+  }
 
   return {
     ...notificacao,
