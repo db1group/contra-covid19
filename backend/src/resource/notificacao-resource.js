@@ -78,8 +78,8 @@ const validarDocumento = ({ tipoDocumento, numeroDocumento }) => {
 
 const consolidarSuspeito = async (suspeito) => {
   const {
-    pessoaId, bairroId, municipioId, nome, nomeDaMae,
-    sexo, gestante, tipoDocumento, numeroDocumento,
+    pessoaId, bairroId, municipioId, 
+    sexo, gestante, tipoDocumento,
   } = suspeito;
 
   if (!validarDocumento(suspeito)) {
