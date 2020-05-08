@@ -10,6 +10,7 @@ COPY standalone-ha.xml /opt/jboss/keycloak/standalone/configuration/standalone-h
 COPY config/notificasaude.json /opt/jboss/keycloak/config/notificasaude.json
 COPY themes/notificasaude.jar /opt/jboss/keycloak/standalone/deployments/notificasaude.jar
 ENV KEYCLOAK_IMPORT="/opt/jboss/keycloak/config/notificasaude.json"
+ENV PROXY_ADDRESS_FORWARDING=true
 
 EXPOSE 8080 8009 9990 7600 8888
 
