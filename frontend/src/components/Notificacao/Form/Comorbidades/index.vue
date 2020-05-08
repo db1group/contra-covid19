@@ -249,6 +249,9 @@ export default {
     },
     updateOutrasComorbidades(outrasComorbidades) {
       this.comorbidades.outrasComorbidades = outrasComorbidades;
+      if (!this.comorbidades.outrasComorbidades) {
+        this.updateOutros('');
+      }
     },
   },
 };
