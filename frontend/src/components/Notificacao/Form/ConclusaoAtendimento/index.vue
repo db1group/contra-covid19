@@ -46,7 +46,13 @@
                 Coronavírus - Covid 19".
               </span>
             </p>
-            <v-btn class="px-1" color="primary" link text>
+            <v-btn
+              class="px-1"
+              color="primary"
+              link
+              text
+              @click="goToOrientations"
+            >
               Abrir orientações em outra janela
               <v-icon class="ml-3">mdi-open-in-new</v-icon>
             </v-btn>
@@ -61,6 +67,7 @@
   </div>
 </template>
 <script>
+import Configuration from '@/configuration';
 import { required } from '@/validations/CommonValidations';
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
 
@@ -83,6 +90,12 @@ export default {
   methods: {
     updateSituacaoNoMomentoDaNotificacao(situacaoNoMomentoDaNotificacao) {
       this.$emit('update:situacaoNoMomentoDaNotificacao', situacaoNoMomentoDaNotificacao);
+    },
+    goToOrientations() {
+      const url = Configuration.value('VUE_APP_ORIENTATIONS_PDF');
+      if (url) {
+        window.open(url);
+      }
     },
   },
   computed: {
