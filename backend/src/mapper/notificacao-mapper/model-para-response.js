@@ -60,10 +60,10 @@ class NotificacaoResponseMapper {
   _extrairSuspeito() {
     const { Pessoa } = this.notificacao;
     if (!Pessoa) {
-      throw new RegraNegocioErro('O relacionamento "Pessoa" precisa ser carregado para o suspeito. Contate o suporte');
+      throw new RegraNegocioErro(`Não foi encontrada a pessoa com o código ${this.notificacao.pessoaId}`);
     }
     if (!Pessoa.Bairro) {
-      throw new RegraNegocioErro('O relacionamento "Bairro" precisa ser carregado para o suspeito. Contate o suporte');
+      throw new RegraNegocioErro(`Não foi localizado o bairro com o código ${Pessoa.bairroId} da pessoa ${this.notificacao.pessoaId}`);
     }
     return this._extrairSuspeitoDaPessoa(Pessoa);
   }
