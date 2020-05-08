@@ -46,6 +46,7 @@ exports.gerarExcel = async (req, res) => {
         { model: models.UnidadeSaude },
         { model: models.ProfissionalSaude },
         { model: models.Profissao },
+        { model: models.User },
       ],
     });
 
@@ -53,6 +54,7 @@ exports.gerarExcel = async (req, res) => {
     const lista = listaTemp.map((t) => ({
       dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
+      usuarioDigitador: geraExcel.retornarCampo(t.User, 'email'),
       statusNotificacao: geraExcel.retornarCampo(t, 'status'),
       unidadeNotificante: t.UnidadeSaude ? t.UnidadeSaude.nome : null,
       cNES: t.UnidadeSaude ? t.UnidadeSaude.cnes : null,
@@ -175,6 +177,7 @@ exports.gerarExcel = async (req, res) => {
     const colunas = [
       { nomeColuna: 'Data da Notificação', nomeCampo: 'dataDaNotificacao' },
       { nomeColuna: 'horaDaNotificacao', nomeCampo: 'horaDaNotificacao' },
+      { nomeColuna: 'usuarioDigitador', nomeCampo: 'usuarioDigitador' },
       { nomeColuna: 'statusNotificacao', nomeCampo: 'statusNotificacao' },
       { nomeColuna: 'unidadeNotificante', nomeCampo: 'unidadeNotificante' },
       { nomeColuna: 'cNES', nomeCampo: 'cNES' },
