@@ -4,6 +4,7 @@ const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
 const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
+const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
 
 
 const { Op } = Sequelize;
@@ -69,16 +70,17 @@ const buscarPessoaId = async (suspeito) => {
   return null;
 };
 
-const validarDocumento = ({ tipoDocumento, numeroDocumento }) => {
+const validarDocumento = ({ tipoClassificacaoPessoa, tipoDocumento, numeroDocumento }) => {
   if (!numeroDocumento) return true;
-  if (tipoDocumento !== DocumentValidator.Docs().CPF) return true;
+  if (tipoDocumento !== DocumentValidator.docs.CPF) return true;
+  if (tipoClassificacaoPessoa !== TipoClassificacaoPessoaEnum.values.Outro) return true;
 
   return DocumentValidator.IsCpfValid(numeroDocumento);
 };
 
 const consolidarSuspeito = async (suspeito) => {
   const {
-    pessoaId, bairroId, municipioId, 
+    pessoaId, bairroId, municipioId,
     sexo, gestante, tipoDocumento,
   } = suspeito;
 
