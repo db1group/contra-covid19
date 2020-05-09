@@ -1,5 +1,6 @@
-import Configuration from '@/configuration';
 import http from './Http';
+
+import DownloadService from './DownloadService';
 
 export default {
   save(notificacaco) {
@@ -24,8 +25,9 @@ export default {
   deleteLote(ids) {
     return http.delete('/notificacoes', { data: ids });
   },
-  getExcelLink({ dataInicial, dataFinal }) {
-    return `${Configuration
-      .value('VUE_APP_BACKEND_URL')}/notificacao-gera-excel?dataInicial=${dataInicial}&dataFinal=${dataFinal}`;
+  downloadNotificacoes({ dataInicial, dataFinal }) {
+    const time = new Date().getTime();
+    return DownloadService.downloadFile(`/notificacao-gera-excel?dataInicial=${dataInicial}&dataFinal=${dataFinal}`,
+      `notificacoes-${time}.xlsx`);
   },
 };
