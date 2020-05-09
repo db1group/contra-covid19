@@ -51,9 +51,12 @@ exports.gerarExcel = async (req, res) => {
       ],
     });
 
+    const timezone = new Date().getTimezoneOffset() / 60;
     const listaTemp = notificacoes.map((t) => t.dataValues);
-
     const lista = listaTemp.map((t) => ({
+      dataInicialFiltro,
+      dataFinalFiltro,
+      timezone,
       dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       usuarioDigitador: geraExcel.retornarCampo(t.User, 'email'),
@@ -177,6 +180,9 @@ exports.gerarExcel = async (req, res) => {
     ));
 
     const colunas = [
+      { nomeColuna: 'timezone', nomeCampo: 'timezone' },
+      { nomeColuna: 'dataInicialFiltro', nomeCampo: 'dataInicialFiltro' },
+      { nomeColuna: 'dataFinalFiltro', nomeCampo: 'dataFinalFiltro' },
       { nomeColuna: 'Data da Notificação', nomeCampo: 'dataDaNotificacao' },
       { nomeColuna: 'horaDaNotificacao', nomeCampo: 'horaDaNotificacao' },
       { nomeColuna: 'usuarioDigitador', nomeCampo: 'usuarioDigitador' },
