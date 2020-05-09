@@ -47,6 +47,8 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_https_backend" {
   }
 }
 
+resource "random_uuid" "secret" { }
+
 resource "aws_ecs_task_definition" "backend" {
   family                = "${var.project}-${var.environment}-backend"
   network_mode          = "bridge"
@@ -93,6 +95,10 @@ resource "aws_ecs_task_definition" "backend" {
       {
         "name" : "KEYCLOAK_URL",
         "value" : "${var.is_production == true ? "https://auth.${var.hosted_zone}/auth" : "https://${var.environment}-auth.${var.hosted_zone}/auth"}"
+      },
+      {
+        "name" : "SECRET_SESSION",
+        "value" : "${random_uuid.secret.result}-ns"
       },
     ],
     "requiresAttributes": [
