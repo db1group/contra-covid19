@@ -38,6 +38,7 @@
           <v-col cols="12">
             <v-text-field
               :value="notificacao.nomeDoCaso"
+              :rules="rules.nomeDoCaso"
               label="Nome da pessoa"
               :disabled="disableNomeCaso"
               @input="updateNomeDoCaso"
@@ -49,7 +50,9 @@
   </div>
 </template>
 <script>
-import { required } from '@/validations/CommonValidations';
+import {
+  required, minLength, maxLength, onlyLetters,
+} from '@/validations/CommonValidations';
 import locaisContato from '@/entities/enums/LocaisContato.json';
 import Notificacao from '@/entities/Notificacao';
 
@@ -75,6 +78,7 @@ export default {
     tiposDeContato: TIPOS_DE_CONTATO,
     rules: {
       tipoDeContatoComCaso: [required],
+      nomeDoCaso: [onlyLetters, minLength(3), maxLength(80)],
     },
   }),
   computed: {

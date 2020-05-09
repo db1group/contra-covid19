@@ -5,6 +5,8 @@ import {
   dateFormat,
   dateHourMinuteFormat,
   dateMustBeLesserEqualsThanToday,
+  onlyLetters,
+  maxLength,
 } from '../CommonValidations';
 
 describe('Testes para validador de campo obrigatório', () => {
@@ -68,6 +70,21 @@ describe('Testes para validador de tamanho mínimo', () => {
   test('Campo com o tamanho maior que o necessário deve ser válido', () => {
     const result = minLength(11)('uuddlrlrbasssss');
     expect(result).toBeTruthy();
+  });
+});
+
+describe('Testes para validador de tamanho máximo', () => {
+  test('Campo vazio deve ser válido', () => {
+    const result = maxLength(10)('');
+    expect(result).toBeTruthy();
+  });
+  test('Campo com menos caracteres ou igual ao aceitável deve ser válido', () => {
+    const result = maxLength(10)('1234567890');
+    expect(result).toBeTruthy();
+  });
+  test('Campo com mais caracteres que o aceitável deve ser inválido', () => {
+    const result = maxLength(10)('uuddlrlrba adads asd asd as asd a');
+    expect(result).toBe('O campo tem limite máximo de 10 caracteres.');
   });
 });
 
@@ -174,5 +191,20 @@ describe('Testes para validador de data menor ou igual a hoje', () => {
   test('Data posterior a hoje deve ser inválida com mensagem customizada', () => {
     const result = dateMustBeLesserEqualsThanToday('01/04/2220', 'Ih rapaz, deu ruim aqui');
     expect(result).toBe('Ih rapaz, deu ruim aqui');
+  });
+});
+
+describe('Testes para validador de somente letras', () => {
+  test('Campo com caracteres especiais deve ser inválido', () => {
+    const result = onlyLetters('uuddlrlrba ás $@');
+    expect(result).toBe('É permitido somente letras.');
+  });
+  test('Campo com com números deve ser inválido', () => {
+    const result = onlyLetters('uuddlrlrba 1');
+    expect(result).toBe('É permitido somente letras.');
+  });
+  test('Campo com somente letras e possíveis acentos deve ser válido', () => {
+    const result = onlyLetters('uuddlrlrba ásadas ão');
+    expect(result).toBeTruthy();
   });
 });
