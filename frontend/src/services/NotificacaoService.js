@@ -1,4 +1,3 @@
-import Configuration from '@/configuration';
 import http from './Http';
 
 import DownloadService from './DownloadService';
@@ -27,7 +26,8 @@ export default {
     return http.delete('/notificacoes', { data: ids });
   },
   downloadNotificacoes({ dataInicial, dataFinal }) {
+    const time = new Date().getTime();
     return DownloadService.downloadFile(`/notificacao-gera-excel?dataInicial=${dataInicial}&dataFinal=${dataFinal}`,
-      'notificacoes.xlsx');
+      `notificacoes-${time}.xlsx`);
   },
 };
