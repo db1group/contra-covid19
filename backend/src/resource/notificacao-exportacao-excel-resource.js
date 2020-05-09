@@ -19,11 +19,6 @@ exports.gerarExcel = async (req, res) => {
       .tz('America/Sao_Paulo')
       .format();
 
-    const dataInicialFiltro1 = moment(`${dataInicial} 00:00:00`)
-      .format();
-    const dataFinalFiltro1 = moment(`${dataFinal} 23:59:59`)
-      .format();
-
     const notificacoes = await models.Notificacao.findAll({
       where: {
         status: {
@@ -56,14 +51,8 @@ exports.gerarExcel = async (req, res) => {
       ],
     });
 
-    const timezone = new Date().getTimezoneOffset() / 60;
     const listaTemp = notificacoes.map((t) => t.dataValues);
     const lista = listaTemp.map((t) => ({
-      dataInicialFiltro,
-      dataFinalFiltro,
-      timezone,
-      dataInicialFiltro1,
-      dataFinalFiltro1,
       dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       usuarioDigitador: geraExcel.retornarCampo(t.User, 'email'),
@@ -187,11 +176,6 @@ exports.gerarExcel = async (req, res) => {
     ));
 
     const colunas = [
-      { nomeColuna: 'timezone', nomeCampo: 'timezone' },
-      { nomeColuna: 'dataInicialFiltro', nomeCampo: 'dataInicialFiltro' },
-      { nomeColuna: 'dataFinalFiltro', nomeCampo: 'dataFinalFiltro' },
-      { nomeColuna: 'dataInicialFiltro1', nomeCampo: 'dataInicialFiltro1' },
-      { nomeColuna: 'dataFinalFiltro1', nomeCampo: 'dataFinalFiltro1' },
       { nomeColuna: 'Data da Notificação', nomeCampo: 'dataDaNotificacao' },
       { nomeColuna: 'horaDaNotificacao', nomeCampo: 'horaDaNotificacao' },
       { nomeColuna: 'usuarioDigitador', nomeCampo: 'usuarioDigitador' },
