@@ -19,7 +19,8 @@
           <v-text-field
             :value="conclusaoAtendimento.dataDaColeta"
             class="pl-8"
-            label="Data da Coleta"
+            label="Data da Coleta *"
+            append-icon="mdi-calendar-blank"
             v-mask="'##/##/####'"
             :disabled="disableFields"
             :rules="rules.dataDaColeta"

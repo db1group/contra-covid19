@@ -40,8 +40,8 @@
           :items="tiposDocumento"
           item-text="value"
           item-value="key"
-          @input="updateTipoDocumento"
           :disabled="disabledTipoDocumento"
+          @input="updateTipoDocumento"
         />
       </v-col>
       <v-col cols="12" sm="5" md="5">
@@ -51,15 +51,15 @@
           label="Número do documento *"
           v-mask="'###.###.###-##'"
           :rules="rules.numeroCpf"
-          @input="updateNumeroCpf"
           :disabled="disabled"
+          @input="updateNumeroCpf"
         />
         <v-text-field
           v-show="suspeito.tipoDocumento !== 'CPF'"
           :value="suspeito.numeroDocumento"
           label="Número do documento"
-          @input="updateNumeroDocumento"
           :disabled="disabled"
+          @input="updateNumeroDocumento"
         />
       </v-col>
     </v-row>
@@ -95,32 +95,36 @@
     </v-row>
 
     <v-row dense v-show="suspeito.sexo === 'F' && suspeito.gestante === 'true'">
-        <v-col cols="12" >
-          <v-radio-group
-            :value="suspeito.tipoPeriodoGestacional"
-            :rules="rules.tipoPeriodoGestacional"
-            @change="updateTipoPeriodoGestacional"
-            :disabled="disabled"
-          >
-            <template v-slot:label>
-              <label class="primary--text body-1 font-weight-bold">
-                Período de gestação *
-              </label>
-            </template>
-            <v-radio
-              value="PRIMEIRO_TRIMESTRE"
-              label="1º Trimestre" />
-            <v-radio
-              value="SEGUNDO_TRIMESTRE"
-              label="2º Trimestre" />
-            <v-radio
-              value="TERCEIRO_TRIMESTRE"
-              label="3º Trimestre" />
-            <v-radio
-              value="IDADE_GESTACIONAL_IGNORADA"
-              label="Idade gestacional ignorada" />
-          </v-radio-group>
-        </v-col>
+      <v-col cols="12" >
+        <v-radio-group
+          :value="suspeito.tipoPeriodoGestacional"
+          :rules="rules.tipoPeriodoGestacional"
+          @change="updateTipoPeriodoGestacional"
+          :disabled="disabled"
+        >
+          <template v-slot:label>
+            <label class="primary--text body-1 font-weight-bold">
+              Período de gestação *
+            </label>
+          </template>
+          <v-radio
+            value="PRIMEIRO_TRIMESTRE"
+            label="1º Trimestre"
+          />
+          <v-radio
+            value="SEGUNDO_TRIMESTRE"
+            label="2º Trimestre"
+          />
+          <v-radio
+            value="TERCEIRO_TRIMESTRE"
+            label="3º Trimestre"
+          />
+          <v-radio
+            value="IDADE_GESTACIONAL_IGNORADA"
+            label="Idade gestacional ignorada"
+          />
+        </v-radio-group>
+      </v-col>
     </v-row>
 
     <v-row dense>
@@ -176,7 +180,7 @@
 </template>
 <script>
 import {
-  required, dateFormat, dateHourMinuteFormat, exactLength, lessThanMaximumDate,
+  required, dateFormat, dateHourMinuteFormat, exactLength, lessThanMaximumDate, maxLength, minLength, onlyLetters,
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
@@ -221,8 +225,8 @@ export default {
       dataHoraNotificacao: [required, dateHourMinuteFormat],
       tipoDocumento: [required],
       numeroCpf: [exactLength(14)],
-      nome: [required],
-      nomeDaMae: [required],
+      nome: [required, onlyLetters, maxLength(150), minLength(3)],
+      nomeDaMae: [required, onlyLetters, maxLength(150), minLength(3)],
       dataDeNascimento: [required, dateFormat],
       sexo: [required],
       gestante: [],
@@ -238,6 +242,10 @@ export default {
       this.$emit('update:dataHoraNotificacao', dataHoraNotificacao);
     },
     updateTipoDocumento(tipoDocumento) {
+      if (this.suspeito.tipoDocumento !== tipoDocumento) {
+        this.updateNumeroDocumento('');
+        this.updateNumeroCpf('');
+      }
       this.$emit('update:tipoDocumento', tipoDocumento);
     },
     updateNumeroDocumento(numeroDocumento) {

@@ -23,11 +23,11 @@
   "sslRequired": "external",
   "registrationAllowed": false,
   "registrationEmailAsUsername": false,
-  "rememberMe": false,
+  "rememberMe": true,
   "verifyEmail": false,
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,
-  "resetPasswordAllowed": false,
+  "resetPasswordAllowed": true,
   "editUsernameAllowed": false,
   "bruteForceProtected": false,
   "permanentLockout": false,
@@ -1224,6 +1224,7 @@
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
   "smtpServer": {},
+  "loginTheme": "notificasaude",
   "eventsEnabled": false,
   "eventsListeners": [
     "jboss-logging"
@@ -1378,8 +1379,11 @@
       }
     ]
   },
-  "internationalizationEnabled": false,
-  "supportedLocales": [],
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "pt-BR"
+  ],
+  "defaultLocale": "pt-BR",
   "authenticationFlows": [
     {
       "id": "a381f09b-fcbb-42d9-84ae-0207576c0827",

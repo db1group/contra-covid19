@@ -60,7 +60,7 @@
       </template>
       <template v-slot:item.actions="{ item }">
         <v-row justify="end" align="center" dense>
-          <v-col>
+          <v-col v-if="isPermiteVisualizar(item)">
             <v-btn
               text
               small
@@ -76,7 +76,7 @@
               :to="{ name: 'evolucao-form', params: { id: item.id } }"
             >EVOLUÇÃO</v-btn>
           </v-col>
-          <v-col>
+          <v-col v-if="isPermiteExcluir()">
             <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
           </v-col>
         </v-row>
@@ -92,8 +92,9 @@
 <script>
 import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import NotificacaoService from '@/services/NotificacaoService';
+import keycloak from '@/services/KeycloakService';
 import NotificacaoConsulta from '@/entities/NotificacaoConsulta';
-import { isSecretariaSaude } from '@/validations/KeycloakValidations';
+import UnidadeSaudeService from '@/services/UnidadeSaudeService';
 
 const SITUACAO_NOTIFICACAO = [
   { key: '', value: 'TODAS' },
@@ -129,6 +130,8 @@ export default {
       showDialog: false,
       id: null,
     },
+    unidadesSaudeUserLogged: [],
+    isSecretariaSaude: false,
   }),
   methods: {
     consultarNotificacoes({
@@ -186,16 +189,35 @@ export default {
       this.filterNotificacoes();
     },
     isPermiteEvoluir(item) {
-      return item.status === 'ABERTA' && isSecretariaSaude(this);
+      return item.status === 'ABERTA' && this.isSecretariaSaude;
+    },
+    isPermiteVisualizar(item) {
+      return this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude;
+    },
+    isPermiteExcluir() {
+      return this.isSecretariaSaude;
     },
     updateFiltroSituacao(status) {
       this.filtroStatus = status;
       this.options = { ...this.options, page: 1 };
       this.consultarNotificacoes();
     },
+    isUnidadeSaudePermitidaUserLogged(unidadeSaudeId) {
+      return this.unidadesSaudeUserLogged.some((data) => data.id === unidadeSaudeId);
+    },
+    consultarUnidadesSaudeUsuario() {
+      UnidadeSaudeService.findByUserEmail(keycloak.tokenParsed.email)
+        .then(({ data }) => {
+          this.unidadesSaudeUserLogged = data;
+        })
+        .finally(() => {
+          this.consultarNotificacoes();
+        });
+    },
   },
   created() {
-    this.consultarNotificacoes();
+    this.isSecretariaSaude = keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
+    this.consultarUnidadesSaudeUsuario();
   },
 };
 </script>

@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 exports.gerarExcel = async (colunas, lista, res) => {
   try {
     const diretorio = 'excel';
@@ -98,9 +99,11 @@ exports.retornarHoraDaData = (objeto, nomeDaPropriedade) => {
   }
 
   const data = objeto[nomeDaPropriedade];
-  const horasFuso = data instanceof Date ? data.getTimezoneOffset() / 60 : 0;
+  if (!data) {
+    return null;
+  }
 
-  return moment(data).locale('pt-BR').add(horasFuso, 'hours').format('LT');
+  return moment(data).tz('America/Sao_Paulo').format('HH:mm');
 };
 
 exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
@@ -109,9 +112,11 @@ exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
   }
 
   const data = objeto[nomeDaPropriedade];
-  const horasFuso = data instanceof Date ? data.getTimezoneOffset() / 60 : 0;
+  if (!data) {
+    return null;
+  }
 
-  return moment(data).add(horasFuso, 'hours').format('DD/MM/YYYY');
+  return moment(data).tz('America/Sao_Paulo').format('DD/MM/YYYY');
 };
 
 exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {
@@ -120,7 +125,7 @@ exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {
   }
 
   const valorDaPropriedade = objeto[nomeDaPropriedade];
-  if (!(typeof valorDaPropriedade === 'boolean')) {
+  if (typeof valorDaPropriedade !== 'boolean') {
     return null;
   }
 

@@ -4,6 +4,7 @@ const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
 const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
+const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
 
 
 const { Op } = Sequelize;
@@ -21,10 +22,9 @@ const cadastrarSuspeito = async (suspeito) => {
 
   const pessoaCadastrada = await cadastrarPessoa(pessoa);
 
-  const suspeitoCadastrado = Mappers.Pessoa.mapearParaSuspeito(
+  return Mappers.Pessoa.mapearParaSuspeito(
     pessoaCadastrada,
   );
-  return suspeitoCadastrado;
 };
 
 const buscarPessoasDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findAll({
@@ -45,23 +45,47 @@ const obterGestante = (sexo, gestante) => {
 const buscarPessoaPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
   if (!tipoDocumento || tipoDocumento.trim() === '') return null;
   if (!numeroDocumento || numeroDocumento.trim() === '') return null;
-  const pessoaLocalizada = await models.Pessoa.findOne({
+  return models.Pessoa.findOne({
     where: {
       tipoDocumento,
       numeroDocumento,
     },
   });
-  return pessoaLocalizada;
+};
+
+const buscarPessoaId = async (suspeito) => {
+  const { nome, nomeDaMae } = suspeito;
+
+  if (suspeito.numeroDocumento !== '') {
+    let pessoaId;
+    const pessoaLocalizada = await buscarPessoaPorDocumento(suspeito);
+    if (pessoaLocalizada) pessoaId = pessoaLocalizada.id;
+    return pessoaId;
+  }
+
+  const pessoasLocalizadas = await buscarPessoasDadosBasicos(nome, nomeDaMae);
+  if (pessoasLocalizadas.length >= 1) {
+    throw new RegraNegocioErro(`A pessoa ${nome} (sem documento informado) já possui cadastro no sistema e não poderá ser criado um novo.`);
+  }
+  return null;
+};
+
+const validarDocumento = ({ tipoClassificacaoPessoa, tipoDocumento, numeroDocumento }) => {
+  if (!numeroDocumento) return true;
+  if (tipoDocumento !== DocumentValidator.docs.CPF) return true;
+  if (tipoClassificacaoPessoa !== TipoClassificacaoPessoaEnum.values.Outro) return true;
+
+  return DocumentValidator.IsCpfValid(numeroDocumento);
 };
 
 const consolidarSuspeito = async (suspeito) => {
   const {
-    pessoaId, bairroId, municipioId, nome, nomeDaMae,
-    sexo, gestante, tipoDocumento, numeroDocumento
+    pessoaId, bairroId, municipioId,
+    sexo, gestante, tipoDocumento,
   } = suspeito;
 
-  if (tipoDocumento == DocumentValidator.Docs().CPF && !DocumentValidator.IsCpfValid(numeroDocumento)) {
-    throw new RegraNegocioErro(tipoDocumento + ' inválido.');
+  if (!validarDocumento(suspeito)) {
+    throw new RegraNegocioErro(`${tipoDocumento} inválido.`);
   }
 
   let suspeitoPrototipo = { bairroId, municipioId };
@@ -72,12 +96,9 @@ const consolidarSuspeito = async (suspeito) => {
   suspeitoAlterado.gestante = obterGestante(sexo, gestante);
   suspeitoPrototipo = { ...suspeitoPrototipo, gestante };
 
-  const pessoaLocalizada = await buscarPessoaPorDocumento(suspeito);
-  if (pessoaLocalizada) return { ...suspeitoPrototipo, pessoaId: pessoaLocalizada.id };
-
-  const pessoasLocalizadas = await buscarPessoasDadosBasicos(nome, nomeDaMae);
-  if (pessoasLocalizadas.length >= 1) {
-    return { ...suspeitoPrototipo, pessoaId: pessoasLocalizadas[0].id };
+  const pessoaIdLocalizada = await buscarPessoaId(suspeito);
+  if (pessoaIdLocalizada) {
+    return { ...suspeitoPrototipo, pessoaId: pessoaIdLocalizada };
   }
 
   const novaPessoaCadastrada = await cadastrarSuspeito(suspeitoAlterado);
@@ -97,6 +118,10 @@ const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
       where: { id: unidadeSaudeId },
     },
   );
+
+  if (!unidadeDeSaude) {
+    throw new RegraNegocioErro(`Não foi localizada a unidade de saúde com o código ${unidadeSaudeId}`);
+  }
 
   return {
     ...notificacao,
@@ -208,10 +233,20 @@ const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
   }
 };
 
+const retornarUsuarioLogado = async (email) => {
+  const user = await models.User.findOne({
+    attributes: ['id'],
+    where: { email },
+  });
+  if (!user) throw new RegraNegocioErro('Usuário não encontrado!');
+  return user.id;
+};
 
 exports.salvar = async (req, res, next) => {
   const notificacaoRequest = req.body;
   try {
+    const { email } = req.kauth.grant.access_token.content;
+    notificacaoRequest.userId = await retornarUsuarioLogado(email);
     await validarNotificacaoUnicaPorPaciente(notificacaoRequest);
 
     const notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);
@@ -286,7 +321,7 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
         [Op.ne]: 'EXCLUIDA',
       },
     },
-    attributes: ['id', 'status', 'createdAt'],
+    attributes: ['id', 'unidadeSaudeId', 'status', 'createdAt'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],

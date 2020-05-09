@@ -90,6 +90,7 @@
         <exames-imagem
           :realizouExamesImagem="notificacao.realizouExamesImagem"
           :examesImagem="notificacao.examesImagem"
+          :disabled="disableFields"
           @update:realizouExamesImagem="updateRealizouExamesImagem"
           @update:realizouOutroRaioTorax="updateExameImagem('realizouOutroRaioTorax', $event)"
           @update:raioNormal="updateExameImagem('raioNormal', $event)"
@@ -105,7 +106,7 @@
           @update:tomografiaAusenciaLinfonodoMediastenal="
           updateExameImagem('tomografiaAusenciaLinfonodoMediastenal', $event)"
           @update:tomografiaOutro="updateExameImagem('tomografiaOutro', $event)"
-          :disabled="disableFields"
+          @update:realizouOutraTomografiaTorax="updateExameImagem('realizouOutraTomografiaTorax', $event)"
         />
         <comorbidades
           :comorbidades="notificacao.comorbidades"
@@ -179,7 +180,9 @@
         color="warning"
         bottom
       >Algum dos campos do formulário possui alguma pendência</v-snackbar>
-      <v-snackbar v-model="showSuccess" color="success" bottom>Notificação enviada com sucesso.</v-snackbar>
+      <v-snackbar class="notificacao__snack-success" v-model="showSuccess" color="success" bottom>
+        Notificação enviada com sucesso.
+      </v-snackbar>
     </base-page>
   </section>
 </template>
@@ -301,7 +304,6 @@ export default {
     send() {
       if (this.stateForm === StateForm.VIEW) return;
       if (this.$refs.form.validate()) {
-        this.notificacao.userId = this.$logged.userId;
         const requestNotificacao = this.notificacao.toRequestBody();
         NotificacaoService.save(requestNotificacao).then(() => {
           this.showSuccess = true;
@@ -347,3 +349,10 @@ export default {
   },
 };
 </script>
+<style lang="sass" scoped>
+.notificacao
+  &__snack-success
+    &::v-deep .v-snack__content
+      display: flex
+      justify-content: center
+</style>

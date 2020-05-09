@@ -117,6 +117,10 @@ resource "aws_ecs_task_definition" "frontend" {
         "value" : "${var.project}"
       },
       {
+        "name" : "VUE_APP_ORIENTATIONS_PDF",
+        "value" : "http://www2.maringa.pr.gov.br/sistema/arquivos/8fcc967791a9.pdf"
+      },
+      {
         "name" : "PORT",
         "value" : "8282"
       }

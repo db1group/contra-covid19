@@ -15,9 +15,11 @@
           <!-- </v-form> -->
         </v-row>
       </v-container>
-      <v-snackbar v-model="showError" color="error" bottom>
-        A data inicial não pode ser posterior à data final
-      </v-snackbar>
+      <v-snackbar
+        v-model="showError"
+        color="error"
+        bottom
+      >A data inicial não pode ser posterior à data final</v-snackbar>
     </base-page>
   </section>
 </template>
@@ -49,11 +51,7 @@ export default {
           return;
         }
 
-        const link = NotificacaoService.getExcelLink(this.exportar.toRequestBody());
-        if (link) {
-          const url = decodeURI(link);
-          window.open(url, '_blank');
-        }
+        NotificacaoService.downloadNotificacoes(this.exportar.toRequestBody());
       }
     },
     validarPeriodo() {

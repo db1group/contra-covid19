@@ -17,3 +17,27 @@ exports.consultaPorNome = async (req, res) => {
 
   return res.json({ data: unidadesSaude });
 };
+
+exports.consultarPorUserEmail = async (request, response) => {
+  const { email } = request.params;
+
+  const userUnidadesSaude = await models.UserUnidadeSaude.findAll({
+    include: [
+      {
+        model: models.User,
+        where: {
+          email,
+        },
+      },
+      {
+        model: models.UnidadeSaude,
+      },
+    ],
+  });
+
+  if (userUnidadesSaude === null) return response.status(404).json({ error: 'Unidade de saúde não encontrada.' });
+
+  const data = userUnidadesSaude.map((userUnidadeSaude) => userUnidadeSaude.UnidadeSaude);
+
+  return response.json({ data });
+};

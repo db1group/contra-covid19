@@ -7,6 +7,7 @@
     >
       <v-text-field
         :value="suspeito.telefoneResidencial"
+        ref="residencial"
         type="tel"
         label="Telefone residencial"
         v-mask="'(##) ####-####'"
@@ -22,6 +23,7 @@
     >
       <v-text-field
         :value="suspeito.telefoneCelular"
+        ref="celular"
         type="tel"
         label="Telefone celular"
         v-mask="'(##) #####-####'"
@@ -37,6 +39,7 @@
     >
       <v-text-field
         :value="suspeito.telefoneContato"
+        ref="contato"
         type="tel"
         label="Telefone contato"
         v-mask="['(##) ####-####', '(##) #####-####']"
@@ -73,12 +76,18 @@ export default {
   methods: {
     updateTelefoneResidencial(telefoneResidencial) {
       this.$emit('update:telefoneResidencial', telefoneResidencial);
+      this.$refs.celular.validate();
+      this.$refs.contato.validate();
     },
     updateTelefoneCelular(telefoneCelular) {
       this.$emit('update:telefoneCelular', telefoneCelular);
+      this.$refs.residencial.validate();
+      this.$refs.contato.validate();
     },
     updateTelefoneContato(telefoneContato) {
       this.$emit('update:telefoneContato', telefoneContato);
+      this.$refs.residencial.validate();
+      this.$refs.celular.validate();
     },
     requiredAtLeastOnePhoneNumber() {
       if (this.suspeito.telefoneResidencial) {

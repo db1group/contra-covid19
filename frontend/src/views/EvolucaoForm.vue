@@ -33,8 +33,8 @@ import HeaderTitle from '@/components/commons/HeaderTitle.vue';
 import EvolucaoForm from '@/components/Notificacao/Evolucao/Form.vue';
 import EvolucaoConsulta from '@/components/Notificacao/Evolucao/Cons.vue';
 import EvolucaoService from '@/services/EvolucaoService';
+import keycloak from '@/services/KeycloakService';
 import Evolucao from '@/entities/Evolucao';
-import { isSecretariaSaude } from '@/validations/KeycloakValidations';
 import DateService from '@/services/DateService';
 
 export default {
@@ -54,7 +54,7 @@ export default {
   }),
   methods: {
     consultarEvolucao() {
-      if (!isSecretariaSaude(this)) {
+      if (!this.isSecretariaSaude()) {
         this.$router.push({ name: 'notificacao-cons' });
       }
       EvolucaoService.findByNotificacaoId(this.notificacaoId)
@@ -75,6 +75,9 @@ export default {
         const dataMaxima = new Date(Math.max.apply(null, dataHoraDasAtualizacoes)).toString();
         this.dataMaximaPermitida = DateService.formatDateTypeToStringTypeWithMinutes(dataMaxima);
       }
+    },
+    isSecretariaSaude() {
+      return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
     },
   },
   created() {
