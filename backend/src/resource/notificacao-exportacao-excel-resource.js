@@ -12,7 +12,6 @@ exports.gerarExcel = async (req, res) => {
     const paisBrasil = 'Brasil';
     const { dataInicial, dataFinal } = req.query;
 
-    // eslint-disable-next-line sonarjs/no-duplicate-string
     const dataInicialFiltro = moment(`${dataInicial} 00:00:00`)
       .tz('America/Sao_Paulo')
       .utc()
