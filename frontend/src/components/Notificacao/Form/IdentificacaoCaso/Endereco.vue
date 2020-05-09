@@ -98,8 +98,8 @@ export default {
     },
   },
   data: () => ({
-    searchMunicipio: '',
-    searchBairro: '',
+    searchMunicipio: null,
+    searchBairro: null,
     municipios: {
       items: [],
       loading: true,
@@ -169,9 +169,8 @@ export default {
         .finally(() => { this.bairros.loading = false; });
     },
     searchBairros(search = '') {
-      if (!search) return;
       if (search === this.searchBairro) return;
-      this.searchBairro = search ? search.toUpperCase() : '';
+      this.searchBairro = search ? search.trim().toUpperCase() : '';
       this.findBairros(this.searchBairro);
     },
     findMunicipios(searchMunicipio = '') {
@@ -183,9 +182,8 @@ export default {
         .finally(() => { this.municipios.loading = false; });
     },
     searchMunicipios(search = '') {
-      if (!search) return;
       if (search === this.searchMunicipio) return;
-      this.searchMunicipio = search ? search.toUpperCase() : '';
+      this.searchMunicipio = search ? search.trim().toUpperCase() : '';
       this.findMunicipios(this.searchMunicipio);
     },
     carregarDadosSuspeito(suspeito) {

@@ -73,13 +73,13 @@ export default {
       items: [],
       loading: false,
     },
-    searchUnidade: '',
+    searchUnidade: null,
     unidadeSelected: null,
     profissoes: {
       items: [],
       loading: true,
     },
-    searchProfissao: '',
+    searchProfissao: null,
     profissaoSelected: null,
     rules: {
       unidadeSaudeId: [required],
@@ -112,9 +112,8 @@ export default {
         .finally(() => { this.profissoes.loading = false; });
     },
     searchProfissoes(search = '') {
-      if (!search) return;
       if (search === this.searchProfissao) return;
-      this.searchProfissao = search ? search.toUpperCase() : '';
+      this.searchProfissao = search ? search.trim().toUpperCase() : '';
       this.findProfissoes(this.searchProfissao);
     },
     findUnidadesDeSaude(searchUnidade = '') {
@@ -142,9 +141,8 @@ export default {
         });
     },
     searchUnidadeSaude(search = '') {
-      if (!search) return;
       if (search === this.searchUnidade) return;
-      this.searchUnidade = search ? search.toUpperCase() : '';
+      this.searchUnidade = search ? search.trim().toUpperCase() : '';
       this.findUnidadesDeSaude(this.searchUnidade);
     },
     isPermiteEscolherUnidadeSaudade() {
