@@ -103,8 +103,7 @@ exports.retornarHoraDaData = (objeto, nomeDaPropriedade) => {
     return null;
   }
 
-  const dataHora = moment(data);
-  return dataHora.format('HH:mm');
+  return moment(data).tz('America/Sao_Paulo').format('HH:mm');
 };
 
 exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
@@ -117,7 +116,7 @@ exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
     return null;
   }
 
-  return moment(data).format('DD/MM/YYYY');
+  return moment(data).tz('America/Sao_Paulo').format('DD/MM/YYYY');
 };
 
 exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {

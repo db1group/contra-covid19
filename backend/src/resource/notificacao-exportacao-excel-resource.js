@@ -12,9 +12,14 @@ exports.gerarExcel = async (req, res) => {
     const paisBrasil = 'Brasil';
     const { dataInicial, dataFinal } = req.query;
 
-    // eslint-disable-next-line sonarjs/no-duplicate-string
-    const dataInicialFiltro = moment(`${dataInicial} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').toISOString();
-    const dataFinalFiltro = moment(`${dataFinal} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').endOf('day').toISOString();
+    const dataInicialFiltro = moment(`${dataInicial} 00:00:00`)
+      .tz('America/Sao_Paulo')
+      .utc()
+      .format();
+    const dataFinalFiltro = moment(`${dataFinal} 23:59:59`)
+      .tz('America/Sao_Paulo')
+      .utc()
+      .format();
 
     const notificacoes = await models.Notificacao.findAll({
       where: {
@@ -51,6 +56,7 @@ exports.gerarExcel = async (req, res) => {
     });
 
     const listaTemp = notificacoes.map((t) => t.dataValues);
+    geraExcel.retornarHoraDaData(listaTemp[0].NotificacaoCovid19, 'dataHoraNotificacao');
     const lista = listaTemp.map((t) => ({
       dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
