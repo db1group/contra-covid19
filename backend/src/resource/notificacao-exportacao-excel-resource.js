@@ -12,13 +12,6 @@ exports.gerarExcel = async (req, res) => {
     const paisBrasil = 'Brasil';
     const { dataInicial, dataFinal } = req.query;
 
-    const dataInicialFiltro = moment(`${dataInicial} 00:00:00`)
-      .tz('America/Sao_Paulo')
-      .format();
-    const dataFinalFiltro = moment(`${dataFinal} 23:59:59`)
-      .tz('America/Sao_Paulo')
-      .format();
-
     const notificacoes = await models.Notificacao.findAll({
       where: {
         status: {
@@ -38,11 +31,7 @@ exports.gerarExcel = async (req, res) => {
         },
         {
           model: models.NotificacaoCovid19,
-          where: {
-            dataHoraNotificacao: {
-              [Op.between]: [dataInicialFiltro, dataFinalFiltro],
-            },
-          },
+          where: Sequelize.literal(`"NotificacaoCovid19"."dataHoraNotificacao" BETWEEN '${dataInicial} 00:00:00' and '${dataFinal} 23:59:59'`),
         },
         { model: models.UnidadeSaude },
         { model: models.ProfissionalSaude },
