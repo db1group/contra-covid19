@@ -24,6 +24,13 @@ exports.gerarExcel = async (req, res) => {
     const dataFinalFiltro1 = moment(`${dataFinal} 23:59:59`)
       .format();
 
+    const dataInicialFiltro2 = moment.utc(`${dataInicial} 00:00:00`)
+      .format();
+    const dataFinalFiltro2 = moment.utc(`${dataFinal} 23:59:59`)
+      .format();
+
+    const timezone = new Date().getTimezoneOffset() / 60;
+
     const notificacoes = await models.Notificacao.findAll({
       where: {
         status: {
@@ -56,7 +63,43 @@ exports.gerarExcel = async (req, res) => {
       ],
     });
 
-    const timezone = new Date().getTimezoneOffset() / 60;
+    const notificacoes2 = await models.Notificacao.findAll({
+      where: {
+        status: {
+          [Op.ne]: 'EXCLUIDA',
+        },
+      },
+      include: [
+        {
+          model: models.Pessoa,
+          include: [
+            {
+              model: models.Bairro,
+            },
+            { model: models.Ocupacao },
+            { model: models.Municipio },
+          ],
+        },
+        {
+          model: models.NotificacaoCovid19,
+          where: {
+            dataHoraNotificacao: {
+              [Op.between]: [dataInicialFiltro2, dataFinalFiltro2],
+            },
+          },
+        },
+        { model: models.UnidadeSaude },
+        { model: models.ProfissionalSaude },
+        { model: models.Profissao },
+        { model: models.User },
+      ],
+    });
+
+    notificacoes2.forEach((element) => {
+      notificacoes.push(element);
+    });
+
+
     const listaTemp = notificacoes.map((t) => t.dataValues);
     const lista = listaTemp.map((t) => ({
       dataInicialFiltro,
@@ -64,6 +107,8 @@ exports.gerarExcel = async (req, res) => {
       timezone,
       dataInicialFiltro1,
       dataFinalFiltro1,
+      dataInicialFiltro2,
+      dataFinalFiltro2,
       dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       usuarioDigitador: geraExcel.retornarCampo(t.User, 'email'),
@@ -192,6 +237,8 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'dataFinalFiltro', nomeCampo: 'dataFinalFiltro' },
       { nomeColuna: 'dataInicialFiltro1', nomeCampo: 'dataInicialFiltro1' },
       { nomeColuna: 'dataFinalFiltro1', nomeCampo: 'dataFinalFiltro1' },
+      { nomeColuna: 'dataInicialFiltro2', nomeCampo: 'dataInicialFiltro2' },
+      { nomeColuna: 'dataFinalFiltro2', nomeCampo: 'dataFinalFiltro2' },
       { nomeColuna: 'Data da Notificação', nomeCampo: 'dataDaNotificacao' },
       { nomeColuna: 'horaDaNotificacao', nomeCampo: 'horaDaNotificacao' },
       { nomeColuna: 'usuarioDigitador', nomeCampo: 'usuarioDigitador' },
