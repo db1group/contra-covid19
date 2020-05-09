@@ -180,7 +180,7 @@
 </template>
 <script>
 import {
-  required, dateFormat, dateHourMinuteFormat, exactLength, lessThanMaximumDate,
+  required, dateFormat, dateHourMinuteFormat, exactLength, lessThanMaximumDate, maxLength, minLength, onlyLetters,
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
@@ -225,8 +225,8 @@ export default {
       dataHoraNotificacao: [required, dateHourMinuteFormat],
       tipoDocumento: [required],
       numeroCpf: [exactLength(14)],
-      nome: [required],
-      nomeDaMae: [required],
+      nome: [required, onlyLetters, maxLength(150), minLength(3)],
+      nomeDaMae: [required, onlyLetters, maxLength(150), minLength(3)],
       dataDeNascimento: [required, dateFormat],
       sexo: [required],
       gestante: [],

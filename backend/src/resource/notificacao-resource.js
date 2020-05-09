@@ -4,6 +4,7 @@ const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
 const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
+const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
 
 
 const { Op } = Sequelize;
@@ -69,14 +70,21 @@ const buscarPessoaId = async (suspeito) => {
   return null;
 };
 
+const validarDocumento = ({ tipoClassificacaoPessoa, tipoDocumento, numeroDocumento }) => {
+  if (!numeroDocumento) return true;
+  if (tipoDocumento !== DocumentValidator.docs.CPF) return true;
+  if (tipoClassificacaoPessoa !== TipoClassificacaoPessoaEnum.values.Outro) return true;
+
+  return DocumentValidator.IsCpfValid(numeroDocumento);
+};
+
 const consolidarSuspeito = async (suspeito) => {
   const {
-    pessoaId, bairroId, municipioId, sexo, gestante, tipoDocumento,
-    numeroDocumento,
+    pessoaId, bairroId, municipioId,
+    sexo, gestante, tipoDocumento,
   } = suspeito;
 
-  if (tipoDocumento === DocumentValidator.Docs().CPF
-    && !DocumentValidator.IsCpfValid(numeroDocumento)) {
+  if (!validarDocumento(suspeito)) {
     throw new RegraNegocioErro(`${tipoDocumento} inválido.`);
   }
 
@@ -110,6 +118,10 @@ const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
       where: { id: unidadeSaudeId },
     },
   );
+
+  if (!unidadeDeSaude) {
+    throw new RegraNegocioErro(`Não foi localizada a unidade de saúde com o código ${unidadeSaudeId}`);
+  }
 
   return {
     ...notificacao,
@@ -309,7 +321,7 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
         [Op.ne]: 'EXCLUIDA',
       },
     },
-    attributes: ['id', 'status', 'createdAt'],
+    attributes: ['id', 'unidadeSaudeId', 'status', 'createdAt'],
     include: [{
       model: models.Pessoa,
       attributes: ['nome', 'numeroDocumento', 'telefoneContato'],

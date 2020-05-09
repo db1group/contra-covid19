@@ -158,6 +158,9 @@ export default {
   methods: {
     updateExistemOutrosSintomas(existemOutrosSintomas) {
       this.sintomas.existemOutrosSintomas = existemOutrosSintomas;
+      if (!this.sintomas.existemOutrosSintomas) {
+        this.updateOutros('');
+      }
     },
     updateAdinamiaFraqueza(adinamiaFraqueza) {
       this.$emit('update:adinamiaFraqueza', adinamiaFraqueza);

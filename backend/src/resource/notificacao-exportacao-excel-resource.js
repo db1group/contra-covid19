@@ -12,9 +12,17 @@ exports.gerarExcel = async (req, res) => {
     const paisBrasil = 'Brasil';
     const { dataInicial, dataFinal } = req.query;
 
-    // eslint-disable-next-line sonarjs/no-duplicate-string
-    const dataInicialFiltro = moment(`${dataInicial} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').toISOString();
-    const dataFinalFiltro = moment(`${dataFinal} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').endOf('day').toISOString();
+    const dataInicialFiltro = moment(`${dataInicial} 00:00:00`)
+      .tz('America/Sao_Paulo')
+      .format();
+    const dataFinalFiltro = moment(`${dataFinal} 23:59:59`)
+      .tz('America/Sao_Paulo')
+      .format();
+
+    const dataInicialFiltro1 = moment(`${dataInicial} 00:00:00`)
+      .format();
+    const dataFinalFiltro1 = moment(`${dataFinal} 23:59:59`)
+      .format();
 
     const notificacoes = await models.Notificacao.findAll({
       where: {
@@ -28,11 +36,9 @@ exports.gerarExcel = async (req, res) => {
           include: [
             {
               model: models.Bairro,
-              include: [
-                models.Municipio,
-              ],
             },
             { model: models.Ocupacao },
+            { model: models.Municipio },
           ],
         },
         {
@@ -46,13 +52,21 @@ exports.gerarExcel = async (req, res) => {
         { model: models.UnidadeSaude },
         { model: models.ProfissionalSaude },
         { model: models.Profissao },
+        { model: models.User },
       ],
     });
 
+    const timezone = new Date().getTimezoneOffset() / 60;
     const listaTemp = notificacoes.map((t) => t.dataValues);
     const lista = listaTemp.map((t) => ({
+      dataInicialFiltro,
+      dataFinalFiltro,
+      timezone,
+      dataInicialFiltro1,
+      dataFinalFiltro1,
       dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
+      usuarioDigitador: geraExcel.retornarCampo(t.User, 'email'),
       statusNotificacao: geraExcel.retornarCampo(t, 'status'),
       unidadeNotificante: t.UnidadeSaude ? t.UnidadeSaude.nome : null,
       cNES: t.UnidadeSaude ? t.UnidadeSaude.cnes : null,
@@ -173,8 +187,14 @@ exports.gerarExcel = async (req, res) => {
     ));
 
     const colunas = [
+      { nomeColuna: 'timezone', nomeCampo: 'timezone' },
+      { nomeColuna: 'dataInicialFiltro', nomeCampo: 'dataInicialFiltro' },
+      { nomeColuna: 'dataFinalFiltro', nomeCampo: 'dataFinalFiltro' },
+      { nomeColuna: 'dataInicialFiltro1', nomeCampo: 'dataInicialFiltro1' },
+      { nomeColuna: 'dataFinalFiltro1', nomeCampo: 'dataFinalFiltro1' },
       { nomeColuna: 'Data da Notificação', nomeCampo: 'dataDaNotificacao' },
       { nomeColuna: 'horaDaNotificacao', nomeCampo: 'horaDaNotificacao' },
+      { nomeColuna: 'usuarioDigitador', nomeCampo: 'usuarioDigitador' },
       { nomeColuna: 'statusNotificacao', nomeCampo: 'statusNotificacao' },
       { nomeColuna: 'unidadeNotificante', nomeCampo: 'unidadeNotificante' },
       { nomeColuna: 'cNES', nomeCampo: 'cNES' },
@@ -383,15 +403,11 @@ exports.retornarMunicipioDoPaciente = (notificacao) => {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro) {
+  if (!notificacao.Pessoa.Municipio) {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro.Municipio) {
-    return null;
-  }
-
-  return notificacao.Pessoa.Bairro.Municipio.nome;
+  return notificacao.Pessoa.Municipio.nome;
 };
 
 exports.retornarUFDoPaciente = (notificacao) => {
@@ -399,13 +415,9 @@ exports.retornarUFDoPaciente = (notificacao) => {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro) {
+  if (!notificacao.Pessoa.Municipio) {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro.Municipio) {
-    return null;
-  }
-
-  return notificacao.Pessoa.Bairro.Municipio.uf;
+  return notificacao.Pessoa.Municipio.uf;
 };
