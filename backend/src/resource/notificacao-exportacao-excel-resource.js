@@ -14,11 +14,9 @@ exports.gerarExcel = async (req, res) => {
 
     const dataInicialFiltro = moment(`${dataInicial} 00:00:00`)
       .tz('America/Sao_Paulo')
-      .utc()
       .format();
     const dataFinalFiltro = moment(`${dataFinal} 23:59:59`)
       .tz('America/Sao_Paulo')
-      .utc()
       .format();
 
     const notificacoes = await models.Notificacao.findAll({
@@ -33,11 +31,9 @@ exports.gerarExcel = async (req, res) => {
           include: [
             {
               model: models.Bairro,
-              include: [
-                models.Municipio,
-              ],
             },
             { model: models.Ocupacao },
+            { model: models.Municipio },
           ],
         },
         {
@@ -56,7 +52,7 @@ exports.gerarExcel = async (req, res) => {
     });
 
     const listaTemp = notificacoes.map((t) => t.dataValues);
-    geraExcel.retornarHoraDaData(listaTemp[0].NotificacaoCovid19, 'dataHoraNotificacao');
+
     const lista = listaTemp.map((t) => ({
       dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
@@ -392,15 +388,11 @@ exports.retornarMunicipioDoPaciente = (notificacao) => {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro) {
+  if (!notificacao.Pessoa.Municipio) {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro.Municipio) {
-    return null;
-  }
-
-  return notificacao.Pessoa.Bairro.Municipio.nome;
+  return notificacao.Pessoa.Municipio.nome;
 };
 
 exports.retornarUFDoPaciente = (notificacao) => {
@@ -408,13 +400,9 @@ exports.retornarUFDoPaciente = (notificacao) => {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro) {
+  if (!notificacao.Pessoa.Municipio) {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro.Municipio) {
-    return null;
-  }
-
-  return notificacao.Pessoa.Bairro.Municipio.uf;
+  return notificacao.Pessoa.Municipio.uf;
 };
