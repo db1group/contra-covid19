@@ -31,11 +31,9 @@ exports.gerarExcel = async (req, res) => {
           include: [
             {
               model: models.Bairro,
-              include: [
-                models.Municipio,
-              ],
             },
             { model: models.Ocupacao },
+            { model: models.Municipio },
           ],
         },
         {
@@ -390,15 +388,11 @@ exports.retornarMunicipioDoPaciente = (notificacao) => {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro) {
+  if (!notificacao.Pessoa.Municipio) {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro.Municipio) {
-    return null;
-  }
-
-  return notificacao.Pessoa.Bairro.Municipio.nome;
+  return notificacao.Pessoa.Municipio.nome;
 };
 
 exports.retornarUFDoPaciente = (notificacao) => {
@@ -406,13 +400,9 @@ exports.retornarUFDoPaciente = (notificacao) => {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro) {
+  if (!notificacao.Pessoa.Municipio) {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro.Municipio) {
-    return null;
-  }
-
-  return notificacao.Pessoa.Bairro.Municipio.uf;
+  return notificacao.Pessoa.Municipio.uf;
 };
