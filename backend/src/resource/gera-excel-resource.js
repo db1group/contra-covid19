@@ -76,6 +76,30 @@ exports.gerarExcel = async (colunas, lista, res) => {
   }
 };
 
+this.criarDataInicialParaFiltro = (dataString) => {
+  const dataSplit = dataString.split('-');
+  const ano = dataSplit[0];
+  const mes = parseInt(dataSplit[1], 11) - 1;
+  const dia = dataSplit[2];
+  const horaMinima = 0;
+  const minutoMinimo = 0;
+  const segundoMinimo = 0;
+  const milisegundoMinimo = 0;
+  return new Date(ano, mes, dia, horaMinima, minutoMinimo, segundoMinimo, milisegundoMinimo);
+};
+
+this.criarDataFinalParaFiltro = (dataString) => {
+  const dataSplit = dataString.split('-');
+  const ano = dataSplit[0];
+  const mes = parseInt(dataSplit[1], 11) - 1;
+  const dia = dataSplit[2];
+  const horaMaxima = 23;
+  const minutoMaximo = 59;
+  const segundoMaximo = 59;
+  const milisegundoMaximo = 999;
+  return new Date(ano, mes, dia, horaMaxima, minutoMaximo, segundoMaximo, milisegundoMaximo);
+};
+
 this.retornarCampo = (objeto, nomeDaPropriedade) => {
   if (!this.validarCampo(objeto, nomeDaPropriedade)) {
     return null;
