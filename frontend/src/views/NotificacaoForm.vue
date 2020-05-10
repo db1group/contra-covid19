@@ -31,7 +31,7 @@
           @update:numeroDocumento="updateSuspeito('numeroDocumento', $event)"
           @update:nome="updateSuspeito('nome', $event)"
           @update:nomeDaMae="updateSuspeito('nomeDaMae', $event)"
-          @update:sexo="updateSuspeito('sexo', $event)"
+          @update:sexo="updateSuspeitoSexo"
           @update:gestante="updateSuspeito('gestante', $event)"
           @update:tipoPeriodoGestacional="updateSuspeito('tipoPeriodoGestacional', $event)"
           @update:racaCor="updateSuspeito('racaCor', $event)"
@@ -110,6 +110,8 @@
         />
         <comorbidades
           :comorbidades="notificacao.comorbidades"
+          :feminino="notificacao.suspeito.sexo === 'F'"
+          :disabled="disableFields"
           @update:puerperaAte45DiasDoParto="updateComorbidade('puerperaAte45DiasDoParto', $event)"
           @update:doencaNeurologicaCronica="updateComorbidade('doencaNeurologicaCronica', $event)"
           @update:sindromeDeDown="updateComorbidade('sindromeDeDown', $event)"
@@ -127,7 +129,6 @@
           @update:neoplasia="updateComorbidade('neoplasia', $event)"
           @update:tabagismo="updateComorbidade('tabagismo', $event)"
           @update:outros="updateComorbidade('outros', $event)"
-          :disabled="disableFields"
         />
         <informacoes-complementares
           :informacoes-complementares="notificacao.informacaoComplementar"
@@ -298,6 +299,12 @@ export default {
     },
     updateConclusaoAtendimento(campo, valor) {
       this.notificacao.conclusaoAtendimento[campo] = valor;
+    },
+    updateSuspeitoSexo(sexo) {
+      this.notificacao.suspeito.sexo = sexo;
+      if (sexo !== 'F') {
+        this.notificacao.comorbidades.puerperaAte45DiasDoParto = false;
+      }
     },
     send() {
       if (this.stateForm === StateForm.VIEW) return;
