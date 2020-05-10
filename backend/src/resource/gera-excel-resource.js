@@ -4,6 +4,11 @@ const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
 
+const TIME_ZONE = {
+  // eslint-disable-next-line sonarjs/no-duplicate-string
+  AMERICA_SAO_PAULO: 'America/Sao_Paulo',
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 exports.gerarExcel = async (colunas, lista, res) => {
   try {
@@ -76,29 +81,11 @@ exports.gerarExcel = async (colunas, lista, res) => {
   }
 };
 
-this.criarDataInicialParaFiltro = (dataString) => {
-  const dataSplit = dataString.split('-');
-  const ano = dataSplit[0];
-  const mes = parseInt(dataSplit[1], 11) - 1;
-  const dia = dataSplit[2];
-  const horaMinima = 0;
-  const minutoMinimo = 0;
-  const segundoMinimo = 0;
-  const milisegundoMinimo = 0;
-  return new Date(ano, mes, dia, horaMinima, minutoMinimo, segundoMinimo, milisegundoMinimo);
-};
+this.criarDataInicialParaFiltro = (data) => moment
+  .tz(data, TIME_ZONE.AMERICA_SAO_PAULO).toISOString();
 
-this.criarDataFinalParaFiltro = (dataString) => {
-  const dataSplit = dataString.split('-');
-  const ano = dataSplit[0];
-  const mes = parseInt(dataSplit[1], 11) - 1;
-  const dia = dataSplit[2];
-  const horaMaxima = 23;
-  const minutoMaximo = 59;
-  const segundoMaximo = 59;
-  const milisegundoMaximo = 999;
-  return new Date(ano, mes, dia, horaMaxima, minutoMaximo, segundoMaximo, milisegundoMaximo);
-};
+this.criarDataFinalParaFiltro = (data) => moment
+  .tz(data, TIME_ZONE.AMERICA_SAO_PAULO).endOf('day').toISOString();
 
 this.retornarCampo = (objeto, nomeDaPropriedade) => {
   if (!this.validarCampo(objeto, nomeDaPropriedade)) {
@@ -127,7 +114,7 @@ exports.retornarHoraDaData = (objeto, nomeDaPropriedade) => {
     return null;
   }
 
-  return moment(data).tz('America/Sao_Paulo').format('HH:mm');
+  return moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('HH:mm');
 };
 
 exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
@@ -140,7 +127,7 @@ exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
     return null;
   }
 
-  return moment(data).tz('America/Sao_Paulo').format('DD/MM/YYYY');
+  return moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY');
 };
 
 exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {
