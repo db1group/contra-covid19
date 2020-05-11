@@ -4,6 +4,11 @@ const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
 
+const TIME_ZONE = {
+  // eslint-disable-next-line sonarjs/no-duplicate-string
+  AMERICA_SAO_PAULO: 'America/Sao_Paulo',
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 exports.gerarExcel = async (colunas, lista, res) => {
   try {
@@ -76,6 +81,12 @@ exports.gerarExcel = async (colunas, lista, res) => {
   }
 };
 
+this.criarDataInicialParaFiltro = (data) => moment
+  .tz(data, TIME_ZONE.AMERICA_SAO_PAULO).toISOString();
+
+this.criarDataFinalParaFiltro = (data) => moment
+  .tz(data, TIME_ZONE.AMERICA_SAO_PAULO).endOf('day').toISOString();
+
 this.retornarCampo = (objeto, nomeDaPropriedade) => {
   if (!this.validarCampo(objeto, nomeDaPropriedade)) {
     return null;
@@ -103,8 +114,7 @@ exports.retornarHoraDaData = (objeto, nomeDaPropriedade) => {
     return null;
   }
 
-  const dataHora = moment(data);
-  return dataHora.format('HH:mm');
+  return moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('HH:mm');
 };
 
 exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
@@ -117,7 +127,7 @@ exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
     return null;
   }
 
-  return moment(data).format('DD/MM/YYYY');
+  return moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY');
 };
 
 exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {

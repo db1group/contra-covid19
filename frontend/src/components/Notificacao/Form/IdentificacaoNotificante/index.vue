@@ -49,7 +49,9 @@
   </div>
 </template>
 <script>
-import { required, maxLength } from '@/validations/CommonValidations';
+import {
+  required, minLength, maxLength, onlyLetters,
+} from '@/validations/CommonValidations';
 import Notificacao from '@/entities/Notificacao';
 import ProfissaoService from '@/services/ProfissaoService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
@@ -71,18 +73,18 @@ export default {
       items: [],
       loading: false,
     },
-    searchUnidade: '',
+    searchUnidade: null,
     unidadeSelected: null,
     profissoes: {
       items: [],
       loading: true,
     },
-    searchProfissao: '',
+    searchProfissao: null,
     profissaoSelected: null,
     rules: {
       unidadeSaudeId: [required],
       profissaoId: [required],
-      nomeNotificador: [required, maxLength(80)],
+      nomeNotificador: [required, onlyLetters, maxLength(80), minLength(3)],
     },
   }),
   watch: {
@@ -110,9 +112,8 @@ export default {
         .finally(() => { this.profissoes.loading = false; });
     },
     searchProfissoes(search = '') {
-      if (!search) return;
       if (search === this.searchProfissao) return;
-      this.searchProfissao = search ? search.toUpperCase() : '';
+      this.searchProfissao = search ? search.trim().toUpperCase() : '';
       this.findProfissoes(this.searchProfissao);
     },
     findUnidadesDeSaude(searchUnidade = '') {
@@ -140,9 +141,8 @@ export default {
         });
     },
     searchUnidadeSaude(search = '') {
-      if (!search) return;
       if (search === this.searchUnidade) return;
-      this.searchUnidade = search ? search.toUpperCase() : '';
+      this.searchUnidade = search ? search.trim().toUpperCase() : '';
       this.findUnidadesDeSaude(this.searchUnidade);
     },
     isPermiteEscolherUnidadeSaudade() {

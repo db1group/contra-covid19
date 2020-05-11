@@ -12,6 +12,7 @@ exports.consultaPorNome = async (req, res) => {
       },
     },
     limit: 10,
+    order: [['nome', 'ASC']],
   });
 
   return res.json({ data: unidadesSaude });

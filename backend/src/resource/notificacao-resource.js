@@ -5,6 +5,7 @@ const { RegraNegocioErro } = require('../lib/erros');
 const { UsuarioLogado } = require('../secure/usuario-logado');
 const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
+const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
 const atualizacaoNotificacaoService = require('../services/atualizar-notificacao-service');
 
 const { Op } = Sequelize;
@@ -70,9 +71,11 @@ const buscarPessoaId = async (suspeito) => {
   return null;
 };
 
-const validarDocumento = ({ tipoDocumento, numeroDocumento }) => {
-  if (!numeroDocumento) return true;
-  if (tipoDocumento !== DocumentValidator.Docs().CPF) return true;
+const validarDocumento = ({ tipoClassificacaoPessoa, tipoDocumento, numeroDocumento }) => {
+  if (tipoDocumento !== DocumentValidator.docs.CPF) return true;
+
+  if (tipoClassificacaoPessoa !== TipoClassificacaoPessoaEnum.values.Outro
+    && !numeroDocumento) return true;
 
   return DocumentValidator.IsCpfValid(numeroDocumento);
 };

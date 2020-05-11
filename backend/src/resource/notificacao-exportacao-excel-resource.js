@@ -5,16 +5,14 @@ const models = require('../models');
 
 const { Op } = Sequelize;
 
-
 // eslint-disable-next-line sonarjs/cognitive-complexity
 exports.gerarExcel = async (req, res) => {
   try {
     const paisBrasil = 'Brasil';
     const { dataInicial, dataFinal } = req.query;
 
-    // eslint-disable-next-line sonarjs/no-duplicate-string
-    const dataInicialFiltro = moment(`${dataInicial} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').toISOString();
-    const dataFinalFiltro = moment(`${dataFinal} 00:00:00`, 'YYYY-MM-DD HH:mm:ss').endOf('day').toISOString();
+    const dataInicialFiltro = geraExcel.criarDataInicialParaFiltro(dataInicial);
+    const dataFinalFiltro = geraExcel.criarDataFinalParaFiltro(dataFinal);
 
     const notificacoes = await models.Notificacao.findAll({
       where: {
@@ -28,11 +26,9 @@ exports.gerarExcel = async (req, res) => {
           include: [
             {
               model: models.Bairro,
-              include: [
-                models.Municipio,
-              ],
             },
             { model: models.Ocupacao },
+            { model: models.Municipio },
           ],
         },
         {
@@ -46,6 +42,7 @@ exports.gerarExcel = async (req, res) => {
         { model: models.UnidadeSaude },
         { model: models.ProfissionalSaude },
         { model: models.Profissao },
+        { model: models.User },
       ],
     });
 
@@ -53,6 +50,7 @@ exports.gerarExcel = async (req, res) => {
     const lista = listaTemp.map((t) => ({
       dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
+      usuarioDigitador: geraExcel.retornarCampo(t.User, 'email'),
       statusNotificacao: geraExcel.retornarCampo(t, 'status'),
       unidadeNotificante: t.UnidadeSaude ? t.UnidadeSaude.nome : null,
       cNES: t.UnidadeSaude ? t.UnidadeSaude.cnes : null,
@@ -175,6 +173,7 @@ exports.gerarExcel = async (req, res) => {
     const colunas = [
       { nomeColuna: 'Data da Notificação', nomeCampo: 'dataDaNotificacao' },
       { nomeColuna: 'horaDaNotificacao', nomeCampo: 'horaDaNotificacao' },
+      { nomeColuna: 'usuarioDigitador', nomeCampo: 'usuarioDigitador' },
       { nomeColuna: 'statusNotificacao', nomeCampo: 'statusNotificacao' },
       { nomeColuna: 'unidadeNotificante', nomeCampo: 'unidadeNotificante' },
       { nomeColuna: 'cNES', nomeCampo: 'cNES' },
@@ -383,15 +382,11 @@ exports.retornarMunicipioDoPaciente = (notificacao) => {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro) {
+  if (!notificacao.Pessoa.Municipio) {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro.Municipio) {
-    return null;
-  }
-
-  return notificacao.Pessoa.Bairro.Municipio.nome;
+  return notificacao.Pessoa.Municipio.nome;
 };
 
 exports.retornarUFDoPaciente = (notificacao) => {
@@ -399,13 +394,9 @@ exports.retornarUFDoPaciente = (notificacao) => {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro) {
+  if (!notificacao.Pessoa.Municipio) {
     return null;
   }
 
-  if (!notificacao.Pessoa.Bairro.Municipio) {
-    return null;
-  }
-
-  return notificacao.Pessoa.Bairro.Municipio.uf;
+  return notificacao.Pessoa.Municipio.uf;
 };

@@ -93,6 +93,7 @@ export default {
     },
     goToOrientations() {
       const url = Configuration.value('VUE_APP_ORIENTATIONS_PDF');
+      console.log('URL do PDF: ', url);
       if (url) {
         window.open(url);
       }
