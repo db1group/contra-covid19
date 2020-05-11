@@ -3,9 +3,13 @@ const Keycloak = require('keycloak-connect');
 
 const memoryStore = new session.MemoryStore();
 
+const keycloakURL = process.env.NODE_ENV === 'prod'
+  ? 'https://auth.notificasaude.com.br/auth'
+  : 'https://qa-auth.notificasaude.com.br/auth';
+
 const kcConfig = {
   realm: 'notificasaude',
-  'auth-server-url': process.env.KEYCLOAK_URL || 'https://auth.notificasaude.com.br/auth',
+  'auth-server-url': process.env.KEYCLOAK_URL || keycloakURL,
   'ssl-required': 'external',
   resource: 'notificasaude',
   'public-client': true,
