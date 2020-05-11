@@ -51,7 +51,7 @@
   </v-row>
 </template>
 <script>
-import { minLength } from '@/validations/CommonValidations';
+import { minLengthNumbersWithMask } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
 
@@ -69,9 +69,9 @@ export default {
   },
   data: () => ({
     rules: {
-      telefoneResidencial: [minLength(10)],
-      telefoneCelular: [minLength(11)],
-      telefoneContato: [minLength(10)],
+      telefoneResidencial: [minLengthNumbersWithMask(10)],
+      telefoneCelular: [minLengthNumbersWithMask(11)],
+      telefoneContato: [minLengthNumbersWithMask(10)],
     },
   }),
   methods: {
