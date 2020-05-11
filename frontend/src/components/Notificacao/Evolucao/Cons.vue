@@ -2,7 +2,7 @@
   <div>
     <v-row>
       <v-col>
-        <h4 class="primary--text font-weight-medium title">IDENTIFICAÇÃO DO NOTIFICANTE</h4>
+        <h4 class="primary--text font-weight-medium title">IDENTIFICAÇÃO DO PACIENTE</h4>
         <v-row dense>
           <v-col>
             <span class="font-weight-bold">Nome</span>

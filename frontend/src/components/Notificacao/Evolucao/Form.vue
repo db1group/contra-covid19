@@ -9,7 +9,7 @@
           <v-col>
             <v-text-field
               :value="evolucao.dataHoraAtualizacao"
-              label="Data e hora da notificação *"
+              label="Data e hora da evolução *"
               v-mask="'##/##/#### ##:##'"
               validate-on-blur
               :rules="rules.dataHoraAtualizacao"
