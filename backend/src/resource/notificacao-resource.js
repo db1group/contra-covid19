@@ -71,9 +71,10 @@ const buscarPessoaId = async (suspeito) => {
 };
 
 const validarDocumento = ({ tipoClassificacaoPessoa, tipoDocumento, numeroDocumento }) => {
-  if (!numeroDocumento) return true;
   if (tipoDocumento !== DocumentValidator.docs.CPF) return true;
-  if (tipoClassificacaoPessoa !== TipoClassificacaoPessoaEnum.values.Outro) return true;
+
+  if (tipoClassificacaoPessoa !== TipoClassificacaoPessoaEnum.values.Outro
+    && !numeroDocumento) return true;
 
   return DocumentValidator.IsCpfValid(numeroDocumento);
 };
