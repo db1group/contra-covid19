@@ -8,6 +8,10 @@ router.post('/notificacoes',
   validate(schemas.notificacao.cadastrar),
   NotificacaoResource.salvar);
 
+  router.put('/notificacoes/:id',
+  validate(schemas.notificacao.cadastrar),
+  NotificacaoResource.atualizar);
+
 router.get('/notificacoes', NotificacaoResource.consultarPaginado);
 router.get('/notificacoes/consulta', NotificacaoResource.consultarNotificacoesWeb);
 router.get('/notificacoes/:id', NotificacaoResource.consultarPorId);

@@ -17,3 +17,9 @@ exports.getPorUserEmail = async (email) => {
 
   return userUnidadesSaude.map((userUnidadeSaude) => userUnidadeSaude.UnidadeSaude);
 };
+
+exports.getPorId = async (id) => models.UnidadeSaude.findOne(
+  {
+    where: { id },
+  },
+);

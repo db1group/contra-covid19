@@ -14,9 +14,9 @@ function isPatternValid(cpf) {
   );
 }
 
-exports.Docs = () => {
-  const docs = { CPF: 'CPF', CNPJ: 'CNPJ' };
-  return Object.freeze(docs);
+exports.docs = {
+  CPF: 'CPF', 
+  CNPJ: 'CNPJ'
 };
 
 exports.IsCpfValid = (cpf) => {

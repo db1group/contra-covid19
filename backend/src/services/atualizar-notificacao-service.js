@@ -4,12 +4,12 @@ const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
 
 module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
-  const notificacaoModel = await repos.NotificacaoRepository.getPorId(notificacaoRequest.id);
+  const notificacaoModel = await repos.notificacaoRepository.getPorId(notificacaoRequest.id);
 
   if (usuarioLogado.isRoleSecretariaSaude()) {
     const { unidadeSaudeId } = notificacaoModel;
 
-    const unidadesSaudeUser = await repos.UnidadeSaudeRepository
+    const unidadesSaudeUser = await repos.unidadeSaudeRepository
       .getPorUserEmail(usuarioLogado.email);
 
     if (!unidadesSaudeUser) { throw new RegraNegocioErro('Você não possui autorização para atualizar esta notificação.'); }
@@ -19,7 +19,7 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
 
   const { tipoDocumento, numeroDocumento, status = 'ABERTA' } = notificacaoRequest.suspeito;
 
-  const notificacoesAbertasSuspeito = await repos.NotificacaoRepository
+  const notificacoesAbertasSuspeito = await repos.notificacaoRepository
     .getPorPessoaDocumento(tipoDocumento, numeroDocumento, status);
 
   if (notificacoesAbertasSuspeito.length > 1) {
@@ -30,13 +30,13 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
 
   const suspeitoUpdate = notificacaoRequest.suspeito;
   suspeitoUpdate.id = notificacaoConsolidada.suspeito.pessoaId;
-  await repos.PessoaRepository.atualizar(suspeitoUpdate);
+  await repos.pessoaRepository.atualizar(suspeitoUpdate);
 
   const notificacaoUpdate = Mappers.Notificacao.mapearParaNotificacao(notificacaoConsolidada);
   notificacaoUpdate.id = notificacaoRequest.id;
-  await repos.NotificacaoRepository.atualizar(notificacaoUpdate);
+  await repos.notificacaoRepository.atualizar(notificacaoUpdate);
 
   const { notificacaoCovid19 } = notificacaoUpdate;
   notificacaoCovid19.notificacaoId = notificacaoRequest.id;
-  await repos.NotificacaoCovid19Repository.atualizar(notificacaoCovid19);
+  await repos.notificacaoCovid19Repository.atualizar(notificacaoCovid19);
 };
