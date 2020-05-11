@@ -5,7 +5,7 @@ const memoryStore = new session.MemoryStore();
 
 const kcConfig = {
   realm: 'notificasaude',
-  'auth-server-url': process.env.KEYCLOAK_URL || 'https://qa-auth.notificasaude.com.br/auth',
+  'auth-server-url': process.env.KEYCLOAK_URL || 'https://auth.notificasaude.com.br/auth',
   'ssl-required': 'external',
   resource: 'notificasaude',
   'public-client': true,
