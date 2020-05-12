@@ -2,10 +2,11 @@ const { Sequelize } = require('sequelize');
 const models = require('../models');
 const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
+const { UsuarioLogado } = require('../secure/usuario-logado');
 const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
 const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
-
+const atualizacaoNotificacaoService = require('../services/atualizar-notificacao-service');
 
 const { Op } = Sequelize;
 
@@ -269,6 +270,20 @@ exports.salvar = async (req, res, next) => {
         ...retorno,
       },
     });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+exports.atualizar = async (req, res, next) => {
+  const { id } = req.params;
+  const notificacaoRequest = req.body;
+  try {
+    const usuarioLogado = new UsuarioLogado(req);
+    notificacaoRequest.id = id;
+    await atualizacaoNotificacaoService.handle(notificacaoRequest, usuarioLogado);
+
+    return res.status(204).json();
   } catch (error) {
     return next(error);
   }

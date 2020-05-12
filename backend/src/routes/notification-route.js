@@ -4,18 +4,24 @@ const router = express.Router();
 const NotificacaoResource = require('../resource/notificacao-resource');
 const { validate, schemas } = require('../validations');
 
-router.post('/notificacoes',
+const prefixoRoute = '/notificacoes';
+
+router.post(`${prefixoRoute}`,
   validate(schemas.notificacao.cadastrar),
   NotificacaoResource.salvar);
 
-router.get('/notificacoes', NotificacaoResource.consultarPaginado);
-router.get('/notificacoes/consulta', NotificacaoResource.consultarNotificacoesWeb);
-router.get('/notificacoes/:id', NotificacaoResource.consultarPorId);
+router.put(`${prefixoRoute}/:id`,
+  validate(schemas.notificacao.cadastrar),
+  NotificacaoResource.atualizar);
 
-router.delete('/notificacoes/:id', NotificacaoResource.excluirLogicamenteNotificacao);
-router.delete('/notificacoes', NotificacaoResource.excluirLoteLogicamenteNotificacao);
+router.get(`${prefixoRoute}`, NotificacaoResource.consultarPaginado);
+router.get(`${prefixoRoute}/consulta`, NotificacaoResource.consultarNotificacoesWeb);
+router.get(`${prefixoRoute}/:id`, NotificacaoResource.consultarPorId);
 
-router.get('/notificacoes/:id/evolucoes', NotificacaoResource.consultarNotificacaoEvolucao);
-router.post('/notificacoes/:id/evolucoes', NotificacaoResource.salvarEvolucao);
+router.delete(`${prefixoRoute}/:id`, NotificacaoResource.excluirLogicamenteNotificacao);
+router.delete(`${prefixoRoute}`, NotificacaoResource.excluirLoteLogicamenteNotificacao);
+
+router.get(`${prefixoRoute}/:id/evolucoes`, NotificacaoResource.consultarNotificacaoEvolucao);
+router.post(`${prefixoRoute}/:id/evolucoes`, NotificacaoResource.salvarEvolucao);
 
 module.exports = router;
