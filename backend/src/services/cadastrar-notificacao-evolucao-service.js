@@ -1,6 +1,7 @@
 const repos = require('../repositories/repository-factory');
 const models = require('../models');
 const statusNotificacaoEnum = require('../enums/status-notificacao-enum');
+const tipoNotificacaoEvolucaoEnum = require('../enums/tipo-notificacao-evolucao-enum');
 const { RegraNegocioErro } = require('../lib/erros');
 
 const validarDataEvolucaoSuperiorDataNotificacao = async (notificacao, dtEvolucao) => {
@@ -20,13 +21,19 @@ const validarNotificacaoFinalizada = async (notificacao) => {
 };
 
 const validarPossuiConfirmacao = async (evolucao) => {
-  const tpEvolucaoPrecisaTerConfirmacao = (evolucao.tpEvolucao === 'CURA'
-        || evolucao.tpEvolucao === 'OBITO');
+  const tpEvolucaoPrecisaTerConfirmacao = (evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
+    .values.Curado
+        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
+          .values.Obito);
 
-  const tpEvolucaoProibidaSeJaConfirmada = (evolucao.tpEvolucao === 'SUSPEITO'
-        || evolucao.tpEvolucao === 'DESCARTADO'
-        || evolucao.tpEvolucao === 'CONFIRMADO'
-        || evolucao.tpEvolucao === 'ENCERRADO');
+  const tpEvolucaoProibidaSeJaConfirmada = (evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
+    .values.Suspeito
+        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
+          .values.Descartado
+        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
+          .values.Confirmado
+        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
+          .values.Encerrado);
 
   if (!(tpEvolucaoPrecisaTerConfirmacao || tpEvolucaoProibidaSeJaConfirmada)) {
     return;
@@ -46,39 +53,13 @@ const validarPossuiConfirmacao = async (evolucao) => {
   }
 
   if (!evolucaoConfirmado && tpEvolucaoPrecisaTerConfirmacao) {
-    throw new RegraNegocioErro(`Não é possivel atualizar para ${evolucao.tpEvolucao}
-        pois não existe atualização de confirmação.`);
+    throw new RegraNegocioErro(`Não é possivel atualizar para ${evolucao.tpEvolucao} pois não existe atualização de confirmação.`);
   }
 };
 
-const encerrarNotificacao = async (evolucao, t) => {
-  const deveEncerrar = (evolucao.tpEvolucao === 'CURA'
-        || evolucao.tpEvolucao === 'DESCARTADO'
-        || evolucao.tpEvolucao === 'ENCERRADO'
-        || evolucao.tpEvolucao === 'OBITO');
-
-  if (!deveEncerrar) {
-    return;
-  }
-
-  await models.Notificacao.update(
-    { status: 'ENCERRADA' },
-    {
-      where: { id: evolucao.notificacaoId },
-      transaction: t,
-    },
-  );
-};
-
-exports.handle = async (evolucaoRequest) => models.sequelize.transaction(async (transaction) => {
-  const { notificacaoId } = evolucaoRequest;
-  const notificacao = repos.notificacaoRepository.getPorId(notificacaoId);
-
-  validarDataEvolucaoSuperiorDataNotificacao(notificacao, evolucaoRequest.dtEvolucao);
-  validarNotificacaoFinalizada(notificacao);
-  validarPossuiConfirmacao(evolucaoRequest);
-
-  const evolucoes = repos.notificacaoRepository.getEvolucoesPorNotificacaoId(notificacaoId);
+const validarProximaEvolucao = async (evolucaoRequest) => {
+  const evolucoes = await repos.notificacaoRepository
+    .getEvolucoesPorNotificacaoId(evolucaoRequest.notificacaoId);
 
   const evolucoesSort = evolucoes.NotificacaoEvolucaos.sort((a, b) => {
     const dataEvolucaoItemA = new Date(a.dtEvolucao);
@@ -88,12 +69,45 @@ exports.handle = async (evolucaoRequest) => models.sequelize.transaction(async (
 
   const ultimaEvolucao = evolucoesSort[evolucoesSort.length - 1];
   if (ultimaEvolucao.tpEvolucao === evolucaoRequest.tpEvolucao) {
-    const msgErro = `Não é permitido cadastrar evolução com mesmo status da última ocorrência. 
-                Status utilizado: ${evolucaoRequest.tpEvolucao}.`;
+    const msgErro = 'Não é permitido cadastrar evolução com mesmo status da última ocorrência.';
     throw new RegraNegocioErro(msgErro);
   }
 
+  const dataUltimaEvolucao = new Date(ultimaEvolucao.dtEvolucao);
+  const dataEvolucao = new Date(evolucaoRequest.dtEvolucao);
+  if (dataEvolucao <= dataUltimaEvolucao) throw new RegraNegocioErro('A data da evolução não pode ser menor que a data da última ocorrência de evolução.');
+};
+
+const atualizarStatusNotificacao = async (evolucao, t) => {
+  const deveEncerrar = (evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Curado
+        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Descartado
+        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Encerrado
+        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Obito);
+
+  const status = deveEncerrar ? statusNotificacaoEnum.values.Encerrada
+    : statusNotificacaoEnum.values.Aberta;
+
+  await models.Notificacao.update(
+    { status },
+    {
+      where: { id: evolucao.notificacaoId },
+      transaction: t,
+    },
+  );
+};
+
+exports.handle = async (evolucaoRequest) => models.sequelize.transaction(async (transaction) => {
+  const { notificacaoId } = evolucaoRequest;
+  const notificacao = await repos.notificacaoRepository.getPorId(notificacaoId);
+
+  if (notificacao.status !== 'ABERTA') throw new RegraNegocioErro('Notificação não está mais aberta.');
+
+  await validarDataEvolucaoSuperiorDataNotificacao(notificacao, evolucaoRequest.dtEvolucao);
+  await validarNotificacaoFinalizada(notificacao);
+  await validarPossuiConfirmacao(evolucaoRequest);
+  await validarProximaEvolucao(evolucaoRequest);
+
   const evolucao = repos.notificacaoRepository.cadastrarEvolucao(evolucaoRequest, transaction);
-  encerrarNotificacao(evolucaoRequest, transaction);
+  atualizarStatusNotificacao(evolucaoRequest, transaction);
   return evolucao;
 });
