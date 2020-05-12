@@ -17,10 +17,8 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
     if (!unidadesSaudeUser.some((data) => data.id === unidadeSaudeId)) { throw new RegraNegocioErro('Você não possui autorização para atualizar esta notificação.'); }
   }
 
-  const { tipoDocumento, numeroDocumento, status = 'ABERTA' } = notificacaoRequest.suspeito;
-
   const notificacoesAbertasSuspeito = await repos.notificacaoRepository
-    .getPorPessoaDocumento(tipoDocumento, numeroDocumento, status);
+    .getPorPessoaDocumento(notificacaoRequest.suspeito);
 
   if (notificacoesAbertasSuspeito.length > 1) {
     throw new RegraNegocioErro('Já existe uma notificação aberta para este paciente.');
