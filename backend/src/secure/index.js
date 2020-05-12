@@ -20,7 +20,6 @@ const kcConfig = {
 let keycloak;
 
 const initKeycloak = (app) => {
-  if (keycloak) return;
   app.use(session({
     secret: process.env.SECRET_SESSION || '5125a58efebcf5cbad9ef2daa1d60afc',
     resave: false,
@@ -32,6 +31,7 @@ const initKeycloak = (app) => {
 };
 
 const protectApp = (app) => {
+  if (keycloak) return keycloak;
   initKeycloak(app);
   app.use(keycloak.middleware());
   return keycloak;
