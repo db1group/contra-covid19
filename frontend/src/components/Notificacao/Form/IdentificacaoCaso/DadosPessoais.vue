@@ -180,7 +180,8 @@
 </template>
 <script>
 import {
-  required, dateFormat, dateHourMinuteFormat, exactLength, lessThanMaximumDate, maxLength, minLength, onlyLetters,
+  required, dateFormat, dateHourMinuteFormat, minLengthNumbersWithMask, lessThanMaximumDate,
+  maxLength, minLength, onlyLetters,
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
@@ -224,7 +225,7 @@ export default {
     rules: {
       dataHoraNotificacao: [required, dateHourMinuteFormat],
       tipoDocumento: [required],
-      numeroCpf: [exactLength(14)],
+      numeroCpf: [minLengthNumbersWithMask(11)],
       nome: [required, onlyLetters, maxLength(150), minLength(3)],
       nomeDaMae: [required, onlyLetters, maxLength(150), minLength(3)],
       dataDeNascimento: [required, dateFormat],
@@ -297,13 +298,6 @@ export default {
         return true;
       }
       return required(value);
-    },
-
-    maxLengthIfCPF(value) {
-      if (this.suspeito.tipoDocumento !== 'CPF') {
-        return true;
-      }
-      return exactLength(11)(value);
     },
     validateFutureDate(value) {
       return lessThanMaximumDate(value, null, 'Informe uma data igual ou anterior ao dia de hoje.');
