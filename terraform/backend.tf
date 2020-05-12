@@ -99,7 +99,7 @@ resource "aws_ecs_task_definition" "backend" {
       {
         "name" : "SECRET_SESSION",
         "value" : "${random_uuid.secret.result}-ns"
-      },
+      }
     ],
     "requiresAttributes": [
         {
