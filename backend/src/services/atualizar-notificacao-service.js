@@ -6,7 +6,7 @@ const { RegraNegocioErro } = require('../lib/erros');
 module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
   const notificacaoModel = await repos.notificacaoRepository.getPorId(notificacaoRequest.id);
 
-  if (usuarioLogado.isRoleSecretariaSaude()) {
+  if (!usuarioLogado.isRoleSecretariaSaude()) {
     const { unidadeSaudeId } = notificacaoModel;
 
     const unidadesSaudeUser = await repos.unidadeSaudeRepository
