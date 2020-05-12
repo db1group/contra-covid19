@@ -22,6 +22,6 @@ router.delete(`${prefixoRoute}/:id`, NotificacaoResource.excluirLogicamenteNotif
 router.delete(`${prefixoRoute}`, NotificacaoResource.excluirLoteLogicamenteNotificacao);
 
 router.get(`${prefixoRoute}/:id/evolucoes`, NotificacaoResource.consultarNotificacaoEvolucao);
-router.post(`${prefixoRoute}:id/evolucoes`, NotificacaoResource.salvarEvolucao);
+router.post(`${prefixoRoute}/:id/evolucoes`, NotificacaoResource.salvarEvolucao);
 
 module.exports = router;
