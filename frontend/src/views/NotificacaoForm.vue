@@ -180,9 +180,7 @@
         v-model="showAlert"
         color="warning"
         bottom
-      >
-        Algum dos campos do formulário possui alguma pendência
-      </v-snackbar>
+      >Algum dos campos do formulário possui alguma pendência</v-snackbar>
     </base-page>
   </section>
 </template>
@@ -310,15 +308,30 @@ export default {
       if (this.stateForm === StateForm.VIEW) return;
       if (this.$refs.form.validate()) {
         const requestNotificacao = this.notificacao.toRequestBody();
-        NotificacaoService.save(requestNotificacao).then(() => {
-          this.$router.push({
-            name: 'notificacao-cons',
-            params: { msg: 'Notificação enviada com sucesso.' },
+
+        if (this.notificacao.id) {
+          NotificacaoService.update(this.notificacao.id, requestNotificacao).then(() => {
+            const msg = 'Notificação atualizada com sucesso.';
+            this.$router.push({
+              name: 'notificacao-cons',
+              params: { msg },
+            });
+          }).catch(({ response }) => {
+            this.showError = true;
+            this.errorMessage = response.data.error;
           });
-        }).catch(({ response }) => {
-          this.showError = true;
-          this.errorMessage = response.data.error;
-        });
+        } else {
+          NotificacaoService.save(requestNotificacao).then(() => {
+            const msg = 'Notificação enviada com sucesso.';
+            this.$router.push({
+              name: 'notificacao-cons',
+              params: { msg },
+            });
+          }).catch(({ response }) => {
+            this.showError = true;
+            this.errorMessage = response.data.error;
+          });
+        }
       } else {
         this.showAlert = true;
       }

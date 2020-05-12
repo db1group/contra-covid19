@@ -6,6 +6,9 @@ export default {
   save(notificacaco) {
     return http.post('/notificacoes', notificacaco);
   },
+  update(id, notificacaco) {
+    return http.put(`/notificacoes/${id}`, notificacaco);
+  },
   findAll({
     page, itemsPerPage, search, sortBy, sortDesc, status,
   }) {

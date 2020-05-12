@@ -68,6 +68,14 @@
               :to="{ name: 'notificacao-view', params: { id: item.id } }"
             >VISUALIZAR</v-btn>
           </v-col>
+          <v-col v-if="isPermiteEditar(item)">
+            <v-btn
+              text
+              small
+              color="#F54D09"
+              :to="{ name: 'notificacao-edit', params: { id: item.id, edit: true } }"
+            >EDITAR</v-btn>
+          </v-col>
           <v-col v-if="isPermiteEvoluir(item)">
             <v-btn
               text
@@ -192,6 +200,9 @@ export default {
       return item.status === 'ABERTA' && this.isSecretariaSaude;
     },
     isPermiteVisualizar(item) {
+      return this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude;
+    },
+    isPermiteEditar(item) {
       return this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude;
     },
     isPermiteExcluir() {
