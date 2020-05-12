@@ -7,6 +7,7 @@ import {
   dateMustBeLesserEqualsThanToday,
   onlyLetters,
   maxLength,
+  minLengthNumbersWithMask,
 } from '../CommonValidations';
 
 describe('Testes para validador de campo obrigatório', () => {
@@ -69,6 +70,25 @@ describe('Testes para validador de tamanho mínimo', () => {
 
   test('Campo com o tamanho maior que o necessário deve ser válido', () => {
     const result = minLength(11)('uuddlrlrbasssss');
+    expect(result).toBeTruthy();
+  });
+});
+
+describe('Testes para validador de tamanho mínimo de números com máscara', () => {
+  test('Campo vazio deve ser válido', () => {
+    const result = minLengthNumbersWithMask(11)('');
+    expect(result).toBeTruthy();
+  });
+  test('Campo com menos caracteres que o necessário deve ser inválido', () => {
+    const result = minLengthNumbersWithMask(11)('(44)9999-99');
+    expect(result).toBe('O campo precisa de pelo menos 11 caracteres.');
+  });
+  test('Campo com o tamanho mínimo deve ser válido', () => {
+    const result = minLengthNumbersWithMask(11)('(44)99999-9999');
+    expect(result).toBeTruthy();
+  });
+  test('Campo com o tamanho maior que o necessário deve ser válido', () => {
+    const result = minLengthNumbersWithMask(11)('(44)99999-99999');
     expect(result).toBeTruthy();
   });
 });
