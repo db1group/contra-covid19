@@ -1,4 +1,4 @@
-const consolidacaoService = require('./consolidar-notificacao-service');
+const consolidacaoAtualizacaoNotificacaoService = require('./consolidar-notificacao-atualizacao-service');
 const repos = require('../repositories/repository-factory');
 const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
@@ -17,16 +17,10 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
     if (!unidadesSaudeUser.some((data) => data.id === unidadeSaudeId)) { throw new RegraNegocioErro('Você não possui autorização para atualizar esta notificação.'); }
   }
 
-  const notificacoesAbertasSuspeito = await repos.notificacaoRepository
-    .getPorPessoaDocumento(notificacaoRequest.suspeito);
+  const notificacaoConsolidada = await consolidacaoAtualizacaoNotificacaoService
+    .handle(notificacaoRequest);
 
-  if (notificacoesAbertasSuspeito.length > 1) {
-    throw new RegraNegocioErro('Já existe uma notificação aberta para este paciente.');
-  }
-
-  const notificacaoConsolidada = await consolidacaoService.handle(notificacaoRequest);
-
-  const suspeitoUpdate = notificacaoRequest.suspeito;
+  const suspeitoUpdate = Mappers.Pessoa.mapearParaModel(notificacaoRequest.suspeito);
   suspeitoUpdate.id = notificacaoConsolidada.suspeito.pessoaId;
   await repos.pessoaRepository.atualizar(suspeitoUpdate);
 
