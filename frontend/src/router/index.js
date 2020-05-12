@@ -30,6 +30,11 @@ const routes = [
     component: NotificacaoForm,
   },
   {
+    path: '/notificacoes/:id/edit',
+    name: 'notificacao-edit',
+    component: NotificacaoForm,
+  },
+  {
     path: '/notificacoes/:id/evolucoes',
     name: 'evolucao-form',
     component: EvolucaoForm,

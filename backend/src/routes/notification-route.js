@@ -8,20 +8,24 @@ const { isRealmSecretariaSaude } = require('../lib/secureRealm');
 
 const keycloack = secure();
 
-const routeNotificacoes = '/notificacoes';
+const prefixoRoute = '/notificacoes';
 
-router.post(routeNotificacoes,
+router.post(`${prefixoRoute}`,
   validate(schemas.notificacao.cadastrar),
   NotificacaoResource.salvar);
 
-router.get(routeNotificacoes, NotificacaoResource.consultarPaginado);
-router.get('/notificacoes/consulta', NotificacaoResource.consultarNotificacoesWeb);
-router.get('/notificacoes/:id', NotificacaoResource.consultarPorId);
+router.put(`${prefixoRoute}/:id`,
+  validate(schemas.notificacao.cadastrar),
+  NotificacaoResource.atualizar);
 
-router.delete('/notificacoes/:id', NotificacaoResource.excluirLogicamenteNotificacao);
-router.delete(routeNotificacoes, NotificacaoResource.excluirLoteLogicamenteNotificacao);
+router.get(`${prefixoRoute}`, NotificacaoResource.consultarPaginado);
+router.get(`${prefixoRoute}/consulta`, NotificacaoResource.consultarNotificacoesWeb);
+router.get(`${prefixoRoute}/:id`, NotificacaoResource.consultarPorId);
 
-router.get('/notificacoes/:id/evolucoes', keycloack.protect(isRealmSecretariaSaude), NotificacaoResource.consultarNotificacaoEvolucao);
-router.post('/notificacoes/:id/evolucoes', keycloack.protect(isRealmSecretariaSaude), NotificacaoResource.salvarEvolucao);
+router.delete(`${prefixoRoute}/:id`, NotificacaoResource.excluirLogicamenteNotificacao);
+router.delete(`${prefixoRoute}`, NotificacaoResource.excluirLoteLogicamenteNotificacao);
+
+router.get(`${prefixoRoute}/:id/evolucoes`,  keycloack.protect(isRealmSecretariaSaude), NotificacaoResource.consultarNotificacaoEvolucao);
+router.post(`${prefixoRoute}/:id/evolucoes`,  keycloack.protect(isRealmSecretariaSaude), NotificacaoResource.salvarEvolucao);
 
 module.exports = router;
