@@ -27,7 +27,7 @@
 import Pessoa from '@/entities/Pessoa';
 import OcupacaoService from '@/services/OcupacaoService';
 import {
-  required, minLength,
+  required, minLength, maxLength,
 } from '@/validations/CommonValidations';
 
 export default {
@@ -45,7 +45,7 @@ export default {
     ocupacoes: [],
     rules: {
       ocupacaoId: [required],
-      ocupacao: [minLength(3)],
+      ocupacao: [minLength(3), maxLength(60)],
     },
   }),
   methods: {
