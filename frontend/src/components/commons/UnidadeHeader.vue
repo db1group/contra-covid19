@@ -5,16 +5,16 @@
       alt="Notifica Saúde"
       class="mr-2 unidade-header__logo"
     />
-    <v-col
-      class="unidade-header__info"
-    >
+    <v-col class="unidade-header__info">
       <v-row dense>
         <v-col cols="12">
-          <span class="font-weight-bold">Unidade Notificante</span>
+          <div class="font-weight-bold truncate-text">
+            Unidade Notificante
+          </div>
         </v-col>
         <v-col cols="12">
-          <div class="body-2 unidade-header__full-name">
-            {{ fullName }} Amet amet labore id voluptate officia nostrud laboris eu enim nisi cupidatat.
+          <div class="body-2 truncate-text" :title="fullName">
+            {{ fullName }}
           </div>
         </v-col>
       </v-row>
@@ -29,16 +29,14 @@
   &__info
     display: none
     width: calc(100% - 48px)
-    white-space: nowrap
-    overflow: hidden
-    text-overflow: ellipsis
-  &__full-name
-    white-space: nowrap
-    overflow: hidden
-    text-overflow: ellipsis
   +media-min-sm
     &__info
       display: block
+.truncate-text
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
 </style>
 <script>
 import KeycloakService from '@/services/KeycloakService';
