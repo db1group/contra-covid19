@@ -23,8 +23,10 @@ module.exports.getPorId = async (id) => models.Notificacao.findOne({
   ],
 });
 
-module.exports.getPorPessoaDocumento = async (tipoDocumento, numeroDocumento, status) => {
-  const notificacao = await models.Notificacao.count({
+module.exports.getPorPessoaDocumento = async (where) => {
+  const { tipoDocumento, numeroDocumento, status = 'ABERTA' } = where;
+
+  return models.Notificacao.findAll({
     where: {
       status,
     },
@@ -40,14 +42,12 @@ module.exports.getPorPessoaDocumento = async (tipoDocumento, numeroDocumento, st
       attributes: ['tipoDocumento', 'numeroDocumento'],
     },
   });
-
-  return notificacao > 0;
 };
 
 exports.atualizar = async (notificacao) => {
   const { id } = notificacao;
-  await models.Notificacao.update(
-    { notificacao },
+  models.Notificacao.update(
+    { ...notificacao },
     { where: { id } },
   );
 };

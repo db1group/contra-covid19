@@ -3,8 +3,9 @@ const { normalizarTexto } = require('../lib/normalizar-texto');
 
 exports.atualizar = async (pessoa) => {
   const { id } = pessoa;
-  await models.Pessoa.update(
-    { pessoa },
+
+  models.Pessoa.update(
+    { ...pessoa },
     { where: { id } },
   );
 };
