@@ -17,6 +17,17 @@ module.exports.getEvolucoesPorNotificacaoId = async (id) => models.Notificacao.f
   ],
 });
 
+module.exports.deletarEvolucaoPorId = async (id, transaction) => {
+  models.NotificacaoEvolucao.destroy({
+    where: {
+      id,
+    },
+  },
+  {
+    transaction,
+  });
+};
+
 module.exports.getPorId = async (id) => models.Notificacao.findOne({
   where: { id },
   include: [

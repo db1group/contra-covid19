@@ -15,7 +15,7 @@ const validarDataEvolucaoSuperiorDataNotificacao = async (notificacao, dtEvoluca
 
 const validarNotificacaoFinalizada = async (notificacao) => {
   if (notificacao.status === statusNotificacaoEnum.values.Excluida
-        || notificacao.status === statusNotificacaoEnum.values.Encerrada) {
+    || notificacao.status === statusNotificacaoEnum.values.Encerrada) {
     throw new RegraNegocioErro(`Não é possível adicionar nova evolução pois a notificação está ${notificacao.status}.`);
   }
 };
@@ -23,17 +23,17 @@ const validarNotificacaoFinalizada = async (notificacao) => {
 const validarPossuiConfirmacao = async (evolucao) => {
   const tpEvolucaoPrecisaTerConfirmacao = (evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
     .values.Curado
-        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
-          .values.Obito);
+    || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
+      .values.Obito);
 
   const tpEvolucaoProibidaSeJaConfirmada = (evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
     .values.Suspeito
-        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
-          .values.Descartado
-        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
-          .values.Confirmado
-        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
-          .values.Encerrado);
+    || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
+      .values.Descartado
+    || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
+      .values.Confirmado
+    || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum
+      .values.Encerrado);
 
   if (!(tpEvolucaoPrecisaTerConfirmacao || tpEvolucaoProibidaSeJaConfirmada)) {
     return;
@@ -78,11 +78,11 @@ const validarProximaEvolucao = async (evolucaoRequest) => {
   if (dataEvolucao <= dataUltimaEvolucao) throw new RegraNegocioErro('A data da evolução não pode ser menor que a data da última ocorrência de evolução.');
 };
 
-const atualizarStatusNotificacao = async (evolucao, t) => {
+const atualizarStatusNotificacao = async (evolucao, transaction) => {
   const deveEncerrar = (evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Curado
-        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Descartado
-        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Encerrado
-        || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Obito);
+    || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Descartado
+    || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Encerrado
+    || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Obito);
 
   const status = deveEncerrar ? statusNotificacaoEnum.values.Encerrada
     : statusNotificacaoEnum.values.Aberta;
@@ -90,8 +90,11 @@ const atualizarStatusNotificacao = async (evolucao, t) => {
   await models.Notificacao.update(
     { status },
     {
-      where: { id: evolucao.notificacaoId },
-      transaction: t,
+      where:
+      {
+        id: evolucao.notificacaoId,
+      },
+      transaction,
     },
   );
 };
