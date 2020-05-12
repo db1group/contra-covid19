@@ -15,6 +15,7 @@
     <v-col cols="6">
       <v-text-field
         :value="suspeito.ocupacao"
+        :rules="rules.ocupacao"
         label="Descrição da ocupação"
         @input="updateDescricaoOcupacao"
         :disabled="disabled"
@@ -26,7 +27,7 @@
 import Pessoa from '@/entities/Pessoa';
 import OcupacaoService from '@/services/OcupacaoService';
 import {
-  required,
+  required, minLength, maxLength,
 } from '@/validations/CommonValidations';
 
 export default {
@@ -44,6 +45,7 @@ export default {
     ocupacoes: [],
     rules: {
       ocupacaoId: [required],
+      ocupacao: [minLength(3), maxLength(60)],
     },
   }),
   methods: {

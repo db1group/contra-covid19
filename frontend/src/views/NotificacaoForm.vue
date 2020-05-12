@@ -367,10 +367,3 @@ export default {
   },
 };
 </script>
-<style lang="sass" scoped>
-.notificacao
-  &__snack-success
-    &::v-deep .v-snack__content
-      display: flex
-      justify-content: center
-</style>

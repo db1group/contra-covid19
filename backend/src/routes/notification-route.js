@@ -4,6 +4,10 @@ const router = express.Router();
 const NotificacaoResource = require('../resource/notificacao-resource');
 const NotificacaoEvolucaoResource = require('../resource/notificacao-evolucao-resource');
 const { validate, schemas } = require('../validations');
+const secure = require('../secure');
+const { isRealmSecretariaSaude } = require('../lib/secureRealm');
+
+const keycloack = secure();
 
 const prefixoRoute = '/notificacoes';
 
@@ -22,8 +26,8 @@ router.get(`${prefixoRoute}/:id`, NotificacaoResource.consultarPorId);
 router.delete(`${prefixoRoute}/:id`, NotificacaoResource.excluirLogicamenteNotificacao);
 router.delete(`${prefixoRoute}`, NotificacaoResource.excluirLoteLogicamenteNotificacao);
 
-router.get(`${prefixoRoute}/:id/evolucoes`, NotificacaoEvolucaoResource.consultar);
-router.post(`${prefixoRoute}/:id/evolucoes`, NotificacaoEvolucaoResource.cadastrar);
-router.delete(`${prefixoRoute}/:notificacaoId/evolucoes/:id`, NotificacaoEvolucaoResource.deletar);
+router.get(`${prefixoRoute}/:id/evolucoes`, keycloack.protect(isRealmSecretariaSaude), NotificacaoEvolucaoResource.consultar);
+router.post(`${prefixoRoute}/:id/evolucoes`, keycloack.protect(isRealmSecretariaSaude), NotificacaoEvolucaoResource.cadastrar);
+router.delete(`${prefixoRoute}/:notificacaoId/evolucoes/:id`, keycloack.protect(isRealmSecretariaSaude), NotificacaoEvolucaoResource.deletar);
 
 module.exports = router;

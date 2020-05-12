@@ -130,6 +130,19 @@ exports.retornarDataSemHora = (objeto, nomeDaPropriedade) => {
   return moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY');
 };
 
+exports.retornarDataComHora = (objeto, nomeDaPropriedade) => {
+  if (!this.validarCampo(objeto, nomeDaPropriedade)) {
+    return null;
+  }
+
+  const data = objeto[nomeDaPropriedade];
+  if (!data) {
+    return null;
+  }
+
+  return moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY HH:mm:ss');
+};
+
 exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {
   if (!this.validarCampo(objeto, nomeDaPropriedade)) {
     return null;

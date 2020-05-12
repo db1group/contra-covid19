@@ -114,7 +114,7 @@ export default {
       numero: [required],
       bairroId: [required],
       municipioId: [required],
-      complemento: [],
+      complemento: [minLength(3)],
     },
   }),
   watch: {

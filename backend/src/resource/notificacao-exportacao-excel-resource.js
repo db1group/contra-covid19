@@ -20,6 +20,7 @@ exports.gerarExcel = async (req, res) => {
           [Op.ne]: 'EXCLUIDA',
         },
       },
+      order: [['createdAt', 'DESC']],
       include: [
         {
           model: models.Pessoa,
@@ -48,6 +49,7 @@ exports.gerarExcel = async (req, res) => {
 
     const listaTemp = notificacoes.map((t) => t.dataValues);
     const lista = listaTemp.map((t) => ({
+      dataHoraDaCriacaoDaNotificacao: geraExcel.retornarDataComHora(t, 'createdAt'),
       dataDaNotificacao: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       horaDaNotificacao: geraExcel.retornarHoraDaData(t.NotificacaoCovid19, 'dataHoraNotificacao'),
       usuarioDigitador: geraExcel.retornarCampo(t.User, 'email'),
@@ -171,6 +173,7 @@ exports.gerarExcel = async (req, res) => {
     ));
 
     const colunas = [
+      { nomeColuna: 'Data hora da criação da Notificação', nomeCampo: 'dataHoraDaCriacaoDaNotificacao' },
       { nomeColuna: 'Data da Notificação', nomeCampo: 'dataDaNotificacao' },
       { nomeColuna: 'horaDaNotificacao', nomeCampo: 'horaDaNotificacao' },
       { nomeColuna: 'usuarioDigitador', nomeCampo: 'usuarioDigitador' },

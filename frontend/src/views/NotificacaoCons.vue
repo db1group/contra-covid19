@@ -16,6 +16,7 @@
     </v-snackbar>
     <v-snackbar
       v-model="showSuccess"
+      class="notificacao-cons__snack-success"
       color="success"
       bottom>
       {{ this.mensagemSucesso }}
@@ -60,3 +61,9 @@ export default {
   },
 };
 </script>
+<style lang="sass" scoped>
+.notificacao-cons
+  &__snack-success
+    &::v-deep .v-snack__content
+      justify-content: center
+</style>
