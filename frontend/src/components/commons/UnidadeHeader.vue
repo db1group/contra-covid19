@@ -1,25 +1,34 @@
 <template>
-  <v-row class="unidadeHeader" align="center" dense>
-    <v-col cols="auto">
-      <img src="@/assets/icon-covid.png" alt="Notifica Saúde" />
-    </v-col>
-    <v-col cols="auto">
+  <v-row class="unidade-header" align="center" dense>
+    <img
+      src="@/assets/icon-covid.png"
+      alt="Notifica Saúde"
+      class="mr-2"
+    />
+    <v-col
+      cols="10"
+    >
       <v-row dense>
-        <v-col cols="auto">
+        <v-col cols="12">
           <span class="font-weight-bold">Unidade Notificante</span>
         </v-col>
-      </v-row>
-      <v-row dense>
-        <v-col cols="auto">
-          <span class="body-2">{{ fullName }}</span>
+        <v-col cols="12">
+          <div class="body-2 unidade-header__full-name">
+            {{ fullName }}
+          </div>
         </v-col>
       </v-row>
     </v-col>
   </v-row>
 </template>
 <style lang="sass" scoped>
-  .unidadeHeader
-    min-width: 350px
+@import ~@/styles/mobileFirst
+.unidade-header
+  min-width: 350px
+  &__full-name
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
 </style>
 <script>
 import KeycloakService from '@/services/KeycloakService';
