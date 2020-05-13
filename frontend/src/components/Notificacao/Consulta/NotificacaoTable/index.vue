@@ -196,8 +196,8 @@ export default {
       this.filter = search;
       this.filterNotificacoes();
     },
-    isPermiteEvoluir(item) {
-      return item.status === 'ABERTA' && this.isSecretariaSaude;
+    isPermiteEvoluir() {
+      return this.isSecretariaSaude;
     },
     isPermiteVisualizar(item) {
       return this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude;

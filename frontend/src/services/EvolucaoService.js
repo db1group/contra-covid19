@@ -8,4 +8,7 @@ export default {
   findByNotificacaoId(notificacaoId) {
     return http.get(`/notificacoes/${notificacaoId}/evolucoes`).then(({ data }) => data);
   },
+  delete(notificacaoId, notificacaoEvolucaoId) {
+    return http.delete(`/notificacoes/${notificacaoId}/evolucoes/${notificacaoEvolucaoId}`);
+  },
 };

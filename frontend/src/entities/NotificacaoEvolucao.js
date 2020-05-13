@@ -11,14 +11,27 @@ export const situacoesList = [
   { key: 'SUSPEITO', value: 'Suspeito' },
   { key: 'CONFIRMADO', value: 'Confirmado' },
   { key: 'DESCARTADO', value: 'Descartado' },
-  { key: 'CURA', value: 'Curado' },
+  { key: 'CURADO', value: 'Curado' },
   { key: 'ENCERRADO', value: 'Encerrado' },
   { key: 'OBITO', value: 'Óbito' },
 ];
 
-export const situacoesQueNaoEncerramFichaList = [
-  'SUSPEITO',
-  'CONFIRMADO',
+export const situacoesQueEncerramFichaList = [
+  { key: 'DESCARTADO', value: 'Descartado' },
+  { key: 'CURADO', value: 'Curado' },
+  { key: 'ENCERRADO', value: 'Encerrado' },
+  { key: 'OBITO', value: 'Óbito' },
+];
+
+export const situacoesPacienteSuspeitoList = [
+  { key: 'CONFIRMADO', value: 'Confirmado' },
+  { key: 'ENCERRADO', value: 'Encerrado' },
+  { key: 'DESCARTADO', value: 'Descartado' },
+];
+
+export const situacoesPacienteConfirmadoList = [
+  { key: 'CURADO', value: 'Curado' },
+  { key: 'OBITO', value: 'Óbito' },
 ];
 
 const findItem = (list, value) => {
