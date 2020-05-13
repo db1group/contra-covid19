@@ -16,6 +16,7 @@
       <v-text-field
         :value="suspeito.ocupacao"
         :rules="rules.ocupacao"
+        ref="ocupacao"
         label="Descrição da ocupação"
         @input="updateDescricaoOcupacao"
         :disabled="disabled"
@@ -54,6 +55,16 @@ export default {
     },
     updateOcupacao(ocupacao) {
       this.$emit('update:ocupacao', ocupacao);
+      this.validateDescricaoOcupacaoIsRequired(ocupacao);
+    },
+    validateDescricaoOcupacaoIsRequired(ocupacao) {
+      const ocupacaoSelecionada = this.ocupacoes.find((el) => el.id === ocupacao);
+      if (ocupacaoSelecionada.descricao === 'Outro') {
+        this.rules.ocupacao.push(required);
+      } else {
+        this.rules.ocupacao.splice(this.rules.ocupacao.indexOf(required), 1);
+      }
+      this.$refs.ocupacao.validate();
     },
     findOcupacoes() {
       OcupacaoService.findAll()
