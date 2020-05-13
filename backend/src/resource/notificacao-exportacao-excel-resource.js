@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const moment = require('moment');
 const geraExcel = require('./gera-excel-resource');
 const models = require('../models');
 
@@ -65,7 +64,7 @@ exports.gerarExcel = async (req, res) => {
       documentoDoPaciente: geraExcel.retornarCampo(t.Pessoa, 'numeroDocumento'),
       sexoDoPaciente: t.Pessoa ? t.Pessoa.sexo : null,
       idadeDoPaciente: t.Pessoa ? t.Pessoa.idade : null,
-      dataDeNascimentoDoPaciente: geraExcel.retornarDataSemHora(t.Pessoa, 'dataDeNascimento'),
+      dataDeNascimentoDoPaciente: geraExcel.retornarDataGravadaSemHora(t.Pessoa, 'dataDeNascimento'),
       gestante: t.Pessoa ? t.Pessoa.gestante : null,
       tipoPeriodoGestacional: this.retornarTipoPeriodoGestacional(t),
       racaCorDoPaciente: t.Pessoa ? t.Pessoa.racaCor : null,
@@ -83,7 +82,7 @@ exports.gerarExcel = async (req, res) => {
       tipoClassificacaoPessoa: geraExcel.retornarCampo(t.Pessoa, 'tipoClassificacaoPessoa'),
       // 4. SINAIS E SINTOMAS:
       // 4.1. SINTOMAS RESPIRATÓRIOS
-      dataDeInicioDosSintomas: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataInicioDosSintomas'),
+      dataDeInicioDosSintomas: geraExcel.retornarDataGravadaSemHora(t.NotificacaoCovid19, 'dataInicioDosSintomas'),
       febreAferidaReferida: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'febreAferidaReferida'),
       temperaturaFebre: t.NotificacaoCovid19 ? t.NotificacaoCovid19.temperaturaFebre : null,
       batimentoAsasNasais: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'batimentoAsasNasais'),
@@ -152,14 +151,14 @@ exports.gerarExcel = async (req, res) => {
       nomeMedicamento: geraExcel.retornarCampo(t.NotificacaoCovid19, 'nomeMedicamento'),
       // 8. Dados Laboratoriais
       coletaMaterialParaDiagnostico: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'coletaMaterialParaDiagnostico'),
-      dataDaColeta: this.retornarDataDaColeta(t),
+      dataDaColeta: geraExcel.retornarDataGravadaSemHora(t.NotificacaoCovid19, 'dataDaColeta'),
       tipoLaboratorio: geraExcel.retornarCampo(t.NotificacaoCovid19, 'tipoLaboratorio'),
       nomeLaboratorioEnvioMaterial: geraExcel.retornarCampo(t.NotificacaoCovid19, 'nomeLaboratorioEnvioMaterial'),
       metodoDeExame: t.NotificacaoCovid19 ? t.NotificacaoCovid19.metodoDeExame : null,
       // 9. Histórico de viagem
       historicoDeViagem: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'historicoDeViagem'),
       localDaViagem: t.NotificacaoCovid19 ? t.NotificacaoCovid19.localDaViagem : null,
-      dataDaViagem: geraExcel.retornarDataSemHora(t.NotificacaoCovid19, 'dataDaViagem'),
+      dataDaViagem: geraExcel.retornarDataGravadaSemHora(t.NotificacaoCovid19, 'dataDaViagem'),
       // 10. Contato com suspeito
       contatoComSuspeito: t.NotificacaoCovid19 ? t.NotificacaoCovid19.contatoComSuspeito : null,
       localDoContatoComSuspeito: geraExcel.retornarCampo(t.NotificacaoCovid19, 'localDoContatoComSuspeito'),
@@ -324,24 +323,6 @@ this.retornarTipoPeriodoGestacional = (notificacao) => {
     default:
       return null;
   }
-};
-
-this.retornarDataDaColeta = (notificacao) => {
-  if (!notificacao) {
-    return null;
-  }
-
-  if (!notificacao.NotificacaoCovid19) {
-    return null;
-  }
-
-  const { dataDaColeta } = notificacao.NotificacaoCovid19;
-  if (!dataDaColeta) {
-    return null;
-  }
-
-  const dataFormatada = moment(dataDaColeta, 'YYYY-MM-DD HH:mm:ss').toISOString();
-  return moment(dataFormatada).format('DD/MM/YYYY');
 };
 
 this.retornarOutroTelefone = (notificacao) => {

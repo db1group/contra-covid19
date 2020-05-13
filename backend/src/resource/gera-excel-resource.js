@@ -143,6 +143,19 @@ exports.retornarDataComHora = (objeto, nomeDaPropriedade) => {
   return moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY HH:mm:ss');
 };
 
+exports.retornarDataGravadaSemHora = (objeto, nomeDaPropriedade) => {
+  if (!this.validarCampo(objeto, nomeDaPropriedade)) {
+    return null;
+  }
+
+  const data = objeto[nomeDaPropriedade];
+  if (!data) {
+    return null;
+  }
+
+  return moment.tz(data, TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY');
+};
+
 exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {
   if (!this.validarCampo(objeto, nomeDaPropriedade)) {
     return null;
