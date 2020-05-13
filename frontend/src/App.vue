@@ -1,10 +1,25 @@
 <template>
   <v-app class="covid-app">
     <v-content fluid>
+      <v-navigation-drawer
+        v-model="isMenuOpen"
+        absolute
+        temporary
+      >
+        <main-menu
+          @click="goToPage"
+          @logout="executeLogout"
+        />
+      </v-navigation-drawer>
       <v-app-bar color="white" absolute>
         <v-row class="fill-height" dense>
           <v-col cols="auto" class="py-0 fill-height">
-            <v-btn height="100%" text fab>
+            <v-btn
+              height="100%"
+              text
+              fab
+              @click="openMenu"
+            >
               <v-icon>mdi-menu</v-icon>
             </v-btn>
           </v-col>
@@ -51,12 +66,17 @@
 <script>
 import keycloak from '@/services/KeycloakService';
 import UnidadeHeader from '@/components/commons/UnidadeHeader.vue';
+import MainMenu from '@/components/MainMenu/index.vue';
 
 export default {
   name: 'App',
   components: {
     UnidadeHeader,
+    MainMenu,
   },
+  data: () => ({
+    isMenuOpen: false,
+  }),
   methods: {
     executeLogout() {
       const { origin } = window.location;
@@ -65,6 +85,12 @@ export default {
     },
     goToHomePage() {
       this.$router.push({ name: 'home-page' });
+    },
+    openMenu() {
+      this.isMenuOpen = true;
+    },
+    goToPage(pageName) {
+      this.$router.push({ name: pageName });
     },
   },
 };
