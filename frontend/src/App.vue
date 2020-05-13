@@ -1,12 +1,17 @@
 <template>
   <v-app class="covid-app">
     <v-content fluid>
-      <v-app-bar color="white" absolute :height="64">
-        <v-row>
-          <v-col cols="2" sm="3">
+      <v-app-bar color="white" absolute>
+        <v-row class="fill-height" dense>
+          <v-col cols="auto" class="py-0 fill-height">
+            <v-btn height="100%" text fab>
+              <v-icon>mdi-menu</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col class="covid-app__unidade fill-height py-0 pl-2" md="3">
             <unidade-header/>
           </v-col>
-          <v-col cols="8" sm="4">
+          <v-col cols="8" md="6" class="py-0 fill-height">
             <v-btn
               block
               height="100%"
@@ -16,25 +21,15 @@
               <img src="@/assets/notifica-saude.svg" alt="Notifica saúde"/>
             </v-btn>
           </v-col>
-          <v-col cols="3" class="covid-app__notification-menu">
-            <v-tabs
-              fixed-tabs
-              height="100%"
-              class="covid-app__notification-menu-tabs"
-            >
-              <v-tab :to="{ name: 'notificacao-cons' }">Notificações</v-tab>
-            </v-tabs>
-          </v-col>
-          <v-col cols="2">
+          <v-row class="fill-height py-0 pr-2" justify="end">
             <v-btn
-              block
               text
               height="100%"
               @click="executeLogout"
             >
               Sair
             </v-btn>
-          </v-col>
+          </v-row>
         </v-row>
       </v-app-bar>
       <v-spacer></v-spacer>
@@ -47,12 +42,10 @@
 .covid-app
   &.v-application
     background-color: #FAFAFA
-  &__notification-menu
+  &__unidade
     display: none
-    &-tabs
-      height: calc(100% - 2px)
-  +media-min-sm
-    &__notification-menu
+  +media-min-md
+    &__unidade
       display: block
 </style>
 <script>
