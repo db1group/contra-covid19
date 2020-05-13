@@ -63,7 +63,7 @@
             </template>
             <template v-slot:item.actions="{ item }">
               <v-row justify="end" align="center" dense>
-                <v-col>
+                <v-col v-if="evolucoes.length > 1 && item.id === evolucoes[evolucoes.length - 1].id">
                   <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
                 </v-col>
               </v-row>
