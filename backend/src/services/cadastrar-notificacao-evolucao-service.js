@@ -61,6 +61,8 @@ const validarProximaEvolucao = async (evolucaoRequest) => {
   const evolucoes = await repos.notificacaoRepository
     .getEvolucoesPorNotificacaoId(evolucaoRequest.notificacaoId);
 
+  if (evolucoes.NotificacaoEvolucaos.length === 0) return;
+
   const evolucoesSort = evolucoes.NotificacaoEvolucaos.sort((a, b) => {
     const dataEvolucaoItemA = new Date(a.dtEvolucao);
     const dataEvolucaoItemB = new Date(b.dtEvolucao);

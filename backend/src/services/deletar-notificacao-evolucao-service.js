@@ -3,13 +3,13 @@ const models = require('../models');
 const repos = require('../repositories/repository-factory');
 
 exports.handle = async (notificacaoId, notificacaoEvolucaoId) => {
-  const evolucoes = await repos.notificacaoRepository.getEvolucoesPorNotificacaoId(notificacaoId);
+  const notificacao = await repos.notificacaoRepository.getEvolucoesPorNotificacaoId(notificacaoId);
 
-  if (evolucoes.length === 1) {
+  if (notificacao.NotificacaoEvolucaos.length === 1) {
     throw new RegraNegocioErro('Não é permitido remover a primeira evolução.');
   }
 
-  const evolucoesSort = evolucoes.NotificacaoEvolucaos.sort((a, b) => {
+  const evolucoesSort = notificacao.NotificacaoEvolucaos.sort((a, b) => {
     const dataEvolucaoItemA = new Date(a.dtEvolucao);
     const dataEvolucaoItemB = new Date(b.dtEvolucao);
     return dataEvolucaoItemA - dataEvolucaoItemB;
