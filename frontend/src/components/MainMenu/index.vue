@@ -1,6 +1,6 @@
 <template>
   <v-list>
-    <v-list-item-group>
+    <v-list-item-group color="primary">
       <v-subheader>Home</v-subheader>
       <v-list-item @click="onClick('home-page')">
         <v-list-item-icon>
