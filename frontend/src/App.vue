@@ -7,6 +7,7 @@
         temporary
       >
         <main-menu
+          :current-route-name="currentRouteName"
           @click="goToPage"
           @logout="executeLogout"
         />
@@ -91,6 +92,11 @@ export default {
     },
     goToPage(pageName) {
       this.$router.push({ name: pageName });
+    },
+  },
+  computed: {
+    currentRouteName() {
+      return this.$route.name;
     },
   },
 };
