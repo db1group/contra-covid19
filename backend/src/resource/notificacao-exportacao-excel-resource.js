@@ -259,7 +259,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'doencaNeurologicaCronica', nomeCampo: 'doencaNeurologicaCronica' },
       { nomeColuna: 'doencaRenalCronica', nomeCampo: 'doencaRenalCronica' },
       { nomeColuna: 'hipertensao', nomeCampo: 'hipertensao' },
-      { nomeColuna: 'imunodeficiencia', nomeCampo: 'imunodeficiencia' },
+      { nomeColuna: 'Imunodecifência/imunodepressão', nomeCampo: 'imunodeficiencia' },
       { nomeColuna: 'infeccaoHIV', nomeCampo: 'infeccaoHIV' },
       { nomeColuna: 'neoplasia', nomeCampo: 'neoplasia' },
       { nomeColuna: 'obesidade', nomeCampo: 'obesidade' },
