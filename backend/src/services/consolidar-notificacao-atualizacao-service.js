@@ -34,7 +34,7 @@ const consolidarSuspeito = async (suspeito) => {
 
   if (tipoDocumento && numeroDocumento) {
     const pessoaJaCadastrada = await repos.pessoaRepository.getPorDocumento(suspeito);
-    if (pessoaJaCadastrada.id !== pessoaId) {
+    if (pessoaJaCadastrada !== null && pessoaJaCadastrada.id !== pessoaId) {
       throw new RegraNegocioErro(`Este ${tipoDocumento} já está sendo utilizado por outro paciente.`);
     }
   }
