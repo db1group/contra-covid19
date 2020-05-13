@@ -334,7 +334,7 @@ this.retornarOutroTelefone = (notificacao) => {
     return null;
   }
 
-  if (notificacao.Pessoa.telefoneContato && notificacao.Pessoa.telefoneCelular.length > 0) {
+  if (notificacao.Pessoa.telefoneCelular && notificacao.Pessoa.telefoneCelular.length > 0) {
     return notificacao.Pessoa.telefoneCelular;
   }
 
