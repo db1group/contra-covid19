@@ -17,20 +17,19 @@ export const situacoesList = [
 ];
 
 export const situacoesQueNaoEncerramFichaList = [
-  { key: 'SUSPEITO', value: 'Suspeito' },
   { key: 'CONFIRMADO', value: 'Confirmado' },
-  { key: 'DESCARTADO', value: 'Descartado' },
-  { key: 'CURADO', value: 'Curado' },
   { key: 'ENCERRADO', value: 'Encerrado' },
-  { key: 'OBITO', value: 'Óbito' },
+  { key: 'DESCARTADO', value: 'Descartado' },
 ];
 
-export const situacoesParaSuspeitoList = [
-  { key: 'SUSPEITO', value: 'Suspeito' },
+export const situacoesPacienteSuspeitoList = [
   { key: 'CONFIRMADO', value: 'Confirmado' },
-  { key: 'DESCARTADO', value: 'Descartado' },
-  { key: 'CURADO', value: 'Curado' },
   { key: 'ENCERRADO', value: 'Encerrado' },
+  { key: 'DESCARTADO', value: 'Descartado' },
+];
+
+export const situacoesPacienteConfirmadoList = [
+  { key: 'CURADO', value: 'Curado' },
   { key: 'OBITO', value: 'Óbito' },
 ];
 

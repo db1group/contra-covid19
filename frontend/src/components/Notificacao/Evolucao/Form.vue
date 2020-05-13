@@ -64,7 +64,11 @@
 <script>
 import { required, dateHourMinuteFormat, greaterThanMinimumDateWithMinutes } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
-import NotificacaoEvolucao, { locaisList, situacoesList, situacoesQueNaoEncerramFichaList }
+import NotificacaoEvolucao,
+{
+  situacoesPacienteSuspeitoList, situacoesPacienteConfirmadoList,
+  locaisList, situacoesList, situacoesQueNaoEncerramFichaList,
+}
   from '@/entities/NotificacaoEvolucao';
 import EvolucaoService from '@/services/EvolucaoService';
 
@@ -108,7 +112,9 @@ export default {
       this.situacoes.loading = true;
       this.situacoes.items = situacoesList;
       if (ultimaSituacaoEvolucao === 'Suspeito') {
-        this.situacoes.items = situacoesList;
+        this.situacoes.items = situacoesPacienteSuspeitoList;
+      } else if (ultimaSituacaoEvolucao === 'Confirmado') {
+        this.situacoes.items = situacoesPacienteConfirmadoList;
       }
       this.situacoes.loading = false;
     },
@@ -126,7 +132,8 @@ export default {
         this.dataMaximaPermitida, 'Informe uma data igual ou posterior a última notificação.');
     },
     obterMensagemDeSucesso() {
-      if (situacoesQueNaoEncerramFichaList.find((i) => i === this.evolucao.situacao)) {
+      if (situacoesQueNaoEncerramFichaList.some((data) => data.value.toUpperCase()
+        === this.evolucao.situacao.toUpperCase())) {
         return 'Evolução cadastrada com sucesso.';
       }
       return 'Notificação encerrada com sucesso.';
@@ -137,8 +144,8 @@ export default {
         const requestEvolucao = this.evolucao.toRequest();
         requestEvolucao.notificacaoId = this.notificacaoId;
         EvolucaoService.save(requestEvolucao).then(() => {
-          this.$refs.form.reset();
           const msg = this.obterMensagemDeSucesso();
+          this.$refs.form.reset();
           this.$emit('cadastro:evolucao', msg);
         }).catch((error) => {
           const { data } = error.response;
