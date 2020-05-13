@@ -16,10 +16,11 @@ export const situacoesList = [
   { key: 'OBITO', value: 'Óbito' },
 ];
 
-export const situacoesQueNaoEncerramFichaList = [
-  { key: 'CONFIRMADO', value: 'Confirmado' },
-  { key: 'ENCERRADO', value: 'Encerrado' },
+export const situacoesQueEncerramFichaList = [
   { key: 'DESCARTADO', value: 'Descartado' },
+  { key: 'CURADO', value: 'Curado' },
+  { key: 'ENCERRADO', value: 'Encerrado' },
+  { key: 'OBITO', value: 'Óbito' },
 ];
 
 export const situacoesPacienteSuspeitoList = [

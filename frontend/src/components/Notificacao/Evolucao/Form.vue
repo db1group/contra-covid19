@@ -12,6 +12,7 @@
               label="Data e hora da evolução *"
               v-mask="'##/##/#### ##:##'"
               validate-on-blur
+              :disabled="disableFields"
               :rules="rules.dataHoraAtualizacao"
               @input="updateDataHoraAtualizacao"
               required
@@ -30,6 +31,7 @@
               item-text="value"
               item-value="key"
               :loading="locais.loading"
+              :disabled="disableFields"
               no-data-text="Local de isolamento não encontrado"
               @input="updateLocal"
             />
@@ -45,6 +47,7 @@
               item-text="value"
               item-value="key"
               :loading="situacoes.loading"
+              :disabled="disableFields"
               no-data-text="Condição atual do paciente não encontrada"
               @input="updateSituacao"
             />
@@ -53,7 +56,9 @@
         <v-card-actions>
           <v-row align="center" justify="end">
             <v-col cols="auto">
-              <v-btn color="primary" rounded @click="cadastrarEvolucao">Incluir</v-btn>
+              <v-btn color="primary" rounded
+                :disabled="disableFields"
+                @click="cadastrarEvolucao">Incluir</v-btn>
             </v-col>
           </v-row>
         </v-card-actions>
@@ -67,7 +72,7 @@ import { mask } from 'vue-the-mask';
 import NotificacaoEvolucao,
 {
   situacoesPacienteSuspeitoList, situacoesPacienteConfirmadoList,
-  locaisList, situacoesList, situacoesQueNaoEncerramFichaList,
+  locaisList, situacoesList, situacoesQueEncerramFichaList,
 }
   from '@/entities/NotificacaoEvolucao';
 import EvolucaoService from '@/services/EvolucaoService';
@@ -101,6 +106,7 @@ export default {
       local: [required],
       situacao: [required],
     },
+    disableFields: false,
   }),
   methods: {
     loadLocais() {
@@ -111,11 +117,16 @@ export default {
     loadSituacoes(ultimaSituacaoEvolucao) {
       this.situacoes.loading = true;
       this.situacoes.items = situacoesList;
+
       if (ultimaSituacaoEvolucao === 'Suspeito') {
         this.situacoes.items = situacoesPacienteSuspeitoList;
       } else if (ultimaSituacaoEvolucao === 'Confirmado') {
         this.situacoes.items = situacoesPacienteConfirmadoList;
       }
+      this.disableFields = (situacoesQueEncerramFichaList
+        .some((data) => data.value.toUpperCase()
+        === ultimaSituacaoEvolucao.toUpperCase()));
+
       this.situacoes.loading = false;
     },
     updateDataHoraAtualizacao(dataHoraAtualizacao) {
@@ -132,11 +143,11 @@ export default {
         this.dataMaximaPermitida, 'Informe uma data igual ou posterior a última notificação.');
     },
     obterMensagemDeSucesso() {
-      if (situacoesQueNaoEncerramFichaList.some((data) => data.value.toUpperCase()
+      if (situacoesQueEncerramFichaList.some((data) => data.value.toUpperCase()
         === this.evolucao.situacao.toUpperCase())) {
-        return 'Evolução cadastrada com sucesso.';
+        return 'Notificação encerrada com sucesso.';
       }
-      return 'Notificação encerrada com sucesso.';
+      return 'Evolução cadastrada com sucesso.';
     },
     cadastrarEvolucao() {
       this.rules.dataHoraAtualizacao.push(required);
