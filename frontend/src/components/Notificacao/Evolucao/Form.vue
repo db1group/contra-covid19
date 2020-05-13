@@ -78,6 +78,9 @@ export default {
     dataMaximaPermitida: {
       type: String,
     },
+    ultimaSituacaoEvolucao: {
+      type: String,
+    },
   },
   data: () => ({
     evolucao: new NotificacaoEvolucao(),
@@ -101,9 +104,12 @@ export default {
       this.locais.items = locaisList;
       this.locais.loading = false;
     },
-    loadSituacoes() {
+    loadSituacoes(ultimaSituacaoEvolucao) {
       this.situacoes.loading = true;
       this.situacoes.items = situacoesList;
+      if (ultimaSituacaoEvolucao === 'Suspeito') {
+        this.situacoes.items = situacoesList;
+      }
       this.situacoes.loading = false;
     },
     updateDataHoraAtualizacao(dataHoraAtualizacao) {
@@ -131,12 +137,9 @@ export default {
         const requestEvolucao = this.evolucao.toRequest();
         requestEvolucao.notificacaoId = this.notificacaoId;
         EvolucaoService.save(requestEvolucao).then(() => {
-          const msg = this.obterMensagemDeSucesso();
           this.$refs.form.reset();
-          this.$router.push({
-            name: 'notificacao-cons',
-            params: { msg },
-          });
+          const msg = this.obterMensagemDeSucesso();
+          this.$emit('cadastro:evolucao', msg);
         }).catch((error) => {
           const { data } = error.response;
           this.$emit('error:cadastroEvolucao', data.error);
@@ -145,9 +148,13 @@ export default {
       this.rules.dataHoraAtualizacao.pop();
     },
   },
+  watch: {
+    ultimaSituacaoEvolucao(ultimaSituacaoEvolucao) {
+      this.loadSituacoes(ultimaSituacaoEvolucao);
+    },
+  },
   created() {
     this.loadLocais();
-    this.loadSituacoes();
     this.rules.dataHoraAtualizacao.push(this.validatePastDate);
   },
 };

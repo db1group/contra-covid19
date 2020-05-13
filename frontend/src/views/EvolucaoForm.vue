@@ -1,5 +1,5 @@
 <template>
- <section style="margin-top: 35px;">
+  <section style="margin-top: 35px;">
     <header-title title="Evolução dos pacientes" back-route="notificacao-cons" />
     <v-container fluid>
       <v-row justify="space-around" align="center">
@@ -7,28 +7,29 @@
           <evolucao-form
             :notificacao-id="notificacaoId"
             :data-maxima-permitida="dataMaximaPermitida"
+            :ultima-situacao-evolucao="ultimaSituacaoEvolucao"
+            @cadastro:evolucao="mostrarMensagemSucesso"
             @error:cadastroEvolucao="mostrarMensagemErro"
           />
         </v-col>
         <v-col cols="auto">
-          <evolucao-consulta v-if="evolucao !== null" :evolucao="evolucao" />
+          <evolucao-consulta
+            v-if="evolucao !== null"
+            :evolucao="evolucao"
+            @delete:evolucao="mostrarMensagemSucesso"
+            @erro:deleteEvolucao="mostrarMensagemErro"
+          />
         </v-col>
       </v-row>
     </v-container>
-    <v-snackbar
-      v-model="showError"
-      color="error"
-      bottom>
-      {{ this.mensagemErro }}
-    </v-snackbar>
+    <v-snackbar v-model="showError" color="error" bottom>{{ this.mensagemErro }}</v-snackbar>
     <v-snackbar
       v-model="showSuccess"
       class="evolucao-form__snack-success"
       color="success"
-      bottom>
-      {{ this.mensagemSucesso }}
-    </v-snackbar>
- </section>
+      bottom
+    >{{ this.mensagemSucesso }}</v-snackbar>
+  </section>
 </template>
 <script>
 import HeaderTitle from '@/components/commons/HeaderTitle.vue';
@@ -53,6 +54,7 @@ export default {
     showSuccess: false,
     mensagemSucesso: '',
     dataMaximaPermitida: '',
+    ultimaSituacaoEvolucao: '',
   }),
   methods: {
     consultarEvolucao() {
@@ -63,12 +65,18 @@ export default {
         .then(({ data }) => {
           this.evolucao = new Evolucao(data).toRequestBody();
           this.obterDataMaximaPermitida(this.evolucao);
+          this.ultimaSituacaoEvolucao = this.evolucao.items[this.evolucao.items.length - 1].situacao;
         })
         .catch(() => this.$router.push({ name: 'notificacao-cons' }));
     },
     mostrarMensagemErro(msg) {
       this.showError = true;
       this.mensagemErro = msg;
+    },
+    mostrarMensagemSucesso(msg) {
+      this.showSuccess = true;
+      this.mensagemSucesso = msg;
+      this.consultarEvolucao();
     },
     obterDataMaximaPermitida(evolucao) {
       if (evolucao.items && evolucao.items.length > 0) {
