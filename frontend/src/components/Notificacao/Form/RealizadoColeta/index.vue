@@ -24,10 +24,13 @@
             v-mask="'##/##/####'"
             :disabled="disableFields"
             :rules="rules.dataDaColeta"
+            ref="dataDaColeta"
             @input="updateDataDaColeta"
           />
           <v-radio-group
             :value="conclusaoAtendimento.tipoLaboratorio"
+            :rules="rules.tipoLaboratorio"
+            ref="tipoLaboratorio"
             class="pl-8"
             @change="changeTipoLaboratorio"
             :disabled="disableFields"
@@ -45,6 +48,8 @@
 
           <v-radio-group
             :value="conclusaoAtendimento.metodoDeExame"
+            :rules="rules.metodoDeExame"
+            ref="metodoDeExame"
             class="pl-8"
             label="Método do exame"
             :disabled="disableFields"
@@ -65,7 +70,7 @@
 </style>
 <script>
 import { mask } from 'vue-the-mask';
-import { dateFormat, dateMustBeLesserEqualsThanToday } from '@/validations/CommonValidations';
+import { required, dateFormat, dateMustBeLesserEqualsThanToday } from '@/validations/CommonValidations';
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
 
 export default {
@@ -82,7 +87,9 @@ export default {
   },
   data: () => ({
     rules: {
-      dataDaColeta: [dateFormat, dateMustBeLesserEqualsThanToday],
+      dataDaColeta: [],
+      tipoLaboratorio: [],
+      metodoDeExame: [],
     },
   }),
   computed: {
@@ -103,7 +110,10 @@ export default {
         this.updateDataDaColeta('');
         this.updateMetodoDeExame(null);
         this.updateNomeLaboratorioEnvioMaterial('');
+        this.removeRequiredInFields();
+        return;
       }
+      this.addRequiredInFields();
     },
     changeTipoLaboratorio(tipoLaboratorio) {
       this.$emit('update:tipoLaboratorio', tipoLaboratorio);
@@ -123,6 +133,23 @@ export default {
     },
     updateNomeLaboratorioEnvioMaterial(nomeLaboratorioEnvioMaterial) {
       this.$emit('update:nomeLaboratorioEnvioMaterial', nomeLaboratorioEnvioMaterial);
+    },
+    validate() {
+      this.$refs.dataDaColeta.validate();
+      this.$refs.tipoLaboratorio.validate();
+      this.$refs.metodoDeExame.validate();
+    },
+    removeRequiredInFields() {
+      this.rules.dataDaColeta = [];
+      this.rules.tipoLaboratorio = [];
+      this.rules.metodoDeExame = [];
+      this.validate();
+    },
+    addRequiredInFields() {
+      this.rules.dataDaColeta.push(required, dateFormat, dateMustBeLesserEqualsThanToday);
+      this.rules.tipoLaboratorio.push(required);
+      this.rules.metodoDeExame.push(required);
+      this.validate();
     },
   },
 };
