@@ -174,7 +174,7 @@
         />
         <observacoes v-model="notificacao.observacoes" :disabled="disableFields" />
       </v-form>
-      <botao-enviar v-if="stateForm !== 'VIEW'" @click="send" />
+      <botao-enviar v-if="stateForm !== 'VIEW'" :disabled="disabledButton" @click="send" />
       <v-snackbar v-model="showError" color="error" bottom>{{ errorMessage }}</v-snackbar>
       <v-snackbar
         v-model="showAlert"
@@ -233,6 +233,7 @@ export default {
     showAlert: false,
     errorMessage: '',
     stateForm: StateForm.NEW,
+    disabledButton: false,
   }),
   computed: {
     title() {
@@ -308,6 +309,7 @@ export default {
       if (this.stateForm === StateForm.VIEW) return;
       if (this.$refs.form.validate()) {
         const requestNotificacao = this.notificacao.toRequestBody();
+        this.disabledButton = true;
 
         if (this.notificacao.id) {
           NotificacaoService.update(this.notificacao.id, requestNotificacao).then(() => {
@@ -317,6 +319,7 @@ export default {
               params: { msg },
             });
           }).catch(({ response }) => {
+            this.disabledButton = false;
             this.showError = true;
             this.errorMessage = response.data.error;
           });
@@ -328,6 +331,7 @@ export default {
               params: { msg },
             });
           }).catch(({ response }) => {
+            this.disabledButton = false;
             this.showError = true;
             this.errorMessage = response.data.error;
           });
