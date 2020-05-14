@@ -9,6 +9,10 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
 
   const notificacaoModel = await repos.notificacaoRepository.getPorId(notificacaoRequest.id);
 
+  if (notificacaoModel === null) throw new RegraNegocioErro('Notificação não existe.');
+
+  if (notificacaoModel.status !== 'ABERTA') throw new RegraNegocioErro('Notificação não está mais aberta.');
+
   if (!usuarioLogado.isRoleSecretariaSaude()) {
     const { unidadeSaudeId } = notificacaoModel;
 
