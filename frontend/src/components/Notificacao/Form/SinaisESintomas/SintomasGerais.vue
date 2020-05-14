@@ -24,6 +24,7 @@
           v-mask="'##/##/####'"
           :disabled="disableFields"
           :rules="rules.dataInicioDosSintomas"
+          ref="dataInicioDosSintomas"
           validate-on-blur
           @input="updateDataInicioDosSintomas"
         />
@@ -67,27 +68,25 @@ export default {
       this.$emit('update:sintomatico', sintomatico);
       if (!sintomatico) {
         this.updateDataInicioDosSintomas('');
+        this.removeRequiredInFields();
+        return;
       }
+      this.addRequiredInFields();
     },
     updateDataInicioDosSintomas(dataInicioDosSintomas) {
       this.$emit('update:dataInicioDosSintomas', dataInicioDosSintomas);
     },
-    requiredIfSintomatico(value) {
-      if (!this.sintomatico) {
-        return true;
-      }
-      return required(value, 'O campo é obrigatório para casos sintomáticos');
+    validate() {
+      this.$refs.dataInicioDosSintomas.validate();
     },
-    dateFormatIfSintomatico(value) {
-      if (!this.sintomatico) {
-        return true;
-      }
-      return dateFormat(value);
+    removeRequiredInFields() {
+      this.rules.dataInicioDosSintomas = [];
+      this.validate();
     },
-  },
-  created() {
-    this.rules.dataInicioDosSintomas.push(this.requiredIfSintomatico);
-    this.rules.dataInicioDosSintomas.push(this.dateFormatIfSintomatico);
+    addRequiredInFields() {
+      this.rules.dataInicioDosSintomas.push(required, dateFormat);
+      this.validate();
+    },
   },
 };
 </script>
