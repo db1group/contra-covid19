@@ -181,7 +181,7 @@
 <script>
 import {
   required, dateFormat, dateHourMinuteFormat, minLengthNumbersWithMask, lessThanMaximumDate,
-  maxLength, minLength, onlyLetters,
+  maxLength, minLength, onlyLetters, lessThanMaximumDateWithMinutes,
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
@@ -223,7 +223,7 @@ export default {
     tiposDocumento: TIPOS_DOCUMENTO,
     racasCores: RACAS_CORES,
     rules: {
-      dataHoraNotificacao: [required, dateHourMinuteFormat],
+      dataHoraNotificacao: [required, dateHourMinuteFormat, lessThanMaximumDateWithMinutes],
       tipoDocumento: [required],
       numeroCpf: [minLengthNumbersWithMask(11)],
       nome: [required, onlyLetters, maxLength(150), minLength(3)],

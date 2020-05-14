@@ -1,9 +1,12 @@
 const consolidacaoAtualizacaoNotificacaoService = require('./consolidar-notificacao-atualizacao-service');
+const { validarMenorQueDataHoraAtual } = require('../lib/validacoes-comuns/data');
 const repos = require('../repositories/repository-factory');
 const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
 
 module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
+  validarMenorQueDataHoraAtual(notificacaoRequest.dataHoraNotificacao, 'A', 'data/hora da notificação');
+
   const notificacaoModel = await repos.notificacaoRepository.getPorId(notificacaoRequest.id);
 
   if (!usuarioLogado.isRoleSecretariaSaude()) {
