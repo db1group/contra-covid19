@@ -123,7 +123,7 @@ exports.gerarExcel = async (req, res) => {
       raioXOutro: t.NotificacaoCovid19 ? t.NotificacaoCovid19.raioXOutro : null,
       // Tomografia de tórax
       tomografiaNormal: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tomografiaNormal'),
-      tomografiaVitro: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tomografiaVitro'),
+      tomografiaVidro: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tomografiaVitro'),
       tomografiaDerrame: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tomografiaDerrame'),
       tomografiaLinfonodo: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'tomografiaLinfonodo'),
       tomografiaOutro: t.NotificacaoCovid19 ? t.NotificacaoCovid19.tomografiaOutro : null,
@@ -247,7 +247,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'raioXOutro', nomeCampo: 'raioXOutro' },
       // Tomografia de tórax
       { nomeColuna: 'tomografiaNormal', nomeCampo: 'tomografiaNormal' },
-      { nomeColuna: 'tomografiaVitro', nomeCampo: 'tomografiaVitro' },
+      { nomeColuna: 'tomografiaVidro', nomeCampo: 'tomografiaVidro' },
       { nomeColuna: 'tomografiaDerrame', nomeCampo: 'tomografiaDerrame' },
       { nomeColuna: 'tomografiaLinfonodo', nomeCampo: 'tomografiaLinfonodo' },
       { nomeColuna: 'tomografiaOutro', nomeCampo: 'tomografiaOutro' },
@@ -259,7 +259,7 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'doencaNeurologicaCronica', nomeCampo: 'doencaNeurologicaCronica' },
       { nomeColuna: 'doencaRenalCronica', nomeCampo: 'doencaRenalCronica' },
       { nomeColuna: 'hipertensao', nomeCampo: 'hipertensao' },
-      { nomeColuna: 'imunodeficiencia', nomeCampo: 'imunodeficiencia' },
+      { nomeColuna: 'Imunodecifência/imunodepressão', nomeCampo: 'imunodeficiencia' },
       { nomeColuna: 'infeccaoHIV', nomeCampo: 'infeccaoHIV' },
       { nomeColuna: 'neoplasia', nomeCampo: 'neoplasia' },
       { nomeColuna: 'obesidade', nomeCampo: 'obesidade' },
@@ -334,7 +334,7 @@ this.retornarOutroTelefone = (notificacao) => {
     return null;
   }
 
-  if (notificacao.Pessoa.telefoneContato && notificacao.Pessoa.telefoneCelular.length > 0) {
+  if (notificacao.Pessoa.telefoneCelular && notificacao.Pessoa.telefoneCelular.length > 0) {
     return notificacao.Pessoa.telefoneCelular;
   }
 
