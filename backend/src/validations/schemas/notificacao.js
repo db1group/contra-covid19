@@ -217,7 +217,11 @@ const schemas = {
         .allow('', null)
         .max(120),
       historicoDeViagem: Joi.bool(),
-      dataDaViagem: Joi.date().iso().allow(null, ''),
+      dataDaViagem: Joi.date()
+        .iso()
+        .less(new Date((new Date()).toDateString()))
+        .message('Data da viagem deve ser menor ou igual de hoje.')
+        .allow(null, ''),
       localDaViagem: Joi.string()
         .allow('', null)
         .max(120),
