@@ -162,7 +162,6 @@ exports.gerarExcel = async (req, res) => {
       // 10. Contato com suspeito
       contatoComSuspeito: t.NotificacaoCovid19 ? t.NotificacaoCovid19.contatoComSuspeito : null,
       localDoContatoComSuspeito: geraExcel.retornarCampo(t.NotificacaoCovid19, 'localDoContatoComSuspeito'),
-      localDoContatoComSuspeitoOutro: geraExcel.retornarCampo(t.NotificacaoCovid19, 'localDoContatoComSuspeitoOutro'),
       nomeSuspeito: t.NotificacaoCovid19 ? t.NotificacaoCovid19.nomeSuspeito : null,
       // 12. Outras informações:
       recebeuVacinaDaGripeNosUltimosDozeMeses: geraExcel.retornarCampo(t.NotificacaoCovid19, 'recebeuVacinaDaGripeNosUltimosDozeMeses'),
@@ -286,7 +285,6 @@ exports.gerarExcel = async (req, res) => {
       // 10. Contato com suspeito
       { nomeColuna: 'contatoComSuspeito', nomeCampo: 'contatoComSuspeito' },
       { nomeColuna: 'localDoContatoComSuspeito', nomeCampo: 'localDoContatoComSuspeito' },
-      { nomeColuna: 'localDoContatoComSuspeitoOutro', nomeCampo: 'localDoContatoComSuspeitoOutro' },
       { nomeColuna: 'nomeSuspeito', nomeCampo: 'nomeSuspeito' },
       // 12. Outras informações'
       { nomeColuna: 'recebeuVacinaDaGripeNosUltimosDozeMeses', nomeCampo: 'recebeuVacinaDaGripeNosUltimosDozeMeses' },
