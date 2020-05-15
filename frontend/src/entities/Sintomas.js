@@ -3,7 +3,7 @@ import Utils from '@/services/Utils';
 export default class Sintomas {
   constructor(data = {}) {
     this.febreAferidaReferida = data.febreAferidaReferida || false;
-    this.temperaturaFebre = data.temperaturaFebre || '';
+    this.temperaturaFebre = data.temperaturaFebre ? data.temperaturaFebre.replace('.', ',') : '';
     this.adinamiaFraqueza = data.adinamiaFraqueza || false;
     this.artralgia = data.artralgia || false;
     this.calafrios = data.calafrios || false;
@@ -42,12 +42,18 @@ export default class Sintomas {
   }
 
   aplicarTemperaturaFebre() {
-    const temperaturaFebre = Utils.numbersOnly(this.temperaturaFebre);
+    const temperaturaFebreNumbers = Utils.numbersOnly(this.temperaturaFebre);
 
-    if (!temperaturaFebre || temperaturaFebre.length <= 0) {
+    if (!temperaturaFebreNumbers || temperaturaFebreNumbers.length <= 0) {
       return null;
     }
 
-    return temperaturaFebre;
+    let temperaturaFebre;
+    if (temperaturaFebreNumbers.length === 2) {
+      temperaturaFebre = temperaturaFebreNumbers;
+    } else {
+      temperaturaFebre = `${temperaturaFebreNumbers.substring(0, 2)}.${temperaturaFebreNumbers.substring(2)}`;
+    }
+    return parseFloat(temperaturaFebre);
   }
 }
