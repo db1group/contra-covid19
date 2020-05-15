@@ -95,7 +95,7 @@
     </v-row>
 
     <v-row dense v-show="suspeito.sexo === 'F' && suspeito.gestante === 'true'">
-      <v-col cols="12" >
+      <v-col cols="12">
         <v-radio-group
           :value="suspeito.tipoPeriodoGestacional"
           :rules="rules.tipoPeriodoGestacional"
@@ -103,26 +103,12 @@
           :disabled="disabled"
         >
           <template v-slot:label>
-            <label class="primary--text body-1 font-weight-bold">
-              Período de gestação *
-            </label>
+            <label class="primary--text body-1 font-weight-bold">Período de gestação *</label>
           </template>
-          <v-radio
-            value="PRIMEIRO_TRIMESTRE"
-            label="1º Trimestre"
-          />
-          <v-radio
-            value="SEGUNDO_TRIMESTRE"
-            label="2º Trimestre"
-          />
-          <v-radio
-            value="TERCEIRO_TRIMESTRE"
-            label="3º Trimestre"
-          />
-          <v-radio
-            value="IDADE_GESTACIONAL_IGNORADA"
-            label="Idade gestacional ignorada"
-          />
+          <v-radio value="PRIMEIRO_TRIMESTRE" label="1º Trimestre" />
+          <v-radio value="SEGUNDO_TRIMESTRE" label="2º Trimestre" />
+          <v-radio value="TERCEIRO_TRIMESTRE" label="3º Trimestre" />
+          <v-radio value="IDADE_GESTACIONAL_IGNORADA" label="Idade gestacional ignorada" />
         </v-radio-group>
       </v-col>
     </v-row>
@@ -321,6 +307,11 @@ export default {
         return true;
       }
       return required(value);
+    },
+  },
+  watch: {
+    'suspeito.tipoClassificacaoPessoa': function (novoValor) {
+      this.updateTipoClassificacaoPessoa(novoValor);
     },
   },
   created() {
