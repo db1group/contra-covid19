@@ -46,7 +46,7 @@ export default {
     ocupacoes: [],
     rules: {
       ocupacaoId: [required],
-      ocupacao: [minLength(3), maxLength(60)],
+      ocupacao: [],
     },
   }),
   methods: {
@@ -62,7 +62,7 @@ export default {
       if (ocupacaoSelecionada.descricao === 'Outro') {
         this.rules.ocupacao.push(required);
       } else {
-        this.rules.ocupacao.splice(this.rules.ocupacao.indexOf(required), 1);
+        this.rules.ocupacao = [minLength(3), maxLength(60)];
       }
       this.$refs.ocupacao.validate();
     },
