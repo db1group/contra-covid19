@@ -27,3 +27,5 @@ exports.getPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
     },
   });
 };
+
+exports.cadastrar = async (pessoa) => models.Pessoa.create(pessoa);
