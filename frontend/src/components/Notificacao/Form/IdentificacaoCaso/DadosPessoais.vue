@@ -166,7 +166,7 @@
 </template>
 <script>
 import {
-  required, dateFormat, dateHourMinuteFormat, minLengthNumbersWithMask, lessThanMaximumDate,
+  required, dateFormat, dateHourMinuteFormat, minLengthNumbersWithMask, dateMustBeLesserThanToday,
   maxLength, minLength, onlyLetters, lessThanMaximumDateWithMinutes,
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
@@ -286,7 +286,7 @@ export default {
       return required(value);
     },
     validateFutureDate(value) {
-      return lessThanMaximumDate(value, null, 'Informe uma data igual ou anterior ao dia de hoje.');
+      return dateMustBeLesserThanToday(value, 'Informe uma data anterior ao dia de hoje.');
     },
     disableTipoDocumento(tipoClassificacaoPessoa) {
       if (this.disabled) {

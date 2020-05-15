@@ -74,3 +74,10 @@ export const dateMustBeLesserEqualsThanToday = (
   || value.length < 10
   || (DateService.isLesserEqualsThanMaximumDate(value))
   || message;
+export const dateMustBeLesserThanToday = (
+  value,
+  message = 'A data informada deve ser anterior a de hoje.',
+) => !value
+  || value.length < 10
+  || (DateService.isLesserThanToday(value))
+  || message;

@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   required,
   minLength,
@@ -5,6 +6,7 @@ import {
   dateFormat,
   dateHourMinuteFormat,
   dateMustBeLesserEqualsThanToday,
+  dateMustBeLesserThanToday,
   onlyLetters,
   maxLength,
   minLengthNumbersWithMask,
@@ -210,6 +212,45 @@ describe('Testes para validador de data menor ou igual a hoje', () => {
   });
   test('Data posterior a hoje deve ser inválida com mensagem customizada', () => {
     const result = dateMustBeLesserEqualsThanToday('01/04/2220', 'Ih rapaz, deu ruim aqui');
+    expect(result).toBe('Ih rapaz, deu ruim aqui');
+  });
+});
+
+describe('Testes para validador de data menor a hoje', () => {
+  test('Data não informada deve ser válida', () => {
+    const result = dateMustBeLesserThanToday('');
+    expect(result).toBeTruthy();
+  });
+  test('Data nula deve ser válida', () => {
+    const result = dateMustBeLesserThanToday(null);
+    expect(result).toBeTruthy();
+  });
+  test('Data undefined deve ser válida', () => {
+    const result = dateMustBeLesserThanToday();
+    expect(result).toBeTruthy();
+  });
+  test('Data menor que hoje deve ser válida', () => {
+    const result = dateMustBeLesserThanToday('01/04/2020');
+    expect(result).toBeTruthy();
+  });
+  test('Data ainda não terminada a digitação deve ser válida', () => {
+    const result = dateMustBeLesserThanToday('01/04/');
+    expect(result).toBeTruthy();
+  });
+  test('Data ainda não terminada a digitação com ano incompleto deve ser válida', () => {
+    const result = dateMustBeLesserThanToday('01/04/202');
+    expect(result).toBeTruthy();
+  });
+  test('Data igual a hoje deve ser inválida', () => {
+    const result = dateMustBeLesserThanToday(moment());
+    expect(result).toBe('A data informada deve ser anterior a de hoje.');
+  });
+  test('Data posterior a hoje deve ser inválida', () => {
+    const result = dateMustBeLesserThanToday('01/04/2220');
+    expect(result).toBe('A data informada deve ser anterior a de hoje.');
+  });
+  test('Data posterior a hoje deve ser inválida com mensagem customizada', () => {
+    const result = dateMustBeLesserThanToday('01/04/2220', 'Ih rapaz, deu ruim aqui');
     expect(result).toBe('Ih rapaz, deu ruim aqui');
   });
 });
