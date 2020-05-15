@@ -28,6 +28,20 @@ module.exports.deletarEvolucaoPorId = async (id, transaction) => {
   });
 };
 
+module.exports.atualizarEvolucaoPorId = async (evolucao, transaction) => {
+  models.NotificacaoEvolucao.update(
+    { ...evolucao },
+    {
+      where: {
+        id: evolucao.id,
+      },
+    },
+    {
+      transaction,
+    },
+  );
+};
+
 module.exports.getPorId = async (id) => models.Notificacao.findOne({
   where: { id },
   include: [
