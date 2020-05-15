@@ -14,6 +14,8 @@
         />
         <v-text-field
           :value="sintomas.temperaturaFebre"
+          :rules="rules.temperaturaFebre"
+          ref="temperaturaFebre"
           class="px-8"
           label="Informar temperatura"
           suffix="°C"
@@ -114,6 +116,7 @@
 <script>
 import { mask } from 'vue-the-mask';
 import Sintomas from '@/entities/Sintomas';
+import { required } from '@/validations/CommonValidations';
 
 export default {
   directives: { mask },
@@ -131,6 +134,11 @@ export default {
       defaultValue: false,
     },
   },
+  data: () => ({
+    rules: {
+      temperaturaFebre: [],
+    },
+  }),
   computed: {
     disableFields() {
       if (this.disabled) return true;
@@ -146,7 +154,10 @@ export default {
       this.$emit('update:febreAferidaReferida', febreAferidaReferida);
       if (!febreAferidaReferida) {
         this.updateTemperaturaFebre('');
+        this.removeRequiredInFields();
+        return;
       }
+      this.addRequiredInFields();
     },
     updateTemperaturaFebre(temperaturaFebre) {
       this.$emit('update:temperaturaFebre', temperaturaFebre);
@@ -186,6 +197,17 @@ export default {
     },
     updateTiragemIntercostal(tiragemIntercostal) {
       this.$emit('update:tiragemIntercostal', tiragemIntercostal);
+    },
+    validate() {
+      this.$refs.temperaturaFebre.validate();
+    },
+    removeRequiredInFields() {
+      this.rules.temperaturaFebre = [];
+      this.validate();
+    },
+    addRequiredInFields() {
+      this.rules.temperaturaFebre.push(required);
+      this.validate();
     },
   },
 };
