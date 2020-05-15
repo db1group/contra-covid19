@@ -40,7 +40,7 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
-import { required, dateFormat } from '@/validations/CommonValidations';
+import { required, dateFormat, dateMustBeLesserEqualsThanToday } from '@/validations/CommonValidations';
 import InformacoesComplementares from '@/entities/InformacoesComplementares';
 
 export default {
@@ -57,7 +57,7 @@ export default {
   },
   data: () => ({
     rules: {
-      dataDaViagem: [],
+      dataDaViagem: [dateMustBeLesserEqualsThanToday],
       localDaViagem: [],
     },
   }),
