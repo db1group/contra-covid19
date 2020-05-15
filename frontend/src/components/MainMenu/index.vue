@@ -27,6 +27,14 @@
           <v-list-item-title>Nova notificação</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <v-list-item v-if="isSecretariaSaude" value="exportar" @click="onClick('exportar')">
+        <v-list-item-icon>
+          <v-icon>mdi-download</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Exportar</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-subheader>Ações</v-subheader>
       <v-list-item @click="logout">
         <v-list-item-icon>
@@ -40,6 +48,8 @@
   </v-list>
 </template>
 <script>
+import keycloak from '@/services/KeycloakService';
+
 export default {
   props: {
     currentRouteName: {
@@ -53,6 +63,11 @@ export default {
     },
     logout() {
       this.$emit('logout');
+    },
+  },
+  computed: {
+    isSecretariaSaude() {
+      return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
     },
   },
 };
