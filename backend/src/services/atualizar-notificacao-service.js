@@ -38,4 +38,14 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
   const { notificacaoCovid19 } = notificacaoUpdate;
   notificacaoCovid19.notificacaoId = notificacaoRequest.id;
   await repos.notificacaoCovid19Repository.atualizar(notificacaoCovid19);
+
+  const notificacaoEvolucoes = await repos.notificacaoRepository
+    .getEvolucoesPorNotificacaoId(notificacaoRequest.id);
+  const primeiraEvolucao = notificacaoEvolucoes.NotificacaoEvolucaos[0];
+  const evolucaoUpdate = {
+    id: primeiraEvolucao.id,
+    dtEvolucao: notificacaoConsolidada.dataHoraNotificacao,
+    tpLocal: notificacaoCovid19.situacaoNoMomentoDaNotificacao,
+  };
+  await repos.notificacaoRepository.atualizarEvolucaoPorId(evolucaoUpdate);
 };
