@@ -8,8 +8,8 @@ const query = (queryInterface, sql, transaction) => queryInterface
   .query(sql, { raw: true }, { transaction });
 
 const scriptPath = path.resolve(__dirname, '../scripts');
-const createFatoBi = fs.readFileSync(path.resolve(scriptPath, 'create_fato-bi.sql'), 'utf8');
-const dropFatoBi = fs.readFileSync(path.resolve(scriptPath, 'drop_fato-bi.sql'), 'utf8');
+const createFatoBi = fs.readFileSync(path.resolve(scriptPath, '20200516140219-add_views_functions_fato-bi-create.sql'), 'utf8');
+const dropFatoBi = fs.readFileSync(path.resolve(scriptPath, '20200516140219-add_views_functions_fato-bi-drop.sql'), 'utf8');
 
 module.exports = {
   up: (queryInterface) => {
