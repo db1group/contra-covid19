@@ -10,6 +10,7 @@ import {
   onlyLetters,
   maxLength,
   minLengthNumbersWithMask,
+  maxAge,
 } from '../CommonValidations';
 
 describe('Testes para validador de campo obrigatório', () => {
@@ -266,6 +267,17 @@ describe('Testes para validador de somente letras', () => {
   });
   test('Campo com somente letras e possíveis acentos deve ser válido', () => {
     const result = onlyLetters('uuddlrlrba ásadas ão');
+    expect(result).toBeTruthy();
+  });
+});
+
+describe('Testes para validador de idade', () => {
+  test('Maior que a idade limite NÃO deve ser aceito', () => {
+    const result = maxAge(12)('26/02/1990');
+    expect(result).toBe('O paciente deve ter até 12 anos.');
+  });
+  test('Menor que a idade limite DEVE ser aceito', () => {
+    const result = maxAge(12)('26/02/2020');
     expect(result).toBeTruthy();
   });
 });

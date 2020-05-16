@@ -139,6 +139,7 @@
       <v-col cols="12" sm="5" md="5">
         <v-text-field
           :value="suspeito.dataDeNascimento"
+          ref="dataDeNascimento"
           label="Data de nascimento *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
@@ -167,7 +168,7 @@
 <script>
 import {
   required, dateFormat, dateHourMinuteFormat, minLengthNumbersWithMask, dateMustBeLesserThanToday,
-  maxLength, minLength, onlyLetters, lessThanMaximumDateWithMinutes,
+  maxLength, minLength, onlyLetters, lessThanMaximumDateWithMinutes, maxAge,
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
@@ -272,6 +273,15 @@ export default {
     updateTipoClassificacaoPessoa(tipoClassificacaoPessoa) {
       this.disableTipoDocumento(tipoClassificacaoPessoa);
       this.$emit('update:tipoClassificacaoPessoa', tipoClassificacaoPessoa);
+      this.checkMaxAge(tipoClassificacaoPessoa);
+    },
+    checkMaxAge(value) {
+      if (value === 'CRIANCA_ATE_12_ANOS') {
+        this.rules.dataDeNascimento.push(maxAge(12));
+      } else {
+        this.rules.dataDeNascimento = [required, dateFormat, this.validateFutureDate];
+      }
+      this.$refs.dataDeNascimento.validate();
     },
     requiredIfSexoForFeminino(value) {
       if (this.suspeito.sexo === 'M') {
