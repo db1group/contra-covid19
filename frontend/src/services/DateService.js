@@ -39,6 +39,10 @@ export default {
   isDateValid(stringDate, format) {
     return moment(stringDate, format).isValid();
   },
+  isLesserThanToday(stringInformedDate) {
+    const informedDate = toMomentObject(stringInformedDate, 'DD/MM/YYYY');
+    return informedDate.isBefore(moment(), 'day');
+  },
   isLesserEqualsThanMaximumDate(stringInformedDate, stringMaximumDate) {
     const informedDate = toMomentObject(stringInformedDate, 'DD/MM/YYYY');
     const maximumDate = stringMaximumDate

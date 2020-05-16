@@ -33,7 +33,6 @@
     >
       <template v-slot:top>
         <v-card-title>
-          Cadastros
           <v-spacer></v-spacer>
           <v-row>
             <v-col cols="4">

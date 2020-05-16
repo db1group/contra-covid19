@@ -139,6 +139,7 @@
       <v-col cols="12" sm="5" md="5">
         <v-text-field
           :value="suspeito.dataDeNascimento"
+          ref="dataDeNascimento"
           label="Data de nascimento *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
@@ -166,8 +167,8 @@
 </template>
 <script>
 import {
-  required, dateFormat, dateHourMinuteFormat, minLengthNumbersWithMask, lessThanMaximumDate,
-  maxLength, minLength, onlyLetters, lessThanMaximumDateWithMinutes,
+  required, dateFormat, dateHourMinuteFormat, minLengthNumbersWithMask, dateMustBeLesserThanToday,
+  maxLength, minLength, onlyLetters, lessThanMaximumDateWithMinutes, maxAge,
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
@@ -272,6 +273,15 @@ export default {
     updateTipoClassificacaoPessoa(tipoClassificacaoPessoa) {
       this.disableTipoDocumento(tipoClassificacaoPessoa);
       this.$emit('update:tipoClassificacaoPessoa', tipoClassificacaoPessoa);
+      this.checkMaxAge(tipoClassificacaoPessoa);
+    },
+    checkMaxAge(value) {
+      if (value === 'CRIANCA_ATE_12_ANOS') {
+        this.rules.dataDeNascimento.push(maxAge(12));
+      } else {
+        this.rules.dataDeNascimento = [required, dateFormat, this.validateFutureDate];
+      }
+      this.$refs.dataDeNascimento.validate();
     },
     requiredIfSexoForFeminino(value) {
       if (this.suspeito.sexo === 'M') {
@@ -286,7 +296,7 @@ export default {
       return required(value);
     },
     validateFutureDate(value) {
-      return lessThanMaximumDate(value, null, 'Informe uma data igual ou anterior ao dia de hoje.');
+      return dateMustBeLesserThanToday(value, 'Informe uma data anterior ao dia de hoje.');
     },
     disableTipoDocumento(tipoClassificacaoPessoa) {
       if (this.disabled) {
