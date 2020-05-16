@@ -1,0 +1,16 @@
+drop view IF EXISTS public.vwboletim CASCADE;
+drop function IF EXISTS public.definirfato CASCADE;
+drop function IF EXISTS public.obterboletim CASCADE;
+drop view IF EXISTS public.vwaprovacoes CASCADE;
+drop view IF EXISTS public.vwfato CASCADE;
+drop view IF EXISTS public.ultimaevolucao CASCADE;
+drop function IF EXISTS public.temcomorbidade CASCADE;
+drop function IF EXISTS public.faixaetaria CASCADE;
+drop function IF EXISTS public.idadeatual CASCADE;
+drop table IF EXISTS public."AprovacaoDado" CASCADE;
+drop table IF EXISTS public."FatoNotificacaoCovid19" CASCADE;
+drop function IF EXISTS public.definirdimensaopaciente CASCADE;
+drop table IF EXISTS public."DmPaciente" CASCADE;
+drop function IF EXISTS public.definirdimensaolocalizacao CASCADE;
+drop table IF EXISTS public."DmLocalizacao" CASCADE;
+DROP EXTENSION IF EXISTS "pgcrypto";
