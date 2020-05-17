@@ -156,6 +156,23 @@ exports.retornarDataGravadaSemHora = (objeto, nomeDaPropriedade) => {
   return moment.tz(data, TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY');
 };
 
+exports.retornarCampoNumeroDecimalComVirgula = (objeto, nomeDaPropriedade) => {
+  if (!this.validarCampo(objeto, nomeDaPropriedade)) {
+    return null;
+  }
+
+  const numero = objeto[nomeDaPropriedade];
+  if (!numero) {
+    return null;
+  }
+
+  if (typeof numero === 'number') {
+    return numero.toString().replace('.', ',');
+  }
+
+  return numero.replace('.', ',');
+};
+
 exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {
   if (!this.validarCampo(objeto, nomeDaPropriedade)) {
     return null;
