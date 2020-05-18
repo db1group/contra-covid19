@@ -84,7 +84,7 @@ exports.gerarExcel = async (req, res) => {
       // 4.1. SINTOMAS RESPIRATÓRIOS
       dataDeInicioDosSintomas: geraExcel.retornarDataGravadaSemHora(t.NotificacaoCovid19, 'dataInicioDosSintomas'),
       febreAferidaReferida: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'febreAferidaReferida'),
-      temperaturaFebre: t.NotificacaoCovid19 ? t.NotificacaoCovid19.temperaturaFebre : null,
+      temperaturaFebre: geraExcel.retornarCampoNumeroDecimalComVirgula(t.NotificacaoCovid19, 'temperaturaFebre'),
       batimentoAsasNasais: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'batimentoAsasNasais'),
       cianoseCentral: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'cianoseCentral'),
       congestaoNasal: geraExcel.preencherCampoBoolean(t.NotificacaoCovid19, 'congestaoNasal'),
