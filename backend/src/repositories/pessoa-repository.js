@@ -17,7 +17,7 @@ exports.get = async (nome, nomeDaMae) => models.Pessoa.findAll({
   },
 });
 
-exports.getPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
+exports.getPorDocumento = async ({ tipoDocumento, numeroDocumento }, transaction) => {
   if (!tipoDocumento || tipoDocumento.trim() === '') return null;
   if (!numeroDocumento || numeroDocumento.trim() === '') return null;
   return models.Pessoa.findOne({
@@ -25,6 +25,9 @@ exports.getPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
       tipoDocumento,
       numeroDocumento,
     },
+  },
+  {
+    transaction,
   });
 };
 

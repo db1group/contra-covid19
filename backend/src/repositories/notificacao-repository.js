@@ -42,7 +42,7 @@ module.exports.atualizarEvolucaoPorId = async (evolucao, transaction) => {
   );
 };
 
-module.exports.getPorId = async (id) => models.Notificacao.findOne({
+module.exports.getPorId = async (id, transaction) => models.Notificacao.findOne({
   where: { id },
   include: [
     {
@@ -60,28 +60,30 @@ module.exports.getPorId = async (id) => models.Notificacao.findOne({
     { model: models.ProfissionalSaude },
     { model: models.Profissao },
   ],
+}, {
+  transaction,
 });
 
-module.exports.getPorPessoaDocumento = async (where) => {
-  const { tipoDocumento, numeroDocumento, status = 'ABERTA' } = where;
-
-  return models.Notificacao.findAll({
+module.exports.getPorPessoaDocumento = async (tipoDocumento,
+  numeroDocumento, status, transaction) => models.Notificacao.findAll({
+  where: {
+    status,
+  },
+  include: {
+    model: models.Pessoa,
     where: {
-      status,
+      [Op.and]: [{
+        tipoDocumento,
+      }, {
+        numeroDocumento,
+      }],
     },
-    include: {
-      model: models.Pessoa,
-      where: {
-        [Op.and]: [{
-          tipoDocumento,
-        }, {
-          numeroDocumento,
-        }],
-      },
-      attributes: ['tipoDocumento', 'numeroDocumento'],
-    },
-  });
-};
+    attributes: ['tipoDocumento', 'numeroDocumento'],
+  },
+},
+{
+  transaction,
+});
 
 exports.atualizar = async (notificacao) => {
   const { id } = notificacao;

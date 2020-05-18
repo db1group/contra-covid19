@@ -1,12 +1,9 @@
-const { Sequelize } = require('sequelize');
 const repos = require('../repositories/repository-factory');
 const models = require('../models');
 const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
 const DocumentValidator = require('../validations/custom/document-validator');
 const tipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
-
-const { Op } = Sequelize;
 
 const buscarPessoaId = async (suspeito) => {
   const { nome, nomeDaMae } = suspeito;
@@ -37,7 +34,7 @@ const validarDocumento = ({ tipoClassificacaoPessoa, tipoDocumento, numeroDocume
   if (tipoDocumento !== DocumentValidator.docs.CPF) return true;
 
   if (tipoClassificacaoPessoa !== tipoClassificacaoPessoaEnum.values.Outro
-        && !numeroDocumento) return true;
+    && !numeroDocumento) return true;
 
   return DocumentValidator.IsCpfValid(numeroDocumento);
 };
@@ -76,43 +73,7 @@ const consolidarSuspeito = async (suspeito) => {
   return Mappers.Pessoa.mapearParaSuspeito(novaPessoaCadastrada);
 };
 
-const notificacaoAbertaJaExisteParaOPaciente = async ({ tipoDocumento, numeroDocumento }) => {
-  if (!tipoDocumento) return false;
-  if (!numeroDocumento) return false;
-
-  const status = 'ABERTA';
-  const notificacao = await models.Notificacao.count({
-    where: {
-      status,
-    },
-    include: {
-      model: models.Pessoa,
-      where: {
-        [Op.and]: [{
-          tipoDocumento,
-        }, {
-          numeroDocumento,
-        }],
-      },
-      attributes: ['tipoDocumento', 'numeroDocumento'],
-    },
-  });
-
-  return notificacao > 0;
-};
-
-const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
-  const existeNotificacaoAbertaParaOPaciente = await notificacaoAbertaJaExisteParaOPaciente(
-    notificacaoRequest.suspeito,
-  );
-
-  if (existeNotificacaoAbertaParaOPaciente) {
-    throw new RegraNegocioErro('Já existe uma notificação aberta para este paciente.');
-  }
-};
-
-const salvarNotificacao = async (notificacao) => {
-  const transaction = await models.sequelize.transaction();
+const salvarNotificacao = async (notificacao, transaction) => {
   try {
     const novaNotificacao = await models.Notificacao.create(
       notificacao, { transaction },
@@ -128,7 +89,6 @@ const salvarNotificacao = async (notificacao) => {
       tpEvolucao: 'SUSPEITO',
       tpLocal: notificacao.notificacaoCovid19.situacaoNoMomentoDaNotificacao,
     }, { transaction });
-    await transaction.commit();
     return notificacaoId;
   } catch (err) {
     await transaction.rollback();
@@ -137,47 +97,59 @@ const salvarNotificacao = async (notificacao) => {
 };
 
 exports.handle = async (notificacaoRequest, userEmail) => {
-  const user = await repos.usuarioRepository.getPorEmail(userEmail);
-  if (!user) throw new RegraNegocioErro('Usuário não encontrado!');
+  const transaction = await models.sequelize.transaction();
 
-  await validarNotificacaoUnicaPorPaciente(notificacaoRequest);
+  try {
+    const user = await repos.usuarioRepository.getPorEmail(userEmail, transaction);
+    if (!user) throw new RegraNegocioErro('Usuário não encontrado!');
 
-  const { suspeito } = notificacaoRequest;
-  const { unidadeSaudeId } = notificacaoRequest;
-  const { municipioId } = suspeito;
-  const suspeitoConsolidado = await consolidarSuspeito(suspeito);
+    const { tipoDocumento, numeroDocumento } = notificacaoRequest.suspeito;
+    const notificacoesAbertasPorPessoaDocumento = await repos.notificacaoRepository
+      .getPorPessoaDocumento(tipoDocumento, numeroDocumento, 'ABERTA', transaction);
+    if (notificacoesAbertasPorPessoaDocumento.length > 0) {
+      throw new RegraNegocioErro('Já existe uma notificação aberta para este paciente.');
+    }
 
-  const unidadeDeSaude = await repos.unidadeSaudeRepository
-    .getPorId(notificacaoRequest.unidadeSaudeId);
-  if (!unidadeDeSaude) {
-    const msgErro = `Não foi localizada a unidade de saúde com o código ${unidadeSaudeId}`;
-    throw new RegraNegocioErro(msgErro);
+    const { suspeito } = notificacaoRequest;
+    const { unidadeSaudeId } = notificacaoRequest;
+    const { municipioId } = suspeito;
+    const suspeitoConsolidado = await consolidarSuspeito(suspeito);
+
+    const unidadeDeSaude = await repos.unidadeSaudeRepository
+      .getPorId(notificacaoRequest.unidadeSaudeId, transaction);
+
+    if (!unidadeDeSaude) {
+      const msgErro = `Não foi localizada a unidade de saúde com o código ${unidadeSaudeId}`;
+      throw new RegraNegocioErro(msgErro);
+    }
+
+    const notificacaoConsolidada = {
+      ...notificacaoRequest,
+      suspeito: {
+        municipioId,
+        ...suspeitoConsolidado,
+      },
+      unidadeDeSaude: {
+        ...unidadeDeSaude.dataValues,
+      },
+    };
+
+    notificacaoConsolidada.userId = user.id;
+    const notificacao = Mappers.Notificacao.mapearParaNotificacao(
+      notificacaoConsolidada,
+    );
+
+    notificacao.status = 'ABERTA';
+    const notificacaoId = await salvarNotificacao(notificacao, transaction);
+    await transaction.commit();
+
+    const notificacaoSalva = await repos.notificacaoRepository.getPorId(notificacaoId);
+    return Mappers.Notificacao.mapearParaResponse(
+      notificacaoSalva,
+      notificacaoSalva.NotificacaoCovid19,
+    );
+  } catch (error) {
+    await transaction.rollback();
+    throw (error);
   }
-
-  const notificacaoConsolidada = {
-    ...notificacaoRequest,
-    suspeito: {
-      municipioId,
-      ...suspeitoConsolidado,
-    },
-    unidadeDeSaude: {
-      ...unidadeDeSaude.dataValues,
-    },
-  };
-
-  notificacaoConsolidada.userId = user.id;
-  const notificacao = Mappers.Notificacao.mapearParaNotificacao(
-    notificacaoConsolidada,
-  );
-
-  notificacao.status = 'ABERTA';
-
-  const notificacaoId = await salvarNotificacao(notificacao);
-
-  const notificacaoSalva = await repos.notificacaoRepository.getPorId(notificacaoId);
-
-  return Mappers.Notificacao.mapearParaResponse(
-    notificacaoSalva,
-    notificacaoSalva.NotificacaoCovid19,
-  );
 };
