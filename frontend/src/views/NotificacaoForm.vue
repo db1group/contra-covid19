@@ -354,6 +354,11 @@ export default {
           this.notificacao = new Notificacao(data);
         })
         .catch(({ response }) => {
+          if (response.status === 403) {
+            this.$router.push({
+              name: 'notificacao-cons',
+            });
+          }
           this.showError = true;
           this.errorMessage = response.data.error;
         });
