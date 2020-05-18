@@ -27,11 +27,11 @@ const getDataProximoFechamento = async () => {
       throw new RegraNegocioErro('Não existe notificações covid19 cadastradas.');
     }
 
-    return new Date(dataPrimeiraNotificacao);
+    return moment.utc(dataPrimeiraNotificacao);
   }
 
-  const dataProximoFechamento = new Date(queryResult.ultimoFechamentoNotificacaoCovid19);
-  dataProximoFechamento.setDate(dataProximoFechamento.getDate() + 1);
+  const dataProximoFechamento = moment.utc(queryResult.ultimoFechamentoNotificacaoCovid19);
+  dataProximoFechamento.add(1, 'days');
   return dataProximoFechamento;
 };
 
@@ -57,7 +57,7 @@ const getDadosFechamento = async (dataFechamento) => {
   const quantidadeConfirmadosInternados = quantidadeConfirmadosRegular + quantidadeConfirmadosUti;
 
   return {
-    dataFechamento: dataFormatada,
+    dataFechamento: moment.utc(dataFormatada),
     casosNotificados: parseInt(boletim.qtnotificado, 0),
     acompanhados: parseInt(boletim.qtacompanhamento, 0),
     internados: quantidadeInternados,
