@@ -36,9 +36,9 @@ const getDataProximoFechamento = async () => {
 };
 
 const getDadosFechamento = async (dataFechamento) => {
-  const dataQuery = moment(dataFechamento).format('YYYY-MM-DD');
+  const dataFormatada = moment(dataFechamento).format('YYYY-MM-DD');
   const boletins = await models.sequelize.query(
-    `SELECT * FROM vwboletim WHERE dtaprovacao = '${dataQuery}'`,
+    `SELECT * FROM vwboletim WHERE dtaprovacao = '${dataFormatada}'`,
     { type: Sequelize.QueryTypes.SELECT },
   );
 
@@ -49,16 +49,23 @@ const getDadosFechamento = async (dataFechamento) => {
     throw new RegraNegocioErro(`Não existe boletim para o dia ${dataBoletim}.`);
   }
 
+  const quantidadeInternadosRegular = parseInt(boletim.qtsuspeitoregular, 0);
+  const quantidadeInternadosUti = parseInt(boletim.qtsuspeitouti, 0);
+  const quantidadeConfirmadosRegular = parseInt(boletim.qtconfirmadoregular, 0);
+  const quantidadeConfirmadosUti = parseInt(boletim.qtconfirmadouti, 0);
+  const quantidadeInternados = quantidadeInternadosRegular + quantidadeInternadosUti;
+  const quantidadeConfirmadosInternados = quantidadeConfirmadosRegular + quantidadeConfirmadosUti;
+
   return {
-    dataFechamento: new Date(dataFechamento.toDateString()),
-    casosNotificados: parseInt(boletim.casosNotificados, 0),
-    acompanhados: parseInt(boletim.casosNotificados, 0),
-    internados: parseInt(boletim.casosNotificados, 0),
+    dataFechamento: dataFormatada,
+    casosNotificados: parseInt(boletim.qtnotificado, 0),
+    acompanhados: parseInt(boletim.qtacompanhamento, 0),
+    internados: quantidadeInternados,
     casosEncerrados: parseInt(boletim.qtencerrado, 0),
-    confirmados: parseInt(boletim.confirmado, 0),
-    curados: parseInt(boletim.casosNotificados, 0),
+    confirmados: parseInt(boletim.qtconfirmado, 0),
+    curados: parseInt(boletim.qtconfirmadoencerrado, 0),
     obitos: parseInt(boletim.qtobito, 0),
-    confirmadosInternados: parseInt(boletim.casosNotificados, 0),
+    confirmadosInternados: quantidadeConfirmadosInternados,
     emIsolamentoDomiciliar: parseInt(boletim.qtconfirmadoisolamento, 0),
   };
 };
