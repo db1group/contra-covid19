@@ -30,6 +30,7 @@ import Exportar from '@/components/Notificacao/Exportar/Index.vue';
 import NotificacaoExportar from '@/entities/NotificacaoExportar';
 import NotificacaoService from '@/services/NotificacaoService';
 import DateService from '@/services/DateService';
+import keycloak from '@/services/KeycloakService';
 
 export default {
   components: {
@@ -58,6 +59,16 @@ export default {
       const { dataInicial, dataFinal } = this.exportar;
       return DateService.isLesserEqualsThanMaximumDate(dataInicial, dataFinal);
     },
+    isSecretariaSaude() {
+      return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
+    },
+  },
+  created() {
+    if (!this.isSecretariaSaude()) {
+      this.$router.push({
+        name: 'home-page',
+      });
+    }
   },
 };
 </script>
