@@ -166,11 +166,7 @@ exports.retornarCampoNumeroDecimalComVirgula = (objeto, nomeDaPropriedade) => {
     return null;
   }
 
-  if (typeof numero === 'number') {
-    return numero.toString().replace('.', ',');
-  }
-
-  return numero.replace('.', ',');
+  return numero.toString().replace('.', ',');
 };
 
 exports.preencherCampoBoolean = (objeto, nomeDaPropriedade) => {
