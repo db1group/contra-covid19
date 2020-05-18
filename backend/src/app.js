@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('./extensions/arrary-extensions');
 const express = require('express');
 const compression = require('compression');
 const pino = require('pino-http');
