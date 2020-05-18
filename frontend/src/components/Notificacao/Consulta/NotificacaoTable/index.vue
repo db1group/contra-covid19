@@ -33,7 +33,6 @@
     >
       <template v-slot:top>
         <v-card-title>
-          Cadastros
           <v-spacer></v-spacer>
           <v-row>
             <v-col cols="4">
@@ -203,7 +202,8 @@ export default {
       return this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude;
     },
     isPermiteEditar(item) {
-      return this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude;
+      return item.status !== 'ENCERRADA'
+        && (this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude);
     },
     isPermiteExcluir() {
       return this.isSecretariaSaude;

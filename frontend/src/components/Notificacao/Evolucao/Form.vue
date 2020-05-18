@@ -57,7 +57,7 @@
           <v-row align="center" justify="end">
             <v-col cols="auto">
               <v-btn color="primary" rounded
-                :disabled="disableFields"
+                :disabled="disableFields || disableButton"
                 @click="cadastrarEvolucao">Incluir</v-btn>
             </v-col>
           </v-row>
@@ -107,6 +107,7 @@ export default {
       situacao: [required],
     },
     disableFields: false,
+    disableButton: false,
   }),
   methods: {
     loadLocais() {
@@ -152,13 +153,16 @@ export default {
     cadastrarEvolucao() {
       this.rules.dataHoraAtualizacao.push(required);
       if (this.$refs.form.validate()) {
+        this.disableButton = true;
         const requestEvolucao = this.evolucao.toRequest();
         requestEvolucao.notificacaoId = this.notificacaoId;
         EvolucaoService.save(requestEvolucao).then(() => {
+          this.disableButton = false;
           const msg = this.obterMensagemDeSucesso();
           this.$refs.form.reset();
           this.$emit('cadastro:evolucao', msg);
         }).catch((error) => {
+          this.disableButton = false;
           const { data } = error.response;
           this.$emit('error:cadastroEvolucao', data.error);
         });

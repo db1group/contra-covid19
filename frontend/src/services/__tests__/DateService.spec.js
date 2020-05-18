@@ -61,6 +61,25 @@ describe('Serviço de comparação de datas. Verifica se é menor', () => {
   });
 });
 
+describe('Serviço de comparação de datas. Verifica se é menor que o dia atual', () => {
+  test('Deve ser menor, retornando true', () => {
+    const result = DateService.isLesserThanToday('25/04/2020');
+    expect(result).toBeTruthy();
+  });
+  test('Deve ser igual, retornando false', () => {
+    const result = DateService.isLesserThanToday(moment());
+    expect(result).toBeFalsy();
+  });
+  test('Deve ser maior, retornando false', () => {
+    const result = DateService.isLesserThanToday('27/04/2021');
+    expect(result).toBeFalsy();
+  });
+  test('Deve ser maior com mesmo dia em outro mês, retornando false', () => {
+    const result = DateService.isLesserThanToday(moment().add(1, 'months'));
+    expect(result).toBeFalsy();
+  });
+});
+
 describe('Serviço de comparação de datas. Verifica se é maior, comparando horário', () => {
   test('Deve ser maior, retornando true', () => {
     const result = DateService.isGreaterEqualsThanMinimumDateWithMinutes('27/04/2020 00:00', '26/04/2020 00:00');

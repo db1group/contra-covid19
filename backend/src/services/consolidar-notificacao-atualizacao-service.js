@@ -1,6 +1,7 @@
 const DocumentValidator = require('../validations/custom/document-validator');
 const repos = require('../repositories/repository-factory');
 const tipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
+const tipoDocumentoEnum = require('../enums/tipo-documento-enum');
 const { RegraNegocioErro } = require('../lib/erros');
 
 const validarDocumento = ({ tipoClassificacaoPessoa, tipoDocumento, numeroDocumento }) => {
@@ -35,7 +36,11 @@ const consolidarSuspeito = async (suspeito) => {
   if (tipoDocumento && numeroDocumento) {
     const pessoaJaCadastrada = await repos.pessoaRepository.getPorDocumento(suspeito);
     if (pessoaJaCadastrada !== null && pessoaJaCadastrada.id !== pessoaId) {
-      throw new RegraNegocioErro(`Este ${tipoDocumento} já está sendo utilizado por outro paciente.`);
+      let msgErro = `Este ${tipoDocumento} já está sendo utilizado por outro paciente.`;
+      if (tipoDocumento === tipoDocumentoEnum.values.SUS) {
+        msgErro = 'Esta carteira do SUS já está sendo utilizado por outro paciente.';
+      }
+      throw new RegraNegocioErro(msgErro);
     }
   }
 

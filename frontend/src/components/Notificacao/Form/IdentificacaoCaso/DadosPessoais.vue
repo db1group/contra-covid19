@@ -95,7 +95,7 @@
     </v-row>
 
     <v-row dense v-show="suspeito.sexo === 'F' && suspeito.gestante === 'true'">
-      <v-col cols="12" >
+      <v-col cols="12">
         <v-radio-group
           :value="suspeito.tipoPeriodoGestacional"
           :rules="rules.tipoPeriodoGestacional"
@@ -103,26 +103,12 @@
           :disabled="disabled"
         >
           <template v-slot:label>
-            <label class="primary--text body-1 font-weight-bold">
-              Período de gestação *
-            </label>
+            <label class="primary--text body-1 font-weight-bold">Período de gestação *</label>
           </template>
-          <v-radio
-            value="PRIMEIRO_TRIMESTRE"
-            label="1º Trimestre"
-          />
-          <v-radio
-            value="SEGUNDO_TRIMESTRE"
-            label="2º Trimestre"
-          />
-          <v-radio
-            value="TERCEIRO_TRIMESTRE"
-            label="3º Trimestre"
-          />
-          <v-radio
-            value="IDADE_GESTACIONAL_IGNORADA"
-            label="Idade gestacional ignorada"
-          />
+          <v-radio value="PRIMEIRO_TRIMESTRE" label="1º Trimestre" />
+          <v-radio value="SEGUNDO_TRIMESTRE" label="2º Trimestre" />
+          <v-radio value="TERCEIRO_TRIMESTRE" label="3º Trimestre" />
+          <v-radio value="IDADE_GESTACIONAL_IGNORADA" label="Idade gestacional ignorada" />
         </v-radio-group>
       </v-col>
     </v-row>
@@ -153,6 +139,7 @@
       <v-col cols="12" sm="5" md="5">
         <v-text-field
           :value="suspeito.dataDeNascimento"
+          ref="dataDeNascimento"
           label="Data de nascimento *"
           append-icon="mdi-calendar-blank"
           v-mask="'##/##/####'"
@@ -180,8 +167,8 @@
 </template>
 <script>
 import {
-  required, dateFormat, dateHourMinuteFormat, minLengthNumbersWithMask, lessThanMaximumDate,
-  maxLength, minLength, onlyLetters,
+  required, dateFormat, dateHourMinuteFormat, minLengthNumbersWithMask, dateMustBeLesserThanToday,
+  maxLength, minLength, onlyLetters, lessThanMaximumDateWithMinutes, maxAge,
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
@@ -223,7 +210,7 @@ export default {
     tiposDocumento: TIPOS_DOCUMENTO,
     racasCores: RACAS_CORES,
     rules: {
-      dataHoraNotificacao: [required, dateHourMinuteFormat],
+      dataHoraNotificacao: [required, dateHourMinuteFormat, lessThanMaximumDateWithMinutes],
       tipoDocumento: [required],
       numeroCpf: [minLengthNumbersWithMask(11)],
       nome: [required, onlyLetters, maxLength(150), minLength(3)],
@@ -286,6 +273,15 @@ export default {
     updateTipoClassificacaoPessoa(tipoClassificacaoPessoa) {
       this.disableTipoDocumento(tipoClassificacaoPessoa);
       this.$emit('update:tipoClassificacaoPessoa', tipoClassificacaoPessoa);
+      this.checkMaxAge(tipoClassificacaoPessoa);
+    },
+    checkMaxAge(value) {
+      if (value === 'CRIANCA_ATE_12_ANOS') {
+        this.rules.dataDeNascimento.push(maxAge(12));
+      } else {
+        this.rules.dataDeNascimento = [required, dateFormat, this.validateFutureDate];
+      }
+      this.$refs.dataDeNascimento.validate();
     },
     requiredIfSexoForFeminino(value) {
       if (this.suspeito.sexo === 'M') {
@@ -300,7 +296,7 @@ export default {
       return required(value);
     },
     validateFutureDate(value) {
-      return lessThanMaximumDate(value, null, 'Informe uma data igual ou anterior ao dia de hoje.');
+      return dateMustBeLesserThanToday(value, 'Informe uma data anterior ao dia de hoje.');
     },
     disableTipoDocumento(tipoClassificacaoPessoa) {
       if (this.disabled) {
@@ -321,6 +317,11 @@ export default {
         return true;
       }
       return required(value);
+    },
+  },
+  watch: {
+    'suspeito.tipoClassificacaoPessoa': function (novoValor) {
+      this.updateTipoClassificacaoPessoa(novoValor);
     },
   },
   created() {

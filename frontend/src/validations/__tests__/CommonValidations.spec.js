@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   required,
   minLength,
@@ -5,9 +6,11 @@ import {
   dateFormat,
   dateHourMinuteFormat,
   dateMustBeLesserEqualsThanToday,
+  dateMustBeLesserThanToday,
   onlyLetters,
   maxLength,
   minLengthNumbersWithMask,
+  maxAge,
 } from '../CommonValidations';
 
 describe('Testes para validador de campo obrigatório', () => {
@@ -214,6 +217,45 @@ describe('Testes para validador de data menor ou igual a hoje', () => {
   });
 });
 
+describe('Testes para validador de data menor a hoje', () => {
+  test('Data não informada deve ser válida', () => {
+    const result = dateMustBeLesserThanToday('');
+    expect(result).toBeTruthy();
+  });
+  test('Data nula deve ser válida', () => {
+    const result = dateMustBeLesserThanToday(null);
+    expect(result).toBeTruthy();
+  });
+  test('Data undefined deve ser válida', () => {
+    const result = dateMustBeLesserThanToday();
+    expect(result).toBeTruthy();
+  });
+  test('Data menor que hoje deve ser válida', () => {
+    const result = dateMustBeLesserThanToday('01/04/2020');
+    expect(result).toBeTruthy();
+  });
+  test('Data ainda não terminada a digitação deve ser válida', () => {
+    const result = dateMustBeLesserThanToday('01/04/');
+    expect(result).toBeTruthy();
+  });
+  test('Data ainda não terminada a digitação com ano incompleto deve ser válida', () => {
+    const result = dateMustBeLesserThanToday('01/04/202');
+    expect(result).toBeTruthy();
+  });
+  test('Data igual a hoje deve ser inválida', () => {
+    const result = dateMustBeLesserThanToday(moment());
+    expect(result).toBe('A data informada deve ser anterior a de hoje.');
+  });
+  test('Data posterior a hoje deve ser inválida', () => {
+    const result = dateMustBeLesserThanToday('01/04/2220');
+    expect(result).toBe('A data informada deve ser anterior a de hoje.');
+  });
+  test('Data posterior a hoje deve ser inválida com mensagem customizada', () => {
+    const result = dateMustBeLesserThanToday('01/04/2220', 'Ih rapaz, deu ruim aqui');
+    expect(result).toBe('Ih rapaz, deu ruim aqui');
+  });
+});
+
 describe('Testes para validador de somente letras', () => {
   test('Campo com caracteres especiais deve ser inválido', () => {
     const result = onlyLetters('uuddlrlrba ás $@');
@@ -225,6 +267,17 @@ describe('Testes para validador de somente letras', () => {
   });
   test('Campo com somente letras e possíveis acentos deve ser válido', () => {
     const result = onlyLetters('uuddlrlrba ásadas ão');
+    expect(result).toBeTruthy();
+  });
+});
+
+describe('Testes para validador de idade', () => {
+  test('Maior que a idade limite NÃO deve ser aceito', () => {
+    const result = maxAge(12)('26/02/1990');
+    expect(result).toBe('O paciente deve ter até 12 anos.');
+  });
+  test('Menor que a idade limite DEVE ser aceito', () => {
+    const result = maxAge(12)('26/02/2020');
     expect(result).toBeTruthy();
   });
 });

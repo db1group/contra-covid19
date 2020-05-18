@@ -1,3 +1,4 @@
+import moment from 'moment';
 import DateService from '@/services/DateService';
 
 const DATE_FORMAT = /^[0-3]{1}[0-9]{1}\/[0-1]{1}[0-9]{1}\/[0-9]{4}$/;
@@ -74,3 +75,16 @@ export const dateMustBeLesserEqualsThanToday = (
   || value.length < 10
   || (DateService.isLesserEqualsThanMaximumDate(value))
   || message;
+export const dateMustBeLesserThanToday = (
+  value,
+  message = 'A data informada deve ser anterior a de hoje.',
+) => !value
+  || value.length < 10
+  || (DateService.isLesserThanToday(value))
+  || message;
+export const maxAge = (limitAge) => (value) => {
+  const stringToDate = moment(value, 'DD/MM/YYYY').toDate('YYYY-MM-DD');
+  const personAge = moment().diff(stringToDate, 'years', false);
+  return !value || personAge <= limitAge
+    || `O paciente deve ter até ${limitAge} anos.`;
+};
