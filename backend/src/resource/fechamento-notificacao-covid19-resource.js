@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const moment = require('moment');
 const repos = require('../repositories/repository-factory');
 const models = require('../models');
 const { RegraNegocioErro } = require('../lib/erros');
@@ -34,18 +35,33 @@ const getDataProximoFechamento = async () => {
   return dataProximoFechamento;
 };
 
-const getDadosFechamentoMock = (dataFechamento) => ({
-  dataFechamento: new Date(dataFechamento.toDateString()),
-  casosNotificados: Math.floor(Math.random() * 500),
-  acompanhados: Math.floor(Math.random() * 500),
-  internados: Math.floor(Math.random() * 500),
-  casosEncerrados: Math.floor(Math.random() * 500),
-  confirmados: Math.floor(Math.random() * 500),
-  curados: Math.floor(Math.random() * 500),
-  obitos: Math.floor(Math.random() * 500),
-  confirmadosInternados: Math.floor(Math.random() * 500),
-  emIsolamentoDomiciliar: Math.floor(Math.random() * 500),
-});
+const getDadosFechamento = async (dataFechamento) => {
+  const dataQuery = moment(dataFechamento).format('YYYY-MM-DD');
+  const boletins = await models.sequelize.query(
+    `SELECT * FROM vwboletim WHERE dtaprovacao = '${dataQuery}'`,
+    { type: Sequelize.QueryTypes.SELECT },
+  );
+
+  const boletim = boletins[0];
+
+  if (boletim === undefined) {
+    const dataBoletim = moment(dataFechamento).format('DD/MM/YYYY');
+    throw new RegraNegocioErro(`Não existe boletim para o dia ${dataBoletim}.`);
+  }
+
+  return {
+    dataFechamento: new Date(dataFechamento.toDateString()),
+    casosNotificados: parseInt(boletim.casosNotificados, 0),
+    acompanhados: parseInt(boletim.casosNotificados, 0),
+    internados: parseInt(boletim.casosNotificados, 0),
+    casosEncerrados: parseInt(boletim.qtencerrado, 0),
+    confirmados: parseInt(boletim.confirmado, 0),
+    curados: parseInt(boletim.casosNotificados, 0),
+    obitos: parseInt(boletim.qtobito, 0),
+    confirmadosInternados: parseInt(boletim.casosNotificados, 0),
+    emIsolamentoDomiciliar: parseInt(boletim.qtconfirmadoisolamento, 0),
+  };
+};
 
 const consultarFechamentosPaginado = async (page, limit) => {
   const offset = (page - 1) * limit;
@@ -79,7 +95,7 @@ exports.consultarProximoDiaFechamento = async (req, res, next) => {
       throw new RegraNegocioErro('Não é possível realizar fechamentos futuros.');
     }
 
-    const dadosFechamento = getDadosFechamentoMock(dataProximoFechamento);
+    const dadosFechamento = await getDadosFechamento(dataProximoFechamento);
 
     return res.json({ data: dadosFechamento });
   } catch (err) {
@@ -90,7 +106,7 @@ exports.consultarProximoDiaFechamento = async (req, res, next) => {
 exports.cadastrarProximoFechamento = async (req, res, next) => {
   try {
     const dataProximoFechamento = await getDataProximoFechamento();
-    const dadosFechamento = getDadosFechamentoMock(dataProximoFechamento);
+    const dadosFechamento = await getDadosFechamento(dataProximoFechamento);
     await repos.fechamentoNotificacaoCovid19Repository.cadastrar(dadosFechamento);
 
     return res.status(204).json();
