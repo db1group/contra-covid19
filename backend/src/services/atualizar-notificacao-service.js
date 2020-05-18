@@ -1,3 +1,4 @@
+const moment = require('moment');
 const consolidacaoAtualizacaoNotificacaoService = require('./consolidar-notificacao-atualizacao-service');
 const { validarMenorQueDataHoraAtual } = require('../lib/validacoes-comuns/data');
 const repos = require('../repositories/repository-factory');
@@ -19,9 +20,41 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
     const unidadesSaudeUser = await repos.unidadeSaudeRepository
       .getPorUserEmail(usuarioLogado.email);
 
-    if (!unidadesSaudeUser) { throw new RegraNegocioErro('Você não possui autorização para atualizar esta notificação.'); }
+    if (!unidadesSaudeUser) {
+      throw new RegraNegocioErro('Você não possui autorização para atualizar esta notificação.');
+    }
 
-    if (!unidadesSaudeUser.some((data) => data.id === unidadeSaudeId)) { throw new RegraNegocioErro('Você não possui autorização para atualizar esta notificação.'); }
+    if (!unidadesSaudeUser.some((data) => data.id === unidadeSaudeId)) {
+      throw new RegraNegocioErro('Você não possui autorização para atualizar esta notificação.');
+    }
+  }
+
+  const notificacaoEvolucoes = await repos.notificacaoRepository
+    .getEvolucoesPorNotificacaoId(notificacaoRequest.id);
+
+  const evolucoesSort = notificacaoEvolucoes.NotificacaoEvolucaos.sort((a, b) => {
+    const dataEvolucaoItemA = new Date(a.dtEvolucao);
+    const dataEvolucaoItemB = new Date(b.dtEvolucao);
+    return dataEvolucaoItemA - dataEvolucaoItemB;
+  });
+
+  if (notificacaoEvolucoes.NotificacaoEvolucaos.length > 1) {
+    const dataHoraNotificacao = moment.utc(notificacaoRequest.dataHoraNotificacao);
+
+    const evolucoesSkip = evolucoesSort.skip(1);
+    if (evolucoesSkip.some((data) => moment(data.dtEvolucao).diff(dataHoraNotificacao) === 0)) {
+      let msgErro = 'Não é permitido informar uma data/hora da notificação, ';
+      msgErro += 'igual a data de uma das evoluções posteriores a primeira.';
+      throw new RegraNegocioErro(msgErro);
+    }
+
+    const ultimaEvolucao = evolucoesSort.last();
+
+    if (dataHoraNotificacao > ultimaEvolucao.dtEvolucao) {
+      let msgErro = 'Não é permitido informar uma data/hora da notificação, ';
+      msgErro += 'superior última evolução cadastrada.';
+      throw new RegraNegocioErro(msgErro);
+    }
   }
 
   const notificacaoConsolidada = await consolidacaoAtualizacaoNotificacaoService
@@ -39,9 +72,7 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
   notificacaoCovid19.notificacaoId = notificacaoRequest.id;
   await repos.notificacaoCovid19Repository.atualizar(notificacaoCovid19);
 
-  const notificacaoEvolucoes = await repos.notificacaoRepository
-    .getEvolucoesPorNotificacaoId(notificacaoRequest.id);
-  const primeiraEvolucao = notificacaoEvolucoes.NotificacaoEvolucaos[0];
+  const primeiraEvolucao = evolucoesSort.first();
   const evolucaoUpdate = {
     id: primeiraEvolucao.id,
     dtEvolucao: notificacaoConsolidada.dataHoraNotificacao,
