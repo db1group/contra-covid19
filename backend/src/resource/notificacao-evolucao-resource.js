@@ -8,6 +8,13 @@ exports.consultar = async (req, res, next) => {
     const notificacaoEvolucao = await repos.notificacaoRepository.getEvolucoesPorNotificacaoId(id);
     if (!notificacaoEvolucao) res.status(404).json({ error: 'Notificação não encontrada.' });
 
+    notificacaoEvolucao.NotificacaoEvolucaos = notificacaoEvolucao
+      .NotificacaoEvolucaos.sort((a, b) => {
+        const dataEvolucaoItemA = new Date(a.dtEvolucao);
+        const dataEvolucaoItemB = new Date(b.dtEvolucao);
+        return dataEvolucaoItemA - dataEvolucaoItemB;
+      });
+
     return res.json({ data: notificacaoEvolucao });
   } catch (err) {
     return next(err);
