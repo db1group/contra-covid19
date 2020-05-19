@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import NotificacaoForm from '../views/NotificacaoForm.vue';
 import NotificacaoCons from '../views/NotificacaoCons.vue';
+import FechamentoDiario from '../views/FechamentoDiario.vue';
 import EvolucaoForm from '../views/EvolucaoForm.vue';
 import NotificacaoExportar from '../views/NotificacaoExportar.vue';
 
@@ -43,6 +44,11 @@ const routes = [
     path: '/notificacoes/exportar',
     name: 'exportar',
     component: NotificacaoExportar,
+  },
+  {
+    path: '/fechamento',
+    name: 'fechamento-diario',
+    component: FechamentoDiario,
   },
 ];
 
