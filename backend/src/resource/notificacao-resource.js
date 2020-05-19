@@ -1,7 +1,8 @@
 const { Sequelize } = require('sequelize');
 const models = require('../models');
+const repos = require('../repositories/repository-factory');
 const Mappers = require('../mapper');
-const { RegraNegocioErro } = require('../lib/erros');
+const { RegraNegocioErro, UsuarioNaoAutorizadoErro } = require('../lib/erros');
 const { UsuarioLogado } = require('../secure/usuario-logado');
 const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
@@ -417,9 +418,26 @@ exports.consultarNotificacoesWeb = async (req, res, next) => {
 exports.consultarPorId = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const notificacaoModel = await consultarNotificacaoPorId(id);
-
+    const notificacaoModel = await repos.notificacaoRepository.getPorId(id);
     if (!notificacaoModel) return res.status(204).json();
+
+    const { email } = req.kauth.grant.access_token.content;
+    const user = await repos.usuarioRepository.getPorEmail(email);
+    if (!user) throw new RegraNegocioErro('Usuário não encontrado.');
+
+    const usuarioLogado = new UsuarioLogado(req);
+    if (!usuarioLogado.isRoleSecretariaSaude()) {
+      const msgErro = 'Você não possui autorização para visualizar esta notificação.';
+
+      const unidadesSaudeUser = await repos.unidadeSaudeRepository
+        .getPorUserEmail(email);
+
+      if (!unidadesSaudeUser) throw new UsuarioNaoAutorizadoErro(msgErro);
+
+      if (!unidadesSaudeUser.some((data) => data.id === notificacaoModel.unidadeSaudeId)) {
+        throw new UsuarioNaoAutorizadoErro(msgErro);
+      }
+    }
 
     const retorno = Mappers.Notificacao.mapearParaResponse(
       notificacaoModel,
