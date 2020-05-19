@@ -49,24 +49,24 @@ const getDadosFechamento = async (dataFechamento) => {
     throw new RegraNegocioErro(`Não existe boletim para o dia ${dataBoletim}.`);
   }
 
-  const quantidadeInternadosRegular = parseInt(boletim.qtsuspeitoregular || 0, 0);
-  const quantidadeInternadosUti = parseInt(boletim.qtsuspeitouti || 0, 0);
-  const quantidadeConfirmadosRegular = parseInt(boletim.qtconfirmadoregular || 0, 0);
-  const quantidadeConfirmadosUti = parseInt(boletim.qtconfirmadouti || 0, 0);
+  const quantidadeInternadosRegular = parseInt(boletim.qtsuspeitoregular, 0);
+  const quantidadeInternadosUti = parseInt(boletim.qtsuspeitouti, 0);
+  const quantidadeConfirmadosRegular = parseInt(boletim.qtconfirmadoregular, 0);
+  const quantidadeConfirmadosUti = parseInt(boletim.qtconfirmadouti, 0);
   const quantidadeInternados = quantidadeInternadosRegular + quantidadeInternadosUti;
   const quantidadeConfirmadosInternados = quantidadeConfirmadosRegular + quantidadeConfirmadosUti;
 
   return {
     dataFechamento: moment.utc(dataFormatada),
-    casosNotificados: parseInt(boletim.qtnotificado || 0, 0),
-    acompanhados: parseInt(boletim.qtacompanhamento || 0, 0),
+    casosNotificados: parseInt(boletim.qtnotificado, 0),
+    acompanhados: parseInt(boletim.qtacompanhamento, 0),
     internados: quantidadeInternados,
-    casosEncerrados: parseInt(boletim.qtencerrado || 0, 0),
-    confirmados: parseInt(boletim.qtconfirmado || 0, 0),
-    curados: parseInt(boletim.qtconfirmadoencerrado || 0, 0),
-    obitos: parseInt(boletim.qtobito || 0, 0),
+    casosEncerrados: parseInt(boletim.qtencerrado, 0),
+    confirmados: parseInt(boletim.qtconfirmado, 0),
+    curados: parseInt(boletim.qtconfirmadoencerrado, 0),
+    obitos: parseInt(boletim.qtobito, 0),
     confirmadosInternados: quantidadeConfirmadosInternados,
-    emIsolamentoDomiciliar: parseInt(boletim.qtconfirmadoisolamento || 0, 0),
+    emIsolamentoDomiciliar: parseInt(boletim.qtconfirmadoisolamento, 0),
   };
 };
 
