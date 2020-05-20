@@ -1,9 +1,7 @@
-import DateService from '@/services/DateService';
-
 export default class FechamentoDiario {
   constructor(data = {}) {
     this.id = data.id || null;
-    this.dataFechamento = DateService.formatDateTypeToStringTypeWithMinutes(data.dataFechamento) || '';
+    this.dataFechamento = data.dataFechamento || '';
     this.casosNotificados = data.casosNotificados || 0;
     this.acompanhados = data.acompanhados || 0;
     this.internados = data.internados || 0;

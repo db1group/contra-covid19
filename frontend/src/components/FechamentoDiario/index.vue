@@ -4,6 +4,7 @@
       :headers="headers"
       :items="fechamentos"
       item-key="id"
+      :server-items-length="totalNotif"
       :options.sync="options"
       @update:options="consultarFechamentos"
       :loading="loading"
@@ -47,6 +48,9 @@
           </v-row>
         </v-card-title>
       </template>
+      <template v-slot:item.dataFechamento="{ item }">
+        <span>{{ getDateFormat(item.dataFechamento) }}</span>
+      </template>
       <template v-slot:item.actions="{ item }">
         <v-row justify="end" align="center" dense>
           <v-col>
@@ -72,6 +76,7 @@
 </style>
 <script>
 import { mask } from 'vue-the-mask';
+import moment from 'moment';
 import FechamentoDiario from '@/entities/FechamentoDiario';
 import FechamentoService from '@/services/FechamentoService';
 
@@ -86,7 +91,7 @@ export default {
     options: {
       page: 1,
       itemsPerPage: 10,
-      sortBy: ['createdAt'],
+      sortBy: ['dataFechamento'],
       sortDesc: 'true',
     },
     headers: [
@@ -104,6 +109,9 @@ export default {
     fechamentos: [],
   }),
   methods: {
+    getDateFormat(value) {
+      return moment(value).format('DD/MM/YYYY');
+    },
     filterSearch(search) {
       this.filter = search;
       this.filterFechamentos();
@@ -121,7 +129,7 @@ export default {
       FechamentoService.getProximoFechamento().then((data) => {
         const value = data;
         value.status = 'ABERTO';
-        this.fechamentos.push(new FechamentoDiario(value));
+        this.fechamentos.splice(0, 0, new FechamentoDiario(value));
       }).catch((err) => {
         const { data } = err.response || {};
         this.$emit('erro:novoFechamento', data.error);
@@ -137,7 +145,7 @@ export default {
       });
     },
     consultarFechamentos({
-      page, itemsPerPage, sortBy = 'createdAt', sortDesc = 'true',
+      page, itemsPerPage, sortBy = 'dataFechamento', sortDesc = 'true',
     } = this.options) {
       this.loading = true;
       const search = this.filter;
@@ -145,8 +153,9 @@ export default {
       FechamentoService.findAll({
         page, itemsPerPage, sortBy, sortDesc, search, status,
       })
-        .then(({ data }) => {
+        .then(({ count, data }) => {
           if (data && data.rows.length) {
+            this.totalNotif = count;
             this.fechamentos = data.rows.map((d) => new FechamentoDiario(d));
           }
           this.loading = false;
