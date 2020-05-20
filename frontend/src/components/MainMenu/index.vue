@@ -35,6 +35,14 @@
           <v-list-item-title>Exportar</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <v-list-item value="fechamento-diario" @click="onClick('fechamento-diario')">
+        <v-list-item-icon>
+          <v-icon>mdi-close-box-outline</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Fechamento</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-subheader>Ações</v-subheader>
       <v-list-item @click="logout">
         <v-list-item-icon>

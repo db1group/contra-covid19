@@ -4,7 +4,6 @@
       :headers="headers"
       :items="fechamentos"
       item-key="id"
-      :server-items-length="totalNotif"
       :options.sync="options"
       @update:options="consultarFechamentos"
       :loading="loading"
@@ -22,7 +21,15 @@
         <v-card-title>
           <v-row>
             <v-col cols="4">
-              <v-btn rounded dark color="primary" @click="novoFechamento">Iniciar novo fechamento</v-btn>
+              <v-btn
+                rounded
+                color="primary"
+                :dark="!temFechamentoEmAberto"
+                :disabled="temFechamentoEmAberto"
+                @click="novoFechamento"
+              >
+                Iniciar novo fechamento
+              </v-btn>
             </v-col>
           </v-row>
           <v-spacer></v-spacer>
@@ -73,7 +80,6 @@ export default {
   components: { },
   data: () => ({
     totalNotif: 0,
-    fechamentos: [],
     filter: '',
     filterCons: null,
     loading: true,
@@ -87,13 +93,15 @@ export default {
       { text: 'Data', value: 'dataFechamento' },
       { text: 'Notificados', value: 'casosNotificados' },
       { text: 'Acompanhados', value: 'acompanhados' },
-      { text: 'Internados', value: 'internados' },
       { text: 'Encerrados', value: 'casosEncerrados' },
       { text: 'Confirmados', value: 'confirmados' },
+      { text: 'Isolamento Domiciliar', value: 'emIsolamentoDomiciliar' },
+      { text: 'Internados', value: 'internados' },
       { text: 'Curados', value: 'curados' },
       { text: 'Óbitos', value: 'obitos' },
       { text: 'Situação', value: 'actions' },
     ],
+    fechamentos: [],
   }),
   methods: {
     filterSearch(search) {
@@ -111,11 +119,12 @@ export default {
     },
     novoFechamento() {
       FechamentoService.getProximoFechamento().then((data) => {
-        this.fechamentos.push(data);
-        console.log(this.fechamentos);
+        const value = data;
+        value.status = 'ABERTO';
+        this.fechamentos.push(new FechamentoDiario(value));
       }).catch((err) => {
         const { data } = err.response || {};
-        this.$emit('erro:novoFechamento', data.err);
+        this.$emit('erro:novoFechamento', data.error);
       });
     },
     encerrarFechamento() {
@@ -136,9 +145,10 @@ export default {
       FechamentoService.findAll({
         page, itemsPerPage, sortBy, sortDesc, search, status,
       })
-        .then(({ count, data }) => {
-          this.totalNotif = count;
-          this.fechamentos = data.rows.map((d) => new FechamentoDiario(d));
+        .then(({ data }) => {
+          if (data && data.rows.length) {
+            this.fechamentos = data.rows.map((d) => new FechamentoDiario(d));
+          }
           this.loading = false;
         })
         .catch((error) => {
@@ -147,8 +157,10 @@ export default {
         });
     },
   },
-  created() {
-    this.consultarFechamentos();
+  computed: {
+    temFechamentoEmAberto() {
+      return this.fechamentos.some((el) => el.status === 'ABERTO');
+    },
   },
 };
 </script>
