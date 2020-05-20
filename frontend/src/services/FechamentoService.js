@@ -2,11 +2,11 @@ import http from './Http';
 
 export default {
   findAll({
-    page, itemsPerPage, search, sortBy, sortDesc, status,
+    page, itemsPerPage, search, sortBy, sortDesc,
   }) {
     return http
       .get(`/fechamento-notificacao-covid19?page=${page}&itemsPerPage=${itemsPerPage}
-        &sortBy=${sortBy}&sortDesc=${sortDesc}&status=${status}&search=${search}`)
+        &sortBy=${sortBy}&sortDesc=${sortDesc}&search=${search}`)
       .then(({ data }) => data);
   },
   getProximoFechamento() {

@@ -38,11 +38,11 @@
             <v-col cols="12">
               <v-text-field
                 @input="filterSearch"
+                :rules="rules.search"
                 v-mask="'##/##/####'"
                 append-icon="mdi-magnify"
                 label="Pesquisar por Data"
                 single-line
-                hide-details
               ></v-text-field>
             </v-col>
           </v-row>
@@ -79,11 +79,15 @@ import { mask } from 'vue-the-mask';
 import moment from 'moment';
 import FechamentoDiario from '@/entities/FechamentoDiario';
 import FechamentoService from '@/services/FechamentoService';
+import { dateFormat, dateMustBeLesserEqualsThanToday } from '@/validations/CommonValidations';
 
 export default {
   directives: { mask },
   components: { },
   data: () => ({
+    rules: {
+      search: [dateFormat, dateMustBeLesserEqualsThanToday],
+    },
     totalNotif: 0,
     filter: '',
     filterCons: null,
@@ -113,8 +117,12 @@ export default {
       return moment(value).format('DD/MM/YYYY');
     },
     filterSearch(search) {
-      this.filter = search;
-      this.filterFechamentos();
+      if (search.length === 10) {
+        const [day, month, year] = search.split('/');
+        const date = new Date(year, month - 1, day);
+        this.filter = moment(date).format('YYYY-MM-DD');
+        this.filterFechamentos();
+      }
     },
     filterFechamentos() {
       clearTimeout(this.filterCons);
@@ -149,9 +157,8 @@ export default {
     } = this.options) {
       this.loading = true;
       const search = this.filter;
-      const status = this.filtroStatus;
       FechamentoService.findAll({
-        page, itemsPerPage, sortBy, sortDesc, search, status,
+        page, itemsPerPage, sortBy, sortDesc, search,
       })
         .then(({ count, data }) => {
           if (data && data.rows.length) {
