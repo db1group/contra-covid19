@@ -19,10 +19,6 @@ module.exports = (sequelize, DataTypes) => sequelize.define('FechamentoNotificac
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  internados: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
   casosEncerrados: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -36,10 +32,6 @@ module.exports = (sequelize, DataTypes) => sequelize.define('FechamentoNotificac
     allowNull: false,
   },
   obitos: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  confirmadosInternados: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
