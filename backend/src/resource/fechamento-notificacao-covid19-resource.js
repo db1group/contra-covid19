@@ -38,7 +38,7 @@ const getDataProximoFechamento = async () => {
 const getDadosFechamento = async (dataFechamento) => {
   const dataFormatada = moment(dataFechamento).format('YYYY-MM-DD');
   const boletins = await models.sequelize.query(
-    `SELECT * FROM vwboletim WHERE dtaprovacao = '${dataFormatada}'`,
+    `SELECT * FROM vwboletimdia WHERE dtaprovacao = '${dataFormatada}'`,
     { type: Sequelize.QueryTypes.SELECT },
   );
 
