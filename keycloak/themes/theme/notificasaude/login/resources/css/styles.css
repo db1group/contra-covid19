@@ -58,7 +58,6 @@ form input[type="password"] {
 }
 
 form input[type="password"] {
-  background: #fafafa url("../img/pass.png") no-repeat right center;
   padding-right: 30px;
 }
 
