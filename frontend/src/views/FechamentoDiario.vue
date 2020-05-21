@@ -1,5 +1,8 @@
 <template>
   <section style="margin-top: 45px;">
+    <modal-detalhes-fechamento-diario
+      v-model="showModalDetails"
+    />
     <v-container fluid>
       <v-row justify="space-between" align="center">
         <v-col cols="auto">
@@ -11,6 +14,7 @@
         @erro:encerrarFechamento="mostrarMensagemErro"
         @erro:consultarFechamentos="mostrarMensagemErro"
         @success:encerrarFechamento="mostrarMensagemSucesso"
+        @toggleDetailModal="toggleDetailModal"
       />
     </v-container>
     <v-snackbar
@@ -31,18 +35,24 @@
 
 <script>
 import FechamentoDiario from '@/components/FechamentoDiario/index.vue';
+import ModalDetalhesFechamentoDiario from '@/components/FechamentoDiario/ModalDetalhesFechamentoDiario.vue';
 
 export default {
   components: {
     FechamentoDiario,
+    ModalDetalhesFechamentoDiario,
   },
   data: () => ({
     showError: false,
     showSuccess: false,
     mensagemSucesso: '',
     mensagemErro: '',
+    showModalDetails: false,
   }),
   methods: {
+    toggleDetailModal(value) {
+      this.showModalDetails = value;
+    },
     mostrarMensagemErro(msg) {
       this.showError = true;
       this.mensagemErro = msg || 'Não foi possível realizar a ação. Tente novamente!';

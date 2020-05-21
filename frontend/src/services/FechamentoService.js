@@ -6,7 +6,7 @@ export default {
   }) {
     return http
       .get(`/fechamento-notificacao-covid19?page=${page}&itemsPerPage=${itemsPerPage}
-        &sortBy=${sortBy}&sortDesc=${sortDesc}&search=${search}`)
+        &sortBy=${sortBy}&sortDesc=${sortDesc}&dataFechamento=${search}`)
       .then(({ data }) => data);
   },
   getProximoFechamento() {

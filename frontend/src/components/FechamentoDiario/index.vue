@@ -55,14 +55,22 @@
         <v-row justify="end" align="center" dense>
           <v-col>
             <span v-if="item.status === 'FECHADO'" class="primary--text">FECHADO</span>
-            <v-btn
-              v-else
-              small
-              rounded
-              dark
-              color="primary"
-              @click="encerrarFechamento"
-            >FECHAR</v-btn>
+            <div v-else>
+              <v-btn
+                small
+                rounded
+                dark
+                color="primary"
+                @click="encerrarFechamento"
+              >FECHAR</v-btn>
+              <v-btn
+                small
+                text
+                color="#B8860B"
+                class="ml-5"
+                @click="toggleDetailModal(true)"
+              >DETALHES</v-btn>
+            </div>
           </v-col>
         </v-row>
       </template>
@@ -108,13 +116,16 @@ export default {
       { text: 'Internados', value: 'internados' },
       { text: 'Curados', value: 'curados' },
       { text: 'Óbitos', value: 'obitos' },
-      { text: 'Situação', value: 'actions' },
+      { text: 'Situação', value: 'actions', aling: 'center' },
     ],
     fechamentos: [],
   }),
   methods: {
     getDateFormat(value) {
       return moment(value).format('DD/MM/YYYY');
+    },
+    toggleDetailModal(value) {
+      this.$emit('toggleDetailModal', value);
     },
     filterSearch(search) {
       if (search.length === 10) {
@@ -135,6 +146,9 @@ export default {
     },
     novoFechamento() {
       FechamentoService.getProximoFechamento().then((data) => {
+        if (!this.fechamentos.length) {
+          this.totalNotif = 1;
+        }
         const value = data;
         value.status = 'ABERTO';
         this.fechamentos.splice(0, 0, new FechamentoDiario(value));
@@ -161,16 +175,14 @@ export default {
         page, itemsPerPage, sortBy, sortDesc, search,
       })
         .then(({ count, data }) => {
-          if (data && data.rows.length) {
-            this.totalNotif = count;
-            this.fechamentos = data.rows.map((d) => new FechamentoDiario(d));
-          }
-          this.loading = false;
+          this.totalNotif = count;
+          this.fechamentos = data.rows.map((d) => new FechamentoDiario(d));
         })
         .catch((error) => {
           const { data } = error.response || {};
           this.$emit('erro:consultarFechamentos', data.error);
-        });
+        })
+        .finally(() => { this.loading = false; });
     },
   },
   computed: {
