@@ -4,6 +4,8 @@ const repos = require('../repositories/repository-factory');
 const models = require('../models');
 const { RegraNegocioErro } = require('../lib/erros');
 
+const { Op } = Sequelize;
+
 const getDataProximoFechamento = async () => {
   const queryResult = await models.FechamentoNotificacaoCovid19
     .findOne({
@@ -37,20 +39,22 @@ const getDataProximoFechamento = async () => {
 
 const getDadosFechamento = async (dataFechamento) => {
   const dataFormatada = moment(dataFechamento).format('YYYY-MM-DD');
-  const boletins = await models.sequelize.query(
-    `SELECT * FROM vwboletimdia WHERE dtaprovacao = '${dataFormatada}'`,
+  const [boletim] = await models.sequelize.query(
+    `SELECT * FROM vwboletimdia WHERE dtaprovacao >= '${dataFormatada}'`,
     { type: Sequelize.QueryTypes.SELECT },
   );
-
-  const boletim = boletins[0];
 
   if (boletim === undefined) {
     const dataBoletim = moment(dataFechamento).format('DD/MM/YYYY');
     throw new RegraNegocioErro(`Não existe boletim para o dia ${dataBoletim}.`);
   }
 
+  if (moment(boletim.dtaprovacao).startOf('day').toDate() >= moment().startOf('day').toDate()) {
+    throw new RegraNegocioErro('Não é possível realizar fechamentos do dia ou futuros.');
+  }
+
   return {
-    dataFechamento: moment.utc(dataFormatada),
+    dataFechamento: boletim.dtaprovacao,
     casosNotificados: parseInt(boletim.qtnotificado, 0),
     acompanhados: parseInt(boletim.qtacompanhamento, 0),
     casosEncerrados: parseInt(boletim.qtencerrado, 0),
@@ -61,9 +65,31 @@ const getDadosFechamento = async (dataFechamento) => {
   };
 };
 
-const consultarFechamentosPaginado = async (page, limit) => {
+const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
   const offset = (page - 1) * limit;
 
+  if (dataFechamento !== null) {
+    const dataInicial = moment(dataFechamento).add(-1, 'day').toDate();
+    const dataFinal = moment(dataFechamento).add(-1, 'day').endOf('day');
+
+    return models.FechamentoNotificacaoCovid19.findAndCountAll(
+      {
+        where: {
+          dataFechamento: {
+            [Op.and]: [
+              { [Op.gte]: dataInicial },
+              { [Op.lte]: dataFinal },
+            ],
+          },
+        },
+      },
+      {
+        order: [['updatedAt', 'DESC']],
+        limit,
+        offset,
+      },
+    );
+  }
   return models.FechamentoNotificacaoCovid19.findAndCountAll({
     order: [['updatedAt', 'DESC']],
     limit,
@@ -73,10 +99,11 @@ const consultarFechamentosPaginado = async (page, limit) => {
 
 exports.consultarPaginado = async (req, res, next) => {
   try {
+    const { dataFechamento = null } = req.query;
     const { page = 1 } = req.query;
     const limit = 10;
 
-    const fechamentos = await consultarFechamentosPaginado(page, limit);
+    const fechamentos = await consultarFechamentosPaginado(page, limit, dataFechamento);
     return res.json({ count: fechamentos.count, data: fechamentos });
   } catch (err) {
     return next(err);
@@ -85,14 +112,7 @@ exports.consultarPaginado = async (req, res, next) => {
 
 exports.consultarProximoDiaFechamento = async (req, res, next) => {
   try {
-    let dataHoje = new Date();
-    dataHoje = new Date(dataHoje.toDateString());
     const dataProximoFechamento = await getDataProximoFechamento();
-
-    if (dataProximoFechamento > dataHoje) {
-      throw new RegraNegocioErro('Não é possível realizar fechamentos futuros.');
-    }
-
     const dadosFechamento = await getDadosFechamento(dataProximoFechamento);
 
     return res.json({ data: dadosFechamento });
