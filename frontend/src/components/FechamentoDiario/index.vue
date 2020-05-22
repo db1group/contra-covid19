@@ -66,6 +66,7 @@
               <v-btn
                 small
                 text
+                rounded
                 color="#B8860B"
                 class="ml-5"
                 @click="toggleDetailModal(true)"
@@ -132,6 +133,11 @@ export default {
         const [day, month, year] = search.split('/');
         const date = new Date(year, month - 1, day);
         this.filter = moment(date).format('YYYY-MM-DD');
+        this.filterFechamentos();
+        return;
+      }
+      if (search.length === 0) {
+        this.filter = '';
         this.filterFechamentos();
       }
     },

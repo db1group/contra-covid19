@@ -74,9 +74,9 @@ export default {
     },
     headers: [
       { text: 'Data', value: 'dataFechamento' },
-      { text: 'Unidade de Saúde', value: 'dataFechamento' },
-      { text: 'Nome', value: 'dataFechamento' },
-      { text: 'Evolução', value: 'dataFechamento' },
+      { text: 'Unidade de Saúde', value: 'unidadeSaude' },
+      { text: 'Nome', value: 'nome' },
+      { text: 'Evolução', value: 'tpEvolucao' },
     ],
     detalhesFechamento: [],
   }),
@@ -94,9 +94,8 @@ export default {
       page, itemsPerPage, sortBy = 'dataFechamento', sortDesc = 'true',
     } = this.options) {
       this.loading = true;
-      const search = this.filter;
-      FechamentoService.findAll({
-        page, itemsPerPage, sortBy, sortDesc, search,
+      FechamentoService.getDetailsProximoFechamento({
+        page, itemsPerPage, sortBy, sortDesc,
       })
         .then(({ count, data }) => {
           this.totalNotif = count;
@@ -111,7 +110,3 @@ export default {
   },
 };
 </script>
-
-<style lang="sass" scoped>
-
-</style>
