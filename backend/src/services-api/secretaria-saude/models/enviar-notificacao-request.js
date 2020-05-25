@@ -7,19 +7,22 @@ const metodoExameEnum = require('../../../enums/metodo-exame-enum');
 const contatoSuspeitoEnum = require('../../../enums/contato-suspeito-enum');
 const localContatoSuspeitoEnum = require('../../../enums/local-contato-suspeito-enum');
 const tipoNotificacaoEvolucaoEnum = require('../../../enums/tipo-notificacao-evolucao-enum');
+const moment = require('moment');
 
 class EnviarNotificacaoRequest {
 
     constructor(notificacao) {
-        this.id_externa = notificacao.id;
+        this.id_externa = 2;
         this.possui_cpf = this.getPossuiCpf(notificacao);
+        this.data_notificacao = moment(notificacao.NotificacaoCovid19.dataHoraNotificacao)
+            .format('YYYY-MM-DD');
         this.tipo_paciente = this.getTipoPaciente(notificacao);
         this.paciente = notificacao.Pessoa.nome;
         this.sexo = this.getSexo(notificacao);
         this.data_nascimento = notificacao.Pessoa.dataDeNascimento;
         this.nome_mae = notificacao.Pessoa.nomeDaMae;
-        this.uf_residencia = notificacao.Pessoa.Municipio.uf;
-        this.ibge_residencia = '';
+        this.uf_residencia = '41';
+        this.ibge_residencia = '410010';
         this.cnes_unidade_notifica = notificacao.UnidadeSaude.cnes;
         this.nome_notificador = notificacao.nomeNotificador;
         this.raca_cor = this.getRacaCor(notificacao);
@@ -150,7 +153,7 @@ class EnviarNotificacaoRequest {
         }
     }
 
-    preencherTomografia() {
+    preencherTomografia(notificacao) {
         if (notificacao.NotificacaoCovid19.tomografiaDerrame) {
             this.tomografia = dicionarioValores.tomografia.AusenciaDerramePreural;
         } else if (notificacao.NotificacaoCovid19.tomografiaLinfonodo) {

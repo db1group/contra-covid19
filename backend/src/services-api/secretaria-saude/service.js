@@ -1,5 +1,4 @@
 const axios = require('axios');
-const dicionarioValores = require('../secretaria-saude/models/dicionario-valores');
 
 const axiosInstance = axios.create({
     baseURL: `${process.env.SECRETARIA_SAUDE_API_URL}/`,
@@ -9,22 +8,16 @@ const axiosInstance = axios.create({
     }
 });
 
-exports.getNotificacaoPorId = async (id) => {
-    const responseData = await axiosInstance.get(`v1/notificacao/id/${id}`)
-        .then((response) => {
-            const data = response.data
-            console.log(response.status);
-            console.log(response.statusText);
-            console.log(response.headers);
-            console.log(response.config);
+exports.enviarNotificacao = async (request) => {
+    const data = JSON.stringify(request);
 
-            return data;
+    const responseData = axiosInstance.post(`v1/notificacao/`, data)
+        .then((response) => {
+            return response.data;
         })
         .catch((error) => {
-            console.log(error);
+            return error.response;
         });
-
-    const sim = dicionarioValores.possuiCpf.Sim;
 
     return responseData;
 }
