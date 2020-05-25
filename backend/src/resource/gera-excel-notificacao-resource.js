@@ -18,14 +18,14 @@ exports.gerarExcel = async (req, res) => {
   try {
     const { dataInicial, dataFinal } = req.query;
 
-    console.error(`inicio - criarDataParaFiltro ${new Date()}`);
+    console.info(`inicio - criarDataParaFiltro ${new Date()}`);
     const dataInicialFiltro = this.criarDataInicialParaFiltro(dataInicial);
     const dataFinalFiltro = this.criarDataFinalParaFiltro(dataFinal);
-    console.error(`fim - criarDataParaFiltro ${new Date()}`);
+    console.info(`fim - criarDataParaFiltro ${new Date()}`);
 
-    console.error(`inicio consulta ${new Date()}`);
+    console.info(`inicio consulta ${new Date()}`);
     const notificacoes = await this.consultarNotificacoes(dataInicialFiltro, dataFinalFiltro);
-    console.error(`fim consulta ${new Date()}`);
+    console.info(`fim consulta ${new Date()}`);
 
     if (!fs.existsSync(DIRETORIO)) {
       fs.mkdirSync(DIRETORIO);
@@ -39,13 +39,13 @@ exports.gerarExcel = async (req, res) => {
     const ws = wb.addWorksheet('Planilha1');
 
     this.setarColunas(ws);
-    console.error(`inicio setarNotificacao ${new Date()}`);
+    console.info(`inicio setarNotificacao ${new Date()}`);
     this.setarNotificacao(ws, notificacoes);
-    console.error(`fim setarNotificacao ${new Date()}`);
+    console.info(`fim setarNotificacao ${new Date()}`);
 
-    console.error(`inicio escrever excel ${new Date()}`);
+    console.info(`inicio escrever excel ${new Date()}`);
     wb.write(fullPath, res);
-    console.error(`fim escrever excel ${new Date()}`);
+    console.info(`fim escrever excel ${new Date()}`);
   } catch (err) {
     console.error(err);
     res.status(400).json({ error: err.message });

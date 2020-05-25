@@ -10,12 +10,12 @@ exports.gerarExcel = async (req, res) => {
     const paisBrasil = 'Brasil';
     const { dataInicial, dataFinal } = req.query;
 
-    console.error(`inicio - criarDataParaFiltro ${new Date()}`);
+    console.info(`inicio - criarDataParaFiltro ${new Date()}`);
     const dataInicialFiltro = geraExcel.criarDataInicialParaFiltro(dataInicial);
     const dataFinalFiltro = geraExcel.criarDataFinalParaFiltro(dataFinal);
-    console.error(`fim - criarDataParaFiltro ${new Date()}`);
+    console.info(`fim - criarDataParaFiltro ${new Date()}`);
 
-    console.error(`inicio - consulta ${new Date()}`);
+    console.info(`inicio - consulta ${new Date()}`);
     const notificacoes = await models.Notificacao.findAll({
       where: {
         status: {
@@ -48,9 +48,9 @@ exports.gerarExcel = async (req, res) => {
         { model: models.User },
       ],
     });
-    console.error(`fim - consulta ${new Date()}`);
+    console.info(`fim - consulta ${new Date()}`);
 
-    console.error(`inicio - mapeamento notificação ${new Date()}`);
+    console.info(`inicio - mapeamento notificação ${new Date()}`);
     const listaTemp = notificacoes.map((t) => t.dataValues);
     const lista = listaTemp.map((t) => ({
       dataHoraDaCriacaoDaNotificacao: geraExcel.retornarDataComHora(t, 'createdAt'),
@@ -174,9 +174,9 @@ exports.gerarExcel = async (req, res) => {
       observacoes: geraExcel.retornarCampo(t.NotificacaoCovid19, 'observacoes'),
     }
     ));
-    console.error(`fim - mapeamento notificação ${new Date()}`);
+    console.info(`fim - mapeamento notificação ${new Date()}`);
 
-    console.error(`inicio - mapeamento cabeçalho ${new Date()}`);
+    console.info(`inicio - mapeamento cabeçalho ${new Date()}`);
     const colunas = [
       { nomeColuna: 'Data hora da criação da Notificação', nomeCampo: 'dataHoraDaCriacaoDaNotificacao' },
       { nomeColuna: 'Data da Notificação', nomeCampo: 'dataDaNotificacao' },
@@ -298,11 +298,11 @@ exports.gerarExcel = async (req, res) => {
       { nomeColuna: 'situacaoNoMomentoDaNotificacao', nomeCampo: 'situacaoNoMomentoDaNotificacao' },
       { nomeColuna: 'observacoes', nomeCampo: 'observacoes' },
     ];
-    console.error(`fim - mapeamento cabeçalho ${new Date()}`);
+    console.info(`fim - mapeamento cabeçalho ${new Date()}`);
 
-    console.error(`inicio - gerarExcel ${new Date()}`);
+    console.info(`inicio - gerarExcel ${new Date()}`);
     await geraExcel.gerarExcel(colunas, lista, res);
-    console.error(`fim - gerarExcel ${new Date()}`);
+    console.info(`fim - gerarExcel ${new Date()}`);
 
     return undefined;
   } catch (err) {
