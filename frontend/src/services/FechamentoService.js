@@ -19,8 +19,8 @@ export default {
   getDetailsProximoFechamento({
     page, itemsPerPage, sortBy, sortDesc,
   }) {
-    const url = `/fechamento-notificacao-covid19/proximo-fechamento/details
-      ?page=${page}&itemsPerPage=${itemsPerPage}&sortBy=${sortBy}&sortDesc=${sortDesc}`;
+    let url = '/fechamento-notificacao-covid19/proximo-fechamento/detalhe';
+    url += `?page=${page}&itemsPerPage=${itemsPerPage}&sortBy=${sortBy}&sortDesc=${sortDesc}`;
     return http
       .get(url)
       .then(({ data }) => data);
