@@ -9,16 +9,8 @@
   >
     <v-card>
       <v-card-title class="pa-0">
-        <v-toolbar
-          flat
-          dark
-          color="primary"
-        >
-          <v-btn
-            icon
-            dark
-            @click="close"
-          >
+        <v-toolbar flat dark color="primary">
+          <v-btn icon dark @click="close">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>Detalhes</v-toolbar-title>
@@ -42,8 +34,8 @@
           }"
           class="elevation-1"
         >
-          <template v-slot:item.dataFechamento="{ item }">
-            <span>{{ getDateFormat(item.dataFechamento) }}</span>
+          <template v-slot:item.dataEvolucao="{ item }">
+            <span>{{ getDateTimeFormat(item.dataEvolucao) }}</span>
           </template>
         </v-data-table>
       </v-card-text>
@@ -69,11 +61,11 @@ export default {
     options: {
       page: 1,
       itemsPerPage: 10,
-      sortBy: ['dataFechamento'],
+      sortBy: ['dataEvolucao'],
       sortDesc: 'true',
     },
     headers: [
-      { text: 'Data', value: 'dataFechamento' },
+      { text: 'Data', value: 'dataEvolucao' },
       { text: 'Unidade de Saúde', value: 'unidadeSaude' },
       { text: 'Nome', value: 'nome' },
       { text: 'Evolução', value: 'tpEvolucao' },
@@ -87,11 +79,11 @@ export default {
     close() {
       this.input(false);
     },
-    getDateFormat(value) {
-      return moment(value).format('DD/MM/YYYY');
+    getDateTimeFormat(value) {
+      return moment(value).format('DD/MM/YYYY HH:mm');
     },
     consultarDetalhesFechamentos({
-      page, itemsPerPage, sortBy = 'dataFechamento', sortDesc = 'true',
+      page, itemsPerPage, sortBy = 'dataEvolucao', sortDesc = 'true',
     } = this.options) {
       this.loading = true;
       FechamentoService.getDetailsProximoFechamento({
@@ -99,7 +91,7 @@ export default {
       })
         .then(({ count, data }) => {
           this.totalNotif = count;
-          this.fechamentos = data.rows.map((d) => new DetalhesFechamentoDiario(d));
+          this.detalhesFechamento = data.rows.map((d) => new DetalhesFechamentoDiario(d));
         })
         .catch((error) => {
           const { data } = error.response || {};

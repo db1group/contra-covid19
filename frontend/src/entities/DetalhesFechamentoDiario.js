@@ -1,8 +1,8 @@
-export default class FechamentoDiario {
+export default class DetalhesFechamentoDiario {
   constructor(data = {}) {
-    this.dataFechamento = data.dataFechamento || '';
-    this.unidadeSaude = data.unidadeSaude || '';
-    this.nome = data.nome || '';
+    this.dataEvolucao = data.dataEvolucao || '';
+    this.unidadeSaude = data.nomeUnidadeSaude || '';
+    this.nome = data.nomePaciente || '';
     this.tpEvolucao = data.tpEvolucao || '';
   }
 }

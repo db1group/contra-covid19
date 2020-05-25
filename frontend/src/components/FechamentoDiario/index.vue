@@ -28,9 +28,7 @@
                 :dark="!temFechamentoEmAberto"
                 :disabled="temFechamentoEmAberto"
                 @click="novoFechamento"
-              >
-                Iniciar novo fechamento
-              </v-btn>
+              >Iniciar novo fechamento</v-btn>
             </v-col>
           </v-row>
           <v-spacer></v-spacer>
@@ -56,18 +54,20 @@
           <v-col>
             <span v-if="item.status === 'FECHADO'" class="primary--text">FECHADO</span>
             <div v-else>
-              <v-btn
-                small
-                rounded
-                dark
-                color="primary"
-                @click="encerrarFechamento"
-              >FECHAR</v-btn>
+              <v-btn small rounded dark color="primary" @click="encerrarFechamento">FECHAR</v-btn>
               <v-btn
                 small
                 text
                 rounded
                 color="#B8860B"
+                class="ml-5"
+                @click="cancelarFechamento"
+              >CANCELAR</v-btn>
+              <v-btn
+                small
+                text
+                rounded
+                color="#F54D09"
                 class="ml-5"
                 @click="toggleDetailModal(true)"
               >DETALHES</v-btn>
@@ -123,7 +123,7 @@ export default {
   }),
   methods: {
     getDateFormat(value) {
-      return moment(value).format('DD/MM/YYYY');
+      return moment.utc(value).format('DD/MM/YYYY');
     },
     toggleDetailModal(value) {
       this.$emit('toggleDetailModal', value);
@@ -171,6 +171,12 @@ export default {
         const { data } = err.response || {};
         this.$emit('erro:encerrarFechamento', data.err);
       });
+    },
+    cancelarFechamento() {
+      if (!this.fechamentos.length) {
+        this.totalNotif = 1;
+      }
+      this.fechamentos.shift();
     },
     consultarFechamentos({
       page, itemsPerPage, sortBy = 'dataFechamento', sortDesc = 'true',
