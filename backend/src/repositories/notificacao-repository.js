@@ -53,6 +53,7 @@ module.exports.getPorId = async (id) => models.Notificacao.findOne({
         { model: models.Ocupacao },
       ],
     },
+    { model: models.NotificacaoEvolucao },
     { model: models.NotificacaoCovid19 },
     { model: models.Municipio },
     { model: models.UnidadeSaude },

@@ -35,7 +35,67 @@ exports.ocupacao = {
     Outro: 5
 }
 
+exports.raioXTorax = {
+    Normal: 1,
+    Misto: 2,
+    InfiltradoIntersticial: 3,
+    Consolidado: 4,
+    Outro: 5
+}
+
+exports.tomografia = {
+    VidroFosco: 1,
+    AusenciaLinfonodoMediastinal: 2,
+    AusenciaDerramePreural: 3,
+    Outro: 4
+}
+
+exports.metodoExame = {
+    RTPCR: 1,
+    TesteRapido: 2,
+    NaoInformado: 3
+}
+
+exports.localContatoSuspeito = {
+    Domicilio: 1,
+    UnidadeSaude : 2,
+    LocalTrabalho: 3,
+    Desconhecido: 4,
+    Outro: 5
+}
+
+exports.classificacaoFinal = {
+    CasoSuspeito: 1,
+    CasoConfirmado: 2,
+    CasoDescartado: 3,
+    CasoAConfirmar: 4
+}
+
+exports.evolucao = {
+    Cura: 1,
+    Obito: 2,
+    Ignorado: 3
+}
+
+exports.criterioClassificacao = {
+    Laboratorial: 1,
+    ClinicoEpidemiologico: 2,
+    EmInvestigacao: 3,
+    NaoSeAplica: 4
+}
+
+exports.medicamento = {
+    Tamiflu: '3',
+    Hidroxicloroquina: '4'
+}
+
 exports.gestante = {
+    Sim: 1,
+    Nao: 2,
+    NaoInformado: 3
+}
+
+exports.boleano = {
     Sim: 1,
     Nao: 2,
     NaoInformado: 3
