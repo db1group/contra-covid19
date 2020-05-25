@@ -8,6 +8,7 @@ const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
 const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
 const atualizacaoNotificacaoService = require('../services/atualizar-notificacao-service');
+const envioLoteSecretariaService = require('../services/envio-secretaria-lote-service');
 
 const { Op } = Sequelize;
 
@@ -179,6 +180,7 @@ const salvarNotificacao = async (notificacao) => {
       tpEvolucao: 'SUSPEITO',
       tpLocal: notificacao.notificacaoCovid19.situacaoNoMomentoDaNotificacao,
     }, { transaction });
+    await envioLoteSecretariaService.adicionarNotificacaoEmLote(notificacaoId, transaction);
     await transaction.commit();
     return consultarNotificacaoPorId(notificacaoId);
   } catch (err) {
