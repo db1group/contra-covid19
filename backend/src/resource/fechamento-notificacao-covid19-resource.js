@@ -56,7 +56,7 @@ const getProximaDataFechamento = async () => {
 };
 
 const getDadosFechamento = async (dataFechamento) => {
-  const dataFormatada = moment.utc(dataFechamento).tz(TIME_ZONE.AMERICA_SAO_PAULO);
+  const dataFormatada = moment(dataFechamento).tz(TIME_ZONE.AMERICA_SAO_PAULO);
   await models.sequelize.query('select public.definirfatodia(:dataFormatada);', {
     replacements: { dataFormatada: dataFormatada.toDate() },
   });
