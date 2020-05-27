@@ -48,17 +48,17 @@ const getProximaDataFechamento = async () => {
     dataFechamento = moment(dataFechamento).add(1, 'days').startOf('day');
   }
 
-  return moment.utc(dataFechamento);
+  return moment(dataFechamento);
 };
 
 const getDadosFechamento = async (dataFechamento) => {
-  const dataFormatada = moment.utc(dataFechamento).format('YYYY-MM-DD');
+  const dataFormatada = moment(dataFechamento).format('YYYY-MM-DD');
   await models.sequelize.query('select public.definirfatodia(:dataFormatada);', {
     replacements: { dataFormatada },
   });
 
   let [boletim] = await models.sequelize.query(
-    'SELECT * FROM vwboletimdia WHERE aprovado = false',
+    'SELECT * FROM vwfechamento WHERE aprovado = false',
     { type: Sequelize.QueryTypes.SELECT },
   );
 
@@ -110,7 +110,7 @@ const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
         },
       },
       {
-        order: [['updatedAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         limit,
         offset,
       },
@@ -118,7 +118,7 @@ const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
   }
 
   return models.FechamentoNotificacaoCovid19.findAndCountAll({
-    order: [['updatedAt', 'DESC']],
+    order: [['createdAt', 'DESC']],
     limit,
     offset,
   });
@@ -126,12 +126,12 @@ const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
 
 const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) => {
   const offset = (page - 1) * limit;
-  const dtInicial = moment.utc(dataFechamento)
+  const dtInicial = moment(dataFechamento)
     .startOf('day')
     .subtract(1, 'day')
     .add(13, 'hours')
     .toDate();
-  const dtFinal = moment.utc(dataFechamento)
+  const dtFinal = moment(dataFechamento)
     .startOf('day')
     .add(12, 'hours')
     .add(59, 'minutes')
@@ -190,7 +190,7 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
 const realizarProximoFechamento = async () => {
   const dataFechamento = await getProximaDataFechamento();
   const dadosFechamento = await getDadosFechamento(dataFechamento);
-  const dataFormatada = moment.utc(dadosFechamento.dataFechamento).format('YYYY-MM-DD');
+  const dataFormatada = moment(dadosFechamento.dataFechamento).format('YYYY-MM-DD');
   await models.sequelize.query('select public.realizarfechamento(:dataFormatada);', {
     replacements: { dataFormatada },
   });

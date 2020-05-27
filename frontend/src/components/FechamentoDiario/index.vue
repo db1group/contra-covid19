@@ -113,8 +113,6 @@ export default {
       { text: 'Acompanhados', value: 'acompanhados' },
       { text: 'Encerrados', value: 'casosEncerrados' },
       { text: 'Confirmados', value: 'confirmados' },
-      { text: 'Isolamento Domiciliar', value: 'emIsolamentoDomiciliar' },
-      { text: 'Internados', value: 'internados' },
       { text: 'Curados', value: 'curados' },
       { text: 'Óbitos', value: 'obitos' },
       { text: 'Situação', value: 'actions', aling: 'center' },
