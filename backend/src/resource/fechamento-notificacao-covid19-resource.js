@@ -6,11 +6,6 @@ const { RegraNegocioErro } = require('../lib/erros');
 
 const { Op } = Sequelize;
 
-const TIME_ZONE = {
-  AMERICA_SAO_PAULO: 'America/Sao_Paulo',
-  EAT: 'eat',
-};
-
 const getDataUltimoFechamento = async () => {
   const queryResult = await models.FechamentoNotificacaoCovid19
     .findOne({
@@ -57,9 +52,9 @@ const getProximaDataFechamento = async () => {
 };
 
 const getDadosFechamento = async (dataFechamento) => {
-  const dataFormatada = moment(dataFechamento).tz(TIME_ZONE.EAT);
+  const dataFormatada = moment.utc(dataFechamento).format('YYYY-MM-DD');
   await models.sequelize.query('select public.definirfatodia(:dataFormatada);', {
-    replacements: { dataFormatada: dataFormatada.toDate() },
+    replacements: { dataFormatada },
   });
 
   let [boletim] = await models.sequelize.query(
@@ -131,12 +126,12 @@ const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
 
 const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) => {
   const offset = (page - 1) * limit;
-  const dtInicial = moment(dataFechamento).tz(TIME_ZONE.EAT)
+  const dtInicial = moment.utc(dataFechamento)
     .startOf('day')
     .subtract(1, 'day')
     .add(13, 'hours')
     .toDate();
-  const dtFinal = moment(dataFechamento).tz(TIME_ZONE.EAT)
+  const dtFinal = moment.utc(dataFechamento)
     .startOf('day')
     .add(12, 'hours')
     .add(59, 'minutes')
@@ -195,7 +190,7 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
 const realizarProximoFechamento = async () => {
   const dataFechamento = await getProximaDataFechamento();
   const dadosFechamento = await getDadosFechamento(dataFechamento);
-  const dataFormatada = moment(dadosFechamento.dataFechamento).tz(TIME_ZONE.EAT).format('YYYY-MM-DD');
+  const dataFormatada = moment.utc(dadosFechamento.dataFechamento).format('YYYY-MM-DD');
   await models.sequelize.query('select public.realizarfechamento(:dataFormatada);', {
     replacements: { dataFormatada },
   });
