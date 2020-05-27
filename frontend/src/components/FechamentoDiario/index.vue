@@ -69,7 +69,7 @@
                 rounded
                 color="#F54D09"
                 class="ml-5"
-                @click="toggleDetailModal(true)"
+                @click="toggleDetailModal(true, item.dataFechamento)"
               >DETALHES</v-btn>
             </div>
           </v-col>
@@ -125,8 +125,8 @@ export default {
     getDateFormat(value) {
       return moment.utc(value).format('DD/MM/YYYY');
     },
-    toggleDetailModal(value) {
-      this.$emit('toggleDetailModal', value);
+    toggleDetailModal(value, dataFechamento) {
+      this.$emit('toggleDetailModal', { value, dataFechamento });
     },
     filterSearch(search) {
       if (search.length === 10) {

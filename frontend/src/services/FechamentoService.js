@@ -17,10 +17,11 @@ export default {
     return http.get('/fechamento-notificacao-covid19/proximo-fechamento').then(({ data }) => data.data);
   },
   getDetailsProximoFechamento({
-    page, itemsPerPage, sortBy, sortDesc,
+    dataFechamento, page, itemsPerPage, sortBy, sortDesc,
   }) {
     let url = '/fechamento-notificacao-covid19/proximo-fechamento/detalhe';
-    url += `?page=${page}&itemsPerPage=${itemsPerPage}&sortBy=${sortBy}&sortDesc=${sortDesc}`;
+    url += `?dataFechamento=${dataFechamento}&page=${page}&itemsPerPage=${itemsPerPage}`;
+    url += `&sortBy=${sortBy}&sortDesc=${sortDesc}`;
     return http
       .get(url)
       .then(({ data }) => data);

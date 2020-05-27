@@ -1,8 +1,6 @@
 <template>
   <section style="margin-top: 45px;">
-    <modal-detalhes-fechamento-diario
-      v-model="showModalDetails"
-    />
+    <modal-detalhes-fechamento-diario v-model="showModalDetails" :data-fechamento="dataFechamento" />
     <v-container fluid>
       <v-row justify="space-between" align="center">
         <v-col cols="auto">
@@ -17,25 +15,20 @@
         @toggleDetailModal="toggleDetailModal"
       />
     </v-container>
-    <v-snackbar
-      v-model="showError"
-      color="error"
-      bottom>
-      {{ this.mensagemErro }}
-    </v-snackbar>
+    <v-snackbar v-model="showError" color="error" bottom>{{ this.mensagemErro }}</v-snackbar>
     <v-snackbar
       v-model="showSuccess"
       class="notificacao-cons__snack-success"
       color="success"
-      bottom>
-      {{ this.mensagemSucesso }}
-    </v-snackbar>
+      bottom
+    >{{ this.mensagemSucesso }}</v-snackbar>
   </section>
 </template>
 
 <script>
 import FechamentoDiario from '@/components/FechamentoDiario/index.vue';
 import ModalDetalhesFechamentoDiario from '@/components/FechamentoDiario/ModalDetalhesFechamentoDiario.vue';
+import keycloak from '@/services/KeycloakService';
 
 export default {
   components: {
@@ -48,10 +41,12 @@ export default {
     mensagemSucesso: '',
     mensagemErro: '',
     showModalDetails: false,
+    dataFechamento: null,
   }),
   methods: {
-    toggleDetailModal(value) {
+    toggleDetailModal({ value, dataFechamento }) {
       this.showModalDetails = value;
+      this.dataFechamento = dataFechamento;
     },
     mostrarMensagemErro(msg) {
       this.showError = true;
@@ -63,6 +58,9 @@ export default {
     },
   },
   beforeRouteEnter(to, from, next) {
+    if (!keycloak.realmAccess.roles.includes('FECHAMENTO')) {
+      return;
+    }
     const { msg } = to.params;
     let enter = true;
     if (msg) {
