@@ -25,6 +25,7 @@ module.exports = {
     dialectOptions: {
       useUTC: true,
       dateStrings: true,
+      typeCast: true,
     },
     timezone: '00:00',
   },
@@ -38,6 +39,7 @@ module.exports = {
     dialectOptions: {
       useUTC: true,
       dateStrings: true,
+      typeCast: true,
     },
     timezone: '00:00',
   },
