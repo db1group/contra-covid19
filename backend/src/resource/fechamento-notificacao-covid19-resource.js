@@ -6,6 +6,10 @@ const { RegraNegocioErro } = require('../lib/erros');
 
 const { Op } = Sequelize;
 
+const TIME_ZONE = {
+  AMERICA_SAO_PAULO: 'America/Sao_Paulo',
+};
+
 const getDataUltimoFechamento = async () => {
   const queryResult = await models.FechamentoNotificacaoCovid19
     .findOne({
@@ -20,10 +24,19 @@ const getDataUltimoFechamento = async () => {
 };
 
 const getDataPrimeiraNotificacao = async () => {
-  const queryResult = await models.NotificacaoCovid19.findOne({
+  const queryResult = await models.NotificacaoEvolucao.findOne({
     attributes: [
-      [Sequelize.fn('min', Sequelize.col('dataHoraNotificacao')), 'dataPrimeiraNotificacao'],
+      [Sequelize.fn('min', Sequelize.col('NotificacaoEvolucao.createdAt')), 'dataPrimeiraNotificacao'],
     ],
+    include: {
+      attributes: [],
+      model: models.Notificacao,
+      where: {
+        status: {
+          [Op.ne]: 'EXCLUIDA',
+        },
+      },
+    },
     raw: true,
   });
 
@@ -32,51 +45,46 @@ const getDataPrimeiraNotificacao = async () => {
 };
 
 const getProximaDataFechamento = async () => {
-  let dataFechamento = await getDataUltimoFechamento();
+  let dataFechamento = await getDataUltimoFechamento() || null;
   if (!dataFechamento) {
     dataFechamento = await getDataPrimeiraNotificacao();
   } else {
-    const dataQuery = moment(dataFechamento).add(1, 'days').startOf('day');
-
-    const [notificacaoEvolucao] = await models.NotificacaoEvolucao.findAll(
-      {
-        where: {
-          dtEvolucao: {
-            [Op.gte]: dataQuery,
-          },
-        },
-      },
-      {
-        order: [['dtEvolucao', 'ASC']],
-      },
-    );
-
-    dataFechamento = notificacaoEvolucao.dtEvolucao;
+    dataFechamento = moment(dataFechamento).add(1, 'days').startOf('day');
   }
 
-  return dataFechamento;
+  return moment.utc(dataFechamento);
 };
 
 const getDadosFechamento = async (dataFechamento) => {
-  const dataFormatada = moment(dataFechamento).format('YYYY-MM-DD');
-  await models.sequelize.query(`select definirfatodia('${dataFormatada}')`);
+  const dataFormatada = moment.utc(dataFechamento).tz(TIME_ZONE.AMERICA_SAO_PAULO);
+  await models.sequelize.query('select public.definirfatodia(:dataFormatada);', {
+    replacements: { dataFormatada: dataFormatada.toDate() },
+  });
 
-  const [boletim] = await models.sequelize.query(
+  let [boletim] = await models.sequelize.query(
     'SELECT * FROM vwboletimdia WHERE aprovado = false',
     { type: Sequelize.QueryTypes.SELECT },
   );
 
   if (boletim === undefined) {
-    const dataBoletim = moment(dataFechamento).format('DD/MM/YYYY');
-    throw new RegraNegocioErro(`Não existe boletim para o dia ${dataBoletim}.`);
+    boletim = {
+      dtaprovacao: dataFormatada,
+      qtnotificado: 0,
+      qtacompanhamento: 0,
+      qtencerrado: 0,
+      qtconfirmado: 0,
+      qtconfirmadoencerrado: 0,
+      qtobito: 0,
+      qtconfirmadoisolamento: 0,
+    };
   }
 
-  if (moment(boletim.dtaprovacao).startOf('day').toDate() >= moment().startOf('day').toDate()) {
-    throw new RegraNegocioErro('Não é possível realizar fechamentos do dia ou futuros.');
+  if (moment(boletim.dtaprovacao).startOf('day').toDate() > moment().startOf('day').toDate()) {
+    throw new RegraNegocioErro('Não é possível realizar fechamentos futuros.');
   }
 
   return {
-    dataFechamento: boletim.dtaprovacao,
+    dataFechamento,
     casosNotificados: parseInt(boletim.qtnotificado, 0),
     acompanhados: parseInt(boletim.qtacompanhamento, 0),
     casosEncerrados: parseInt(boletim.qtencerrado, 0),
@@ -120,19 +128,31 @@ const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
   });
 };
 
-const getDetalheProximoFechamentoPaginado = async (page, limit) => {
+const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) => {
   const offset = (page - 1) * limit;
+  const dtInicial = moment(dataFechamento)
+    .startOf('day')
+    .subtract(1, 'day')
+    .add(13, 'hours')
+    .toDate();
+  const dtFinal = moment(dataFechamento)
+    .startOf('day')
+    .add(12, 'hours')
+    .add(59, 'minutes')
+    .add(59, 'seconds')
+    .toDate();
 
   const evolucoes = await models.NotificacaoEvolucao.findAndCountAll({
     where: {
-      dtfechamento: {
-        [Op.eq]: null,
+      createdAt: {
+        [Op.between]: [dtInicial, dtFinal],
       },
     },
-    attributes: ['dtEvolucao', 'tpEvolucao'],
+    attributes: ['createdAt', 'dtEvolucao', 'tpEvolucao'],
     include: [
       {
         model: models.Notificacao,
+        attributes: ['id'],
         include: [
           {
             model: models.UnidadeSaude,
@@ -141,13 +161,22 @@ const getDetalheProximoFechamentoPaginado = async (page, limit) => {
           {
             model: models.Pessoa,
             attributes: ['nome'],
+            include: {
+              model: models.Municipio,
+              attributes: [],
+              where: {
+                nome: {
+                  [Op.eq]: 'MARINGA - PR',
+                },
+              },
+            },
           },
         ],
       },
     ],
   },
   {
-    order: [['dtEvolucao', 'ASC']],
+    order: [['createdAt', 'ASC']],
     limit,
     offset,
   });
@@ -166,7 +195,9 @@ const realizarProximoFechamento = async () => {
   const dataFechamento = await getProximaDataFechamento();
   const dadosFechamento = await getDadosFechamento(dataFechamento);
   const dataFormatada = moment(dadosFechamento.dataFechamento).format('YYYY-MM-DD');
-  await models.sequelize.query(`select realizarfechamento('${dataFormatada}')`);
+  await models.sequelize.query('select public.realizarfechamento(:dataFormatada);', {
+    replacements: { dataFormatada },
+  });
   return repos
     .fechamentoNotificacaoCovid19Repository.cadastrar(dadosFechamento);
 };
@@ -205,9 +236,11 @@ exports.cadastrarProximoFechamento = async (req, res, next) => {
 
 exports.getDetalheProximoFechamento = async (req, res, next) => {
   try {
-    const { page = 1 } = req.query;
-    const { limit = 10 } = req.query;
-    const detalheFechamento = await getDetalheProximoFechamentoPaginado(page, limit);
+    const { page = 1, limit = 10, dataFechamento } = req.query;
+
+    const detalheFechamento = await getDetalheProximoFechamentoPaginado(
+      dataFechamento, page, limit,
+    );
     return res.json({ data: detalheFechamento });
   } catch (err) {
     return next(err);

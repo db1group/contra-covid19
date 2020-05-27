@@ -54,6 +54,9 @@ export default {
       type: Boolean,
       default: true,
     },
+    dataFechamento: {
+      type: [Date, String],
+    },
   },
   data: () => ({
     totalNotif: 0,
@@ -72,6 +75,13 @@ export default {
     ],
     detalhesFechamento: [],
   }),
+  watch: {
+    value(showing) {
+      if (showing) {
+        this.consultarDetalhesFechamentos();
+      }
+    },
+  },
   methods: {
     input(value) {
       this.$emit('input', value);
@@ -87,7 +97,11 @@ export default {
     } = this.options) {
       this.loading = true;
       FechamentoService.getDetailsProximoFechamento({
-        page, itemsPerPage, sortBy, sortDesc,
+        dataFechamento: this.dataFechamento,
+        page,
+        itemsPerPage,
+        sortBy,
+        sortDesc,
       })
         .then(({ count, data }) => {
           this.totalNotif = count;
