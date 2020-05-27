@@ -130,12 +130,12 @@ const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
 
 const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) => {
   const offset = (page - 1) * limit;
-  const dtInicial = moment(dataFechamento)
+  const dtInicial = moment(dataFechamento).tz(TIME_ZONE.AMERICA_SAO_PAULO)
     .startOf('day')
     .subtract(1, 'day')
     .add(13, 'hours')
     .toDate();
-  const dtFinal = moment(dataFechamento)
+  const dtFinal = moment(dataFechamento).tz(TIME_ZONE.AMERICA_SAO_PAULO)
     .startOf('day')
     .add(12, 'hours')
     .add(59, 'minutes')
@@ -194,7 +194,7 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
 const realizarProximoFechamento = async () => {
   const dataFechamento = await getProximaDataFechamento();
   const dadosFechamento = await getDadosFechamento(dataFechamento);
-  const dataFormatada = moment(dadosFechamento.dataFechamento).format('YYYY-MM-DD');
+  const dataFormatada = moment(dadosFechamento.dataFechamento).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('YYYY-MM-DD');
   await models.sequelize.query('select public.realizarfechamento(:dataFormatada);', {
     replacements: { dataFormatada },
   });
