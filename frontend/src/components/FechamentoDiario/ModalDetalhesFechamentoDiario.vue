@@ -34,8 +34,8 @@
           }"
           class="elevation-1"
         >
-          <template v-slot:item.dataEvolucao="{ item }">
-            <span>{{ getDateTimeFormat(item.dataEvolucao) }}</span>
+          <template v-slot:item.createdAt="{ item }">
+            <span>{{ getDateTimeFormat(item.createdAt) }}</span>
           </template>
         </v-data-table>
       </v-card-text>
@@ -64,11 +64,11 @@ export default {
     options: {
       page: 1,
       itemsPerPage: 10,
-      sortBy: ['dataEvolucao'],
+      sortBy: ['createdAt'],
       sortDesc: 'true',
     },
     headers: [
-      { text: 'Data', value: 'dataEvolucao' },
+      { text: 'Data', value: 'createdAt' },
       { text: 'Unidade de Saúde', value: 'unidadeSaude' },
       { text: 'Nome', value: 'nome' },
       { text: 'Evolução', value: 'tpEvolucao' },
