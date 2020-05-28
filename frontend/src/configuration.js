@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 
 dotenv.config();
+process.env.TZ = 'America/Sao_Paulo';
 
 export default class Configuration {
   static get CONFIG() {
@@ -11,6 +12,7 @@ export default class Configuration {
       VUE_APP_KEYCLOAK_REALM: '$VUE_APP_KEYCLOAK_REALM',
       VUE_APP_KEYCLOAK_CLIENT_ID: '$VUE_APP_KEYCLOAK_CLIENT_ID',
       VUE_APP_ORIENTATIONS_PDF: '$VUE_APP_ORIENTATIONS_PDF',
+      TZ: 'America/Sao_Paulo',
     };
   }
 
