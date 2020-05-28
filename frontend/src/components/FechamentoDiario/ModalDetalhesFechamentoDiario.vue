@@ -64,6 +64,8 @@ export default {
     options: {
       page: 1,
       itemsPerPage: 10,
+      sortBy: ['createdAt'],
+      sortDesc: 'false',
     },
     headers: [
       { text: 'Data', value: 'createdAt', sortable: false },
