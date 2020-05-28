@@ -4,5 +4,6 @@ export default class DetalhesFechamentoDiario {
     this.unidadeSaude = data.nomeUnidadeSaude || '';
     this.nome = data.nomePaciente || '';
     this.tpEvolucao = data.tpEvolucao || '';
+    this.createdAt = data.createdAt || '';
   }
 }

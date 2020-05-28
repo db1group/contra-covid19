@@ -182,6 +182,7 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
   });
 
   evolucoes.rows = evolucoes.rows.map((data) => ({
+    createdAt: data.createdAt,
     dataEvolucao: data.dtEvolucao,
     nomePaciente: data.Notificacao.Pessoa.nome,
     nomeUnidadeSaude: data.Notificacao.UnidadeSaude.nome,
