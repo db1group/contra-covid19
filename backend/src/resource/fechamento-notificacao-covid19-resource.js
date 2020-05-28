@@ -153,6 +153,7 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
           {
             model: models.UnidadeSaude,
             attributes: ['nome'],
+            required: true,
           },
           {
             model: models.Pessoa,
@@ -165,9 +166,12 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
                   [Op.eq]: 'MARINGA - PR',
                 },
               },
+              required: true,
             },
+            required: true,
           },
         ],
+        required: true,
       },
     ],
   },
