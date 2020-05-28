@@ -1,7 +1,7 @@
 const express = require('express');
 
 const router = express.Router();
-const NotificacaoExportacaoExcelResource = require('../resource/notificacao-exportacao-excel-resource');
+const NotificacaoExportacaoExcelResource = require('../resource/gera-excel-notificacao-resource');
 const secure = require('../secure');
 const { isRealmSecretariaSaude } = require('../lib/secureRealm');
 

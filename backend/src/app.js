@@ -6,6 +6,9 @@ const pino = require('pino-http');
 const helmet = require('helmet');
 const cors = require('cors');
 
+// Force Define TimeZone
+process.env.TZ = 'America/Sao_Paulo';
+
 const router = require('./routes');
 
 const app = express();

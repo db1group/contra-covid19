@@ -1,11 +1,19 @@
+const TIMEZONE_AMERICA_SAO_PAULO = 'America/Sao_Paulo';
+
 module.exports = {
   development: {
-    dialect: 'sqlite',
-    storage: './src/db/databases/dev.sqlite',
+    host: process.env.DATABASE_URL,
+    database: process.env.DATABASE_NAME,
+    username: process.env.DATABASE_USERNAME,
+    password: process.env.DATABASE_PASSWORD,
+    dialect: 'postgres',
+    seederStorage: 'sequelize',
     dialectOptions: {
-      useUTC: true,
+      useUTC: false,
       dateStrings: true,
+      typeCast: true,
     },
+    timezone: TIMEZONE_AMERICA_SAO_PAULO,
   },
   test: {
     dialect: 'sqlite',
@@ -23,10 +31,11 @@ module.exports = {
     dialect: 'postgres',
     seederStorage: 'sequelize',
     dialectOptions: {
-      useUTC: true,
+      useUTC: false,
       dateStrings: true,
+      typeCast: true,
     },
-    timezone: '00:00',
+    timezone: TIMEZONE_AMERICA_SAO_PAULO,
   },
   prod: {
     host: process.env.DATABASE_URL,
@@ -36,9 +45,10 @@ module.exports = {
     dialect: 'postgres',
     seederStorage: 'sequelize',
     dialectOptions: {
-      useUTC: true,
+      useUTC: false,
       dateStrings: true,
+      typeCast: true,
     },
-    timezone: '00:00',
+    timezone: TIMEZONE_AMERICA_SAO_PAULO,
   },
 };
