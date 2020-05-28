@@ -64,14 +64,12 @@ export default {
     options: {
       page: 1,
       itemsPerPage: 10,
-      sortBy: ['createdAt'],
-      sortDesc: 'true',
     },
     headers: [
-      { text: 'Data', value: 'createdAt' },
-      { text: 'Unidade de Saúde', value: 'unidadeSaude' },
-      { text: 'Nome', value: 'nome' },
-      { text: 'Evolução', value: 'tpEvolucao' },
+      { text: 'Data', value: 'createdAt', sortable: false },
+      { text: 'Unidade de Saúde', value: 'unidadeSaude', sortable: false },
+      { text: 'Nome', value: 'nome', sortable: false },
+      { text: 'Evolução', value: 'tpEvolucao', sortable: false },
     ],
     detalhesFechamento: [],
   }),
