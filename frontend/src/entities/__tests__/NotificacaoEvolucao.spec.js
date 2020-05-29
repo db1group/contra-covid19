@@ -15,6 +15,8 @@ const notifEvolucaoVazia = {
   dataHoraAtualizacao: '',
   local: '',
   situacao: '',
+  createdAt: null,
+  dtfechamento: null,
 };
 
 const dataNotifEvolucao = {
@@ -26,6 +28,7 @@ const dataNotifEvolucao = {
   tpLocal: 'ALTA_ISOLAMENTO_DOMICILIAR',
   createdAt: '2020-04-20T14:26:53.693Z',
   updatedAt: '2020-04-20T14:26:53.693Z',
+  dtfechamento: '2020-04-20T14:26:53.693Z',
 };
 
 const notifEvolucaoValida = {
@@ -34,6 +37,8 @@ const notifEvolucaoValida = {
   dataHoraAtualizacao: '2020-04-18T18:53:00.000Z',
   local: 'ALTA_ISOLAMENTO_DOMICILIAR',
   situacao: 'SUSPEITO',
+  createdAt: '2020-04-20T14:26:53.693Z',
+  dtfechamento: '2020-04-20T14:26:53.693Z',
 };
 
 const notifEvolucaoRequestValida = {
@@ -41,6 +46,8 @@ const notifEvolucaoRequestValida = {
   dtEvolucao: '2020-04-18T18:53:00.000Z',
   tpLocal: 'ALTA_ISOLAMENTO_DOMICILIAR',
   tpEvolucao: 'SUSPEITO',
+  createdAt: '2020-04-18T18:53:00.000Z',
+  dtfechamento: '2020-04-18T18:53:00.000Z',
 };
 
 describe('Testes para entidade NotificacaoEvolucao', () => {
