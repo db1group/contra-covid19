@@ -4,6 +4,7 @@
     <dados-pessoais
       :data-hora-notificacao="dataHoraNotificacao"
       :suspeito="suspeito"
+      :possui-fechamento="possuiFechamento"
       @update:dataHoraNotificacao="updateDataHoraNotificacao"
       @update:tipoDocumento="updateTipoDocumento"
       @update:numeroCpf="updateNumeroCpf"
@@ -20,6 +21,7 @@
     />
     <endereco
       :suspeito="suspeito"
+      :possui-fechamento="possuiFechamento"
       @update:cep="updateCep"
       @update:endereco="updateEndereco"
       @update:numero="updateNumero"
@@ -67,6 +69,10 @@ export default {
       required: true,
     },
     disabled: {
+      type: Boolean,
+      defaultValue: false,
+    },
+    possuiFechamento: {
       type: Boolean,
       defaultValue: false,
     },

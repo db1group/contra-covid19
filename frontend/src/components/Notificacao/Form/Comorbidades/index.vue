@@ -1,12 +1,11 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">
-      6. COMORBIDADES PRÉVIAS / FATORES DE RISCO
-    </h4>
-    <v-container
-      fluid
-      class="pa-0"
-    >
+    <h4 class="primary--text title">6. COMORBIDADES PRÉVIAS / FATORES DE RISCO</h4>
+    <v-container fluid class="pa-0">
+      <span
+        v-if="showHintFechamento"
+        class="text--disabled"
+      >Não é possivel alterar pois já foi realizado o fechamento.</span>
       <v-row no-gutters>
         <v-col v-show="feminino" cols="12" md="6">
           <v-checkbox
@@ -152,10 +151,7 @@
             @change="updateTabagismo"
           />
         </v-col>
-        <v-col
-          cols="12"
-          md="6"
-        >
+        <v-col cols="12" md="6">
           <v-checkbox
             :input-value="comorbidades.outrasComorbidades"
             label="Outros"
@@ -192,11 +188,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    possuiFechamento: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   computed: {
     disableOutro() {
       if (this.disabled) return true;
       return !this.comorbidades.outrasComorbidades;
+    },
+    showHintFechamento() {
+      return this.possuiFechamento;
     },
   },
   methods: {

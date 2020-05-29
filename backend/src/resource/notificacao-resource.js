@@ -439,9 +439,12 @@ exports.consultarPorId = async (req, res, next) => {
       }
     }
 
+    const fechamentos = await repos.notificacaoRepository.getFechamentosPorNotificacaoId(id);
+    const possuiFechamento = fechamentos.length > 0;
     const retorno = Mappers.Notificacao.mapearParaResponse(
       notificacaoModel,
       notificacaoModel.NotificacaoCovid19,
+      possuiFechamento,
     );
 
     return res.json({ data: retorno });

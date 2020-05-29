@@ -39,6 +39,7 @@ export default class Notificacao {
     this.vinculoEpidemiologico = new VinculoEpidemiologico(data.vinculoEpidemiologico || {});
     this.conclusaoAtendimento = new ConclusaoAtendimento(data.conclusaoAtendimento || {});
     this.unidadeSaudeNome = data.unidadeSaudeNome || '';
+    this.possuiFechamento = data.possuiFechamento || false;
   }
 
   toRequestBody() {
@@ -60,6 +61,7 @@ export default class Notificacao {
     delete notificacao.examesImagem.realizouOutraTomografiaTorax;
     delete notificacao.suspeito.bairroNome;
     delete notificacao.suspeito.municipioNome;
+    delete notificacao.possuiFechamento;
     return notificacao;
   }
 }
