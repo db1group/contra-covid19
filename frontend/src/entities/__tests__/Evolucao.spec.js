@@ -32,6 +32,7 @@ const dataEvolucao = {
       tpLocal: 'ALTA_ISOLAMENTO_DOMICILIAR',
       createdAt: '2020-04-20T14:26:53.693Z',
       updatedAt: '2020-04-20T14:26:53.693Z',
+      dtfechamento: null,
     },
   ],
 };
@@ -53,6 +54,7 @@ const evolucaoValida = {
       tpLocal: 'ALTA_ISOLAMENTO_DOMICILIAR',
       createdAt: '2020-04-20T14:26:53.693Z',
       updatedAt: '2020-04-20T14:26:53.693Z',
+      dtfechamento: null,
     },
   ],
 };
@@ -71,6 +73,8 @@ const evolucaoRequestValida = {
       dataHoraAtualizacao: '18/04/2020 12:53',
       local: 'Isolamento domiciliar',
       situacao: 'Suspeito',
+      createdAt: '18/04/2020 12:53',
+      dtfechamento: null,
     },
   ],
 };

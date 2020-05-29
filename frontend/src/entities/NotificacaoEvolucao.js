@@ -45,7 +45,7 @@ export default class NotificacaoEvolucao {
     this.id = data.id || null;
     this.notificacaoId = data.notificacaoId || '';
     this.dataHoraAtualizacao = data.dtEvolucao || '';
-    this.createdAt = data.createdAt || '';
+    this.createdAt = data.createdAt || null;
     this.dtfechamento = data.dtfechamento || null;
     this.local = data.tpLocal || '';
     this.situacao = data.tpEvolucao || '';
