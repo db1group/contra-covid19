@@ -16,11 +16,11 @@ module.exports = {
       },
     };
   },
-  mapearParaResponse: (notificacao, notificacaoCovid19) => {
-    let notificacaoDataValues = { ...notificacao };
+  mapearParaResponse: (notificacao, notificacaoCovid19, possuiFechamento = false) => {
+    let notificacaoDataValues = { ...notificacao, possuiFechamento };
     let notificacaoCovid19DataValues = { ...notificacaoCovid19 };
     if (notificacao.dataValues) {
-      notificacaoDataValues = { ...notificacao.dataValues };
+      notificacaoDataValues = { ...notificacao.dataValues, possuiFechamento };
     }
     if (notificacaoCovid19.dataValues) {
       notificacaoCovid19DataValues = { ...notificacaoCovid19.dataValues };

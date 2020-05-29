@@ -31,6 +31,7 @@ export default {
     return inputedDateTime;
   },
   formatDateTypeToStringTypeWithMinutes(date) {
+    if (!date) return null;
     return moment(date).format('DD/MM/YYYY HH:mm');
   },
   formatDateTypeToString(date) {

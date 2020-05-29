@@ -24,6 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     tpEvolucao: DataTypes.ENUM('SUSPEITO', 'CONFIRMADO', 'DESCARTADO', 'CURA', 'ENCERRADO', 'OBITO'),
     tpLocal: DataTypes.ENUM('Alta com isolamento domiciliar', 'Hospitalizado – Leito comum', 'Hospitalizado - Leito UTI'),
+    dtfechamento: {
+      type: DataTypes.DATE,
+    },
   }, {});
   NotificacaoEvolucao.associate = (models) => {
     NotificacaoEvolucao.belongsTo(models.Notificacao, { foreignKey: 'notificacaoId' });

@@ -63,7 +63,7 @@
             </template>
             <template v-slot:item.actions="{ item }">
               <v-row justify="end" align="center" dense>
-                <v-col v-if="evolucoes.length > 1 && item.id === evolucoes[evolucoes.length - 1].id">
+                <v-col v-if="canDelete(item)">
                   <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
                 </v-col>
               </v-row>
@@ -90,7 +90,9 @@ export default {
   data: () => ({
     selected: [],
     headers: [
+      { text: 'Data de criação', value: 'createdAt' },
       { text: 'Data da atualização', value: 'dataHoraAtualizacao' },
+      { text: 'Data de fechamento', value: 'dtfechamento' },
       { text: 'Local', value: 'local' },
       { text: 'Situação', value: 'situacao' },
       { sortable: false, value: 'actions', width: '140px' },
@@ -118,6 +120,12 @@ export default {
           const { data } = error.response;
           this.$emit('erro:deleteEvolucao', data.error);
         });
+    },
+    canDelete(item) {
+      const evolutionSize = this.evolucoes.length;
+      const notFirstItem = evolutionSize > 1 && item.id === this.evolucoes[evolutionSize - 1].id;
+      const notClosed = item.dtfechamento === null;
+      return notClosed && notFirstItem;
     },
   },
   computed: {
