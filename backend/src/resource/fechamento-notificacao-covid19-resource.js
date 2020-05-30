@@ -120,7 +120,7 @@ const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
   }
 
   return models.FechamentoNotificacaoCovid19.findAndCountAll({
-    order: [['createdAt', 'DESC']],
+    order: [['dataFechamento', 'DESC']],
     limit,
     offset,
   });
