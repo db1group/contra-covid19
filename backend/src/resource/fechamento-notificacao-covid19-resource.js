@@ -58,8 +58,10 @@ const getDadosFechamento = async (dataFechamento) => {
   });
 
   let [boletim] = await models.sequelize.query(
-    'SELECT * FROM vwfechamento WHERE aprovado = false',
-    { type: Sequelize.QueryTypes.SELECT },
+    'SELECT * FROM vwfechamento WHERE aprovado = false and dtaprovacao = :dataFormatada', {
+      replacements: { dataFormatada },
+      type: Sequelize.QueryTypes.SELECT,
+    },
   );
 
   if (boletim === undefined) {
@@ -110,7 +112,7 @@ const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
         },
       },
       {
-        order: [['createdAt', 'DESC']],
+        order: [['dataFechamento', 'DESC']],
         limit,
         offset,
       },
@@ -205,9 +207,7 @@ const realizarProximoFechamento = async () => {
 
 exports.consultarPaginado = async (req, res, next) => {
   try {
-    const { dataFechamento = null } = req.query;
-    const { page = 1 } = req.query;
-    const limit = 10;
+    const { dataFechamento = null, page = 1, itemsPerPage: limit = 10 } = req.query;
 
     const fechamentos = await consultarFechamentosPaginado(page, limit, dataFechamento);
     return res.json({ count: fechamentos.count, data: fechamentos });
