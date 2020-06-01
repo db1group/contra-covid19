@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
     qtConfirmadoIsolamento: DataTypes.INTEGER,
     qtRecuperado: DataTypes.INTEGER,
     qtObito: DataTypes.INTEGER,
+    qtDescartado: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   }, {});
   FatoNotificacaoCovid19.associate = (models) => {
     FatoNotificacaoCovid19.belongsTo(models.DmPaciente, { foreignKey: 'dmPacienteId' });
