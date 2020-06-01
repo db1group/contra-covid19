@@ -17,3 +17,5 @@ begin
 	where "createdAt" between cast((dtDiaFato::date - 1) || ' 13:00:00' as timestamptz)  and cast(dtDiaFato::date || ' 12:59:59' as timestamptz);
 end; $function$
 ;
+
+UPDATE FechamentoNotificacaoCovid19 set status = 'FECHADO' where status is null;
