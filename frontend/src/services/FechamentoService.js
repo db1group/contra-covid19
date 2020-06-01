@@ -26,7 +26,10 @@ export default {
       .get(url)
       .then(({ data }) => data);
   },
-  postProximoFechamento() {
-    return http.post('/fechamento-notificacao-covid19/proximo-fechamento');
+  postProximoFechamento(fechamento) {
+    return http.post('/fechamento-notificacao-covid19/proximo-fechamento', fechamento);
+  },
+  reabrirFechamento(id) {
+    return http.put(`/fechamento-notificacao-covid19/${id}`);
   },
 };

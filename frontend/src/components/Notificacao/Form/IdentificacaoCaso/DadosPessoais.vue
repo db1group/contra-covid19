@@ -330,7 +330,7 @@ export default {
     },
   },
   watch: {
-    'suspeito.tipoClassificacaoPessoa': function (novoValor) {
+    'suspeito.tipoClassificacaoPessoa': function classificacaoPessoa(novoValor) {
       this.updateTipoClassificacaoPessoa(novoValor);
     },
   },

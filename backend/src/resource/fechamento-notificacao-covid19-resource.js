@@ -6,6 +6,8 @@ const { RegraNegocioErro } = require('../lib/erros');
 
 const { Op } = Sequelize;
 
+const MASCARA_DATA = 'YYYY-MM-DD';
+
 const getDataUltimoFechamento = async () => {
   const queryResult = await models.FechamentoNotificacaoCovid19
     .findOne({
@@ -51,12 +53,8 @@ const getProximaDataFechamento = async () => {
   return moment(dataFechamento);
 };
 
-const getDadosFechamento = async (dataFechamento) => {
-  const dataFormatada = moment(dataFechamento).format('YYYY-MM-DD');
-  await models.sequelize.query('select public.definirfatodia(:dataFormatada);', {
-    replacements: { dataFormatada },
-  });
-
+const gerarBoletim = async (dataFechamento) => {
+  const dataFormatada = moment(dataFechamento).format(MASCARA_DATA);
   let [boletim] = await models.sequelize.query(
     'SELECT * FROM vwfechamento WHERE aprovado = false and dtaprovacao = :dataFormatada', {
       replacements: { dataFormatada },
@@ -64,7 +62,18 @@ const getDadosFechamento = async (dataFechamento) => {
     },
   );
 
-  if (boletim === undefined) {
+  if (boletim) return boletim;
+
+  const [boletimAnterior] = await models.sequelize.query(
+    'select * from vwfechamento WHERE aprovado = true and dtaprovacao < :dataFormatada order by dtaprovacao desc limit 1', {
+      replacements: { dataFormatada },
+      type: Sequelize.QueryTypes.SELECT,
+    },
+  );
+
+  if (boletimAnterior) {
+    boletim = { ...boletimAnterior, dtaprovacao: dataFormatada };
+  } else {
     boletim = {
       dtaprovacao: dataFormatada,
       qtnotificado: 0,
@@ -76,6 +85,17 @@ const getDadosFechamento = async (dataFechamento) => {
       qtconfirmadoisolamento: 0,
     };
   }
+
+  return boletim;
+};
+
+const getDadosFechamento = async (dataFechamento) => {
+  const dataFormatada = moment(dataFechamento).format(MASCARA_DATA);
+  await models.sequelize.query('select public.definirfatodia(:dataFormatada);', {
+    replacements: { dataFormatada },
+  });
+
+  const boletim = await gerarBoletim(dataFormatada);
 
   if (moment(boletim.dtaprovacao).startOf('day').toDate() > moment().startOf('day').toDate()) {
     throw new RegraNegocioErro('Não é possível realizar fechamentos futuros.');
@@ -90,6 +110,7 @@ const getDadosFechamento = async (dataFechamento) => {
     curados: parseInt(boletim.qtconfirmadoencerrado, 0),
     obitos: parseInt(boletim.qtobito, 0),
     emIsolamentoDomiciliar: parseInt(boletim.qtconfirmadoisolamento, 0),
+    status: 'FECHADO',
   };
 };
 
@@ -194,13 +215,15 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
   return evolucoes;
 };
 
-const realizarProximoFechamento = async () => {
-  const dataFechamento = await getProximaDataFechamento();
+const realizarFechamento = async (id = null, dataFechamento) => {
   const dadosFechamento = await getDadosFechamento(dataFechamento);
-  const dataFormatada = moment(dadosFechamento.dataFechamento).format('YYYY-MM-DD');
+  const dataFormatada = moment(dadosFechamento.dataFechamento).format(MASCARA_DATA);
   await models.sequelize.query('select public.realizarfechamento(:dataFormatada);', {
     replacements: { dataFormatada },
   });
+  if (id) {
+    return repos.fechamentoNotificacaoCovid19Repository.atualizar(id, dadosFechamento);
+  }
   return repos
     .fechamentoNotificacaoCovid19Repository.cadastrar(dadosFechamento);
 };
@@ -228,7 +251,8 @@ exports.consultarProximoDiaFechamento = async (req, res, next) => {
 
 exports.cadastrarProximoFechamento = async (req, res, next) => {
   try {
-    const fechamento = await realizarProximoFechamento();
+    const { id, dataFechamento } = req.body;
+    const fechamento = await realizarFechamento(id, dataFechamento);
     return res.json({ data: fechamento });
   } catch (err) {
     return next(err);
@@ -243,6 +267,23 @@ exports.getDetalheProximoFechamento = async (req, res, next) => {
       dataFechamento, page, limit,
     );
     return res.json({ data: detalheFechamento });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.reabrirFechamento = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const fechamento = await models.FechamentoNotificacaoCovid19.findOne({ where: { id } });
+    if (!fechamento) return res.status(404).json({ error: 'Fechamento não encontrado!' });
+    fechamento.status = 'REABERTO';
+    await fechamento.save();
+    const dataFormatada = moment(fechamento.dataFechamento).format(MASCARA_DATA);
+    await models.sequelize.query('select public.reabrirfechamento(:dataFormatada);', {
+      replacements: { dataFormatada },
+    });
+    return res.send();
   } catch (err) {
     return next(err);
   }
