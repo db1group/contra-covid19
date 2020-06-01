@@ -210,6 +210,7 @@ export default {
         .finally(() => { this.loading = false; });
     },
     podeReabrirFechamento(item) {
+      if (this.options.page > 1) return false;
       const [primeiroFechado] = this.fechamentos.filter((i) => i.status === 'FECHADO');
       return item === primeiroFechado;
     },

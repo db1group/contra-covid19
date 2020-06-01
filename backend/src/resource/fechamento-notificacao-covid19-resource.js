@@ -275,10 +275,13 @@ exports.getDetalheProximoFechamento = async (req, res, next) => {
 exports.reabrirFechamento = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const fechamento = await models.FechamentoNotificacaoCovid19.findOne({ where: { id } });
+    const [fechamento] = await models.sequelize.query('select * from public.podereabrirfechamento(:id)', {
+      replacements: { id },
+      type: Sequelize.QueryTypes.SELECT,
+    });
+
     if (!fechamento) return res.status(404).json({ error: 'Fechamento não encontrado!' });
-    fechamento.status = 'REABERTO';
-    await fechamento.save();
+    await repos.fechamentoNotificacaoCovid19Repository.atualizar(id, { status: 'REABERTO' });
     const dataFormatada = moment(fechamento.dataFechamento).format(MASCARA_DATA);
     await models.sequelize.query('select public.reabrirfechamento(:dataFormatada);', {
       replacements: { dataFormatada },
