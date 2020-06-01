@@ -9,5 +9,6 @@ router.get(`${prefixoRoute}/proximo-fechamento/detalhe`, FechamentoNotificacaoCo
 router.get(`${prefixoRoute}/proximo-fechamento`, FechamentoNotificacaoCovid19Resource.consultarProximoDiaFechamento);
 router.post(`${prefixoRoute}/proximo-fechamento`, FechamentoNotificacaoCovid19Resource.cadastrarProximoFechamento);
 router.get(`${prefixoRoute}`, FechamentoNotificacaoCovid19Resource.consultarPaginado);
+router.put(`${prefixoRoute}/:id`, FechamentoNotificacaoCovid19Resource.reabrirFechamento);
 
 module.exports = router;
