@@ -218,14 +218,17 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
 const realizarFechamento = async (id = null, dataFechamento) => {
   const dadosFechamento = await getDadosFechamento(dataFechamento);
   const dataFormatada = moment(dadosFechamento.dataFechamento).format(MASCARA_DATA);
-  await models.sequelize.query('select public.realizarfechamento(:dataFormatada);', {
-    replacements: { dataFormatada },
+  models.sequelize.transaction(async (t) => {
+    await models.sequelize.query('select public.realizarfechamento(:dataFormatada);', {
+      replacements: { dataFormatada },
+      transaction: t,
+    });
+    if (id) {
+      return repos.fechamentoNotificacaoCovid19Repository.atualizar(id, dadosFechamento, t);
+    }
+    return repos
+      .fechamentoNotificacaoCovid19Repository.cadastrar(dadosFechamento, t);
   });
-  if (id) {
-    return repos.fechamentoNotificacaoCovid19Repository.atualizar(id, dadosFechamento);
-  }
-  return repos
-    .fechamentoNotificacaoCovid19Repository.cadastrar(dadosFechamento);
 };
 
 exports.consultarPaginado = async (req, res, next) => {
@@ -281,10 +284,13 @@ exports.reabrirFechamento = async (req, res, next) => {
     });
 
     if (!fechamento) return res.status(404).json({ error: 'Fechamento não encontrado!' });
-    await repos.fechamentoNotificacaoCovid19Repository.atualizar(id, { status: 'REABERTO' });
-    const dataFormatada = moment(fechamento.dataFechamento).format(MASCARA_DATA);
-    await models.sequelize.query('select public.reabrirfechamento(:dataFormatada);', {
-      replacements: { dataFormatada },
+    models.sequelize.transaction(async (t) => {
+      await repos.fechamentoNotificacaoCovid19Repository.delete(id, t);
+      const dataFormatada = moment(fechamento.dataFechamento).format(MASCARA_DATA);
+      await models.sequelize.query('select public.reabrirfechamento(:dataFormatada);', {
+        replacements: { dataFormatada },
+        transaction: t,
+      });
     });
     return res.send();
   } catch (err) {
