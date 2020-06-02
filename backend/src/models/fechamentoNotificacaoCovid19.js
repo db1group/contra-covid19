@@ -43,4 +43,8 @@ module.exports = (sequelize, DataTypes) => sequelize.define('FechamentoNotificac
     type: DataTypes.ENUM('ABERTO', 'REABERTO', 'FECHADO'),
     defaultValue: 'FECHADO',
   },
+  descartados: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
 });

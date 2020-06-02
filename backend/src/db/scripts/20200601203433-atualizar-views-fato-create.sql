@@ -544,7 +544,7 @@ AS SELECT v.dtaprovacao,
     COALESCE(o.qtconfirmado, 0::bigint) AS qtconfirmado,
     COALESCE(o.qtconfirmadoencerrado, 0::bigint) AS qtconfirmadoencerrado,
     COALESCE(o.qtobito, 0::bigint) AS qtobito,
-    COALESCE((o.qtnotificado - o.qtencerrado - o.qtconfirmadoencerrado - o.qtobito)::numeric, 0::numeric) AS qtacompanhamento,
+    COALESCE((o.qtnotificado - o.qtencerrado - o.qtdescartado - o.qtconfirmadoencerrado - o.qtobito)::numeric, 0::numeric) AS qtacompanhamento,
     COALESCE(o.qtconfirmadoisolamento, 0::bigint) AS qtconfirmadoisolamento,
 	COALESCE(o.qtdescartado, 0::numeric) AS qtdescartado
    FROM vwaprovacoes v,
