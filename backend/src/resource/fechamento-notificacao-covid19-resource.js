@@ -83,6 +83,7 @@ const gerarBoletim = async (dataFechamento) => {
       qtconfirmadoencerrado: 0,
       qtobito: 0,
       qtconfirmadoisolamento: 0,
+      qtdescartado: 0,
     };
   }
 
@@ -111,6 +112,7 @@ const getDadosFechamento = async (dataFechamento) => {
     obitos: parseInt(boletim.qtobito, 0),
     emIsolamentoDomiciliar: parseInt(boletim.qtconfirmadoisolamento, 0),
     status: 'FECHADO',
+    descartados: parseInt(boletim.qtdescartado, 0),
   };
 };
 
