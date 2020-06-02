@@ -7,3 +7,20 @@ exports.atualizar = async (notificacaoCovid19) => {
     { where: { notificacaoId } },
   );
 };
+
+exports.atualizarTpTransmissaoApiSecretaria = async (
+  notificacaoCovid19Id,
+  apiSecretariaId, tpTransmissaoApiSecretaria) => {
+  models.NotificacaoCovid19.update(
+    {
+      tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria,
+      apiSecretariaId: apiSecretariaId
+    },
+    {
+      where:
+      {
+        id: notificacaoCovid19Id
+      }
+    },
+  );
+}

@@ -31,7 +31,8 @@ router.get(`${prefixoRoute}/:id/evolucoes`, keycloack.protect(isRealmSecretariaS
 router.post(`${prefixoRoute}/:id/evolucoes`, keycloack.protect(isRealmSecretariaSaude), NotificacaoEvolucaoResource.cadastrar);
 router.delete(`${prefixoRoute}/:notificacaoId/evolucoes/:id`, keycloack.protect(isRealmSecretariaSaude), NotificacaoEvolucaoResource.deletar);
 
-router.post(`${prefixoRoute}/:id/enviar-secretaria-saude`,
-  NotificacaoSecretariaSaudeResource.enviarNotificacao);
+router.get(`/notificacoes-secretaria/pendentesEnvio`, NotificacaoSecretariaSaudeResource.getPendentesEnvio);
+router.post(`/notificacoes-secretaria/:id/enviar`, NotificacaoSecretariaSaudeResource.enviarNotificacao);
+router.post(`/notificacoes-secretaria/enviar`, NotificacaoSecretariaSaudeResource.enviarNotificacoes);
 
 module.exports = router;
