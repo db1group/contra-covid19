@@ -1,7 +1,7 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.addColumn('FatoNotificacaoCovid19', 'qtDescartado', {
+  up: (queryInterface, Sequelize) => queryInterface.addColumn('FatoNotificacaoCovid19', 'qtdescartado', {
     type: Sequelize.INTEGER,
     defaultValue: 0,
   }),
-  down: (queryInterface) => queryInterface.removeColumn('FechamentoNotificacaoCovid19', 'qtDescartado'),
+  down: (queryInterface) => queryInterface.removeColumn('FechamentoNotificacaoCovid19', 'qtdescartado'),
 };

@@ -18,8 +18,6 @@ begin
 end; $function$
 ;
 
-UPDATE "FechamentoNotificacaoCovid19" set status = 'FECHADO' where status = 'ABERTO';
-
 drop function IF EXISTS public.podereabrirfechamento;
 
 CREATE OR REPLACE FUNCTION public.podereabrirfechamento(idfechamento uuid)
