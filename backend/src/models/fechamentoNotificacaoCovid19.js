@@ -41,6 +41,6 @@ module.exports = (sequelize, DataTypes) => sequelize.define('FechamentoNotificac
   },
   status: {
     type: DataTypes.ENUM('ABERTO', 'REABERTO', 'FECHADO'),
-    defaultValue: 'ABERTO',
+    defaultValue: 'FECHADO',
   },
 });
