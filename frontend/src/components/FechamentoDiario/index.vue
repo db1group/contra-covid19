@@ -122,6 +122,7 @@ export default {
       { text: 'Notificados', value: 'casosNotificados', sortable: false },
       { text: 'Acompanhados', value: 'acompanhados', sortable: false },
       { text: 'Encerrados', value: 'casosEncerrados', sortable: false },
+      { text: 'Descartados', value: 'descartados', sortable: false },
       { text: 'Confirmados', value: 'confirmados', sortable: false },
       { text: 'Curados', value: 'curados', sortable: false },
       { text: 'Óbitos', value: 'obitos', sortable: false },
