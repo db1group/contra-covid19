@@ -12,7 +12,6 @@ const moment = require('moment');
 class EnviarNotificacaoRequest {
 
     constructor(notificacao) {
-        this.id_externa = 2;
         this.possui_cpf = this.getPossuiCpf(notificacao);
         this.data_notificacao = moment(notificacao.NotificacaoCovid19.dataHoraNotificacao)
             .format('YYYY-MM-DD');
@@ -26,8 +25,9 @@ class EnviarNotificacaoRequest {
         this.cnes_unidade_notifica = notificacao.UnidadeSaude.cnes;
         this.nome_notificador = notificacao.nomeNotificador;
         this.raca_cor = this.getRacaCor(notificacao);
-        this.assintomatico = this.getAssintomatico(notificacao);
-        this.data_1o_sintomas = notificacao.NotificacaoCovid19.dataInicioDosSintomas || '';
+        this.assintomatico = notificacao.NotificacaoCovid19.dataInicioDosSintomas ?
+            dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao
+        this.data_1o_sintomas = notificacao.NotificacaoCovid19.dataInicioDosSintomas || null;
         this.pais_residencia = 'Brasil';
         this.pais_municipio_residencia = '';
         this.preencherEndereco(notificacao);
@@ -259,7 +259,8 @@ class EnviarNotificacaoRequest {
     }
 
     getPossuiCpf(notificacao) {
-        if (notificacao.Pessoa.tipoDocumento !== tipoDocumentoEnum.values.CPF)
+        if (notificacao.Pessoa.tipoDocumento
+            !== tipoDocumentoEnum.values.CPF)
             return dicionarioValores.possuiCpf.NaoInformado;
 
         if (!notificacao.Pessoa.numeroDocumento)
@@ -269,7 +270,9 @@ class EnviarNotificacaoRequest {
     }
 
     getAssintomatico(notificacao) {
-        return notificacao.NotificacaoCovid19.sintomatico ? '2' : '1';
+        return notificacao.NotificacaoCovid19.sintomatico
+            ? dicionarioValores.boleano.Nao
+            : dicionarioValores.boleano.Sim;
     }
 
     getRacaCor(notificacao) {

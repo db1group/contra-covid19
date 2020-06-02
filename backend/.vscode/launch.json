@@ -12,7 +12,9 @@
             "program": "${workspaceFolder}/src/server.js",
             // "program": "${workspaceFolder}/node_modules/nodemon/bin/nodemon.js",
             "env": {
-                "NODE_ENV": "development"
+                "NODE_ENV": "qa",
+                "SECRETARIA_SAUDE_API_URL": "https://ncv19.apisesa.pr.gov.br",
+                "SECRETARIA_SAUDE_API_TOKEN": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE1ODk5ODM2NjgsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6ImFsZXhhbmRyZS5hbmRyYWRlQGRiMS5jb20uYnIifQ.iFobVM-S-Vr15o-gshAxH6KKO56FtHeEUyA6P9UgR_zz7AMgAaZ7gkDo9TUTteV5_iRALDKacl6jwZz7COej4MUNwTwqkO5E9vejE4-ilzgRQ2SM_xgv5b4a-wiDKexK3azeiUOOA-q216Ilqnd61JdSZb29G1wb9n1iMegVv9a6PMelxYPVopDdPzLOGBsyfc7VH4aqYPnbfbfTqvJ1at2i108KipqSOe4O5mPiq8qFwTtM96wkZhy8iShi2Bhj248fV6ExZxYzI-XOsSRG1fO9OsH0SVYCJikgdx4-2x6k9nX9AV7Sfl3N0NaUA7mQ5Fw7QKmVzndq6gZjRxn65itFqC9dbaYa1vQeGvEj5HiIBhbdTxSbDksZdPRMo9TuDpNmhHtnPpdBVHX-U6YlxfnwZwEOaO_SBWKHPwPAmwLqAYmhFCJiWDbNpB_LymiPW9wVJtoMYRhP3FI8qpynrXwM_j6ueOE3nt8HKY7kqdUzco_4SdO5uzHHqCmqASeJFY9JDWdfhwNNAI1fAKz7A_VPcTV-3IJbD3GB5O4NzBINFH1-E9IjP8s49FPxb1EkmnsVLEJXGJyEIjeEUDrUsZXrjVIeNBh_Ee3Rjh4H6XuHQXpL5tpgqlIa0WBYlftqnUJ01755rhE78_3aDLj1SnD8IvGiPCCRAJkhXnqO90g",
             },
             "runtimeArgs": [
                 "${workspaceFolder}/node_modules/nodemon/bin/nodemon"

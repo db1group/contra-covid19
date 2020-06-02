@@ -4,7 +4,6 @@ const pessoaRepository = require('./pessoa-repository');
 const unidadeSaudeRepository = require('./unidade-saude-repository');
 const fechamentoNotificacaoCovid19Repository = require('./fechamento-notificacao-covid19-repository');
 const usuarioRepository = require('./usuario-repository');
-const envioSecretariaRepository = require('./envio-secretaria-repository');
 
 class Repository {
   constructor() {
@@ -15,7 +14,6 @@ class Repository {
     repos.unidadeSaudeRepository = unidadeSaudeRepository;
     repos.fechamentoNotificacaoCovid19Repository = fechamentoNotificacaoCovid19Repository;
     repos.usuarioRepository = usuarioRepository;
-    repos.envioSecretariaRepository = envioSecretariaRepository;
   }
 }
 
