@@ -426,7 +426,7 @@ exports.consultarPorId = async (req, res, next) => {
     if (!user) throw new RegraNegocioErro('Usuário não encontrado.');
 
     const usuarioLogado = new UsuarioLogado(req);
-    if (!usuarioLogado.isRoleSecretariaSaude()) {
+    if (!usuarioLogado.isRoleSecretariaSaude() && !usuarioLogado.isRoleVisualizaNotificacoes()) {
       const msgErro = 'Você não possui autorização para visualizar esta notificação.';
 
       const unidadesSaudeUser = await repos.unidadeSaudeRepository

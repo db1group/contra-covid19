@@ -11,6 +11,10 @@ class UsuarioLogado {
   isRoleSecretariaSaude() {
     return this.roles.some((data) => data === rolesAuth.values.SecretariaSaude);
   }
+
+  isRoleVisualizaNotificacoes() {
+    return this.roles.some((data) => data === rolesAuth.values.VisualizaNotificacoes);
+  }
 }
 
 module.exports.UsuarioLogado = UsuarioLogado;
