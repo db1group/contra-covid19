@@ -43,7 +43,7 @@ module.exports = {
     return Promise.all[municipios.map(([ibge, nome]) => {
       const nomeNormalizado = normalizarTexto(nome).replace('\'', ' ');
       return query(queryInterface,
-        `UPDATE "Municipio" SET "residenciaIBGE" = '${ibge}' WHERE nome = '${nomeNormalizado}';`,
+        `UPDATE "Municipio" SET "residenciaIBGE" = '${ibge}' WHERE nome LIKE '${nomeNormalizado}%';`,
         t);
     })];
   }),
