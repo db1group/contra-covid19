@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     nome: DataTypes.STRING,
-    uf: DataTypes.STRING,
+    uf: DataTypes.STRING(2),
+    ufIBGE: DataTypes.STRING(7),
   });
   Municipio.associate = (models) => {
     Municipio.hasMany(models.Bairro, { foreignKey: 'municipioId' });
