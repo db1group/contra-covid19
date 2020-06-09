@@ -4,6 +4,7 @@ import Home from '../views/Home.vue';
 import NotificacaoForm from '../views/NotificacaoForm.vue';
 import NotificacaoCons from '../views/NotificacaoCons.vue';
 import FechamentoDiario from '../views/FechamentoDiario.vue';
+import EnvioSecretaria from '../views/EnvioSecretaria.vue';
 import EvolucaoForm from '../views/EvolucaoForm.vue';
 import NotificacaoExportar from '../views/NotificacaoExportar.vue';
 
@@ -49,6 +50,11 @@ const routes = [
     path: '/fechamento',
     name: 'fechamento-diario',
     component: FechamentoDiario,
+  },
+  {
+    path: '/envio-secretaria',
+    name: 'envio-secretaria',
+    component: EnvioSecretaria,
   },
 ];
 
