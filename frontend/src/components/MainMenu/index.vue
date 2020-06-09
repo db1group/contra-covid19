@@ -36,6 +36,18 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item
+        v-if="isSecretariaSaude"
+        value="unidades-saude-cons"
+        @click="onClick('unidades-saude-cons')"
+      >
+        <v-list-item-icon>
+          <v-icon>mdi-stethoscope</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Undades de Saúde</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         v-if="isUserFechamento"
         value="fechamento-diario"
         @click="onClick('fechamento-diario')"
