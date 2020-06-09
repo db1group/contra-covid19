@@ -21,3 +21,17 @@ exports.enviarNotificacao = async (request) => {
 
     return responseData;
 }
+
+exports.atualizarNotificacao = async (request) => {
+    const data = JSON.stringify(request);
+
+    const responseData = axiosInstance.put(`v1/notificacao/${request.id}`, data)
+        .then((response) => {
+            return response.data;
+        })
+        .catch((error) => {
+            return error.response;
+        });
+
+    return responseData;
+}
