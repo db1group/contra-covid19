@@ -20,8 +20,6 @@ class EnviarNotificacaoRequest {
         this.sexo = this.getSexo(notificacao);
         this.data_nascimento = notificacao.Pessoa.dataDeNascimento;
         this.nome_mae = notificacao.Pessoa.nomeDaMae;
-        this.uf_residencia = '41';
-        this.ibge_residencia = '410010';
         this.cnes_unidade_notifica = notificacao.UnidadeSaude.cnes;
         this.nome_notificador = notificacao.nomeNotificador;
         this.raca_cor = this.getRacaCor(notificacao);
@@ -39,13 +37,19 @@ class EnviarNotificacaoRequest {
         this.prencherViagem(notificacao);
         this.preencherContatoSuspeito(notificacao);
         this.preencherClassificacao(notificacao);
-        if (notificacao.Pessoa.tipoDocumento === tipoDocumentoEnum.CPF) {
+        this.preencherResidencia(notificacao);
+        if (notificacao.Pessoa.tipoDocumento === tipoDocumentoEnum.values.CPF) {
             this.cpf = notificacao.Pessoa.numeroDocumento;
         }
 
         if (notificacao.Pessoa.telefoneContato) {
             this.telefone_paciente = notificacao.Pessoa.telefoneContato;
         }
+    }
+
+    preencherResidencia(notificacao) {
+        this.uf_residencia = notificacao.Pessoa.Municipio.ufIBGE | '41';
+        this.ibge_residencia = notificacao.Pessoa.Municipio.residenciaIBGE | '410010';
     }
 
     preencherClassificacao(notificacao) {

@@ -54,7 +54,14 @@ exports.enviarNotificacoes = async (req, res, next) => {
         for (var i = 0; i < notificacoes.length; i += 1) {
             let notificacao = notificacoes[i];
             let request = new EnviarNotificacaoRequest(notificacao);
-            let response = await secretariaApi.enviarNotificacao(request);
+            let response;
+
+            if (notificacao.NotificacaoCovid19.tpTransmissaoApiSecretaria === tpTransmissaoApiSecretaria.values.PendenteEnvio) {
+                response = await secretariaApi.enviarNotificacao(request);
+            } else {
+                request.id = notificacao.NotificacaoCovid19.apiSecretariaId;
+                response = await secretariaApi.atualizarNotificacao(request);
+            }
 
             if (response.success === 'true') {
                 await repos.notificacaoCovid19Repository.atualizarTpTransmissaoApiSecretaria(
