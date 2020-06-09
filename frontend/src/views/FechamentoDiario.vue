@@ -13,6 +13,8 @@
         @erro:consultarFechamentos="mostrarMensagemErro"
         @success:encerrarFechamento="mostrarMensagemSucesso"
         @toggleDetailModal="toggleDetailModal"
+        @erro:reabrirFechamento="mostrarMensagemErro"
+        @success:reabrirFechamento="mostrarMensagemReabrirFechamento"
       />
     </v-container>
     <v-snackbar v-model="showError" color="error" bottom>{{ this.mensagemErro }}</v-snackbar>
@@ -55,6 +57,10 @@ export default {
     mostrarMensagemSucesso(msg) {
       this.showSuccess = true;
       this.mensagemSucesso = msg || 'Fechamento encerrado com sucesso!';
+    },
+    mostrarMensagemReabrirFechamento(msg) {
+      this.showSuccess = true;
+      this.mensagemSucesso = msg || 'Fechamento reaberto com sucesso!';
     },
   },
   beforeRouteEnter(to, from, next) {

@@ -50,12 +50,22 @@
         <span>{{ getDateFormat(item.dataFechamento) }}</span>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-row justify="end" align="center" dense>
+        <v-row justify="start" align="center" dense>
           <v-col>
-            <span v-if="item.status === 'FECHADO'" class="primary--text">FECHADO</span>
-            <div v-else>
-              <v-btn small rounded dark color="primary" @click="encerrarFechamento">FECHAR</v-btn>
+            <div v-if="item.status === 'FECHADO'">
               <v-btn
+                v-if="podeReabrirFechamento(item)"
+                small
+                text
+                color="#4CAF50"
+                @click="reabrirFechamento(item)"
+              >ABRIR</v-btn>
+              <span v-else class="primary--text">FECHADO</span>
+            </div>
+            <div v-else>
+              <v-btn small rounded dark color="primary" @click="encerrarFechamento(item)">FECHAR</v-btn>
+              <v-btn
+                v-if="item.status === 'ABERTO'"
                 small
                 text
                 rounded
@@ -108,14 +118,20 @@ export default {
       sortDesc: 'true',
     },
     headers: [
-      { text: 'Data', value: 'dataFechamento' },
-      { text: 'Notificados', value: 'casosNotificados' },
-      { text: 'Acompanhados', value: 'acompanhados' },
-      { text: 'Encerrados', value: 'casosEncerrados' },
-      { text: 'Confirmados', value: 'confirmados' },
-      { text: 'Curados', value: 'curados' },
-      { text: 'Óbitos', value: 'obitos' },
-      { text: 'Situação', value: 'actions', aling: 'center' },
+      { text: 'Data', value: 'dataFechamento', sortable: false },
+      { text: 'Notificados', value: 'casosNotificados', sortable: false },
+      { text: 'Acompanhados', value: 'acompanhados', sortable: false },
+      { text: 'Encerrados', value: 'casosEncerrados', sortable: false },
+      { text: 'Descartados', value: 'descartados', sortable: false },
+      { text: 'Confirmados', value: 'confirmados', sortable: false },
+      { text: 'Curados', value: 'curados', sortable: false },
+      { text: 'Óbitos', value: 'obitos', sortable: false },
+      {
+        text: 'Situação',
+        value: 'actions',
+        aling: 'start',
+        sortable: false,
+      },
     ],
     fechamentos: [],
   }),
@@ -161,8 +177,8 @@ export default {
         this.$emit('erro:novoFechamento', data.error);
       });
     },
-    encerrarFechamento() {
-      FechamentoService.postProximoFechamento().then(() => {
+    encerrarFechamento(item) {
+      FechamentoService.postProximoFechamento(item).then(() => {
         this.consultarFechamentos();
         this.$emit('success:encerrarFechamento');
       }).catch((err) => {
@@ -193,6 +209,21 @@ export default {
           this.$emit('erro:consultarFechamentos', data.error);
         })
         .finally(() => { this.loading = false; });
+    },
+    podeReabrirFechamento(item) {
+      if (this.options.page > 1) return false;
+      const [primeiroFechado] = this.fechamentos.filter((i) => i.status === 'FECHADO');
+      return item === primeiroFechado;
+    },
+    reabrirFechamento({ id }) {
+      // this.fechamentos = this.fechamentos.map((f) => (f.id === item.id ? { ...item, status: 'ABERTO' } : f));
+      FechamentoService.reabrirFechamento(id).then(() => {
+        this.consultarFechamentos();
+        this.$emit('success:reabrirFechamento');
+      }).catch((err) => {
+        const { data } = err.response || {};
+        this.$emit('erro:reabrirFechamento', data.error);
+      });
     },
   },
   computed: {

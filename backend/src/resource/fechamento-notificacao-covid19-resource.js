@@ -6,6 +6,8 @@ const { RegraNegocioErro } = require('../lib/erros');
 
 const { Op } = Sequelize;
 
+const MASCARA_DATA = 'YYYY-MM-DD';
+
 const getDataUltimoFechamento = async () => {
   const queryResult = await models.FechamentoNotificacaoCovid19
     .findOne({
@@ -51,18 +53,27 @@ const getProximaDataFechamento = async () => {
   return moment(dataFechamento);
 };
 
-const getDadosFechamento = async (dataFechamento) => {
-  const dataFormatada = moment(dataFechamento).format('YYYY-MM-DD');
-  await models.sequelize.query('select public.definirfatodia(:dataFormatada);', {
-    replacements: { dataFormatada },
-  });
-
+const gerarBoletim = async (dataFechamento) => {
+  const dataFormatada = moment(dataFechamento).format(MASCARA_DATA);
   let [boletim] = await models.sequelize.query(
-    'SELECT * FROM vwfechamento WHERE aprovado = false',
-    { type: Sequelize.QueryTypes.SELECT },
+    'SELECT * FROM vwfechamento WHERE aprovado = false and dtaprovacao = :dataFormatada', {
+      replacements: { dataFormatada },
+      type: Sequelize.QueryTypes.SELECT,
+    },
   );
 
-  if (boletim === undefined) {
+  if (boletim) return boletim;
+
+  const [boletimAnterior] = await models.sequelize.query(
+    'select * from vwfechamento WHERE aprovado = true and dtaprovacao < :dataFormatada order by dtaprovacao desc limit 1', {
+      replacements: { dataFormatada },
+      type: Sequelize.QueryTypes.SELECT,
+    },
+  );
+
+  if (boletimAnterior) {
+    boletim = { ...boletimAnterior, dtaprovacao: dataFormatada };
+  } else {
     boletim = {
       dtaprovacao: dataFormatada,
       qtnotificado: 0,
@@ -72,8 +83,20 @@ const getDadosFechamento = async (dataFechamento) => {
       qtconfirmadoencerrado: 0,
       qtobito: 0,
       qtconfirmadoisolamento: 0,
+      qtdescartado: 0,
     };
   }
+
+  return boletim;
+};
+
+const getDadosFechamento = async (dataFechamento) => {
+  const dataFormatada = moment(dataFechamento).format(MASCARA_DATA);
+  await models.sequelize.query('select public.definirfatodia(:dataFormatada);', {
+    replacements: { dataFormatada },
+  });
+
+  const boletim = await gerarBoletim(dataFormatada);
 
   if (moment(boletim.dtaprovacao).startOf('day').toDate() > moment().startOf('day').toDate()) {
     throw new RegraNegocioErro('Não é possível realizar fechamentos futuros.');
@@ -88,6 +111,8 @@ const getDadosFechamento = async (dataFechamento) => {
     curados: parseInt(boletim.qtconfirmadoencerrado, 0),
     obitos: parseInt(boletim.qtobito, 0),
     emIsolamentoDomiciliar: parseInt(boletim.qtconfirmadoisolamento, 0),
+    status: 'FECHADO',
+    descartados: parseInt(boletim.qtdescartado, 0),
   };
 };
 
@@ -110,7 +135,7 @@ const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
         },
       },
       {
-        order: [['createdAt', 'DESC']],
+        order: [['dataFechamento', 'DESC']],
         limit,
         offset,
       },
@@ -118,7 +143,7 @@ const consultarFechamentosPaginado = async (page, limit, dataFechamento) => {
   }
 
   return models.FechamentoNotificacaoCovid19.findAndCountAll({
-    order: [['createdAt', 'DESC']],
+    order: [['dataFechamento', 'DESC']],
     limit,
     offset,
   });
@@ -192,22 +217,25 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
   return evolucoes;
 };
 
-const realizarProximoFechamento = async () => {
-  const dataFechamento = await getProximaDataFechamento();
+const realizarFechamento = async (id = null, dataFechamento) => {
   const dadosFechamento = await getDadosFechamento(dataFechamento);
-  const dataFormatada = moment(dadosFechamento.dataFechamento).format('YYYY-MM-DD');
-  await models.sequelize.query('select public.realizarfechamento(:dataFormatada);', {
-    replacements: { dataFormatada },
+  const dataFormatada = moment(dadosFechamento.dataFechamento).format(MASCARA_DATA);
+  models.sequelize.transaction(async (t) => {
+    await models.sequelize.query('select public.realizarfechamento(:dataFormatada);', {
+      replacements: { dataFormatada },
+      transaction: t,
+    });
+    if (id) {
+      return repos.fechamentoNotificacaoCovid19Repository.atualizar(id, dadosFechamento, t);
+    }
+    return repos
+      .fechamentoNotificacaoCovid19Repository.cadastrar(dadosFechamento, t);
   });
-  return repos
-    .fechamentoNotificacaoCovid19Repository.cadastrar(dadosFechamento);
 };
 
 exports.consultarPaginado = async (req, res, next) => {
   try {
-    const { dataFechamento = null } = req.query;
-    const { page = 1 } = req.query;
-    const limit = 10;
+    const { dataFechamento = null, page = 1, itemsPerPage: limit = 10 } = req.query;
 
     const fechamentos = await consultarFechamentosPaginado(page, limit, dataFechamento);
     return res.json({ count: fechamentos.count, data: fechamentos });
@@ -228,7 +256,8 @@ exports.consultarProximoDiaFechamento = async (req, res, next) => {
 
 exports.cadastrarProximoFechamento = async (req, res, next) => {
   try {
-    const fechamento = await realizarProximoFechamento();
+    const { id, dataFechamento } = req.body;
+    const fechamento = await realizarFechamento(id, dataFechamento);
     return res.json({ data: fechamento });
   } catch (err) {
     return next(err);
@@ -243,6 +272,29 @@ exports.getDetalheProximoFechamento = async (req, res, next) => {
       dataFechamento, page, limit,
     );
     return res.json({ data: detalheFechamento });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.reabrirFechamento = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const [fechamento] = await models.sequelize.query('select * from public.podereabrirfechamento(:id)', {
+      replacements: { id },
+      type: Sequelize.QueryTypes.SELECT,
+    });
+
+    if (!fechamento) return res.status(404).json({ error: 'Fechamento não encontrado!' });
+    models.sequelize.transaction(async (t) => {
+      await repos.fechamentoNotificacaoCovid19Repository.delete(id, t);
+      const dataFormatada = moment(fechamento.dataFechamento).format(MASCARA_DATA);
+      await models.sequelize.query('select public.reabrirfechamento(:dataFormatada);', {
+        replacements: { dataFormatada },
+        transaction: t,
+      });
+    });
+    return res.send();
   } catch (err) {
     return next(err);
   }

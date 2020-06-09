@@ -72,7 +72,9 @@
           @change="updateSexo"
           :rules="rules.sexo"
           row
-          :disabled="disabled"
+          persistent-hint
+          :hint="hintPossuiFechamento()"
+          :disabled="disabled || possuiFechamento"
         >
           <v-radio label="Masculino" value="M" />
           <v-radio label="Feminino" value="F" />
@@ -146,7 +148,9 @@
           :rules="rules.dataDeNascimento"
           validate-on-blur
           @input="updateDataDeNascimento"
-          :disabled="disabled"
+          :disabled="disabled || possuiFechamento"
+          persistent-hint
+          :hint="hintPossuiFechamento()"
         />
       </v-col>
       <v-spacer />
@@ -204,7 +208,10 @@ export default {
       type: Boolean,
       defaultValue: false,
     },
-
+    possuiFechamento: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
@@ -318,9 +325,12 @@ export default {
       }
       return required(value);
     },
+    hintPossuiFechamento() {
+      return this.possuiFechamento ? 'Não é possivel alterar pois já foi realizado o fechamento.' : '';
+    },
   },
   watch: {
-    'suspeito.tipoClassificacaoPessoa': function (novoValor) {
+    'suspeito.tipoClassificacaoPessoa': function classificacaoPessoa(novoValor) {
       this.updateTipoClassificacaoPessoa(novoValor);
     },
   },

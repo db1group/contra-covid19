@@ -139,6 +139,7 @@ export default {
     },
     unidadesSaudeUserLogged: [],
     isSecretariaSaude: false,
+    isVisualizarTodasNotificacaoes: false,
   }),
   methods: {
     consultarNotificacoes({
@@ -199,7 +200,9 @@ export default {
       return this.isSecretariaSaude;
     },
     isPermiteVisualizar(item) {
-      return this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude;
+      return this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId)
+        || this.isSecretariaSaude
+        || this.isVisualizarTodasNotificacaoes;
     },
     isPermiteEditar(item) {
       return item.status !== 'ENCERRADA'
@@ -228,6 +231,7 @@ export default {
   },
   created() {
     this.isSecretariaSaude = keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
+    this.isVisualizarTodasNotificacaoes = keycloak.realmAccess.roles.includes('VISUALIZA_NOTIFICACOES');
     this.consultarUnidadesSaudeUsuario();
   },
 };

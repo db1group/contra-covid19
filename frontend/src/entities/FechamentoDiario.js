@@ -14,5 +14,6 @@ export default class FechamentoDiario {
     this.createdAt = data.createdAt || '';
     this.updatedAt = data.updatedAt || '';
     this.status = data.status || 'FECHADO';
+    this.descartados = data.descartados || 0;
   }
 }

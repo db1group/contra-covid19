@@ -428,7 +428,7 @@ exports.consultarPorId = async (req, res, next) => {
     if (!user) throw new RegraNegocioErro('Usuário não encontrado.');
 
     const usuarioLogado = new UsuarioLogado(req);
-    if (!usuarioLogado.isRoleSecretariaSaude()) {
+    if (!usuarioLogado.isRoleSecretariaSaude() && !usuarioLogado.isRoleVisualizaNotificacoes()) {
       const msgErro = 'Você não possui autorização para visualizar esta notificação.';
 
       const unidadesSaudeUser = await repos.unidadeSaudeRepository
@@ -441,9 +441,12 @@ exports.consultarPorId = async (req, res, next) => {
       }
     }
 
+    const fechamentos = await repos.notificacaoRepository.getFechamentosPorNotificacaoId(id);
+    const possuiFechamento = fechamentos.length > 0;
     const retorno = Mappers.Notificacao.mapearParaResponse(
       notificacaoModel,
       notificacaoModel.NotificacaoCovid19,
+      possuiFechamento,
     );
 
     return res.json({ data: retorno });

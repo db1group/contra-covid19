@@ -25,6 +25,7 @@
         <identificacao-caso
           :data-hora-notificacao="notificacao.dataHoraNotificacao"
           :suspeito="notificacao.suspeito"
+          :possui-fechamento="notificacao.possuiFechamento"
           @update:dataHoraNotificacao="updateDataHoraNotificacao"
           @update:tipoDocumento="updateSuspeito('tipoDocumento', $event)"
           @update:numeroCpf="updateSuspeito('numeroCpf', $event)"
@@ -54,6 +55,7 @@
           :sintomatico="notificacao.sintomatico"
           :data-inicio-dos-sintomas="notificacao.dataInicioDosSintomas"
           :sintomas="notificacao.sintomas"
+          :possui-fechamento="notificacao.possuiFechamento"
           @update:sintomatico="updateSintomatico"
           @update:dataInicioDosSintomas="updateDataInicioDosSintomas"
           @update:febreAferidaReferida="updateSintoma('febreAferidaReferida', $event)"
@@ -111,7 +113,8 @@
         <comorbidades
           :comorbidades="notificacao.comorbidades"
           :feminino="notificacao.suspeito.sexo === 'F'"
-          :disabled="disableFields"
+          :disabled="disableComorbidades"
+          :possui-fechamento="notificacao.possuiFechamento"
           @update:puerperaAte45DiasDoParto="updateComorbidade('puerperaAte45DiasDoParto', $event)"
           @update:doencaNeurologicaCronica="updateComorbidade('doencaNeurologicaCronica', $event)"
           @update:sindromeDeDown="updateComorbidade('sindromeDeDown', $event)"
@@ -244,6 +247,10 @@ export default {
       }
     },
     disableFields() {
+      return this.stateForm === StateForm.VIEW;
+    },
+    disableComorbidades() {
+      if (this.notificacao.possuiFechamento) return true;
       return this.stateForm === StateForm.VIEW;
     },
   },

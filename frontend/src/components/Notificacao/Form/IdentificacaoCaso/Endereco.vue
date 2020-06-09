@@ -33,7 +33,9 @@
           :loading="municipios.loading"
           no-data-text="Município não encontrado"
           @input="updateMunicipioId"
-          :disabled="disabled"
+          :disabled="disabled || possuiFechamento"
+          persistent-hint
+          :hint="hintPossuiFechamento()"
         />
       </v-col>
       <v-col cols="12" sm="6">
@@ -49,6 +51,8 @@
           no-data-text="Bairro não encontrado"
           :disabled="disableBairro"
           @input="updateBairroId"
+          persistent-hint
+          :hint="hintPossuiFechamento()"
         />
       </v-col>
     </v-row>
@@ -96,6 +100,10 @@ export default {
       type: Boolean,
       defaultValue: false,
     },
+    possuiFechamento: {
+      type: Boolean,
+      defaultValue: false,
+    },
   },
   data: () => ({
     searchMunicipio: null,
@@ -125,6 +133,7 @@ export default {
   computed: {
     disableBairro() {
       if (this.disabled) return true;
+      if (this.possuiFechamento) return true;
       return !this.suspeito.municipioId;
     },
   },
@@ -200,6 +209,9 @@ export default {
       if (bairro.nome === 'GERAL') {
         this.rules.complemento.push(this.requiredBairroGeral);
       }
+    },
+    hintPossuiFechamento() {
+      return this.possuiFechamento ? 'Não é possivel alterar pois já foi realizado o fechamento.' : '';
     },
   },
   created() {

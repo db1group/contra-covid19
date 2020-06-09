@@ -64,6 +64,10 @@ module.exports.getPorId = async (id) => models.Notificacao.findOne({
   ],
 });
 
+module.exports.getFechamentosPorNotificacaoId = async (id) => models.NotificacaoEvolucao.findAll({
+  where: { notificacaoId: id, dtfechamento: { [Op.ne]: null } },
+});
+
 module.exports.getPorPessoaDocumento = async (where) => {
   const { tipoDocumento, numeroDocumento, status = 'ABERTA' } = where;
 

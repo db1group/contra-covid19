@@ -1,4 +1,8 @@
 const TIMEZONE_AMERICA_SAO_PAULO = 'America/Sao_Paulo';
+if (!process.env.DATABASE_URL) {
+  // eslint-disable-next-line global-require
+  require('dotenv').config();
+}
 
 module.exports = {
   development: {
