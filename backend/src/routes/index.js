@@ -18,6 +18,8 @@ module.exports = (app) => {
     });
   // Endpoint para o Docker/AWS
   app.use(require('./health'));
+  // Public routes
+  app.use('/public', require('./grafico-route'));
 
   return app;
 };
