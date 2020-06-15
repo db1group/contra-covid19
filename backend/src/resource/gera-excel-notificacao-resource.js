@@ -13,6 +13,7 @@ const PAIS = { BRASIL: 'Brasil' };
 const DIRETORIO = 'excel';
 
 exports.gerarExcel = async (req, res) => {
+  req.setTimeout(300000);
   try {
     const { dataInicial, dataFinal } = req.query;
 
@@ -43,9 +44,9 @@ exports.gerarExcel = async (req, res) => {
 
     console.info(`inicio escrever excel ${new Date()}`);
     wb.writeToBuffer().then((buffer) => {
-      res.write(buffer);
-      res.end();
       console.info(`fim escrever excel ${new Date()}`);
+      res.write(buffer);
+      return res.end();
     });
   } catch (err) {
     console.error(err);
