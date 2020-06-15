@@ -11,4 +11,4 @@ echo 'Starting seeders...'
 npx sequelize-cli db:seed:all
 
 echo 'Starting server...'
-node /app/src/server.js
+pm2 start -f /app/src/server.js -i max

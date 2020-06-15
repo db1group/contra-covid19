@@ -13,6 +13,7 @@
     "lint": "npx eslint src/**/*.js",
     "lintreport": "npx eslint src/**/*.js -f json -o __tests__/coverage/eslint-report.info",
     "dev": "cross-env NODE_ENV=development nodemon --inspect src/server.js | pino-pretty",
+    "pm2": "cross-env NODE_ENV=development pm2 start -f src/server.js -i max",
     "migrate": "cross-env NODE_ENV=development npx sequelize-cli db:migrate",
     "build": "cross-env NODE_ENV=prod node src/server.js"
   },
