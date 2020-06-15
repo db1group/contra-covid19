@@ -1,8 +1,16 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
 
-exports.consultarBoletimGrafico = async (req, res) => {
-  const { page = 1, limit = 5 } = req.query;
+exports.consultarBoletimGraficoUltimos30Dias = async (req, res) => {
+  const boletims = await models.sequelize.query('select * from public.vwboletimpopulacao where dtaprovacao >= (current_timestamp - interval \'30 days\')', {
+    type: Sequelize.QueryTypes.SELECT,
+  });
+
+  return res.json({ results: boletims });
+};
+
+exports.consultarBoletimGraficoPaginado = async (req, res) => {
+  const { page = 1, limit = 30 } = req.query;
   const offset = (+page - 1) * limit;
 
   const [{ total }] = await models.sequelize.query('select count(1) as total from public.vwboletimpopulacao', {
