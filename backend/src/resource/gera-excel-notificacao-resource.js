@@ -1,7 +1,5 @@
 const Sequelize = require('sequelize');
 const excel = require('excel4node');
-const uuid = require('uuid/v4');
-const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
 const models = require('../models');
@@ -31,11 +29,11 @@ exports.gerarExcel = async (req, res) => {
       fs.mkdirSync(DIRETORIO);
     }
 
-    const guid = uuid();
-    const nomeArquivo = `${DIRETORIO}/${guid}.xlsx`;
-    const fullPath = path.resolve(nomeArquivo);
-
-    const wb = new excel.Workbook();
+    const wb = new excel.Workbook({
+      jszip: {
+        compression: 'DEFLATE',
+      },
+    });
     const ws = wb.addWorksheet('Planilha1');
 
     this.setarColunas(ws);
@@ -44,8 +42,11 @@ exports.gerarExcel = async (req, res) => {
     console.info(`fim setarNotificacao ${new Date()}`);
 
     console.info(`inicio escrever excel ${new Date()}`);
-    wb.write(fullPath, res);
-    console.info(`fim escrever excel ${new Date()}`);
+    wb.writeToBuffer().then((buffer) => {
+      res.write(buffer);
+      res.end();
+      console.info(`fim escrever excel ${new Date()}`);
+    });
   } catch (err) {
     console.error(err);
     res.status(400).json({ error: err.message });
