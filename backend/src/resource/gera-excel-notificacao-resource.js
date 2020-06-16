@@ -480,7 +480,7 @@ this.consultarNotificacoes = async (dataInicial, dataFinal) => {
   LEFT JOIN "ProfissionalSaude" ON "Notificacao"."notificadorId" = "ProfissionalSaude"."id"
   LEFT JOIN "Profissao" ON "Notificacao"."profissaoId" = "Profissao"."id"
       WHERE "Notificacao"."status" != 'EXCLUIDA'
-        AND "NotificacaoCovid19"."dataHoraNotificacao" BETWEEN :dataInicial AND :dataFinal
+        AND "Notificacao"."createdAt" BETWEEN :dataInicial AND :dataFinal
    ORDER BY "Notificacao"."createdAt" DESC;`,
     {
       replacements: {
