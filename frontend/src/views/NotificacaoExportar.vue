@@ -16,11 +16,7 @@
           <!-- </v-form> -->
         </v-row>
       </v-container>
-      <v-snackbar
-        v-model="showError"
-        color="error"
-        bottom
-      >A data inicial não pode ser posterior à data final e no período de 7 dias.</v-snackbar>
+      <v-snackbar v-model="showError" color="error" bottom>{{errorMessage}}</v-snackbar>
     </base-page>
   </section>
 </template>
@@ -42,6 +38,7 @@ export default {
     exportar: new NotificacaoExportar(),
     showError: false,
     loading: false,
+    errorMessage: '',
   }),
   methods: {
     updateExportar(campo, valor) {
@@ -51,11 +48,16 @@ export default {
       if (this.$refs.form.validate()) {
         if (!this.validarPeriodo()) {
           this.showError = true;
+          this.errorMessage = 'A data inicial não pode ser posterior à data final e no período de 7 dias.';
           return;
         }
 
         this.loading = true;
         NotificacaoService.downloadNotificacoes(this.exportar.toRequestBody())
+          .catch(() => {
+            this.showError = true;
+            this.errorMessage = 'Não foi possível realizar o download. Tente novamente com um intervalo menor.';
+          })
           .finally(() => { this.loading = false; });
       }
     },
