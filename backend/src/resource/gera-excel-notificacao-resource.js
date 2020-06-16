@@ -40,7 +40,7 @@ exports.gerarExcel = async (req, res) => {
     console.info(`fim setarNotificacao ${new Date()}`);
 
     console.info(`inicio escrever excel ${new Date()}`);
-    await wb.xlsx.write(res);
+    await wb.xlsx.write(res, { useSharedStrings: true, useStyles: true });
   } catch (err) {
     console.error(err);
     res.status(400).json({ error: err.message });
