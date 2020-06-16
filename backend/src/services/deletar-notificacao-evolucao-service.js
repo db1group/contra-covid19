@@ -1,6 +1,9 @@
 const { RegraNegocioErro } = require('../lib/erros');
 const models = require('../models');
 const repos = require('../repositories/repository-factory');
+const dataEvolucaoNotificacaoEnum = require('../enums/data-evolucao-notificacao-enum');
+
+const getCampoDataEvolucao = (tpEvolucao) => dataEvolucaoNotificacaoEnum.values[tpEvolucao];
 
 exports.handle = async (notificacaoId, notificacaoEvolucaoId) => {
   const notificacao = await repos.notificacaoRepository.getEvolucoesPorNotificacaoId(notificacaoId);
@@ -20,10 +23,12 @@ exports.handle = async (notificacaoId, notificacaoEvolucaoId) => {
     throw new RegraNegocioErro('Somente é permitido remover a última ocorrência de evolução.');
   }
 
+  const dtTpEvolucao = getCampoDataEvolucao(ultimaEvolucao.tpEvolucao);
+
   await models.sequelize.transaction(async (transaction) => {
     await repos.notificacaoRepository.deletarEvolucaoPorId(notificacaoEvolucaoId, transaction);
     await models.Notificacao.update(
-      { status: 'ABERTA' },
+      { status: 'ABERTA', [dtTpEvolucao]: null },
       {
         where:
                 {

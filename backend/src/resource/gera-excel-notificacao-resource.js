@@ -1,5 +1,6 @@
+/* eslint-disable no-param-reassign */
 const Sequelize = require('sequelize');
-const excel = require('excel4node');
+const Excel = require('exceljs');
 const fs = require('fs');
 const moment = require('moment');
 const models = require('../models');
@@ -13,6 +14,7 @@ const PAIS = { BRASIL: 'Brasil' };
 const DIRETORIO = 'excel';
 
 exports.gerarExcel = async (req, res) => {
+  req.setTimeout(300000);
   try {
     const { dataInicial, dataFinal } = req.query;
 
@@ -29,11 +31,7 @@ exports.gerarExcel = async (req, res) => {
       fs.mkdirSync(DIRETORIO);
     }
 
-    const wb = new excel.Workbook({
-      jszip: {
-        compression: 'DEFLATE',
-      },
-    });
+    const wb = new Excel.Workbook();
     const ws = wb.addWorksheet('Planilha1');
 
     this.setarColunas(ws);
@@ -42,11 +40,7 @@ exports.gerarExcel = async (req, res) => {
     console.info(`fim setarNotificacao ${new Date()}`);
 
     console.info(`inicio escrever excel ${new Date()}`);
-    wb.writeToBuffer().then((buffer) => {
-      res.write(buffer);
-      res.end();
-      console.info(`fim escrever excel ${new Date()}`);
-    });
+    await wb.xlsx.write(res);
   } catch (err) {
     console.error(err);
     res.status(400).json({ error: err.message });
@@ -54,147 +48,116 @@ exports.gerarExcel = async (req, res) => {
 };
 
 this.setarNotificacao = (ws, notificacoes) => {
-  let linha = 2;
-  notificacoes.forEach((notificacao) => {
-    this.setarCelulaDataComHora(ws, linha, 1, notificacao.criacaodanotificacao);
-    this.setarCelulaDataSemHora(ws, linha, 2, notificacao.dataHoraNotificacao);
-    this.setarCelulaHoraDaData(ws, linha, 3, notificacao.dataHoraNotificacao);
-    this.setarCelula(ws, linha, 4, notificacao.usuarioDigitador);
-    this.setarCelula(ws, linha, 5, notificacao.statusnotificacao);
-    this.setarCelula(ws, linha, 6, notificacao.unidadeNotificante);
-    this.setarCelula(ws, linha, 7, notificacao.cnesDaUnidadeNotificante);
-    this.setarCelula(ws, linha, 8, notificacao.nomedonotificador);
-    this.setarCelulaProfissaoDoNotificador(ws, linha, 9, notificacao);
-    this.setarCelulaBooleanComSimNao(ws, linha, 10, notificacao.situacao1);
-    this.setarCelulaBooleanComSimNao(ws, linha, 11, notificacao.situacao2);
-    this.setarCelula(ws, linha, 12, notificacao.nomeDoPaciente);
-    this.setarCelula(ws, linha, 13, notificacao.tipoDocumentoDoPaciente);
-    this.setarCelulaTratandoStringVazia(
-      ws, linha, 14, notificacao.numeroDoDocumentoDoPaciente,
-    );
-    this.setarCelula(ws, linha, 15, notificacao.sexoDoPaciente);
-    this.setarCelulaComNumero(ws, linha, 16, notificacao.idadeDoPaciente);
-    this.setarCelulaComDataGravadaSemHora(
-      ws, linha, 17, notificacao.dataDeNascimentoDoPaciente,
-    );
-    this.setarCelula(ws, linha, 18, notificacao.pacienteGestante);
-    this.setarCelulaTipoPeriodoGestacional(
-      ws, linha, 19, notificacao.tipoPeriodoGestacionalDoPaciente,
-    );
-    this.setarCelula(ws, linha, 20, notificacao.racaCorDoPaciente);
-    this.setarCelula(ws, linha, 21, notificacao.nomeDaMaeDoPaciente);
-    this.setarCelula(ws, linha, 22, notificacao.enderecoDoPaciente);
-    this.setarCelula(ws, linha, 23, notificacao.numeroDoEnderecoDoPaciente);
-    this.setarCelula(ws, linha, 24, notificacao.bairroDoPaciente);
-    this.setarCelula(ws, linha, 25, notificacao.municipioDoPaciente);
-    this.setarCelula(ws, linha, 26, notificacao.uFDoMunicipioDoPaciente);
-    this.setarCelula(ws, linha, 27, PAIS.BRASIL);
-    this.setarCelula(ws, linha, 28, notificacao.telefoneResidencialDoPaciente);
-    this.setarCelulaOutroTelefone(ws, linha, 29, notificacao);
-    this.setarCelulaTratandoStringVazia(ws, linha, 30, notificacao.ocupacaoDoPaciente);
-    this.setarCelula(ws, linha, 31, notificacao.tipoOcupacaoDoPaciente);
-    this.setarCelula(ws, linha, 32, notificacao.tipoClassificacaoDoPaciente);
-    // 4. SINAIS E SINTOMAS'
-    // 4.1. SINTOMAS RESPIRATÓRIOS
-    this.setarCelulaComDataGravadaSemHora(ws, linha, 33, notificacao.dataInicioDosSintomas);
-    this.setarCelulaBooleanComSimNao(ws, linha, 34, notificacao.febreAferidaReferida);
-    this.setarCelulaComNumero(ws, linha, 35, notificacao.temperaturaFebre);
-    this.setarCelulaBooleanComSimNao(ws, linha, 36, notificacao.batimentoAsasNasais);
-    this.setarCelulaBooleanComSimNao(ws, linha, 37, notificacao.cianoseCentral);
-    this.setarCelulaBooleanComSimNao(ws, linha, 38, notificacao.congestaoNasal);
-    this.setarCelulaBooleanComSimNao(ws, linha, 39, notificacao.coriza);
-    this.setarCelulaBooleanComSimNao(ws, linha, 40, notificacao.dispneia);
-    this.setarCelulaBooleanComSimNao(ws, linha, 41, notificacao.dorDeGarganta);
-    this.setarCelulaBooleanComSimNao(ws, linha, 42, notificacao.saturacaoDeOximetriaDePulso);
-    this.setarCelulaBooleanComSimNao(ws, linha, 43, notificacao.sibilo);
-    this.setarCelulaBooleanComSimNao(ws, linha, 44, notificacao.taquipneia);
-    this.setarCelulaBooleanComSimNao(ws, linha, 45, notificacao.tiragemIntercostal);
-    this.setarCelulaBooleanComSimNao(ws, linha, 46, notificacao.tosse);
-    this.setarCelulaBooleanComSimNao(ws, linha, 47, notificacao.escarro);
-    // 4.2 OUTROS SINTOMAS
-    this.setarCelulaBooleanComSimNao(ws, linha, 48, notificacao.adinamiaFraqueza);
-    this.setarCelulaBooleanComSimNao(ws, linha, 49, notificacao.artralgia);
-    this.setarCelulaBooleanComSimNao(ws, linha, 50, notificacao.calafrios);
-    this.setarCelulaBooleanComSimNao(ws, linha, 51, notificacao.cefaleia);
-    this.setarCelulaBooleanComSimNao(ws, linha, 52, notificacao.conjuntivite);
-    this.setarCelulaBooleanComSimNao(ws, linha, 53, notificacao.diarreia);
-    this.setarCelulaBooleanComSimNao(ws, linha, 54, notificacao.dificuldadeDeglutir);
-    this.setarCelulaBooleanComSimNao(ws, linha, 55, notificacao.diminuicaoDePulsoPeriferico);
-    this.setarCelulaBooleanComSimNao(ws, linha, 56, notificacao.gangliosLinfaticos);
-    this.setarCelulaBooleanComSimNao(ws, linha, 57, notificacao.irritabilidadeConfusao);
-    this.setarCelulaBooleanComSimNao(ws, linha, 58, notificacao.manchasVermelhas);
-    this.setarCelulaBooleanComSimNao(ws, linha, 59, notificacao.mialgia);
-    this.setarCelulaBooleanComSimNao(ws, linha, 60, notificacao.nauseaVomito);
-    this.setarCelulaBooleanComSimNao(ws, linha, 61, notificacao.hipotensao);
-    this.setarCelulaTratandoStringVazia(ws, linha, 62, notificacao.outrosSintomas);
-    // 5. Realizou exame de imagem
-    // Raio de tórax
-    this.setarCelulaBooleanComSimNao(ws, linha, 63, notificacao.realizouExameDeImagem);
-    this.setarCelulaBooleanComSimNao(ws, linha, 64, notificacao.raioXNormal);
-    this.setarCelulaBooleanComSimNao(ws, linha, 65, notificacao.raioXInfiltrado);
-    this.setarCelulaBooleanComSimNao(ws, linha, 66, notificacao.raioXConsolidacao);
-    this.setarCelulaBooleanComSimNao(ws, linha, 67, notificacao.raioXMisto);
-    this.setarCelulaTratandoStringVazia(ws, linha, 68, notificacao.raioXOutro);
-    // Tomografia de tórax
-    this.setarCelulaBooleanComSimNao(ws, linha, 69, notificacao.tomografiaNormal);
-    this.setarCelulaBooleanComSimNao(ws, linha, 70, notificacao.tomografiaVitro);
-    this.setarCelulaBooleanComSimNao(ws, linha, 71, notificacao.tomografiaDerrame);
-    this.setarCelulaBooleanComSimNao(ws, linha, 72, notificacao.tomografiaLinfonodo);
-    this.setarCelulaTratandoStringVazia(ws, linha, 73, notificacao.tomografiaOutro);
-    // 6.Comorbidades Prévias/Fatores de Risco
-    this.setarCelulaBooleanComSimNao(ws, linha, 74, notificacao.diabetesMellitus);
-    this.setarCelulaBooleanComSimNao(ws, linha, 75, notificacao.doencaCardioVascularCronica);
-    this.setarCelulaBooleanComSimNao(ws, linha, 76, notificacao.doencaHematologicaCronica);
-    this.setarCelulaBooleanComSimNao(ws, linha, 77, notificacao.doencaHepaticaCronica);
-    this.setarCelulaBooleanComSimNao(ws, linha, 78, notificacao.doencaNeurologicaCronica);
-    this.setarCelulaBooleanComSimNao(ws, linha, 79, notificacao.doencaRenalCronica);
-    this.setarCelulaBooleanComSimNao(ws, linha, 80, notificacao.hipertensao);
-    this.setarCelulaBooleanComSimNao(ws, linha, 81, notificacao.imunodeficiencia);
-    this.setarCelulaBooleanComSimNao(ws, linha, 82, notificacao.infeccaoHIV);
-    this.setarCelulaBooleanComSimNao(ws, linha, 83, notificacao.neoplasia);
-    this.setarCelulaBooleanComSimNao(ws, linha, 84, notificacao.obesidade);
-    this.setarCelulaBooleanComSimNao(ws, linha, 85, notificacao.puerperaAte45DiasDoParto);
-    this.setarCelulaBooleanComSimNao(ws, linha, 86, notificacao.tabagismo);
-    this.setarCelulaBooleanComSimNao(ws, linha, 87, notificacao.sindromeDeDown);
-    this.setarCelulaBooleanComSimNao(ws, linha, 88, notificacao.asma);
-    this.setarCelulaBooleanComSimNao(ws, linha, 89, notificacao.outraPneumopatiaCronica);
-    this.setarCelulaTratandoStringVazia(ws, linha, 90, notificacao.outrosComorbidades);
-    // 7.Usou medicamento
-    this.setarCelulaBooleanComSimNao(ws, linha, 91, notificacao.tamiflu);
-    this.setarCelulaBooleanComSimNao(ws, linha, 92, notificacao.hidroxicloroquina);
-    this.setarCelulaTratandoStringVazia(ws, linha, 93, notificacao.nomeMedicamento);
-    // 8. Dados Laboratoriais
-    this.setarCelulaBooleanComSimNao(
-      ws, linha, 94, notificacao.coletaMaterialParaDiagnostico,
-    );
-    this.setarCelulaComDataGravadaSemHora(ws, linha, 95, notificacao.dataDaColeta);
-    this.setarCelulaTratandoStringVazia(ws, linha, 96, notificacao.tipoLaboratorio);
-    this.setarCelulaTratandoStringVazia(
-      ws, linha, 97, notificacao.nomeLaboratorioEnvioMaterial,
-    );
-    this.setarCelulaTratandoStringVazia(ws, linha, 98, notificacao.metodoDeExame);
-    // 9. Histórico de viagem
-    this.setarCelulaBooleanComSimNao(ws, linha, 99, notificacao.historicoDeViagem);
-    this.setarCelulaTratandoStringVazia(ws, linha, 100, notificacao.localDaViagem);
-    this.setarCelulaComDataGravadaSemHora(ws, linha, 101, notificacao.dataDaViagem);
-    // 10. Contato com suspeito
-    this.setarCelulaTratandoStringVazia(ws, linha, 102, notificacao.contatoComSuspeito);
-    this.setarCelulaTratandoStringVazia(
-      ws, linha, 103, notificacao.localDoContatoComSuspeito,
-    );
-    this.setarCelulaTratandoStringVazia(ws, linha, 104, notificacao.nomeSuspeito);
-    // 12. Outras informações'
-    this.setarCelula(ws, linha, 105, notificacao.recebeuVacinaDaGripeNosUltimosDozeMeses);
-    this.setarCelula(ws, linha, 106, notificacao.situacaoNoMomentoDaNotificacao);
-    this.setarCelulaTratandoStringVazia(ws, linha, 107, notificacao.observacoes);
-    linha += 1;
-  });
-};
-
-this.setarCelulaProfissaoDoNotificador = (ws, linha, coluna, notificacao) => {
-  const profissaoDoNotificador = this.retornarProfissionalDoNotificador(notificacao);
-
-  this.setarCelularTratandoNulable(ws, linha, coluna, profissaoDoNotificador);
+  const rows = notificacoes.map((notificacao) => ({
+    A1: this.getDataHora(notificacao.criacaodanotificacao),
+    A2: this.getData(notificacao.dataHoraNotificacao),
+    A3: this.getHora(notificacao.dataHoraNotificacao),
+    A4: notificacao.usuarioDigitador,
+    A5: notificacao.statusnotificacao,
+    A6: notificacao.unidadeNotificante,
+    A7: notificacao.cnesDaUnidadeNotificante,
+    A8: notificacao.nomedonotificador,
+    A9: this.retornarProfissionalDoNotificador(notificacao),
+    A10: this.getBoolean(notificacao.situacao1),
+    A11: this.getBoolean(notificacao.situacao2),
+    A12: notificacao.nomeDoPaciente,
+    A13: notificacao.tipoDocumentoDoPaciente,
+    A14: notificacao.numeroDoDocumentoDoPaciente,
+    A15: notificacao.sexoDoPaciente,
+    A16: notificacao.idadeDoPaciente,
+    A17: this.getData(notificacao.dataDeNascimentoDoPaciente),
+    A18: notificacao.pacienteGestante,
+    A19: this.retornarTipoPeriodoGestacional(notificacao.tipoPeriodoGestacionalDoPaciente),
+    A20: notificacao.racaCorDoPaciente,
+    A21: notificacao.nomeDaMaeDoPaciente,
+    A22: notificacao.enderecoDoPaciente,
+    A23: notificacao.numeroDoEnderecoDoPaciente,
+    A24: notificacao.bairroDoPaciente,
+    A25: notificacao.municipioDoPaciente,
+    A26: notificacao.uFDoMunicipioDoPaciente,
+    A27: PAIS.BRASIL,
+    A28: notificacao.telefoneResidencialDoPaciente,
+    A29: this.retornarOutroTelefone(notificacao),
+    A30: notificacao.ocupacaoDoPaciente,
+    A31: notificacao.tipoOcupacaoDoPaciente,
+    A32: notificacao.tipoClassificacaoDoPaciente,
+    A33: this.getData(notificacao.dataInicioDosSintomas),
+    A34: this.getBoolean(notificacao.febreAferidaReferida),
+    A35: this.getNumber(notificacao.temperaturaFebre),
+    A36: this.getBoolean(notificacao.batimentoAsasNasais),
+    A37: this.getBoolean(notificacao.cianoseCentral),
+    A38: this.getBoolean(notificacao.congestaoNasal),
+    A39: this.getBoolean(notificacao.coriza),
+    A40: this.getBoolean(notificacao.dispneia),
+    A41: this.getBoolean(notificacao.dorDeGarganta),
+    A42: this.getBoolean(notificacao.saturacaoDeOximetriaDePulso),
+    A43: this.getBoolean(notificacao.sibilo),
+    A44: this.getBoolean(notificacao.taquipneia),
+    A45: this.getBoolean(notificacao.tiragemIntercostal),
+    A46: this.getBoolean(notificacao.tosse),
+    A47: this.getBoolean(notificacao.escarro),
+    A48: this.getBoolean(notificacao.adinamiaFraqueza),
+    A49: this.getBoolean(notificacao.artralgia),
+    A50: this.getBoolean(notificacao.calafrios),
+    A51: this.getBoolean(notificacao.cefaleia),
+    A52: this.getBoolean(notificacao.conjuntivite),
+    A53: this.getBoolean(notificacao.diarreia),
+    A54: this.getBoolean(notificacao.dificuldadeDeglutir),
+    A55: this.getBoolean(notificacao.diminuicaoDePulsoPeriferico),
+    A56: this.getBoolean(notificacao.gangliosLinfaticos),
+    A57: this.getBoolean(notificacao.irritabilidadeConfusao),
+    A58: this.getBoolean(notificacao.manchasVermelhas),
+    A59: this.getBoolean(notificacao.mialgia),
+    A60: this.getBoolean(notificacao.nauseaVomito),
+    A61: this.getBoolean(notificacao.hipotensao),
+    A62: notificacao.outrosSintomas,
+    A63: this.getBoolean(notificacao.realizouExameDeImagem),
+    A64: this.getBoolean(notificacao.raioXNormal),
+    A65: this.getBoolean(notificacao.raioXInfiltrado),
+    A66: this.getBoolean(notificacao.raioXConsolidacao),
+    A67: this.getBoolean(notificacao.raioXMisto),
+    A68: notificacao.raioXOutro,
+    A69: this.getBoolean(notificacao.tomografiaNormal),
+    A70: this.getBoolean(notificacao.tomografiaVitro),
+    A71: this.getBoolean(notificacao.tomografiaDerrame),
+    A72: this.getBoolean(notificacao.tomografiaLinfonodo),
+    A73: notificacao.tomografiaOutro,
+    A74: this.getBoolean(notificacao.diabetesMellitus),
+    A75: this.getBoolean(notificacao.doencaCardioVascularCronica),
+    A76: this.getBoolean(notificacao.doencaHematologicaCronica),
+    A77: this.getBoolean(notificacao.doencaHepaticaCronica),
+    A78: this.getBoolean(notificacao.doencaNeurologicaCronica),
+    A79: this.getBoolean(notificacao.doencaNeurologicaCronica),
+    A80: this.getBoolean(notificacao.hipertensao),
+    A81: this.getBoolean(notificacao.imunodeficiencia),
+    A82: this.getBoolean(notificacao.infeccaoHIV),
+    A83: this.getBoolean(notificacao.neoplasia),
+    A84: this.getBoolean(notificacao.obesidade),
+    A85: this.getBoolean(notificacao.puerperaAte45DiasDoParto),
+    A86: this.getBoolean(notificacao.tabagismo),
+    A87: this.getBoolean(notificacao.sindromeDeDown),
+    A88: this.getBoolean(notificacao.asma),
+    A89: this.getBoolean(notificacao.outraPneumopatiaCronica),
+    A90: notificacao.outrosComorbidades,
+    A91: this.getBoolean(notificacao.tamiflu),
+    A92: this.getBoolean(notificacao.hidroxicloroquina),
+    A93: notificacao.nomeMedicamento,
+    A94: this.getBoolean(notificacao.coletaMaterialParaDiagnostico),
+    A95: this.getData(notificacao.dataDaColeta),
+    A96: notificacao.tipoLaboratorio,
+    A97: notificacao.nomeLaboratorioEnvioMaterial,
+    A98: notificacao.metodoDeExame,
+    A99: this.getBoolean(notificacao.historicoDeViagem),
+    A100: notificacao.localDaViagem,
+    A101: this.getData(notificacao.dataDaViagem),
+    A102: notificacao.contatoComSuspeito,
+    A103: notificacao.localDoContatoComSuspeito,
+    A104: notificacao.nomeSuspeito,
+    A105: notificacao.recebeuVacinaDaGripeNosUltimosDozeMeses,
+    A106: notificacao.situacaoNoMomentoDaNotificacao,
+    A107: notificacao.observacoes,
+  }));
+  ws.addRows(rows);
 };
 
 this.retornarProfissionalDoNotificador = (notificacao) => {
@@ -213,13 +176,6 @@ this.retornarProfissionalDoNotificador = (notificacao) => {
   return null;
 };
 
-this.setarCelulaOutroTelefone = (ws, linha, coluna, notificacao) => {
-  const outroTelefone = this.retornarOutroTelefone(notificacao);
-
-  this.setarCelularTratandoNulable(ws, linha, coluna, outroTelefone);
-};
-
-
 this.retornarOutroTelefone = (notificacao) => {
   const { telefoneCelularDoPaciente } = notificacao;
   if (telefoneCelularDoPaciente && telefoneCelularDoPaciente.trim().length > 0) {
@@ -233,44 +189,6 @@ this.retornarOutroTelefone = (notificacao) => {
   }
 
   return null;
-};
-
-this.setarCelula = (ws, linha, coluna, valorDaCelula) => {
-  ws.cell(linha, coluna).string(valorDaCelula);
-};
-
-this.setarCelulaTratandoStringVazia = (ws, linha, coluna, valorDaCelula) => {
-  if (!valorDaCelula || valorDaCelula.trim().length <= 0) {
-    return;
-  }
-
-  this.setarCelula(ws, linha, coluna, valorDaCelula);
-};
-
-this.setarCelularTratandoNulable = (ws, linha, coluna, valorDaCelula) => {
-  if (!valorDaCelula) {
-    return;
-  }
-
-  this.setarCelula(ws, linha, coluna, valorDaCelula);
-};
-
-this.setarCelulaComNumero = (ws, linha, coluna, valorDaCelula) => {
-  if (!valorDaCelula) {
-    return;
-  }
-
-  const valorNumerico = valorDaCelula.toString().replace('.', ',');
-  this.setarCelula(ws, linha, coluna, valorNumerico);
-};
-
-this.setarCelulaTipoPeriodoGestacional = (ws, linha, coluna, valorDaCelula) => {
-  if (!valorDaCelula) {
-    return;
-  }
-
-  const tipoPeriodoGestacional = this.retornarTipoPeriodoGestacional(valorDaCelula);
-  this.setarCelularTratandoNulable(ws, linha, coluna, tipoPeriodoGestacional);
 };
 
 this.retornarTipoPeriodoGestacional = (tipoPeriodoGestacional) => {
@@ -288,50 +206,11 @@ this.retornarTipoPeriodoGestacional = (tipoPeriodoGestacional) => {
   }
 };
 
-this.setarCelulaComDataGravadaSemHora = (ws, linha, coluna, data) => {
-  if (!data) {
-    return;
-  }
-
-  const valorDaCelula = moment.tz(data, TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY');
-  this.setarCelula(ws, linha, coluna, valorDaCelula);
-};
-
-this.setarCelulaBooleanComSimNao = (ws, linha, coluna, valorBoolean) => {
-  if (typeof valorBoolean !== 'boolean') {
-    return;
-  }
-
-  const valorDaCelula = valorBoolean ? 'Sim' : 'Não';
-  this.setarCelula(ws, linha, coluna, valorDaCelula);
-};
-
-this.setarCelulaHoraDaData = (ws, linha, coluna, data) => {
-  if (!data) {
-    return;
-  }
-
-  const valorDaCelula = moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('HH:mm');
-  this.setarCelula(ws, linha, coluna, valorDaCelula);
-};
-
-this.setarCelulaDataComHora = (ws, linha, coluna, data) => {
-  if (!data) {
-    return;
-  }
-
-  const valorDaCelula = moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY HH:mm:ss');
-  this.setarCelula(ws, linha, coluna, valorDaCelula);
-};
-
-this.setarCelulaDataSemHora = (ws, linha, coluna, data) => {
-  if (!data) {
-    return;
-  }
-
-  const valorDaCelula = moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY');
-  this.setarCelula(ws, linha, coluna, valorDaCelula);
-};
+this.getDataHora = (data) => (data ? moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY HH:mm:ss') : null);
+this.getData = (data) => (data ? moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('DD/MM/YYYY') : null);
+this.getHora = (data) => (data ? moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).format('HH:mm') : null);
+this.getNumber = (value) => (value ? value.toString().replace('.', ',') : null);
+this.getBoolean = (valor) => (valor ? 'Sim' : 'Não');
 
 this.criarDataInicialParaFiltro = (data) => moment
   .tz(data, TIME_ZONE.AMERICA_SAO_PAULO).toISOString();
@@ -340,125 +219,127 @@ this.criarDataFinalParaFiltro = (data) => moment
   .tz(data, TIME_ZONE.AMERICA_SAO_PAULO).endOf('day').toISOString();
 
 this.setarColunas = (ws) => {
-  ws.cell(1, 1).string('Data hora da criação da Notificação');
-  ws.cell(1, 2).string('Data da Notificação');
-  ws.cell(1, 3).string('horaDaNotificacao');
-  ws.cell(1, 4).string('usuarioDigitador');
-  ws.cell(1, 5).string('statusNotificacao');
-  ws.cell(1, 6).string('unidadeNotificante');
-  ws.cell(1, 7).string('cNES');
-  ws.cell(1, 8).string('nomeDoNotificador');
-  ws.cell(1, 9).string('profissaoDoNotificador');
-  ws.cell(1, 10).string('situacao1CasoSuspeito');
-  ws.cell(1, 11).string('situacao2ContatoDeCasoSuspeitoOuConfirmado');
-  ws.cell(1, 12).string('nomeDoPaciente');
-  ws.cell(1, 13).string('tipoDocumentoDoPaciente');
-  ws.cell(1, 14).string('documentoDoPaciente');
-  ws.cell(1, 15).string('sexoDoPaciente');
-  ws.cell(1, 16).string('idadeDoPaciente');
-  ws.cell(1, 17).string('dataDeNascimentoDoPaciente');
-  ws.cell(1, 18).string('gestante');
-  ws.cell(1, 19).string('tipoPeriodoGestacional');
-  ws.cell(1, 20).string('racaCorDoPaciente');
-  ws.cell(1, 21).string('nomeDaMaeDoPaciente');
-  ws.cell(1, 22).string('enderecoDoPaciente');
-  ws.cell(1, 23).string('numeroDoEnderecoDoPaciente');
-  ws.cell(1, 24).string('bairroDoPaciente');
-  ws.cell(1, 25).string('municipioDoPaciente');
-  ws.cell(1, 26).string('ufDoPaciente');
-  ws.cell(1, 27).string('paisDoPaciente');
-  ws.cell(1, 28).string('telefoneDoPaciente');
-  ws.cell(1, 29).string('outroTelefoneDoPaciente');
-  ws.cell(1, 30).string('ocupacaoDoPaciente');
-  ws.cell(1, 31).string('tipoOcupacaoDoPaciente');
-  ws.cell(1, 32).string('tipoClassificacaoPessoa');
-  // 4. SINAIS E SINTOMAS'
-  // 4.1. SINTOMAS RESPIRATÓRIOS
-  ws.cell(1, 33).string('dataDeInicioDosSintomas');
-  ws.cell(1, 34).string('febreAferidaReferida');
-  ws.cell(1, 35).string('temperaturaFebre');
-  ws.cell(1, 36).string('batimentoAsasNasais');
-  ws.cell(1, 37).string('cianoseCentral');
-  ws.cell(1, 38).string('congestaoNasal');
-  ws.cell(1, 39).string('coriza');
-  ws.cell(1, 40).string('dispneia');
-  ws.cell(1, 41).string('dorDeGarganta');
-  ws.cell(1, 42).string('saturacaoDeOximetriaDePulso');
-  ws.cell(1, 43).string('sibilo');
-  ws.cell(1, 44).string('taquipneia');
-  ws.cell(1, 45).string('tiragemIntercostal');
-  ws.cell(1, 46).string('tosse');
-  ws.cell(1, 47).string('escarro');
-  // 4.2 OUTROS SINTOMAS
-  ws.cell(1, 48).string('adinamiaFraqueza');
-  ws.cell(1, 49).string('artralgia');
-  ws.cell(1, 50).string('calafrios');
-  ws.cell(1, 51).string('cefaleia');
-  ws.cell(1, 52).string('conjuntivite');
-  ws.cell(1, 53).string('diarreia');
-  ws.cell(1, 54).string('dificuldadeDeglutir');
-  ws.cell(1, 55).string('diminuicaoDePulsoPeriferico');
-  ws.cell(1, 56).string('gangliosLinfaticos');
-  ws.cell(1, 57).string('irritabilidadeConfusao');
-  ws.cell(1, 58).string('manchasVermelhas');
-  ws.cell(1, 59).string('mialgia');
-  ws.cell(1, 60).string('nauseaVomito');
-  ws.cell(1, 61).string('hipotensao');
-  ws.cell(1, 62).string('outrosSintomas');
-  // 5. Realizou exame de imagem
-  // Raio de tórax
-  ws.cell(1, 63).string('realizouExameDeImagem');
-  ws.cell(1, 64).string('raioXNormal');
-  ws.cell(1, 65).string('raioXInfiltrado');
-  ws.cell(1, 66).string('raioXConsolidacao');
-  ws.cell(1, 67).string('raioXMisto');
-  ws.cell(1, 68).string('raioXOutro');
-  // Tomografia de tórax
-  ws.cell(1, 69).string('tomografiaNormal');
-  ws.cell(1, 70).string('tomografiaVidro');
-  ws.cell(1, 71).string('tomografiaDerrame');
-  ws.cell(1, 72).string('tomografiaLinfonodo');
-  ws.cell(1, 73).string('tomografiaOutro');
-  // 6.Comorbidades Prévias/Fatores de Risco
-  ws.cell(1, 74).string('diabetesMellitus');
-  ws.cell(1, 75).string('doencaCardioVascularCronica');
-  ws.cell(1, 76).string('doencaHematologicaCronica');
-  ws.cell(1, 77).string('doencaHepaticaCronica');
-  ws.cell(1, 78).string('doencaNeurologicaCronica');
-  ws.cell(1, 79).string('doencaRenalCronica');
-  ws.cell(1, 80).string('hipertensao');
-  ws.cell(1, 81).string('Imunodecifencia/imunodepressao');
-  ws.cell(1, 82).string('infeccaoHIV');
-  ws.cell(1, 83).string('neoplasia');
-  ws.cell(1, 84).string('obesidade');
-  ws.cell(1, 85).string('puerperaAte45DiasDoParto');
-  ws.cell(1, 86).string('tabagismo');
-  ws.cell(1, 87).string('sindromeDeDown');
-  ws.cell(1, 88).string('asma');
-  ws.cell(1, 89).string('outraPneumopatiaCronica');
-  ws.cell(1, 90).string('outrosComorbidades');
-  // 7.Usou medicamento
-  ws.cell(1, 91).string('tamiflu');
-  ws.cell(1, 92).string('hidroxicloroquina');
-  ws.cell(1, 93).string('nomeMedicamento');
-  // 8. Dados Laboratoriais
-  ws.cell(1, 94).string('coletaMaterialParaDiagnostico');
-  ws.cell(1, 95).string('dataDaColeta');
-  ws.cell(1, 96).string('tipoLaboratorio');
-  ws.cell(1, 97).string('nomeLaboratorioEnvioMaterial');
-  ws.cell(1, 98).string('metodoDeExame');
-  // 9. Histórico de viagem
-  ws.cell(1, 99).string('historicoDeViagem');
-  ws.cell(1, 100).string('localDaViagem');
-  ws.cell(1, 101).string('dataDaViagem');
-  // 10. Contato com suspeito
-  ws.cell(1, 102).string('contatoComSuspeito');
-  ws.cell(1, 103).string('localDoContatoComSuspeito');
-  ws.cell(1, 104).string('nomeSuspeito');
-  // 12. Outras informações'
-  ws.cell(1, 105).string('recebeuVacinaDaGripeNosUltimosDozeMeses');
-  ws.cell(1, 106).string('situacaoNoMomentoDaNotificacao');
-  ws.cell(1, 107).string('observacoes');
+  ws.columns = [
+    { header: 'Data hora da criação da Notificação', key: 'A1' },
+    { header: 'Data da Notificação', key: 'A2' },
+    { header: 'horaDaNotificacao', key: 'A3' },
+    { header: 'usuarioDigitador', key: 'A4' },
+    { header: 'statusNotificacao', key: 'A5' },
+    { header: 'unidadeNotificante', key: 'A6' },
+    { header: 'cNES', key: 'A7' },
+    { header: 'nomeDoNotificador', key: 'A8' },
+    { header: 'profissaoDoNotificador', key: 'A9' },
+    { header: 'situacao1CasoSuspeito', key: 'A10' },
+    { header: 'situacao2ContatoDeCasoSuspeitoOuConfirmado', key: 'A11' },
+    { header: 'nomeDoPaciente', key: 'A12' },
+    { header: 'tipoDocumentoDoPaciente', key: 'A13' },
+    { header: 'documentoDoPaciente', key: 'A14' },
+    { header: 'sexoDoPaciente', key: 'A15' },
+    { header: 'idadeDoPaciente', key: 'A16' },
+    { header: 'dataDeNascimentoDoPaciente', key: 'A17' },
+    { header: 'gestante', key: 'A18' },
+    { header: 'tipoPeriodoGestacional', key: 'A19' },
+    { header: 'racaCorDoPaciente', key: 'A20' },
+    { header: 'nomeDaMaeDoPaciente', key: 'A21' },
+    { header: 'enderecoDoPaciente', key: 'A22' },
+    { header: 'numeroDoEnderecoDoPaciente', key: 'A23' },
+    { header: 'bairroDoPaciente', key: 'A24' },
+    { header: 'municipioDoPaciente', key: 'A25' },
+    { header: 'ufDoPaciente', key: 'A26' },
+    { header: 'paisDoPaciente', key: 'A27' },
+    { header: 'telefoneDoPaciente', key: 'A28' },
+    { header: 'outroTelefoneDoPaciente', key: 'A29' },
+    { header: 'ocupacaoDoPaciente', key: 'A30' },
+    { header: 'tipoOcupacaoDoPaciente', key: 'A31' },
+    { header: 'tipoClassificacaoPessoa', key: 'A32' },
+    // 4. SINAIS E SINTOMAS'
+    // 4.1. SINTOMAS RESPIRATÓRIOS
+    { header: 'dataDeInicioDosSintomas', key: 'A33' },
+    { header: 'febreAferidaReferida', key: 'A34' },
+    { header: 'temperaturaFebre', key: 'A35' },
+    { header: 'batimentoAsasNasais', key: 'A36' },
+    { header: 'cianoseCentral', key: 'A37' },
+    { header: 'congestaoNasal', key: 'A38' },
+    { header: 'coriza', key: 'A39' },
+    { header: 'dispneia', key: 'A40' },
+    { header: 'dorDeGarganta', key: 'A41' },
+    { header: 'saturacaoDeOximetriaDePulso', key: 'A42' },
+    { header: 'sibilo', key: 'A43' },
+    { header: 'taquipneia', key: 'A44' },
+    { header: 'tiragemIntercostal', key: 'A45' },
+    { header: 'tosse', key: 'A46' },
+    { header: 'escarro', key: 'A47' },
+    // 4.2 OUTROS SINTOMAS
+    { header: 'adinamiaFraqueza', key: 'A48' },
+    { header: 'artralgia', key: 'A49' },
+    { header: 'calafrios', key: 'A50' },
+    { header: 'cefaleia', key: 'A51' },
+    { header: 'conjuntivite', key: 'A52' },
+    { header: 'diarreia', key: 'A53' },
+    { header: 'dificuldadeDeglutir', key: 'A54' },
+    { header: 'diminuicaoDePulsoPeriferico', key: 'A55' },
+    { header: 'gangliosLinfaticos', key: 'A56' },
+    { header: 'irritabilidadeConfusao', key: 'A57' },
+    { header: 'manchasVermelhas', key: 'A58' },
+    { header: 'mialgia', key: 'A59' },
+    { header: 'nauseaVomito', key: 'A60' },
+    { header: 'hipotensao', key: 'A61' },
+    { header: 'outrosSintomas', key: 'A62' },
+    // 5. Realizou exame de imagem
+    // Raio de tórax
+    { header: 'realizouExameDeImagem', key: 'A63' },
+    { header: 'raioXNormal', key: 'A64' },
+    { header: 'raioXInfiltrado', key: 'A65' },
+    { header: 'raioXConsolidacao', key: 'A66' },
+    { header: 'raioXMisto', key: 'A67' },
+    { header: 'raioXOutro', key: 'A68' },
+    // Tomografia de tórax
+    { header: 'tomografiaNormal', key: 'A69' },
+    { header: 'tomografiaVidro', key: 'A70' },
+    { header: 'tomografiaDerrame', key: 'A71' },
+    { header: 'tomografiaLinfonodo', key: 'A72' },
+    { header: 'tomografiaOutro', key: 'A73' },
+    // 6.Comorbidades Prévias/Fatores de Risco
+    { header: 'diabetesMellitus', key: 'A74' },
+    { header: 'doencaCardioVascularCronica', key: 'A75' },
+    { header: 'doencaHematologicaCronica', key: 'A76' },
+    { header: 'doencaHepaticaCronica', key: 'A77' },
+    { header: 'doencaNeurologicaCronica', key: 'A78' },
+    { header: 'doencaRenalCronica', key: 'A79' },
+    { header: 'hipertensao', key: 'A80' },
+    { header: 'Imunodecifencia/imunodepressao', key: 'A81' },
+    { header: 'infeccaoHIV', key: 'A82' },
+    { header: 'neoplasia', key: 'A83' },
+    { header: 'obesidade', key: 'A84' },
+    { header: 'puerperaAte45DiasDoParto', key: 'A85' },
+    { header: 'tabagismo', key: 'A86' },
+    { header: 'sindromeDeDown', key: 'A87' },
+    { header: 'asma', key: 'A88' },
+    { header: 'outraPneumopatiaCronica', key: 'A89' },
+    { header: 'outrosComorbidades', key: 'A90' },
+    // 7.Usou medicamento
+    { header: 'tamiflu', key: 'A91' },
+    { header: 'hidroxicloroquina', key: 'A92' },
+    { header: 'nomeMedicamento', key: 'A93' },
+    // 8. Dados Laboratoriais
+    { header: 'coletaMaterialParaDiagnostico', key: 'A94' },
+    { header: 'dataDaColeta', key: 'A95' },
+    { header: 'tipoLaboratorio', key: 'A96' },
+    { header: 'nomeLaboratorioEnvioMaterial', key: 'A97' },
+    { header: 'metodoDeExame', key: 'A98' },
+    // 9. Histórico de viagem
+    { header: 'historicoDeViagem', key: 'A99' },
+    { header: 'localDaViagem', key: 'A100' },
+    { header: 'dataDaViagem', key: 'A101' },
+    // 10. Contato com suspeito
+    { header: 'contatoComSuspeito', key: 'A102' },
+    { header: 'localDoContatoComSuspeito', key: 'A103' },
+    { header: 'nomeSuspeito', key: 'A104' },
+    // 12. Outras informações'
+    { header: 'recebeuVacinaDaGripeNosUltimosDozeMeses', key: 'A105' },
+    { header: 'situacaoNoMomentoDaNotificacao', key: 'A106' },
+    { header: 'observacoes', key: 'A107' },
+  ];
 };
 
 this.consultarNotificacoes = async (dataInicial, dataFinal) => {
@@ -569,7 +450,13 @@ this.consultarNotificacoes = async (dataInicial, dataFinal) => {
             "UnidadeSaude"."cnes" AS "cnesDaUnidadeNotificante",
             "Profissao"."nome" AS "nomeDaProfissao",
             "ProfissionalSaude"."profissao" AS "profissaoDoProfissionalDeSaude",
-            "User"."email" AS "usuarioDigitador"
+            "User"."email" AS "usuarioDigitador",
+            "Notificacao"."dtSuspeito",
+            "Notificacao"."dtConfirmado",
+            "Notificacao"."dtDescartado",
+            "Notificacao"."dtCurado",
+            "Notificacao"."dtEncerrado",
+            "Notificacao"."dtObito"
        FROM "Notificacao"
  INNER JOIN "Pessoa" ON "Notificacao"."pessoaId" = "Pessoa"."id"
  INNER JOIN "Bairro" ON "Pessoa"."bairroId" = "Bairro"."id"
