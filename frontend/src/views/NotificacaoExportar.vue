@@ -7,6 +7,7 @@
           <v-form ref="form">
             <exportar
               :exportar="exportar"
+              :loading="loading"
               @update:dataInicial="updateExportar('dataInicial', $event)"
               @update:dataFinal="updateExportar('dataFinal', $event)"
               @click="send"
@@ -19,7 +20,7 @@
         v-model="showError"
         color="error"
         bottom
-      >A data inicial não pode ser posterior à data final</v-snackbar>
+      >A data inicial não pode ser posterior à data final e no período de 7 dias.</v-snackbar>
     </base-page>
   </section>
 </template>
@@ -40,6 +41,7 @@ export default {
   data: () => ({
     exportar: new NotificacaoExportar(),
     showError: false,
+    loading: false,
   }),
   methods: {
     updateExportar(campo, valor) {
@@ -52,12 +54,14 @@ export default {
           return;
         }
 
-        NotificacaoService.downloadNotificacoes(this.exportar.toRequestBody());
+        this.loading = true;
+        NotificacaoService.downloadNotificacoes(this.exportar.toRequestBody())
+          .finally(() => { this.loading = false; });
       }
     },
     validarPeriodo() {
       const { dataInicial, dataFinal } = this.exportar;
-      return DateService.isLesserEqualsThanMaximumDate(dataInicial, dataFinal);
+      return DateService.isLesserEqualsThanMaximumDateOr7Days(dataInicial, dataFinal);
     },
     isSecretariaSaude() {
       return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
