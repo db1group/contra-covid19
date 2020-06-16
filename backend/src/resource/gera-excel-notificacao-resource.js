@@ -156,6 +156,12 @@ this.setarNotificacao = (ws, notificacoes) => {
     A105: notificacao.recebeuVacinaDaGripeNosUltimosDozeMeses,
     A106: notificacao.situacaoNoMomentoDaNotificacao,
     A107: notificacao.observacoes,
+    A108: this.getDataHora(notificacao.dtSuspeito),
+    A109: this.getDataHora(notificacao.dtConfirmado),
+    A110: this.getDataHora(notificacao.dtDescartado),
+    A111: this.getDataHora(notificacao.dtCurado),
+    A112: this.getDataHora(notificacao.dtEncerrado),
+    A113: this.getDataHora(notificacao.dtObito),
   }));
   ws.addRows(rows);
 };
@@ -339,6 +345,12 @@ this.setarColunas = (ws) => {
     { header: 'recebeuVacinaDaGripeNosUltimosDozeMeses', key: 'A105' },
     { header: 'situacaoNoMomentoDaNotificacao', key: 'A106' },
     { header: 'observacoes', key: 'A107' },
+    { header: 'dtSuspeito', key: 'A108' },
+    { header: 'dtConfirmado', key: 'A109' },
+    { header: 'dtDescartado', key: 'A110' },
+    { header: 'dtCurado', key: 'A111' },
+    { header: 'dtEncerrado', key: 'A112' },
+    { header: 'dtObito', key: 'A113' },
   ];
 };
 
