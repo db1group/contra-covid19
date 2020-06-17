@@ -154,11 +154,11 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
   const dtInicial = moment(dataFechamento)
     .startOf('day')
     .subtract(1, 'day')
-    .add(13, 'hours')
+    .add(15, 'hours')
     .toDate();
   const dtFinal = moment(dataFechamento)
     .startOf('day')
-    .add(12, 'hours')
+    .add(14, 'hours')
     .add(59, 'minutes')
     .add(59, 'seconds')
     .toDate();
