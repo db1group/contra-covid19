@@ -71,7 +71,7 @@ export default {
                     this.errorMessage = 'Não foi possível realizar o download. Tente novamente com um intervalo menor.';
                   }
                 });
-            }, 5000);
+            }, 10000);
           })
           .catch(() => {
             this.showError = true;
