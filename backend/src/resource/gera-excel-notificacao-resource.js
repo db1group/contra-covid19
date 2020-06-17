@@ -35,7 +35,7 @@ exports.gerarExcel = (req, res) => {
 
     console.info(`inicio consulta ${new Date()}`);
     this.consultarNotificacoes(dataInicialFiltro, dataFinalFiltro)
-      .then((notificacoes) => {
+      .then(([notificacoes]) => {
         console.info(`fim consulta ${new Date()}`);
 
         const wb = new Excel.Workbook();
@@ -363,9 +363,8 @@ this.setarColunas = (ws) => {
   ];
 };
 
-this.consultarNotificacoes = async (dataInicial, dataFinal) => {
-  const notificacoes = await models.sequelize.query(
-    `SELECT "Notificacao"."nomeNotificador" AS nomeDoNotificador,
+this.consultarNotificacoes = (dataInicial, dataFinal) => models.sequelize.query(
+  `SELECT "Notificacao"."nomeNotificador" AS nomeDoNotificador,
             "Notificacao"."status" AS statusnotificacao,
             "Notificacao"."createdAt" As criacaoDaNotificacao,
             "Pessoa"."nome" AS "nomeDoPaciente",
@@ -491,21 +490,18 @@ this.consultarNotificacoes = async (dataInicial, dataFinal) => {
       WHERE "Notificacao"."status" != 'EXCLUIDA'
         AND "Notificacao"."createdAt" BETWEEN :dataInicial AND :dataFinal
    ORDER BY "Notificacao"."createdAt" DESC;`,
-    {
-      replacements: {
-        dataInicial,
-        dataFinal,
-      },
+  {
+    replacements: {
+      dataInicial,
+      dataFinal,
     },
-    { type: Sequelize.QueryTypes.SELECT },
-  );
-
-  return notificacoes[0];
-};
+  },
+  { type: Sequelize.QueryTypes.SELECT },
+);
 
 exports.downloadExcel = (req, res) => {
   const { filename } = req.params;
   const fullPath = path.resolve(DIRETORIO, filename);
-  if (!fs.existsSync(DIRETORIO)) return res.status(404).json({ error: 'Arquivo não encontrado!' });
+  if (!fs.existsSync(fullPath)) return res.status(404).json({ error: 'Arquivo não encontrado!' });
   return res.download(fullPath);
 };

@@ -39,10 +39,30 @@ export default {
     showError: false,
     loading: false,
     errorMessage: '',
+    attempt: 0,
+    intervalDownload: null,
   }),
   methods: {
     updateExportar(campo, valor) {
       this.exportar[campo] = valor;
+    },
+    downloadFile(filename) {
+      NotificacaoService.downloadNotificacoes(filename)
+        .then(() => {
+          this.loading = false;
+          clearInterval(this.intervalDownload);
+          this.attempt = 0;
+        })
+        .catch(() => {
+          this.attempt += 1;
+          if (this.attempt === 5) {
+            this.attempt = 0;
+            clearInterval(this.intervalDownload);
+            this.loading = false;
+            this.showError = true;
+            this.errorMessage = 'Não foi possível realizar o download. Tente novamente com um intervalo menor.';
+          }
+        });
     },
     send() {
       if (this.$refs.form.validate()) {
@@ -55,25 +75,12 @@ export default {
         this.loading = true;
         NotificacaoService.getDownloadFilename(this.exportar.toRequestBody())
           .then(({ filename }) => {
-            let attempt = 0;
-            const intervalDownload = setInterval(() => {
-              NotificacaoService.downloadNotificacoes(filename)
-                .then(() => {
-                  this.loading = false;
-                  clearInterval(intervalDownload);
-                })
-                .catch(() => {
-                  attempt += 1;
-                  if (attempt === 4) {
-                    clearInterval(intervalDownload);
-                    this.loading = false;
-                    this.showError = true;
-                    this.errorMessage = 'Não foi possível realizar o download. Tente novamente com um intervalo menor.';
-                  }
-                });
-            }, 10000);
+            this.attempt = 0;
+            this.downloadFile(filename);
+            this.intervalDownload = setInterval(() => this.downloadFile(filename), 5000);
           })
           .catch(() => {
+            this.attempt = 0;
             this.showError = true;
             this.errorMessage = 'Não foi possível realizar o download.';
             this.loading = false;
