@@ -67,13 +67,15 @@ export default {
                   if (attempt === 3) {
                     clearInterval(intervalDownload);
                     this.loading = false;
+                    this.showError = true;
+                    this.errorMessage = 'Não foi possível realizar o download. Tente novamente com um intervalo menor.';
                   }
                 });
             }, 5000);
           })
           .catch(() => {
             this.showError = true;
-            this.errorMessage = 'Não foi possível realizar o download. Tente novamente com um intervalo menor.';
+            this.errorMessage = 'Não foi possível realizar o download.';
             this.loading = false;
           });
       }
