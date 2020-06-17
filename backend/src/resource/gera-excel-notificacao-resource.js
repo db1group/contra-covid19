@@ -500,6 +500,7 @@ this.consultarNotificacoes = (dataInicial, dataFinal) => models.sequelize.query(
 );
 
 exports.downloadExcel = (req, res) => {
+  req.setTimeout(3000);
   const { filename } = req.params;
   const fullPath = path.resolve(DIRETORIO, filename);
   fs.open(fullPath, 'rs', (err) => {
