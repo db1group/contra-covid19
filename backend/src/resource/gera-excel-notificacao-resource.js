@@ -16,7 +16,6 @@ const PAIS = { BRASIL: 'Brasil' };
 const DIRETORIO = 'excel';
 
 exports.gerarExcel = (req, res) => {
-  req.setTimeout(300000);
   try {
     const { dataInicial, dataFinal } = req.query;
 
@@ -35,7 +34,7 @@ exports.gerarExcel = (req, res) => {
 
     console.info(`inicio consulta ${new Date()}`);
     this.consultarNotificacoes(dataInicialFiltro, dataFinalFiltro)
-      .then(([notificacoes]) => {
+      .then(async ([notificacoes]) => {
         console.info(`fim consulta ${new Date()}`);
 
         const wb = new Excel.Workbook();
@@ -47,7 +46,7 @@ exports.gerarExcel = (req, res) => {
         console.info(`fim setarNotificacao ${new Date()}`);
 
         console.info(`inicio escrever excel ${new Date()}`);
-        wb.xlsx.writeFile(fullPath);
+        await wb.xlsx.writeFile(fullPath);
       });
     return res.json({ filename });
   } catch (err) {
