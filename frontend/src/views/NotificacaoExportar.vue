@@ -55,7 +55,7 @@ export default {
         })
         .catch(() => {
           this.attempt += 1;
-          if (this.attempt === 5) {
+          if (this.attempt === 10) {
             this.attempt = 0;
             clearInterval(this.intervalDownload);
             this.loading = false;
