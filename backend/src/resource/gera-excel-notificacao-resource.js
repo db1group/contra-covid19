@@ -15,7 +15,7 @@ const PAIS = { BRASIL: 'Brasil' };
 
 const DIRETORIO = 'excel';
 
-exports.gerarExcel = async (req, res) => {
+exports.gerarExcel = (req, res) => {
   req.setTimeout(300000);
   try {
     const { dataInicial, dataFinal } = req.query;
@@ -25,10 +25,6 @@ exports.gerarExcel = async (req, res) => {
     const dataFinalFiltro = this.criarDataFinalParaFiltro(dataFinal);
     console.info(`fim - criarDataParaFiltro ${new Date()}`);
 
-    console.info(`inicio consulta ${new Date()}`);
-    const notificacoes = await this.consultarNotificacoes(dataInicialFiltro, dataFinalFiltro);
-    console.info(`fim consulta ${new Date()}`);
-
     if (!fs.existsSync(DIRETORIO)) {
       fs.mkdirSync(DIRETORIO);
     }
@@ -37,16 +33,22 @@ exports.gerarExcel = async (req, res) => {
     const filename = `${guid}.xlsx`;
     const fullPath = path.resolve(DIRETORIO, filename);
 
-    const wb = new Excel.Workbook();
-    const ws = wb.addWorksheet('Planilha1');
+    console.info(`inicio consulta ${new Date()}`);
+    this.consultarNotificacoes(dataInicialFiltro, dataFinalFiltro)
+      .then((notificacoes) => {
+        console.info(`fim consulta ${new Date()}`);
 
-    this.setarColunas(ws);
-    console.info(`inicio setarNotificacao ${new Date()}`);
-    this.setarNotificacao(ws, notificacoes);
-    console.info(`fim setarNotificacao ${new Date()}`);
+        const wb = new Excel.Workbook();
+        const ws = wb.addWorksheet('Planilha1');
 
-    console.info(`inicio escrever excel ${new Date()}`);
-    wb.xlsx.writeFile(fullPath);
+        this.setarColunas(ws);
+        console.info(`inicio setarNotificacao ${new Date()}`);
+        this.setarNotificacao(ws, notificacoes);
+        console.info(`fim setarNotificacao ${new Date()}`);
+
+        console.info(`inicio escrever excel ${new Date()}`);
+        wb.xlsx.writeFile(fullPath);
+      });
     res.json({ filename });
   } catch (err) {
     console.error(err);
