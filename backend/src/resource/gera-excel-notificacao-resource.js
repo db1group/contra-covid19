@@ -3,6 +3,8 @@ const Sequelize = require('sequelize');
 const Excel = require('exceljs');
 const fs = require('fs');
 const moment = require('moment');
+const uuid = require('uuid/v4');
+const path = require('path');
 const models = require('../models');
 
 const TIME_ZONE = {
@@ -31,6 +33,10 @@ exports.gerarExcel = async (req, res) => {
       fs.mkdirSync(DIRETORIO);
     }
 
+    const guid = uuid();
+    const filename = `${guid}.xlsx`;
+    const fullPath = path.resolve(DIRETORIO, filename);
+
     const wb = new Excel.Workbook();
     const ws = wb.addWorksheet('Planilha1');
 
@@ -40,7 +46,8 @@ exports.gerarExcel = async (req, res) => {
     console.info(`fim setarNotificacao ${new Date()}`);
 
     console.info(`inicio escrever excel ${new Date()}`);
-    await wb.xlsx.write(res, { useSharedStrings: true, useStyles: true });
+    wb.xlsx.writeFile(fullPath);
+    res.json({ filename });
   } catch (err) {
     console.error(err);
     res.status(400).json({ error: err.message });
@@ -492,4 +499,10 @@ this.consultarNotificacoes = async (dataInicial, dataFinal) => {
   );
 
   return notificacoes[0];
+};
+
+exports.downloadExcel = (req, res) => {
+  const { filename } = req.params;
+  const fullPath = path.resolve(DIRETORIO, filename);
+  return res.download(fullPath);
 };

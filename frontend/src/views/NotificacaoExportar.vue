@@ -53,12 +53,31 @@ export default {
         }
 
         this.loading = true;
-        NotificacaoService.downloadNotificacoes(this.exportar.toRequestBody())
+        NotificacaoService.getDownloadFilename(this.exportar.toRequestBody())
+          .then(({ filename }) => {
+            let attempt = 0;
+            const intervalDownload = setInterval(() => {
+              NotificacaoService.downloadNotificacoes(filename)
+                .then(() => {
+                  this.loading = false;
+                  clearInterval(intervalDownload);
+                })
+                .catch(() => {
+                  attempt += 1;
+                  if (attempt === 3) {
+                    clearInterval(intervalDownload);
+                    this.loading = false;
+                    this.showError = true;
+                    this.errorMessage = 'Não foi possível realizar o download. Tente novamente com um intervalo menor.';
+                  }
+                });
+            }, 5000);
+          })
           .catch(() => {
             this.showError = true;
-            this.errorMessage = 'Não foi possível realizar o download. Tente novamente com um intervalo menor.';
-          })
-          .finally(() => { this.loading = false; });
+            this.errorMessage = 'Não foi possível realizar o download.';
+            this.loading = false;
+          });
       }
     },
     validarPeriodo() {

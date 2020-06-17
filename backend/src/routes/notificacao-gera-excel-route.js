@@ -8,5 +8,6 @@ const { isRealmSecretariaSaude } = require('../lib/secureRealm');
 const keycloack = secure();
 
 router.get('/notificacao-gera-excel', keycloack.protect(isRealmSecretariaSaude), NotificacaoExportacaoExcelResource.gerarExcel);
+router.get('/notificacao-download/:filename', keycloack.protect(isRealmSecretariaSaude), NotificacaoExportacaoExcelResource.downloadExcel);
 
 module.exports = router;
