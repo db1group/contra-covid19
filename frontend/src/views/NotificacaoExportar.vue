@@ -55,7 +55,7 @@ export default {
         })
         .catch(() => {
           this.attempt += 1;
-          if (this.attempt === 10) {
+          if (this.attempt === 20) {
             this.attempt = 0;
             clearInterval(this.intervalDownload);
             this.loading = false;
@@ -77,7 +77,7 @@ export default {
           .then(({ filename }) => {
             this.attempt = 0;
             this.downloadFile(filename);
-            this.intervalDownload = setInterval(() => this.downloadFile(filename), 5000);
+            this.intervalDownload = setInterval(() => this.downloadFile(filename), 7000);
           })
           .catch(() => {
             this.attempt = 0;
