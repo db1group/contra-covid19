@@ -49,10 +49,10 @@ exports.gerarExcel = (req, res) => {
         console.info(`inicio escrever excel ${new Date()}`);
         wb.xlsx.writeFile(fullPath);
       });
-    res.json({ filename });
+    return res.json({ filename });
   } catch (err) {
     console.error(err);
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 
