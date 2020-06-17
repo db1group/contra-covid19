@@ -502,6 +502,13 @@ this.consultarNotificacoes = (dataInicial, dataFinal) => models.sequelize.query(
 exports.downloadExcel = (req, res) => {
   const { filename } = req.params;
   const fullPath = path.resolve(DIRETORIO, filename);
-  if (!fs.existsSync(fullPath)) return res.status(404).json({ error: 'Arquivo não encontrado!' });
-  return res.download(fullPath);
+  fs.open(fullPath, 'r', (err) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        return res.status(404).json({ error: 'Arquivo não encontrado!' });
+      }
+      return res.status(404).json({ error: err.message });
+    }
+    return res.download(fullPath);
+  });
 };
