@@ -30,6 +30,7 @@
           rounded
           :to="{ name: 'exportar' }"
           :disabled="loading"
+          :loading="loading"
           @click="onClick"
         >
           <v-icon>mdi-download</v-icon>exportar
