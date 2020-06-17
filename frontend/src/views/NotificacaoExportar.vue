@@ -64,7 +64,7 @@ export default {
                 })
                 .catch(() => {
                   attempt += 1;
-                  if (attempt === 3) {
+                  if (attempt === 4) {
                     clearInterval(intervalDownload);
                     this.loading = false;
                     this.showError = true;
