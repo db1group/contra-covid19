@@ -506,5 +506,6 @@ this.consultarNotificacoes = async (dataInicial, dataFinal) => {
 exports.downloadExcel = (req, res) => {
   const { filename } = req.params;
   const fullPath = path.resolve(DIRETORIO, filename);
+  if (!fs.existsSync(DIRETORIO)) return res.status(404).json({ error: 'Arquivo não encontrado!' });
   return res.download(fullPath);
 };
