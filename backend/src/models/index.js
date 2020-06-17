@@ -13,10 +13,10 @@ config.define = {
   freezeTableName: true,
   logging: console.info,
   pool: {
-    max: 7,
-    min: 0,
-    idle: 20000,
-    acquire: 20000,
+    max: 10,
+    min: 2,
+    idle: 30000,
+    acquire: 30000,
   },
 };
 let sequelize;

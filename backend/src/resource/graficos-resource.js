@@ -40,3 +40,11 @@ exports.consultarBoletimCards = async (_req, res) => {
     data: cards,
   });
 };
+
+exports.consultarBoletimGraficoDiarioUltimos30Dias = async (_req, res) => {
+  const boletims = await models.sequelize.query('select * from public.vwboletimpopulacaodiario where dtaprovacao >= (current_timestamp - interval \'30 days\')', {
+    type: Sequelize.QueryTypes.SELECT,
+  });
+
+  return res.json({ results: boletims });
+};
