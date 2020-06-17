@@ -12,6 +12,12 @@ const db = {};
 config.define = {
   freezeTableName: true,
   logging: console.info,
+  pool: {
+    max: 7,
+    min: 0,
+    idle: 20000,
+    acquire: 20000,
+  },
 };
 let sequelize;
 if (config.use_env_variable) {
