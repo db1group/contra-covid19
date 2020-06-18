@@ -15,7 +15,7 @@ const PAIS = { BRASIL: 'Brasil' };
 
 const DIRETORIO = 'excel';
 
-exports.gerarExcel = (req, res) => {
+exports.gerarExcel = async (req, res) => {
   try {
     const { dataInicial, dataFinal } = req.query;
 
@@ -31,30 +31,26 @@ exports.gerarExcel = (req, res) => {
     const guid = uuid();
     const filename = `${guid}.xlsx`;
     const fullPath = path.resolve(DIRETORIO, filename);
-    const doneFile = path.resolve(DIRETORIO, `done-${filename}`);
 
     console.info(`inicio consulta ${new Date()}`);
-    this.consultarNotificacoes(dataInicialFiltro, dataFinalFiltro)
-      .then(async (notificacoes) => {
-        console.info(`fim consulta ${new Date()}`);
+    const notificacoes = await this.consultarNotificacoes(dataInicialFiltro, dataFinalFiltro);
+    console.info(`fim consulta ${new Date()}`);
 
-        const wb = new Excel.Workbook();
-        const ws = wb.addWorksheet('Planilha1');
+    const wb = new Excel.Workbook();
+    const ws = wb.addWorksheet('Planilha1');
 
-        this.setarColunas(ws);
-        console.info(`inicio setarNotificacao ${new Date()}`);
-        this.setarNotificacao(ws, notificacoes);
-        console.info(`fim setarNotificacao ${new Date()}`);
+    this.setarColunas(ws);
+    console.info(`inicio setarNotificacao ${new Date()}`);
+    this.setarNotificacao(ws, notificacoes);
+    console.info(`fim setarNotificacao ${new Date()}`);
 
-        console.info(`inicio escrever excel ${new Date()}`);
-        await wb.xlsx.writeFile(fullPath);
-        fs.writeFileSync(doneFile, '', 'utf8');
-      })
-      .catch((err) => res.status(400).json({ error: err.message }));
-    return res.json({ filename });
+    console.info(`inicio escrever excel ${new Date()}`);
+    await wb.xlsx.writeFile(fullPath);
+    return res.download(fullPath);
   } catch (err) {
     console.error(err);
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
+    throw err;
   }
 };
 
@@ -527,22 +523,3 @@ this.consultarNotificacoesPaginado = (dataInicial, dataFinal, limit = 100, offse
   },
   { type: Sequelize.QueryTypes.SELECT },
 );
-
-exports.downloadExcel = (req, res) => {
-  const { filename } = req.params;
-  const fullPath = path.resolve(DIRETORIO, filename);
-  const fileDone = path.resolve(DIRETORIO, `done-${filename}`);
-  if (!fs.existsSync(fileDone)) return res.status(404).json({ error: 'Arquivo ainda está sendo processado.' });
-  try {
-    const stats = fs.statSync(fullPath);
-    console.info(stats);
-    if (stats.size === 0) return res.status(404).json({ error: 'Arquivo ainda está sendo processado.' });
-    return res.download(fullPath);
-  } catch (err) {
-    console.error(err);
-    if (err.code === 'ENOENT') {
-      return res.status(404).json({ error: 'Arquivo não encontrado!' });
-    }
-    return res.status(404).json({ error: err.message });
-  }
-};

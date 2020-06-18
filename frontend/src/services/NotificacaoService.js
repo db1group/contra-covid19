@@ -28,14 +28,9 @@ export default {
   deleteLote(ids) {
     return http.delete('/notificacoes', { data: ids });
   },
-  downloadNotificacoes(filename) {
+  downloadNotificacoes({ dataInicial, dataFinal }) {
     const time = new Date().getTime();
-    return DownloadService.downloadFile(`/notificacao-download/${filename}`,
+    return DownloadService.downloadFile(`/notificacao-gera-excel?dataInicial=${dataInicial}&dataFinal=${dataFinal}`,
       `notificacoes-${time}.xlsx`);
-  },
-  getDownloadFilename({ dataInicial, dataFinal }) {
-    return http
-      .get(`/notificacao-gera-excel?dataInicial=${dataInicial}&dataFinal=${dataFinal}`)
-      .then(({ data }) => data);
   },
 };
