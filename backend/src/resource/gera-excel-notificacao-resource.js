@@ -529,7 +529,6 @@ this.consultarNotificacoesPaginado = (dataInicial, dataFinal, limit = 100, offse
 );
 
 exports.downloadExcel = (req, res) => {
-  req.setTimeout(6000);
   const { filename } = req.params;
   const fullPath = path.resolve(DIRETORIO, filename);
   const fileDone = path.resolve(DIRETORIO, `done-${filename}`);
