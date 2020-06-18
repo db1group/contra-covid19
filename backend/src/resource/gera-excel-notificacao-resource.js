@@ -31,10 +31,11 @@ exports.gerarExcel = (req, res) => {
     const guid = uuid();
     const filename = `${guid}.xlsx`;
     const fullPath = path.resolve(DIRETORIO, filename);
+    const doneFile = path.resolve(DIRETORIO, `done-${filename}`);
 
     console.info(`inicio consulta ${new Date()}`);
     this.consultarNotificacoes(dataInicialFiltro, dataFinalFiltro)
-      .then(async ([notificacoes]) => {
+      .then(async (notificacoes) => {
         console.info(`fim consulta ${new Date()}`);
 
         const wb = new Excel.Workbook();
@@ -47,7 +48,9 @@ exports.gerarExcel = (req, res) => {
 
         console.info(`inicio escrever excel ${new Date()}`);
         await wb.xlsx.writeFile(fullPath);
-      });
+        fs.writeFileSync(doneFile, '', 'utf8');
+      })
+      .catch((err) => res.status(400).json({ error: err.message }));
     return res.json({ filename });
   } catch (err) {
     console.error(err);
@@ -362,7 +365,36 @@ this.setarColunas = (ws) => {
   ];
 };
 
-this.consultarNotificacoes = (dataInicial, dataFinal) => models.sequelize.query(
+this.proximoOffset = (limit = 100) => {
+  let page = -1;
+  return () => {
+    page += 1;
+    return page * limit;
+  };
+};
+
+// eslint-disable-next-line no-async-promise-executor
+this.consultarNotificacoes = (dataInicial, dataFinal) => new Promise(async (resolve, reject) => {
+  let notificacoes = [];
+  const offset = this.proximoOffset();
+  let proximaPagina = true;
+  try {
+    do {
+      // eslint-disable-next-line no-await-in-loop
+      const [notif] = await this.consultarNotificacoesPaginado(
+        dataInicial, dataFinal, 100, offset(),
+      );
+      notificacoes = [...notificacoes, ...notif];
+      proximaPagina = notif.length > 0;
+    } while (proximaPagina);
+    return resolve(notificacoes);
+  } catch (err) {
+    return reject(err);
+  }
+});
+
+// eslint-disable-next-line max-len
+this.consultarNotificacoesPaginado = (dataInicial, dataFinal, limit = 100, offset = 0) => models.sequelize.query(
   `SELECT "Notificacao"."nomeNotificador" AS nomeDoNotificador,
             "Notificacao"."status" AS statusnotificacao,
             "Notificacao"."createdAt" As criacaoDaNotificacao,
@@ -486,33 +518,32 @@ this.consultarNotificacoes = (dataInicial, dataFinal) => models.sequelize.query(
  INNER JOIN "User" ON "Notificacao"."userId" = "User"."id"
   LEFT JOIN "ProfissionalSaude" ON "Notificacao"."notificadorId" = "ProfissionalSaude"."id"
   LEFT JOIN "Profissao" ON "Notificacao"."profissaoId" = "Profissao"."id"
-      WHERE "Notificacao"."status" != 'EXCLUIDA'
-        AND "Notificacao"."createdAt" BETWEEN :dataInicial AND :dataFinal
-   ORDER BY "Notificacao"."createdAt" DESC;`,
+      WHERE "Notificacao"."status" != 'EXCLUIDA' AND "Notificacao"."createdAt" BETWEEN :dataInicial AND :dataFinal
+   ORDER BY "Notificacao"."createdAt" DESC limit :limit offset :offset`,
   {
     replacements: {
-      dataInicial,
-      dataFinal,
+      dataInicial, dataFinal, limit, offset,
     },
   },
   { type: Sequelize.QueryTypes.SELECT },
 );
 
 exports.downloadExcel = (req, res) => {
-  req.setTimeout(3000);
+  req.setTimeout(6000);
   const { filename } = req.params;
   const fullPath = path.resolve(DIRETORIO, filename);
-  fs.open(fullPath, 'rs', (err) => {
-    if (err) {
-      console.error(err);
-      if (err.code === 'ENOENT') {
-        return res.status(404).json({ error: 'Arquivo não encontrado!' });
-      }
-      return res.status(404).json({ error: err.message });
-    }
+  const fileDone = path.resolve(DIRETORIO, `done-${filename}`);
+  if (!fs.existsSync(fileDone)) return res.status(404).json({ error: 'Arquivo ainda está sendo processado.' });
+  try {
     const stats = fs.statSync(fullPath);
     console.info(stats);
     if (stats.size === 0) return res.status(404).json({ error: 'Arquivo ainda está sendo processado.' });
     return res.download(fullPath);
-  });
+  } catch (err) {
+    console.error(err);
+    if (err.code === 'ENOENT') {
+      return res.status(404).json({ error: 'Arquivo não encontrado!' });
+    }
+    return res.status(404).json({ error: err.message });
+  }
 };
