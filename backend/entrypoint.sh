@@ -11,4 +11,4 @@ echo 'Starting seeders...'
 npx sequelize-cli db:seed:all
 
 echo 'Starting server...'
-pm2-runtime start /app/src/server.js -i max
+pm2-runtime start /app/src/server.js -i max --max-memory-restart 300M
