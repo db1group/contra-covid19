@@ -307,7 +307,7 @@ begin
 	delete from "FatoNotificacaoCovid19" fnc where fnc.dtfato = dtDiaFato::date;
 
 	dtInicial := dtdiafato - interval '1 day' + interval '13 hour';
-    dtFinal := dtdiafato + interval '13 hour' + interval '59 minute' + interval '59 second';
+    dtFinal := dtdiafato + interval '12 hour' + interval '59 minute' + interval '59 second';
 
    	select count(ne) into totalEvolucoes from "Notificacao" n join "NotificacaoEvolucao" ne on ne."notificacaoId" = n.id where n.status <> 'EXCLUIDA' and (ne."createdAt"::timestamp >= dtInicial::timestamp and ne."createdAt"::timestamp <= dtFinal::timestamp);
     if totalEvolucoes = 0 then

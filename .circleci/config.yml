@@ -30,13 +30,13 @@ jobs:
       - aws-cli/setup:
           profile-name: default
       - run: $(aws ecr get-login --registry-ids 127682629527 --region us-east-1 --no-include-email)
-      - run: cd backend && docker build -t notificasaude/backend:latest .
+      - run: cd backend && docker build -t notificasaude/backend:latest . -m 2g
       - run: docker tag notificasaude/backend:latest 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:qa
       - aws-ecs/update-service:
           family: notificasaude-qa-backend
-          cluster-name: 'notificasaude-qa'
-          container-image-name-updates: 'container=notificasaude-qa-backend,tag=qa'
+          cluster-name: "notificasaude-qa"
+          container-image-name-updates: "container=notificasaude-qa-backend,tag=qa"
           force-new-deployment: true
   deploy-backend-prod-aws:
     executor: notificasaude-executor
@@ -49,8 +49,8 @@ jobs:
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/backend:latest
       - aws-ecs/update-service:
           family: notificasaude-prod-backend
-          cluster-name: 'notificasaude-prod'
-          container-image-name-updates: 'container=notificasaude-prod-backend,tag=latest'
+          cluster-name: "notificasaude-prod"
+          container-image-name-updates: "container=notificasaude-prod-backend,tag=latest"
           force-new-deployment: true
 
   build-frontend:
@@ -83,8 +83,8 @@ jobs:
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:qa
       - aws-ecs/update-service:
           family: notificasaude-qa-frontend
-          cluster-name: 'notificasaude-qa'
-          container-image-name-updates: 'container=notificasaude-qa-frontend,tag=qa'
+          cluster-name: "notificasaude-qa"
+          container-image-name-updates: "container=notificasaude-qa-frontend,tag=qa"
           force-new-deployment: true
   deploy-frontend-prod-aws:
     executor: notificasaude-executor
@@ -97,8 +97,8 @@ jobs:
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/frontend:latest
       - aws-ecs/update-service:
           family: notificasaude-prod-frontend
-          cluster-name: 'notificasaude-prod'
-          container-image-name-updates: 'container=notificasaude-prod-frontend,tag=latest'
+          cluster-name: "notificasaude-prod"
+          container-image-name-updates: "container=notificasaude-prod-frontend,tag=latest"
           force-new-deployment: true
 
   deploy-keycloak-qa-aws:
@@ -113,8 +113,8 @@ jobs:
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:qa
       - aws-ecs/update-service:
           family: notificasaude-qa-keycloak
-          cluster-name: 'notificasaude-qa'
-          container-image-name-updates: 'container=notificasaude-qa-keycloak,tag=qa'
+          cluster-name: "notificasaude-qa"
+          container-image-name-updates: "container=notificasaude-qa-keycloak,tag=qa"
           force-new-deployment: true
   deploy-keycloak-prod-aws:
     executor: notificasaude-executor
@@ -127,8 +127,8 @@ jobs:
       - run: docker push 127682629527.dkr.ecr.us-east-1.amazonaws.com/notificasaude/keycloak:latest
       - aws-ecs/update-service:
           family: notificasaude-prod-keycloak
-          cluster-name: 'notificasaude-prod'
-          container-image-name-updates: 'container=notificasaude-prod-keycloak,tag=latest'
+          cluster-name: "notificasaude-prod"
+          container-image-name-updates: "container=notificasaude-prod-keycloak,tag=latest"
           force-new-deployment: true
 
 orbs:
@@ -146,9 +146,9 @@ workflows:
           filters:
             branches:
               only:
-              - master
-              - feature/ci
-              - feature/terraform
+                - master
+                - feature/ci
+                - feature/terraform
       - update-backend-prod-aws:
           type: approval
           requires:
@@ -156,18 +156,18 @@ workflows:
           filters:
             branches:
               only:
-              - master
-              - feature/ci
-              - feature/terraform
+                - master
+                - feature/ci
+                - feature/terraform
       - deploy-backend-prod-aws:
           requires:
             - update-backend-prod-aws
           filters:
             branches:
               only:
-              - master
-              - feature/ci
-              - feature/terraform
+                - master
+                - feature/ci
+                - feature/terraform
 
       - build-frontend
       - deploy-frontend-qa-aws:
@@ -176,9 +176,9 @@ workflows:
           filters:
             branches:
               only:
-              - master
-              - feature/ci
-              - feature/terraform
+                - master
+                - feature/ci
+                - feature/terraform
       - update-frontend-prod-aws:
           type: approval
           requires:
@@ -186,26 +186,26 @@ workflows:
           filters:
             branches:
               only:
-              - master
-              - feature/ci
-              - feature/terraform
+                - master
+                - feature/ci
+                - feature/terraform
       - deploy-frontend-prod-aws:
           requires:
             - update-frontend-prod-aws
           filters:
             branches:
               only:
-              - master
-              - feature/ci
-              - feature/terraform
+                - master
+                - feature/ci
+                - feature/terraform
 
       - deploy-keycloak-qa-aws:
           filters:
             branches:
               only:
-              - master
-              - feature/ci
-              - feature/terraform
+                - master
+                - feature/ci
+                - feature/terraform
       - update-keycloak-prod-aws:
           type: approval
           requires:
@@ -213,15 +213,15 @@ workflows:
           filters:
             branches:
               only:
-              - master
-              - feature/ci
-              - feature/terraform
+                - master
+                - feature/ci
+                - feature/terraform
       - deploy-keycloak-prod-aws:
           requires:
             - update-keycloak-prod-aws
           filters:
             branches:
               only:
-              - master
-              - feature/ci
-              - feature/terraform
+                - master
+                - feature/ci
+                - feature/terraform

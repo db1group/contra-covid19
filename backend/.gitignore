@@ -1,9 +1,12 @@
 .env
+.env.*
 !.env.sample
 
 node_modules
 
 src/db/databases/*.sqlite
+
+excel/
 
 ## Artefatos de test/sonar
 __tests__/coverage/**

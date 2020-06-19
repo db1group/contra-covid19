@@ -32,6 +32,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         allowNull: false,
       },
+      dtSuspeito: DataTypes.DATE,
+      dtConfirmado: DataTypes.DATE,
+      dtDescartado: DataTypes.DATE,
+      dtCurado: DataTypes.DATE,
+      dtEncerrado: DataTypes.DATE,
+      dtObito: DataTypes.DATE,
     },
     {},
   );

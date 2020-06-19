@@ -25,7 +25,14 @@
       </v-col>
       <v-spacer />
       <v-col cols="3">
-        <v-btn color="primary" rounded :to="{ name: 'exportar' }" @click="onClick">
+        <v-btn
+          color="primary"
+          rounded
+          :to="{ name: 'exportar' }"
+          :disabled="loading"
+          :loading="loading"
+          @click="onClick"
+        >
           <v-icon>mdi-download</v-icon>exportar
         </v-btn>
       </v-col>
@@ -42,6 +49,7 @@ export default {
   directives: { mask },
   props: {
     exportar: NotificacaoExportar,
+    loading: [Boolean, null],
   },
   data: () => ({
     rules: {

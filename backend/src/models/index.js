@@ -13,6 +13,13 @@ config.define = {
   freezeTableName: true,
   logging: console.info,
 };
+config.pool = {
+  max: 10,
+  min: 3,
+  idle: 60000,
+  acquire: 20000,
+};
+
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
