@@ -17,7 +17,7 @@ config.pool = {
   max: 10,
   min: 3,
   idle: 60000,
-  acquire: 60000,
+  acquire: 20000,
 };
 
 let sequelize;
