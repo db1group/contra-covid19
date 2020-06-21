@@ -51,14 +51,7 @@
         <v-row justify="end" align="center" dense>
           <v-col>
             <v-btn
-              text
-              small
-              color="#B8860B"
-              :to="{ name: 'unidades-saude-view', params: { id: item.id } }"
-            >VISUALIZAR</v-btn>
-          </v-col>
-          <v-col>
-            <v-btn
+              v-if="isPermiteAlterar(item)"
               text
               small
               color="#F54D09"
@@ -66,7 +59,13 @@
             >EDITAR</v-btn>
           </v-col>
           <v-col>
-            <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
+            <v-btn
+              v-if="isSecretariaSaude"
+              text
+              small
+              color="red"
+              @click="showExclusionConfirmDialog(item)"
+            >EXCLUIR</v-btn>
           </v-col>
         </v-row>
       </template>
@@ -91,6 +90,8 @@ export default {
       sortDesc: 'false',
     },
     totalUnidades: 0,
+    unidadesSaudeUserLogged: [],
+    isSecretariaSaude: false,
     unidades: [],
     filter: '',
     filterCons: null,
@@ -104,7 +105,6 @@ export default {
       showDialog: false,
       id: null,
     },
-    isSecretariaSaude: false,
   }),
   methods: {
     consultarUnidades({ page, itemsPerPage } = this.options) {
@@ -156,10 +156,27 @@ export default {
       this.filter = search;
       this.filterUnidades();
     },
+    isPermiteAlterar(item) {
+      return this.isUnidadeSaudePermitidaUserLogged(item.id)
+        || this.isSecretariaSaude;
+    },
+    isUnidadeSaudePermitidaUserLogged(unidadeSaudeId) {
+      return this.unidadesSaudeUserLogged.some((data) => data.id === unidadeSaudeId);
+    },
+    consultarUnidadesSaudeUsuario() {
+      UnidadeSaudeService.findByUserEmail(keycloak.tokenParsed.email)
+        .then(({ data }) => {
+          this.unidadesSaudeUserLogged = data;
+        })
+        .finally(() => {
+          this.consultarUnidades();
+        });
+    },
   },
   created() {
     this.isSecretariaSaude = keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
     this.consultarUnidades();
+    this.consultarUnidadesSaudeUsuario();
   },
 };
 </script>

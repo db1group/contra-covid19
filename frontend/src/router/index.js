@@ -63,14 +63,10 @@ const routes = [
     component: UnidadeSaudeForm,
   },
   {
-    path: '/unidades-saude/:id/view',
-    name: 'unidades-saude-view',
-    component: null,
-  },
-  {
     path: '/unidades-saude/:id/edit',
     name: 'unidades-saude-edit',
-    component: null,
+    component: UnidadeSaudeForm,
+    props: { edit: true },
   },
 ];
 

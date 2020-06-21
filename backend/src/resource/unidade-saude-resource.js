@@ -72,3 +72,68 @@ exports.consultaUnidades = async (req, res, next) => {
     return next(err);
   }
 };
+
+const validarCNESUnico = async (cnes, id = null) => {
+  const where = { cnes };
+  if (id) where.id = { [Op.ne]: id };
+  const unidadeSaude = await models.UnidadeSaude.findOne({
+    attributes: ['id'],
+    where: { ...where },
+  });
+  return !!unidadeSaude;
+};
+
+exports.cadastrar = async (req, res, next) => {
+  try {
+    const { cnes } = req.body;
+    if (await validarCNESUnico(cnes)) return res.status(400).json({ error: 'CNES já cadastrado para outra unidade de Saúde.' });
+    const unidadeSaude = await models.UnidadeSaude.create({ ...req.body });
+
+    return res.json({ data: unidadeSaude });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.atualizar = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const unidade = req.body;
+    if (await validarCNESUnico(unidade.cnes, id)) return res.status(400).json({ error: 'CNES já cadastrado para outra unidade de Saúde.' });
+    const unidadeSaude = await models.UnidadeSaude.update(
+      { ...unidade }, {
+        where: { id },
+        individualHooks: true,
+      },
+    );
+
+    return res.json({ data: unidadeSaude });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.consultarPorId = async (req, res) => {
+  const { id } = req.params;
+  const unidadesSaude = await models.UnidadeSaude.findOne({
+    where: { id },
+    include: [
+      {
+        attributes: ['id', ['nome', 'municipio']],
+        model: models.Municipio,
+      },
+    ],
+  });
+
+  return res.json({ data: unidadesSaude });
+};
+
+exports.deletar = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    await models.UnidadeSaude.destroy({ where: { id } });
+    return res.status(204).send();
+  } catch (err) {
+    return next(err);
+  }
+};
