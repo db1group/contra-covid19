@@ -40,7 +40,7 @@
           <v-icon>mdi-stethoscope</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>Undades de Saúde</v-list-item-title>
+          <v-list-item-title>Unidades de Saúde</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item
