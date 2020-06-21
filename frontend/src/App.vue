@@ -1,11 +1,7 @@
 <template>
   <v-app class="covid-app">
     <v-content fluid>
-      <v-navigation-drawer
-        v-model="isMenuOpen"
-        absolute
-        temporary
-      >
+      <v-navigation-drawer v-model="isMenuOpen" absolute temporary>
         <main-menu
           :current-route-name="currentRouteName"
           @click="goToPage"
@@ -15,36 +11,20 @@
       <v-app-bar color="white" absolute>
         <v-row class="fill-height" dense>
           <v-col cols="auto" class="py-0 fill-height">
-            <v-btn
-              height="100%"
-              text
-              fab
-              @click="openMenu"
-            >
+            <v-btn height="100%" text fab @click="openMenu">
               <v-icon>mdi-menu</v-icon>
             </v-btn>
           </v-col>
           <v-col class="covid-app__unidade fill-height py-0 pl-2" md="3">
-            <unidade-header/>
+            <unidade-header />
           </v-col>
           <v-col cols="8" md="6" class="py-0 fill-height">
-            <v-btn
-              block
-              height="100%"
-              text
-              @click="goToHomePage"
-            >
-              <img src="@/assets/notifica-saude.svg" alt="Notifica saúde"/>
+            <v-btn block height="100%" text @click="goToHomePage">
+              <img src="@/assets/notifica-saude.svg" alt="Notifica saúde" />
             </v-btn>
           </v-col>
           <v-row class="fill-height py-0 pr-2" justify="end">
-            <v-btn
-              text
-              height="100%"
-              @click="executeLogout"
-            >
-              Sair
-            </v-btn>
+            <v-btn text height="100%" @click="executeLogout">Sair</v-btn>
           </v-row>
         </v-row>
       </v-app-bar>
@@ -60,7 +40,7 @@
     background-color: #FAFAFA
   &__unidade
     display: none
-  +media-min-md
+    +media-min-md
     &__unidade
       display: block
 </style>
@@ -91,7 +71,10 @@ export default {
       this.isMenuOpen = true;
     },
     goToPage(pageName) {
-      this.$router.push({ name: pageName });
+      this.$router.push({ name: pageName }).catch((err) => {
+        if (err.name === 'NavigationDuplicated') return;
+        throw err;
+      });
     },
   },
   computed: {
