@@ -86,7 +86,7 @@ const validarCNESUnico = async (cnes, id = null) => {
 exports.cadastrar = async (req, res, next) => {
   try {
     const { cnes } = req.body;
-    if (await validarCNESUnico(cnes)) return res.status(400).json({ error: 'CNES já cadastrado para outra unidade de Saúde.' });
+    if (await validarCNESUnico(cnes)) return res.status(400).json({ error: 'CNES já cadastrado para outra Unidade de Saúde.' });
     const unidadeSaude = await models.UnidadeSaude.create({ ...req.body });
 
     return res.json({ data: unidadeSaude });
@@ -99,7 +99,7 @@ exports.atualizar = async (req, res, next) => {
   try {
     const { id } = req.params;
     const unidade = req.body;
-    if (await validarCNESUnico(unidade.cnes, id)) return res.status(400).json({ error: 'CNES já cadastrado para outra unidade de Saúde.' });
+    if (await validarCNESUnico(unidade.cnes, id)) return res.status(400).json({ error: 'CNES já cadastrado para outra Unidade de Saúde.' });
     const unidadeSaude = await models.UnidadeSaude.update(
       { ...unidade }, {
         where: { id },
