@@ -75,22 +75,38 @@ const middlewareRedis = (req, res, next) => {
     next();
   }
 };
-const redisClient = (app) => {
-  if (redis) return redis;
 
+const reconnect = () => {
+  if (connected) return redis;
+  if (redis) {
+    redis.disconnect();
+    redis = null;
+  }
+
+  let timeReconnect;
   console.info('Connecting Redis Server...');
   redis = new Redis(process.env.REDIS_URL);
 
   redis.on('error', (error) => {
     if (error.code === 'ECONNREFUSED') {
       redis.disconnect();
+      timeReconnect = setTimeout(() => reconnect(), process.env.REDIS_RECONNECT || 10000);
     }
     console.error(`Redis Error: ${error.message}`);
   });
 
-  redis.on('connect', () => { connected = true; });
+  redis.on('connect', () => {
+    clearTimeout(timeReconnect);
+    connected = true;
+    console.info('Connected Redis Server...');
+  });
   redis.on('close', () => { connected = false; });
 
+  return redis;
+};
+
+const redisClient = (app) => {
+  reconnect();
   if (app) {
     app.use(middlewareRedis);
   }
