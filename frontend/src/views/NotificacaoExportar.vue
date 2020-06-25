@@ -46,11 +46,13 @@ export default {
     },
     send() {
       if (this.$refs.form.validate()) {
+        /*
         if (!this.validarPeriodo()) {
           this.showError = true;
           this.errorMessage = 'A data inicial não pode ser posterior à data final e no período de 7 dias.';
           return;
         }
+        */
 
         this.loading = true;
         NotificacaoService.downloadNotificacoes(this.exportar.toRequestBody())
