@@ -254,10 +254,18 @@ exports.consultarProximoDiaFechamento = async (req, res, next) => {
   }
 };
 
+const removerCacheGraficos = (req) => {
+  req.removeCacheByKey('/public/boletim/grafico');
+  req.removeCacheByKey('/public/boletim/grafico-diario');
+  req.removeCacheByKey('/public/boletim/graficoPaginado');
+  req.removeCacheByKey('/public/boletim/cards');
+};
+
 exports.cadastrarProximoFechamento = async (req, res, next) => {
   try {
     const { id, dataFechamento } = req.body;
     const fechamento = await realizarFechamento(id, dataFechamento);
+    removerCacheGraficos(req);
     return res.json({ data: fechamento });
   } catch (err) {
     return next(err);
