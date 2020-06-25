@@ -38,6 +38,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "helmet": "^3.22.0",
+    "ioredis": "^4.17.3",
     "keycloak-connect": "^10.0.0",
     "moment": "^2.24.0",
     "pg": "^8.0.0",
