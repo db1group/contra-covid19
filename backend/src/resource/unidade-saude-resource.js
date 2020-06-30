@@ -4,7 +4,7 @@ const models = require('../models');
 const { Op } = Sequelize;
 
 exports.consultaPorNome = async (req, res) => {
-  const { nome } = req.query;
+  const { nome = '' } = req.query;
   const unidadesSaude = await models.UnidadeSaude.findAll({
     where: {
       nome: {

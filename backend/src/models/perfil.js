@@ -1,3 +1,10 @@
+const { normalizarTexto } = require('../lib/normalizar-texto');
+
+const normalizarTextoPerfil = (perfil) => {
+  // eslint-disable-next-line no-param-reassign
+  perfil.nome = normalizarTexto(perfil.nome);
+};
+
 module.exports = (sequelize, DataTypes) => {
   const Perfil = sequelize.define('Perfil', {
     id: {
@@ -10,8 +17,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   }, {});
-  Perfil.associate = (_models) => {
-    // Perfil.hasMany(models.NotificaLeitoPerfil, { foreignKey: 'perfilId' });
+  Perfil.associate = (models) => {
+    Perfil.hasMany(models.NotificaLeitoPerfil, { foreignKey: 'perfilId' });
   };
+  Perfil.beforeSave((perfil, _options) => {
+    normalizarTextoPerfil(perfil);
+  });
   return Perfil;
 };

@@ -35,6 +35,14 @@ module.exports = {
       },
       allowNull: false,
     },
+    leitosUnidadeId: {
+      type: Sequelize.UUID,
+      references: {
+        model: 'ControleLeito',
+        key: 'id',
+      },
+      allowNull: false,
+    },
     createdAt: {
       allowNull: false,
       type: Sequelize.DATE,
