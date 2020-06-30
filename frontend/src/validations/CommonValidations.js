@@ -99,3 +99,7 @@ export const maxAge = (limitAge) => (value) => {
   return !value || personAge <= limitAge
     || `O paciente deve ter até ${limitAge} anos.`;
 };
+
+export const mustBeEmpty = (value, message = 'O campo deve estar vazio.') => !value
+  || value.toString().length === 0
+  || message;
