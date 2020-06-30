@@ -44,6 +44,17 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item
+        value="controle-leitos"
+        @click="onClick('controle-leitos')"
+      >
+        <v-list-item-icon>
+          <v-icon>mdi-bed</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Controle de Leitos</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         v-if="isUserFechamento"
         value="fechamento-diario"
         @click="onClick('fechamento-diario')"

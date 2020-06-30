@@ -8,6 +8,7 @@ import EvolucaoForm from '../views/EvolucaoForm.vue';
 import NotificacaoExportar from '../views/NotificacaoExportar.vue';
 import UnidadeSaudeCons from '../views/UnidadeSaudeCons.vue';
 import UnidadeSaudeForm from '../views/UnidadeSaudeForm.vue';
+import ControleLeitosForm from '../views/ControleLeitosForm.vue';
 
 Vue.use(VueRouter);
 
@@ -67,6 +68,11 @@ const routes = [
     name: 'unidades-saude-edit',
     component: UnidadeSaudeForm,
     props: { edit: true },
+  },
+  {
+    path: '/controle-leitos',
+    name: 'controle-leitos',
+    component: ControleLeitosForm,
   },
 ];
 
