@@ -1,20 +1,8 @@
 <template>
-  <v-row class="unidade-header" align="center" dense>
-    <v-col class="unidade-header__info">
-      <v-row dense>
-        <v-col cols="12" class="pb-0">
-          <div class="font-weight-bold truncate-text">
-            Unidade Notificante
-          </div>
-        </v-col>
-        <v-col cols="12">
-          <div class="body-2 truncate-text" :title="fullName">
-            {{ fullName }}
-          </div>
-        </v-col>
-      </v-row>
-    </v-col>
-  </v-row>
+  <div class="d-flex flex-column ma-2">
+    <div class="font-weight-bold truncate-text">Unidade Notificante</div>
+    <div class="body-2 truncate-text" :title="fullName">{{ fullName }}</div>
+  </div>
 </template>
 <style lang="sass" scoped>
 @import ~@/styles/mobileFirst
