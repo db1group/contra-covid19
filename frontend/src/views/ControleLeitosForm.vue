@@ -1,18 +1,15 @@
 <template>
   <section style="margin-top: 45px;">
-    <header-controle-leitos />
     <controle-leitos-form :id="unidadeId"  />
   </section>
 </template>
 
 <script>
 import ControleLeitosForm from '@/components/ControleLeitos/ControleLeitosForm.vue';
-import HeaderControleLeitos from '@/components/ControleLeitos/HeaderControleLeitos.vue';
 
 export default {
   components: {
     ControleLeitosForm,
-    HeaderControleLeitos,
   },
   props: {
     edit: {

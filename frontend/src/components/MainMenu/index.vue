@@ -44,8 +44,8 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item
-        value="controle-leitos"
-        @click="onClick('controle-leitos')"
+        value="controle-leitos-cons"
+        @click="onClick('controle-leitos-cons')"
       >
         <v-list-item-icon>
           <v-icon>mdi-bed</v-icon>

@@ -10,7 +10,7 @@
           class="mr-2"
           color="primary"
           rounded
-          :to="{ name: 'unidades-saude-form' }"
+          :to="{ name: 'controle-leitos-form' }"
         >
           <v-icon>mdi-plus</v-icon>Cadastrar
         </v-btn>

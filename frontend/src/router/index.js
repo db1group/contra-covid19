@@ -8,6 +8,7 @@ import EvolucaoForm from '../views/EvolucaoForm.vue';
 import NotificacaoExportar from '../views/NotificacaoExportar.vue';
 import UnidadeSaudeCons from '../views/UnidadeSaudeCons.vue';
 import UnidadeSaudeForm from '../views/UnidadeSaudeForm.vue';
+import ControleLeitosCons from '../views/ControleLeitosCons.vue';
 import ControleLeitosForm from '../views/ControleLeitosForm.vue';
 
 Vue.use(VueRouter);
@@ -71,8 +72,19 @@ const routes = [
   },
   {
     path: '/controle-leitos',
-    name: 'controle-leitos',
+    name: 'controle-leitos-cons',
+    component: ControleLeitosCons,
+  },
+  {
+    path: '/controle-leitos/cadastro',
+    name: 'controle-leitos-form',
     component: ControleLeitosForm,
+  },
+  {
+    path: '/controle-leitos/:id/edit',
+    name: 'controle-leitos-edit',
+    component: ControleLeitosForm,
+    props: { edit: true },
   },
 ];
 
