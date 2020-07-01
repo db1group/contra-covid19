@@ -3,47 +3,19 @@
     <header-title :title="title" backRoute="controle-leitos-cons" />
     <v-card class="mx-auto" width="500">
       <v-card-title>
-        <h3 class="primary--text">Controle de Leitos</h3>
+        <h3 class="primary--text">Controle de Leitoss</h3>
       </v-card-title>
       <v-form ref="form" class="ma-2 form-unid">
         <v-row align="center" dense>
           <v-col>
             <v-text-field
-              :value="unidade.nome"
-              label="Unidade de Saúde"
+              :value="controleLeito.nome"
+              label="Controle de Leitos"
               :rules="rules.nome"
               @input="updateNome"
               validate-on-blur
               required
               autofocus
-            />
-          </v-col>
-        </v-row>
-        <v-row align="center" dense>
-          <v-col cols="8">
-            <v-autocomplete
-              :value="unidade.municipioId"
-              :rules="rules.municipioId"
-              label="Município *"
-              :items="municipios.items"
-              item-text="nome"
-              item-value="id"
-              :loading="municipios.loading"
-              @update:search-input="searchMunicipios"
-              @input="updateMunicipioId"
-              no-data-text="Município não encontrado"
-              required
-              validate-on-blur
-            />
-          </v-col>
-          <v-col cols="4">
-            <v-text-field
-              label="CNES"
-              :value="unidade.cnes"
-              :rules="rules.cnes"
-              @input="updateCNES"
-              validate-on-blur
-              required
             />
           </v-col>
         </v-row>
@@ -69,7 +41,7 @@
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtEnfermariaCovid"
+              :value="controleLeito.qtEnfermariaCovid"
               :rules="rules.leitos"
               validate-on-blur
               @input="updateEnfermariaCovid"
@@ -78,7 +50,7 @@
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtEnfermariaNormal"
+              :value="controleLeito.qtEnfermariaNormal"
               :rules="rules.leitos"
               @input="updateEnfermariaNormal"
               validate-on-blur
@@ -87,20 +59,20 @@
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtEnfermariaPrivado"
+              :value="controleLeito.qtEnfermariaPrivado"
               :rules="rules.leitos"
               @input="updateEnfermariaPrivado"
               validate-on-blur
             />
           </v-col>
-          <v-col class="total">{{unidade.totalEnfermarias()}}</v-col>
+          <v-col class="total">{{controleLeito.totalEnfermarias()}}</v-col>
         </v-row>
         <v-row align="center" no-gutters class="px-2">
           <v-col cols="4" class="primary--text font-weight-bold">UTI Adulta</v-col>
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtUTIAdultaCovid"
+              :value="controleLeito.qtUTIAdultaCovid"
               :rules="rules.leitos"
               @input="updateUTIAdultaCovid"
               validate-on-blur
@@ -109,7 +81,7 @@
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtUTIAdultaNormal"
+              :value="controleLeito.qtUTIAdultaNormal"
               :rules="rules.leitos"
               @input="updateUTIAdultaNormal"
               validate-on-blur
@@ -118,20 +90,20 @@
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtUTIAdultaPrivado"
+              :value="controleLeito.qtUTIAdultaPrivado"
               :rules="rules.leitos"
               @input="updateUTIAdultaPrivado"
               validate-on-blur
             />
           </v-col>
-          <v-col class="total">{{unidade.totalUTIAdulta()}}</v-col>
+          <v-col class="total">{{controleLeito.totalUTIAdulta()}}</v-col>
         </v-row>
         <v-row align="center" no-gutters class="px-2">
           <v-col cols="4" class="primary--text font-weight-bold">UTI Ped.</v-col>
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtUTIPedCovid"
+              :value="controleLeito.qtUTIPedCovid"
               :rules="rules.leitos"
               @input="updateUTIPedCovid"
               validate-on-blur
@@ -140,7 +112,7 @@
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtUTIPedNormal"
+              :value="controleLeito.qtUTIPedNormal"
               :rules="rules.leitos"
               @input="updateUTIPedNormal"
               validate-on-blur
@@ -149,20 +121,20 @@
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtUTIPedPrivado"
+              :value="controleLeito.qtUTIPedPrivado"
               :rules="rules.leitos"
               @input="updateUTIPedPrivado"
               validate-on-blur
             />
           </v-col>
-          <v-col class="total">{{unidade.totalUTIPed()}}</v-col>
+          <v-col class="total">{{controleLeito.totalUTIPed()}}</v-col>
         </v-row>
         <v-row align="center" no-gutters class="px-2">
           <v-col cols="4" class="primary--text font-weight-bold">UTI Neo.</v-col>
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtUTINeoCovid"
+              :value="controleLeito.qtUTINeoCovid"
               :rules="rules.leitos"
               @input="updateUTINeoCovid"
               validate-on-blur
@@ -171,7 +143,7 @@
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtUTINeoNormal"
+              :value="controleLeito.qtUTINeoNormal"
               :rules="rules.leitos"
               @input="updateUTINeoNormal"
               validate-on-blur
@@ -180,25 +152,25 @@
           <v-col cols="2">
             <v-text-field
               class="field-num"
-              :value="unidade.qtUTINeoPrivado"
+              :value="controleLeito.qtUTINeoPrivado"
               :rules="rules.leitos"
               @input="updateUTINeoPrivado"
               validate-on-blur
             />
           </v-col>
-          <v-col class="total">{{unidade.totalUTINeo()}}</v-col>
+          <v-col class="total">{{controleLeito.totalUTINeo()}}</v-col>
         </v-row>
         <v-row align="center" no-gutters class="px-2 footer-total">
           <v-col cols="4" class="footer-col">TOTAL</v-col>
-          <v-col cols="2" class="footer-col">{{unidade.totalCovid()}}</v-col>
-          <v-col cols="2" class="footer-col">{{unidade.totalNormal()}}</v-col>
-          <v-col cols="2" class="footer-col">{{unidade.totalPrivado()}}</v-col>
+          <v-col cols="2" class="footer-col">{{controleLeito.totalCovid()}}</v-col>
+          <v-col cols="2" class="footer-col">{{controleLeito.totalNormal()}}</v-col>
+          <v-col cols="2" class="footer-col">{{controleLeito.totalPrivado()}}</v-col>
           <v-col class="footer-col" />
         </v-row>
         <v-card-actions>
           <v-row align="center" justify="end">
             <v-col cols="auto">
-              <v-btn color="primary" rounded @click="salvarUnidade" :loading="loading">Salvar</v-btn>
+              <v-btn color="primary" rounded @click="salvarControleLeito" :loading="loading">Salvar</v-btn>
             </v-col>
           </v-row>
         </v-card-actions>
@@ -252,12 +224,14 @@
 <script>
 import HeaderTitle from '@/components/commons/HeaderTitle.vue';
 import {
-  required, maxLength, minLength, minLengthNumbers,
+  required, maxLength, minLength,
   onlyCardinalNumbers,
 } from '@/validations/CommonValidations';
+import ControleLeito from '@/entities/ControleLeito';
+import ControleLeitoService from '@/services/ControleLeitoService';
 import UnidadeSaude from '@/entities/UnidadeSaude';
-import MunicipioService from '@/services/MunicipioService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
+
 
 const StateForm = {
   NEW: 'NEW',
@@ -272,55 +246,46 @@ export default {
     id: String,
   },
   watch: {
-    id(unidadeId) {
-      this.editarUnidade(unidadeId);
-      return unidadeId;
-    },
+
   },
   data: () => ({
     stateForm: StateForm.NEW,
-    searchMunicipio: null,
-    unidade: new UnidadeSaude(),
+    controleLeito: new ControleLeito(),
+    unidadeSaude: new UnidadeSaude(),
     loading: false,
     showError: false,
     mensagemErro: null,
     showSuccess: false,
     mensagemSucesso: null,
-    municipios: {
-      loading: false,
-      items: [],
-    },
     rules: {
       nome: [required, maxLength(150), minLength(3)],
-      municipioId: [required],
-      cnes: [required, minLengthNumbers(3)],
       leitos: [onlyCardinalNumbers],
     },
   }),
   computed: {
     title() {
       switch (this.stateForm) {
-        case StateForm.EDIT: return 'Editar Unidade de Saúde';
-        default: return 'Cadastrar Unidade de Saúde';
+        case StateForm.EDIT: return 'Editar Controle de Leitos';
+        default: return 'Cadastrar Controle de Leitos';
       }
     },
   },
   methods: {
-    salvarUnidade() {
+    salvarControleLeito() {
       if (this.stateForm === StateForm.NEW) {
-        this.cadastrarUnidade();
+        this.cadastrarControleLeito();
       } else {
-        this.atualizarUnidade();
+        this.atualizarControleLeito();
       }
     },
-    cadastrarUnidade() {
+    cadastrarControleLeito() {
       if (this.$refs.form.validate()) {
         this.loading = true;
-        UnidadeSaudeService.save(this.unidade.toRequestBody())
+        ControleLeitoService.save(this.controleLeito.toRequestBody())
           .then(() => {
-            this.unidade = new UnidadeSaude();
+            this.controleLeito = new ControleLeito();
             this.showSuccess = true;
-            this.mensagemSucesso = 'Unidade de Saúde cadastrada com sucesso.';
+            this.mensagemSucesso = 'Controle de Leitos cadastrada com sucesso.';
           })
           .catch(({ response }) => {
             this.showError = true;
@@ -329,14 +294,14 @@ export default {
           .finally(() => { this.loading = false; });
       }
     },
-    atualizarUnidade() {
+    atualizarControleLeito() {
       if (this.$refs.form.validate()) {
         this.loading = true;
-        const { id } = this.unidade;
-        UnidadeSaudeService.update(id, this.unidade.toRequestBody())
+        const { id } = this.controleLeito;
+        ControleLeitoService.update(id, this.controleLeito.toRequestBody())
           .then(() => {
             this.showSuccess = true;
-            this.mensagemSucesso = 'Unidade de Saúde atualizada com sucesso.';
+            this.mensagemSucesso = 'Controle de Leitos atualizada com sucesso.';
           })
           .catch(({ response }) => {
             this.showError = true;
@@ -346,69 +311,50 @@ export default {
       }
     },
     updateNome(nome) {
-      this.unidade.nome = nome;
-    },
-    updateCNES(cnes) {
-      this.unidade.cnes = cnes;
+      this.controleLeito.nome = nome;
     },
     updateEnfermariaCovid(qtEnfermaria) {
-      this.unidade.qtEnfermariaCovid = qtEnfermaria;
+      this.controleLeito.qtEnfermariaCovid = qtEnfermaria;
     },
     updateEnfermariaNormal(qtEnfermaria) {
-      this.unidade.qtEnfermariaNormal = qtEnfermaria;
+      this.controleLeito.qtEnfermariaNormal = qtEnfermaria;
     },
     updateEnfermariaPrivado(qtEnfermaria) {
-      this.unidade.qtEnfermariaPrivado = qtEnfermaria;
+      this.controleLeito.qtEnfermariaPrivado = qtEnfermaria;
     },
     updateUTIAdultaCovid(qtUTIAdulta) {
-      this.unidade.qtUTIAdultaCovid = qtUTIAdulta;
+      this.controleLeito.qtUTIAdultaCovid = qtUTIAdulta;
     },
     updateUTIAdultaNormal(qtUTIAdulta) {
-      this.unidade.qtUTIAdultaNormal = qtUTIAdulta;
+      this.controleLeito.qtUTIAdultaNormal = qtUTIAdulta;
     },
     updateUTIAdultaPrivado(qtUTIAdulta) {
-      this.unidade.qtUTIAdultaPrivado = qtUTIAdulta;
+      this.controleLeito.qtUTIAdultaPrivado = qtUTIAdulta;
     },
     updateUTIPedCovid(qtUTIAdulta) {
-      this.unidade.qtUTIPedCovid = qtUTIAdulta;
+      this.controleLeito.qtUTIPedCovid = qtUTIAdulta;
     },
     updateUTIPedNormal(qtUTIAdulta) {
-      this.unidade.qtUTIPedNormal = qtUTIAdulta;
+      this.controleLeito.qtUTIPedNormal = qtUTIAdulta;
     },
     updateUTIPedPrivado(qtUTIAdulta) {
-      this.unidade.qtUTIPedPrivado = qtUTIAdulta;
+      this.controleLeito.qtUTIPedPrivado = qtUTIAdulta;
     },
     updateUTINeoCovid(qtUTIAdulta) {
-      this.unidade.qtUTINeoCovid = qtUTIAdulta;
+      this.controleLeito.qtUTINeoCovid = qtUTIAdulta;
     },
     updateUTINeoNormal(qtUTIAdulta) {
-      this.unidade.qtUTINeoNormal = qtUTIAdulta;
+      this.controleLeito.qtUTINeoNormal = qtUTIAdulta;
     },
     updateUTINeoPrivado(qtUTIAdulta) {
-      this.unidade.qtUTINeoPrivado = qtUTIAdulta;
+      this.controleLeito.qtUTINeoPrivado = qtUTIAdulta;
     },
-    searchMunicipios(search = '') {
-      if (search === this.searchMunicipio) return;
-      this.searchMunicipio = search ? search.trim().toUpperCase() : '';
-      this.findMunicipios(this.searchMunicipio);
-    },
-    findMunicipios(searchMunicipio = '') {
-      this.municipios.loading = true;
-      MunicipioService.findAll(searchMunicipio)
-        .then(({ data }) => {
-          this.municipios.items = data;
-        })
-        .finally(() => { this.municipios.loading = false; });
-    },
-    updateMunicipioId(municipioId) {
-      this.unidade.municipioId = municipioId;
-    },
-    buscarUnidade(id) {
+
+    findUnidadeSaudeAtual(id) {
       this.loading = true;
       UnidadeSaudeService.findById(id)
         .then(({ data }) => {
-          this.unidade = new UnidadeSaude({ ...data, municipio: data.Municipio.municipio });
-          this.findMunicipios(this.unidade.municipio);
+          this.unidadeSaude = new UnidadeSaude({ ...data, municipio: data.Municipio.municipio });
         })
         .catch(({ response }) => {
           this.showError = true;
@@ -416,14 +362,9 @@ export default {
         })
         .finally(() => { this.loading = false; });
     },
-    editarUnidade(id) {
-      this.stateForm = StateForm.EDIT;
-      this.unidade.id = id;
-      this.buscarUnidade(id);
-    },
   },
   created() {
-    this.findMunicipios();
+    // this.findUnidadeSaudeAtual();
   },
 };
 </script>
