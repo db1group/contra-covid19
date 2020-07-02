@@ -1,7 +1,7 @@
  <template>
   <v-container fluid>
-    <!-- <confirm-dialog
-      v-model="removingUnidadeDialog.showDialog"
+    <confirm-dialog
+      v-model="removingControleLeitoDialog.showDialog"
       confirm-color="error"
       @confirm="confirmExclusion"
     >
@@ -12,8 +12,8 @@
           <span class="font-weight-bold">excluir</span> A Notificação de Leito?
         </div>
       </div>
-    </confirm-dialog> -->
-    <v-data-table :headers="headers" :items="leitos">
+    </confirm-dialog>
+    <v-data-table :headers="headers" :items="leitos" :loading="loading">
       <template v-slot:item.name="props">
         <v-edit-dialog
           :return-value.sync="props.item.name"
@@ -65,12 +65,17 @@
   </v-container>
 </template>
 <script>
+import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
+import ControleLeitoService from '@/services/ControleLeitoService';
+import ControleLeito from '@/entities/ControleLeito';
 
 export default {
+  components: { ConfirmDialog },
   data: () => ({
     snack: false,
     snackColor: '',
     snackText: '',
+    totalLeitos: 0,
     pagination: {},
     headers: [
       {
@@ -82,15 +87,31 @@ export default {
       { text: 'Unidade Saúde', value: 'unidadeSaude' },
       { text: 'Data cadastro', value: 'dataCadastro' },
     ],
-    leitos: [
-      {
-        dtNotificacaoo: '24/04/2020',
-        unidadeSaude: 'Santa casa de Maringa',
-        dataCadastro: '24/04/2020',
-      },
-    ],
+    leitos: [],
+    loading: true,
+    user: {},
+    removingControleLeitoDialog: {
+      showDialog: false,
+      id: null,
+    },
   }),
   methods: {
+    consultaControleLeitos() {
+      this.loading = true;
+      ControleLeitoService.findAllControleLeitosByUnidadeSaude(this.user.unidadeSaudeId)
+        .then(({ count, data }) => {
+          this.totalLeitos = count;
+          this.leitos = data.map((d) => new ControleLeito(d));
+          this.loading = false;
+        })
+        .catch((error) => {
+          const { data } = error.response || {};
+          this.$emit('erro:consultaControleLeitos', data.error);
+        });
+    },
+    confirmExclusion() {
+      this.excluirItem(this.removingControleLeitoDialog.id);
+    },
     save() {
       this.snack = true;
       this.snackColor = 'success';
@@ -109,6 +130,10 @@ export default {
     close() {
       console.log('Dialog closed');
     },
+  },
+  created() {
+    this.user = this.$store.state.user;
+    this.consultaControleLeitos();
   },
 };
 </script>

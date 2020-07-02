@@ -1,9 +1,13 @@
 import Vue from 'vue';
 import Vuex, { Store } from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex);
 
 export default new Store({
+  plugins: [createPersistedState({
+    storage: window.sessionStorage,
+  })],
   state: {
     user: {
       email: '',
@@ -18,7 +22,7 @@ export default new Store({
   },
   mutations: {
     setUser(state, newUser) {
-      state.name = newUser;
+      state.user = newUser;
     },
   },
   actions: {

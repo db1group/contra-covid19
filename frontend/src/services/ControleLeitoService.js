@@ -1,13 +1,12 @@
 import http from './Http';
 
 export default {
-  save(controleLeito) {
-    const { unidadeId } = controleLeito;
+  save(controleLeito, unidadeId) {
     return http.post(`/unidades-saude/${unidadeId}/notifica-leitos`, controleLeito);
   },
 
-  findAllControleLeitosByUnidadeSaude(unidadeId, nome = '') {
-    return http.get(`/unidades-saude/${unidadeId}/notifica-leitos?nome=${nome}`).then(({ data }) => data);
+  findAllControleLeitosByUnidadeSaude(unidadeId) {
+    return http.get(`/unidades-saude/${unidadeId}/notifica-leitos`).then(({ data }) => data);
   },
 
   findByControleLeitoId(unidadeId, controleLeitoId) {
