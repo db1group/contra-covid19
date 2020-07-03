@@ -9,55 +9,53 @@
         <h4 class="headline">Confirmação</h4>
         <div class="mt-3">
           Deseja mesmo
-          <span class="font-weight-bold">excluir</span> A Notificação de Leito?
+          <span class="font-weight-bold">excluir</span> a unidade de saúde?
         </div>
       </div>
     </confirm-dialog>
-    <v-data-table :headers="headers" :items="leitos" :loading="loading">
-      <template v-slot:item.name="props">
-        <v-edit-dialog
-          :return-value.sync="props.item.name"
-          @save="save"
-          @cancel="cancel"
-          @open="open"
-          @close="close"
-        >
-          {{ props.item.name }}
-          <template v-slot:input>
-            <v-text-field v-model="props.item.name" label="Edit" single-line counter></v-text-field>
-          </template>
-        </v-edit-dialog>
-      </template>
-      <template v-slot:item.iron="props">
-        <v-edit-dialog
-          :return-value.sync="props.item.iron"
-          large
-          persistent
-          @save="save"
-          @cancel="cancel"
-          @open="open"
-          @close="close"
-        >
-          <!-- <div>{{ props.item.iron }}</div> -->
-          <template v-slot:input>
-            <div class="mt-4 title">Update Iron</div>
-          </template>
-          <template v-slot:input>
-            <v-text-field
-              v-model="props.item.iron"
-              :rules="[max25chars]"
-              label="Edit"
-              single-line
-              counter
-              autofocus
-            ></v-text-field>
-          </template>
-        </v-edit-dialog>
-      </template>
-      <template v-slot:item.actions="{  }">
+    <v-data-table
+      :headers="headers"
+      :items="leitos"
+      item-key="id"
+      :server-items-length="totalLeitos"
+      :options.sync="options"
+      @update:options="consultaControleLeitos"
+      :loading="loading"
+      loading-text="Carregando os leitos de saúde."
+      no-data-text="Não há eleitos de saúde até o momento."
+      no-results-text="Não há eleitos de saúde com estes dados."
+      :footer-props="{
+        pageText: '{0}-{1} de {2}',
+        itemsPerPageText: 'Linhas por página',
+        itemsPerPageOptions: [10, 30, 50, 100],
+      }"
+      class="elevation-1"
+    >
+      <template v-slot:item.actions="{ item }">
         <v-row justify="end" align="center" dense>
           <v-col>
-            <v-btn text small color="#F54D09" :to="{ name: 'perfil' }">PERFIL</v-btn>
+            <v-btn
+              text
+              small
+              color="#F54D09"
+              :to="{ name: 'unidades-saude-edit', params: { id: item.id, edit: true } }"
+            >PERFIL</v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+              text
+              small
+              color="#F54D09"
+              :to="{ name: 'unidades-saude-edit', params: { id: item.id, edit: true } }"
+            >EDITAR</v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+              text
+              small
+              color="red"
+              @click="showExclusionConfirmDialog(item)"
+            >EXCLUIR</v-btn>
           </v-col>
         </v-row>
       </template>
@@ -67,11 +65,12 @@
 <script>
 import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import ControleLeitoService from '@/services/ControleLeitoService';
-import ControleLeito from '@/entities/ControleLeito';
 
 export default {
   components: { ConfirmDialog },
   data: () => ({
+    items: [],
+    loading: true,
     snack: false,
     snackColor: '',
     snackText: '',
@@ -82,13 +81,21 @@ export default {
         text: 'Data da Notificação',
         align: 'start',
         sortable: false,
-        value: 'dtNotificacaoo',
+        value: 'dtNotificacao',
       },
-      { text: 'Unidade Saúde', value: 'unidadeSaude' },
-      { text: 'Data cadastro', value: 'dataCadastro' },
+      { text: 'Unidade Saúde', value: 'controleLeitoId' },
+      { text: 'Data cadastro', value: 'createdAt' },
+      { sortable: false, value: 'actions', width: '240px' },
     ],
     leitos: [],
-    loading: true,
+    filter: '',
+    filterCons: null,
+    options: {
+      page: 1,
+      itemsPerPage: 10,
+      sortBy: ['dtNotificacao', 'createdAt'],
+      sortDesc: 'false',
+    },
     user: {},
     removingControleLeitoDialog: {
       showDialog: false,
@@ -101,7 +108,8 @@ export default {
       ControleLeitoService.findAllControleLeitosByUnidadeSaude(this.user.unidadeSaudeId)
         .then(({ count, data }) => {
           this.totalLeitos = count;
-          this.leitos = data.map((d) => new ControleLeito(d));
+          this.leitos = data;
+          console.log(this.leitos);
           this.loading = false;
         })
         .catch((error) => {

@@ -1,62 +1,77 @@
 export default class ControleLeito {
   constructor(data = {}) {
     this.id = data.id || null;
-    this.qtdeEnfermariaSus = data.qtdeEnfermariaSus || '0';
-    this.qtdeUTIAdultoSus = data.qtdeUTIAdultoSus || '0';
-    this.qtdePedSus = data.qtdePedSus || '0';
-    this.qtdeNeoSus = data.qtdeNeoSus || '0';
-    this.qtdeEnfermariaPrivado = data.qtdeEnfermariaPrivado || '0';
-    this.qtdeUTIAdultoPrivado = data.qtdeUTIAdultoPrivado || '0';
-    this.qtdePedPrivado = data.qtdePedPrivado || '0';
-    this.qtdeNeoPrivado = data.qtdeNeoPrivado || '0';
+    this.qtEnfermariaCovid = data.qtEnfermariaCovid || '0';
+    this.qtUTIAdultaCovid = data.qtUTIAdultaCovid || '0';
+    this.qtUTIPedCovid = data.qtUTIPedCovid || '0';
+    this.qtUTINeoCovid = data.qtUTINeoCovid || '0';
+    this.qtEnfermariaNormal = data.qtEnfermariaNormal || '0';
+    this.qtUTIAdultaNormal = data.qtUTIAdultaNormal || '0';
+    this.qtUTIPedNormal = data.qtUTIPedNormal || '0';
+    this.qtUTINeoNormal = data.qtUTINeoNormal || '0';
+    this.qtEnfermariaPrivado = data.qtEnfermariaPrivado || '0';
+    this.qtUTIAdultaPrivado = data.qtUTIAdultaPrivado || '0';
+    this.qtUTIPedPrivado = data.qtUTIPedPrivado || '0';
+    this.qtUTINeoPrivado = data.qtUTINeoPrivado || '0';
   }
 
   totalEnfermarias() {
-    const { qtdeEnfermariaSus, qtdeEnfermariaPrivado } = this;
-    return +qtdeEnfermariaSus + +qtdeEnfermariaPrivado;
+    const { qtEnfermariaCovid, qtEnfermariaNormal, qtEnfermariaPrivado } = this;
+    return +qtEnfermariaCovid + +qtEnfermariaNormal + +qtEnfermariaPrivado;
   }
 
   totalUTIAdulta() {
-    const { qtdeUTIAdultoSus, qtdeUTIAdultoPrivado } = this;
-    return +qtdeUTIAdultoSus + +qtdeUTIAdultoPrivado;
+    const { qtUTIAdultaCovid, qtUTIAdultaNormal, qtUTIAdultaPrivado } = this;
+    return +qtUTIAdultaCovid + +qtUTIAdultaNormal + +qtUTIAdultaPrivado;
   }
 
   totalUTIPed() {
-    const { qtdePedSus, qtdePedPrivado } = this;
-    return +qtdePedSus + +qtdePedPrivado;
+    const { qtUTIPedCovid, qtUTIPedNormal, qtUTIPedPrivado } = this;
+    return +qtUTIPedCovid + +qtUTIPedNormal + +qtUTIPedPrivado;
   }
 
   totalUTINeo() {
-    const { qtdeNeoSus, qtdeNeoPrivado } = this;
-    return +qtdeNeoSus + +qtdeNeoPrivado;
+    const { qtUTINeoCovid, qtUTINeoNormal, qtUTINeoPrivado } = this;
+    return +qtUTINeoCovid + +qtUTINeoNormal + +qtUTINeoPrivado;
   }
 
-  totalSus() {
+  totalCovid() {
     const {
-      qtdeEnfermariaSus, qtdeUTIAdultoSus, qtdePedSus, qtdeNeoSus,
+      qtEnfermariaCovid, qtUTIAdultaCovid, qtUTIPedCovid, qtUTINeoCovid,
     } = this;
-    return +qtdeEnfermariaSus + +qtdeUTIAdultoSus + +qtdePedSus + +qtdeNeoSus;
+    return +qtEnfermariaCovid + +qtUTIAdultaCovid + +qtUTIPedCovid + +qtUTINeoCovid;
+  }
+
+  totalNormal() {
+    const {
+      qtEnfermariaNormal, qtUTIAdultaNormal, qtUTIPedNormal, qtUTINeoNormal,
+    } = this;
+    return +qtEnfermariaNormal + +qtUTIAdultaNormal + +qtUTIPedNormal + +qtUTINeoNormal;
   }
 
   totalPrivado() {
     const {
-      qtdeEnfermariaPrivado, qtdeUTIAdultoPrivado, qtdePedPrivado, qtdeNeoPrivado,
+      qtEnfermariaPrivado, qtUTIAdultaPrivado, qtUTIPedPrivado, qtUTINeoPrivado,
     } = this;
-    return +qtdeEnfermariaPrivado + +qtdeUTIAdultoPrivado + +qtdePedPrivado + +qtdeNeoPrivado;
+    return +qtEnfermariaPrivado + +qtUTIAdultaPrivado + +qtUTIPedPrivado + +qtUTINeoPrivado;
   }
 
   toRequestBody() {
     const { id, ...controleLeito } = this;
     return {
       ...controleLeito,
-      qtdeEnfermariaSus: this.qtdeEnfermariaSus.toString(),
-      qtdeUTIAdultoSus: this.qtdeUTIAdultoSus.toString(),
-      qtdePedSus: this.qtdePedSus.toString(),
-      qtdeNeoSus: this.qtdeNeoSus.toString(),
-      qtdeEnfermariaPrivado: this.qtdeEnfermariaPrivado.toString(),
-      qtdeUTIAdultoPrivado: this.qtdeUTIAdultoPrivado.toString(),
-      qtdePedPrivado: this.qtdePedPrivado.toString(),
-      qtdeNeoPrivado: this.qtdeNeoPrivado.toString(),
+      qtEnfermariaCovid: this.qtEnfermariaCovid.toString(),
+      qtUTIAdultaCovid: this.qtUTIAdultaCovid.toString(),
+      qtUTIPedCovid: this.qtUTIPedCovid.toString(),
+      qtUTINeoCovid: this.qtUTINeoCovid.toString(),
+      qtEnfermariaNormal: this.qtEnfermariaNormal.toString(),
+      qtUTIAdultaNormal: this.qtUTIAdultaNormal.toString(),
+      qtUTIPedNormal: this.qtUTIPedNormal.toString(),
+      qtUTINeoNormal: this.qtUTINeoNormal.toString(),
+      qtEnfermariaPrivado: this.qtEnfermariaPrivado.toString(),
+      qtUTIAdultaPrivado: this.qtUTIAdultaPrivado.toString(),
+      qtUTIPedPrivado: this.qtUTIPedPrivado.toString(),
+      qtUTINeoPrivado: this.qtUTINeoPrivado.toString(),
     };
   }
 }
