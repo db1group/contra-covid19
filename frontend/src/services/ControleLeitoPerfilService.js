@@ -6,8 +6,8 @@ export default {
     return http.post(`/notifica-leitos/${unidadeId}/perfil`, controleLeitoPerfil);
   },
 
-  findAllControleLeitosByUnidadeSaude(unidadeId, nome = '') {
-    return http.get(`/notifica-leitos/${unidadeId}/perfil?nome=${nome}`).then(({ data }) => data);
+  findAllControleLeitosByUnidadeSaude(controleLeitoPerfilId) {
+    return http.get(`/notifica-leitos/${controleLeitoPerfilId}/perfil?`).then(({ data }) => data);
   },
 
   findByControleLeitoId(unidadeId, controleLeitoPerfilId) {
