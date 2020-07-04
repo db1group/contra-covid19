@@ -2,6 +2,7 @@ const repos = require('../repositories/repository-factory');
 const models = require('../models');
 const statusNotificacaoEnum = require('../enums/status-notificacao-enum');
 const tipoNotificacaoEvolucaoEnum = require('../enums/tipo-notificacao-evolucao-enum');
+const dataEvolucaoNotificacaoEnum = require('../enums/data-evolucao-notificacao-enum');
 const { RegraNegocioErro } = require('../lib/erros');
 
 const validarDataEvolucaoSuperiorDataNotificacao = async (notificacao, dtEvolucao) => {
@@ -80,6 +81,8 @@ const validarProximaEvolucao = async (evolucaoRequest) => {
   if (dataEvolucao <= dataUltimaEvolucao) throw new RegraNegocioErro('A data da evolução não pode ser menor que a data da última ocorrência de evolução.');
 };
 
+const getCampoDataEvolucao = (tpEvolucao) => dataEvolucaoNotificacaoEnum.values[tpEvolucao];
+
 const atualizarStatusNotificacao = async (evolucao, transaction) => {
   const deveEncerrar = (evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Curado
     || evolucao.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Descartado
@@ -89,8 +92,10 @@ const atualizarStatusNotificacao = async (evolucao, transaction) => {
   const status = deveEncerrar ? statusNotificacaoEnum.values.Encerrada
     : statusNotificacaoEnum.values.Aberta;
 
+  const dtTpEvolucao = getCampoDataEvolucao(evolucao.tpEvolucao);
+
   await models.Notificacao.update(
-    { status },
+    { status, [dtTpEvolucao]: evolucao.createdAt },
     {
       where:
       {
@@ -99,6 +104,7 @@ const atualizarStatusNotificacao = async (evolucao, transaction) => {
       transaction,
     },
   );
+  return evolucao;
 };
 
 exports.handle = async (evolucaoRequest) => models.sequelize.transaction(async (transaction) => {
@@ -112,7 +118,7 @@ exports.handle = async (evolucaoRequest) => models.sequelize.transaction(async (
   await validarPossuiConfirmacao(evolucaoRequest);
   await validarProximaEvolucao(evolucaoRequest);
 
-  const evolucao = repos.notificacaoRepository.cadastrarEvolucao(evolucaoRequest, transaction);
-  atualizarStatusNotificacao(evolucaoRequest, transaction);
-  return evolucao;
+  const evolucao = await repos.notificacaoRepository
+    .cadastrarEvolucao(evolucaoRequest, transaction);
+  return atualizarStatusNotificacao(evolucao, transaction);
 });

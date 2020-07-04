@@ -11,4 +11,4 @@ echo 'Starting seeders...'
 npx sequelize-cli db:seed:all
 
 echo 'Starting server...'
-node /app/src/server.js
+pm2-runtime start /app/src/server.js -i max --node-args="--max_old_space_size=2048"

@@ -1,4 +1,3 @@
-
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.sequelize.transaction((t) => Promise.all([
     queryInterface.addColumn('Municipio', 'ufIBGE', {

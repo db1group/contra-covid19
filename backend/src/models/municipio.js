@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   Municipio.associate = (models) => {
     Municipio.hasMany(models.Bairro, { foreignKey: 'municipioId' });
     Municipio.hasMany(models.Pessoa, { foreignKey: 'municipioId' });
+    Municipio.hasMany(models.UnidadeSaude, { foreignKey: 'municipioId' });
   };
   return Municipio;
 };

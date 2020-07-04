@@ -7,6 +7,8 @@ import FechamentoDiario from '../views/FechamentoDiario.vue';
 import EnvioSecretaria from '../views/EnvioSecretaria.vue';
 import EvolucaoForm from '../views/EvolucaoForm.vue';
 import NotificacaoExportar from '../views/NotificacaoExportar.vue';
+import UnidadeSaudeCons from '../views/UnidadeSaudeCons.vue';
+import UnidadeSaudeForm from '../views/UnidadeSaudeForm.vue';
 
 Vue.use(VueRouter);
 
@@ -50,6 +52,22 @@ const routes = [
     path: '/fechamento',
     name: 'fechamento-diario',
     component: FechamentoDiario,
+  },
+  {
+    path: '/unidades-saude',
+    name: 'unidades-saude-cons',
+    component: UnidadeSaudeCons,
+  },
+  {
+    path: '/unidades-saude/cadastro',
+    name: 'unidades-saude-form',
+    component: UnidadeSaudeForm,
+  },
+  {
+    path: '/unidades-saude/:id/edit',
+    name: 'unidades-saude-edit',
+    component: UnidadeSaudeForm,
+    props: { edit: true },
   },
   {
     path: '/envio-secretaria',

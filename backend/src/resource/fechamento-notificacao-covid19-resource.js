@@ -154,11 +154,11 @@ const getDetalheProximoFechamentoPaginado = async (dataFechamento, page, limit) 
   const dtInicial = moment(dataFechamento)
     .startOf('day')
     .subtract(1, 'day')
-    .add(13, 'hours')
+    .add(15, 'hours')
     .toDate();
   const dtFinal = moment(dataFechamento)
     .startOf('day')
-    .add(12, 'hours')
+    .add(14, 'hours')
     .add(59, 'minutes')
     .add(59, 'seconds')
     .toDate();
@@ -254,10 +254,18 @@ exports.consultarProximoDiaFechamento = async (req, res, next) => {
   }
 };
 
+const removerCacheGraficos = (req) => {
+  req.removeCacheByKey('/public/boletim/grafico');
+  req.removeCacheByKey('/public/boletim/grafico-diario');
+  req.removeCacheByKey('/public/boletim/graficoPaginado');
+  req.removeCacheByKey('/public/boletim/cards');
+};
+
 exports.cadastrarProximoFechamento = async (req, res, next) => {
   try {
     const { id, dataFechamento } = req.body;
     const fechamento = await realizarFechamento(id, dataFechamento);
+    removerCacheGraficos(req);
     return res.json({ data: fechamento });
   } catch (err) {
     return next(err);
