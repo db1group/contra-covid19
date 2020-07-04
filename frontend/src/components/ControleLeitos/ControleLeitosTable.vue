@@ -33,7 +33,7 @@
     >
       <template v-slot:item.actions="{ item }">
         <v-row justify="end" align="center" dense>
-          <v-col>
+          <v-col cols="12">
             <v-btn
               text
               small
