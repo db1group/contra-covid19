@@ -21,9 +21,9 @@
       :options.sync="options"
       @update:options="consultaControleLeitos"
       :loading="loading"
-      loading-text="Carregando os leitos de saúde."
-      no-data-text="Não há eleitos de saúde até o momento."
-      no-results-text="Não há eleitos de saúde com estes dados."
+      loading-text="Carregando os controle de leitos."
+      no-data-text="Não há controle de leito até o momento."
+      no-results-text="Não há controle de leito com estes dados."
       :footer-props="{
         pageText: '{0}-{1} de {2}',
         itemsPerPageText: 'Linhas por página',
@@ -38,7 +38,7 @@
               text
               small
               color="##B8860B"
-              :to="{ name: 'controle-leito-perfil', params: { id: item.id, edit: true } }"
+              :to="{ name: 'controle-leito-perfil-cons', params: { id: item.id, edit: true } }"
             >PERFIL</v-btn>
           </v-col>
           <v-col>
@@ -124,14 +124,14 @@ export default {
         .then(() => {
           const page = this.leitos.length === 1 ? 1 : this.options.page;
           this.options = { ...this.options, page };
-          this.$emit('delete:unidadeSaude', 'Unidade de saúde excluída com sucesso.');
+          this.$emit('delete:controleLeitos', 'Controle de leito excluído com sucesso.');
         })
         .then(() => {
           this.consultaControleLeitos();
         })
         .catch((error) => {
           const { data } = error.response;
-          this.$emit('erro:deleteUnidadeSaude', data.error);
+          this.$emit('erro:deleteControleLeitos', data.error);
         });
     },
     showExclusionConfirmDialog({ id }) {

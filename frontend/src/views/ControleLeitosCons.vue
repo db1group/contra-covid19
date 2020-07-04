@@ -2,14 +2,14 @@
   <section style="margin-top: 45px;">
     <header-controle-leitos title="Controle de Leitos" :showIcon="false" />
     <controle-leitos-table
-      @erro:consultaUnidadeSaude="mostrarMensagemErro"
-      @delete:unidadeSaude="mostrarMensagemSucesso"
-      @erro:deleteUnidadeSaude="mostrarMensagemErro"
+      @erro:consultaControleLeitos="mostrarMensagemErro"
+      @delete:controleLeitos="mostrarMensagemSucesso"
+      @erro:deleteControleLeitos="mostrarMensagemErro"
     />
     <v-snackbar v-model="showError" color="error" bottom>{{ this.mensagemErro }}</v-snackbar>
     <v-snackbar
       v-model="showSuccess"
-      class="unidade-cons__snack-success"
+      class="controle-leito-cons__snack-success"
       color="success"
       bottom
     >{{ this.mensagemSucesso }}</v-snackbar>
@@ -52,7 +52,7 @@ export default {
 };
 </script>
 <style lang="sass" scoped>
-.unidade-cons
+.controle-leito-cons
   &__snack-success
     &::v-deep .v-snack__content
       justify-content: center
