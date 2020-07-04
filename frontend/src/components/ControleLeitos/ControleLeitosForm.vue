@@ -230,7 +230,10 @@ export default {
     id: String,
   },
   watch: {
-
+    id(controleLeitoId) {
+      this.editarControleLeito(controleLeitoId);
+      return controleLeitoId;
+    },
   },
   data: () => ({
     stateForm: StateForm.NEW,
@@ -283,8 +286,10 @@ export default {
     atualizarControleLeito() {
       if (this.$refs.form.validate()) {
         this.loading = true;
-        const { id } = this.controleLeito;
-        ControleLeitoService.update(id, this.controleLeito.toRequestBody())
+        ControleLeitoService.update({
+          dtNotificacao: DateService.formatNowAsStringDateTime(),
+          ControleLeito: this.controleLeito.toRequestBody(),
+        }, this.user.unidadeSaudeId, this.id)
           .then(() => {
             this.showSuccess = true;
             this.mensagemSucesso = 'Controle de Leitos atualizada com sucesso.';
@@ -331,6 +336,23 @@ export default {
     },
     updateUTINeoPrivado(qtUTIAdulta) {
       this.controleLeito.qtUTINeoPrivado = qtUTIAdulta;
+    },
+    buscarControleLeito(id) {
+      this.loading = true;
+      ControleLeitoService.findByControleLeitoId(this.user.unidadeSaudeId, id)
+        .then(({ data }) => {
+          this.controleLeito = new ControleLeito(data.ControleLeito);
+        })
+        .catch(({ response }) => {
+          this.showError = true;
+          this.mensagemErro = response.data.error;
+        })
+        .finally(() => { this.loading = false; });
+    },
+    editarControleLeito(id) {
+      this.stateForm = StateForm.EDIT;
+      this.controleLeito.id = id;
+      this.buscarControleLeito(id);
     },
   },
   created() {

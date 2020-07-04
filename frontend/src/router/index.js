@@ -82,7 +82,7 @@ const routes = [
   },
   {
     path: '/controle-leitos/:id/edit',
-    name: 'controle-leitos-edit',
+    name: 'controle-leito-edit',
     component: ControleLeitosForm,
     props: { edit: true },
   },

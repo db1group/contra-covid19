@@ -13,9 +13,8 @@ export default {
     return http.get(`/unidades-saude/${unidadeId}/notifica-leitos/${controleLeitoId}`).then(({ data }) => data);
   },
 
-  update(controleLeito, controleLeitoId) {
-    const { unidadeId } = controleLeito;
-    return http.put(`unidades-saude/${unidadeId}/notifica-leitos/${controleLeitoId}`, controleLeito);
+  update(data, unidadeId, controleLeitoId) {
+    return http.put(`unidades-saude/${unidadeId}/notifica-leitos/${controleLeitoId}`, data);
   },
 
   delete(unidadeId, controleLeitoId) {

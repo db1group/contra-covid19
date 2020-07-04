@@ -9,7 +9,7 @@
         <h4 class="headline">Confirmação</h4>
         <div class="mt-3">
           Deseja mesmo
-          <span class="font-weight-bold">excluir</span> a unidade de saúde?
+          <span class="font-weight-bold">excluir</span> esse controle de leito?
         </div>
       </div>
     </confirm-dialog>
@@ -35,10 +35,11 @@
         <v-row justify="end" align="center" dense>
           <v-col>
             <v-btn
+              v-if="isPermiteAlterar(item)"
               text
               small
-              color="#F54D09"
-              :to="{ name: 'unidades-saude-edit', params: { id: item.id, edit: true } }"
+              color="##B8860B"
+              :to="{ name: 'controle-leito-perfil', params: { id: item.id, edit: true } }"
             >PERFIL</v-btn>
           </v-col>
           <v-col>
@@ -46,7 +47,7 @@
               text
               small
               color="#F54D09"
-              :to="{ name: 'unidades-saude-edit', params: { id: item.id, edit: true } }"
+              :to="{ name: 'controle-leito-edit', params: { id: item.id, edit: true } }"
             >EDITAR</v-btn>
           </v-col>
           <v-col>
@@ -109,7 +110,6 @@ export default {
         .then(({ count, data }) => {
           this.totalLeitos = count;
           this.leitos = data;
-          console.log(this.leitos);
           this.loading = false;
         })
         .catch((error) => {
@@ -119,6 +119,21 @@ export default {
     },
     confirmExclusion() {
       this.excluirItem(this.removingControleLeitoDialog.id);
+    },
+    excluirItem(id) {
+      ControleLeitoService.delete(this.user.unidadeSaudeId, id)
+        .then(() => {
+          const page = this.leitos.length === 1 ? 1 : this.options.page;
+          this.options = { ...this.options, page };
+          this.$emit('delete:unidadeSaude', 'Unidade de saúde excluída com sucesso.');
+        })
+        .then(() => {
+          this.consultaControleLeitos();
+        })
+        .catch((error) => {
+          const { data } = error.response;
+          this.$emit('erro:deleteUnidadeSaude', data.error);
+        });
     },
     save() {
       this.snack = true;
@@ -137,6 +152,13 @@ export default {
     },
     close() {
       console.log('Dialog closed');
+    },
+    isPermiteAlterar() {
+      return true;
+    },
+    showExclusionConfirmDialog({ id }) {
+      this.removingControleLeitoDialog.showDialog = true;
+      this.removingControleLeitoDialog.id = id;
     },
   },
   created() {
