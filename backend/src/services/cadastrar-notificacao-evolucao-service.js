@@ -120,5 +120,7 @@ exports.handle = async (evolucaoRequest) => models.sequelize.transaction(async (
 
   const evolucao = await repos.notificacaoRepository
     .cadastrarEvolucao(evolucaoRequest, transaction);
+  await repos.notificacaoCovid19Repository
+    .atualizarTpTransmissaoPendenteAtualizacao(notificacaoId, transaction);
   return atualizarStatusNotificacao(evolucao, transaction);
 });

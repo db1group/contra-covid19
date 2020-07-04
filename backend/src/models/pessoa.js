@@ -4,7 +4,9 @@ const { normalizarTexto } = require('../lib/normalizar-texto');
 const normalizarTextoPessoa = (pessoa) => {
   pessoa.nome = normalizarTexto(pessoa.nome);
   pessoa.nomeDaMae = normalizarTexto(pessoa.nomeDaMae);
-  pessoa.ocupacao = pessoa.ocupacao != undefined ? normalizarTexto(pessoa.ocupacao) : pessoa.ocupacao;
+  pessoa.ocupacao = pessoa.ocupacao !== undefined
+    ? normalizarTexto(pessoa.ocupacao)
+    : pessoa.ocupacao;
   pessoa.endereco = normalizarTexto(pessoa.endereco);
 };
 
@@ -63,11 +65,14 @@ module.exports = (sequelize, DataTypes) => {
     tipoClassificacaoPessoa: DataTypes.ENUM('CRIANCA_ATE_12_ANOS', 'EM_SITUACAO_RUA', 'ESTRANGEIRO', 'INDIGENA', 'OUTRO'),
     cep: DataTypes.STRING(8),
     tipoPeriodoGestacional: DataTypes.ENUM('PRIMEIRO_TRIMESTRE', 'SEGUNDO_TRIMESTRE', 'TERCEIRO_TRIMESTRE', 'IDADE_GESTACIONAL_IGNORADA'),
+    passaporte: DataTypes.STRING(20),
+    paisId: DataTypes.UUID,
   });
   Pessoa.associate = (models) => {
     Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });
     Pessoa.belongsTo(models.Municipio, { foreignKey: 'municipioId' });
     Pessoa.belongsTo(models.Ocupacao, { foreignKey: 'ocupacaoId' });
+    Pessoa.belongsTo(models.Pais, { foreignKey: 'paisId', as: 'Pais' });
   };
   Pessoa.beforeCreate(async (pessoa) => {
     normalizarTextoPessoa(pessoa);

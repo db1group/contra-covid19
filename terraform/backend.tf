@@ -100,6 +100,22 @@ resource "aws_ecs_task_definition" "backend" {
         "name" : "SECRET_SESSION",
         "value" : "${random_uuid.secret.result}-ns"
       },
+      {
+        "name": "REDIS_URL",
+        "value": "redis://redis:6379"
+      },
+      {
+        "name": "REDIS_EXPIRE", 
+        "value": "86400"
+      },
+      {
+        "name": "REDIS_RECONNECT",
+        "value": "10000"
+      },
+      {
+        "name": "SECRETARIA_SAUDE_API_URL",
+        "value": "https://api.covid19.appsesa.pr.gov.br"
+      },
     ],
     "requiresAttributes": [
         {

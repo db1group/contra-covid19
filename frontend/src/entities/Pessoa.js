@@ -43,6 +43,9 @@ export default class Pessoa {
     if (this.tipoDocumento === 'CPF') {
       this.numeroCpf = Utils.cpfMask(data.numeroDocumento) || '';
     }
+    this.passaporte = data.passaporte || null;
+    this.paisId = data.paisId || null;
+    this.paisNome = data.pais || 'Brasil';
   }
 
   toRequestBody() {
@@ -57,6 +60,7 @@ export default class Pessoa {
       gestante: this.aplicarCampoGestante(),
     };
     delete body.numeroCpf;
+    delete body.paisNome;
     return body;
   }
 

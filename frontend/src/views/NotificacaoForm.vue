@@ -50,6 +50,8 @@
           @update:complemento="updateSuspeito('complemento', $event)"
           @update:tipoClassificacaoPessoa="updateSuspeito('tipoClassificacaoPessoa', $event)"
           :disabled="disableFields"
+          @update:passaporte="updateSuspeito('passaporte', $event)"
+          @update:paisId="updateSuspeito('paisId', $event)"
         />
         <sinais-e-sintomas
           :sintomatico="notificacao.sintomatico"

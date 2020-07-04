@@ -90,6 +90,10 @@ const schemas = {
       uf: Joi.string()
         .allow(null, '')
         .length(2),
+      passaporte: Joi.string()
+        .allow(null, '')
+        .max(20),
+      paisId: [Joi.string().required(), Joi.number().required()],
     }),
     sintomas: Joi.object().keys({
       febreAferidaReferida: Joi.bool()
