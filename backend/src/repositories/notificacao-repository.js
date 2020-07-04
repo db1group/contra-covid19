@@ -24,9 +24,9 @@ module.exports.deletarEvolucaoPorId = async (id, transaction) => {
       id,
     },
   },
-    {
-      transaction,
-    });
+  {
+    transaction,
+  });
 };
 
 module.exports.atualizarEvolucaoPorId = async (evolucao, transaction) => {
@@ -52,6 +52,7 @@ module.exports.getPorId = async (id) => models.Notificacao.findOne({
         { model: models.Bairro },
         { model: models.Municipio },
         { model: models.Ocupacao },
+        { model: models.Pais, as: 'Pais' },
       ],
     },
     { model: models.NotificacaoEvolucao },
@@ -97,71 +98,98 @@ exports.atualizar = async (notificacao) => {
   );
 };
 
-exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids) => {
-  return models.Notificacao.findAll({
-    where: {
-      id: ids
+exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids) => models.Notificacao.findAll({
+  where: {
+    id: ids,
+  },
+  include: [
+    {
+      model: models.Pessoa,
+      include: [
+        { model: models.Bairro },
+        { model: models.Municipio },
+        { model: models.Ocupacao },
+        { model: models.Pais, as: 'Pais' },
+      ],
     },
-    include: [
-      {
-        model: models.Pessoa,
-        include: [
-          { model: models.Bairro },
-          { model: models.Municipio },
-          { model: models.Ocupacao },
-        ],
-      },
-      {
-        model: models.NotificacaoEvolucao
-      },
-      {
-        model: models.NotificacaoCovid19,
-        where: {
-          [Op.and]: [
-            {
-              [Op.or]:
+    {
+      model: models.NotificacaoEvolucao,
+    },
+    {
+      model: models.NotificacaoCovid19,
+      where: {
+        [Op.and]: [
+          {
+            [Op.or]:
                 [
                   {
-                    tpTransmissaoApiSecretaria: 
+                    tpTransmissaoApiSecretaria:
                       tpTransmissaoApiSecretaria.values.PendenteEnvio,
                   },
                   {
-                    tpTransmissaoApiSecretaria: 
+                    tpTransmissaoApiSecretaria:
                       tpTransmissaoApiSecretaria.values.PendenteAtualizacao,
                   },
                   {
                     tpTransmissaoApiSecretaria: null,
-                  }
-                ]
-            }
-          ]
-        },
+                  },
+                ],
+          },
+        ],
       },
-      { model: models.Municipio },
-      { model: models.UnidadeSaude },
-      { model: models.User },
-      { model: models.ProfissionalSaude },
-      { model: models.Profissao },
-    ],
-  });
-}
+    },
+    { model: models.Municipio },
+    { model: models.UnidadeSaude },
+    { model: models.User },
+    { model: models.ProfissionalSaude },
+    { model: models.Profissao },
+  ],
+});
 
-exports.getNotificacoesPendentesEnvioSecretaria = async () => {
-  return models.NotificacaoCovid19.findAll({
+exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, search = '') => {
+  const offset = (page - 1) * limit;
+  const filtroConsulta = {
     where: {
       [Op.or]:
-        [
-          {
-            tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteEnvio,
-          },
-          {
-            tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteAtualizacao,
-          },
-          {
-            tpTransmissaoApiSecretaria: null,
-          }
-        ],
+      [
+        {
+          tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteEnvio,
+        },
+        {
+          tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteAtualizacao,
+        },
+        {
+          tpTransmissaoApiSecretaria: null,
+        },
+      ],
     },
+  };
+
+  if (search !== '') {
+    filtroConsulta.where = {
+      [Op.and]: [
+        { ...filtroConsulta.where },
+        {
+          [Op.or]: [
+            Sequelize.where(
+              Sequelize.fn('upper', Sequelize.col('Notificacao.Pessoa.nome')),
+              {
+                [Op.like]: `%${search.toUpperCase()}%`,
+              },
+            ),
+            Sequelize.where(
+              Sequelize.fn('upper', Sequelize.col('Notificacao.Pessoa.numeroDocumento')),
+              {
+                [Op.like]: `%${search.toUpperCase()}%`,
+              },
+            ),
+          ],
+        }],
+    };
+  }
+
+  return models.NotificacaoCovid19.findAndCountAll({
+    where: filtroConsulta.where,
     attributes: ['id', 'notificacaoId', 'tpTransmissaoApiSecretaria'],
     include: [
       {
@@ -170,14 +198,16 @@ exports.getNotificacoesPendentesEnvioSecretaria = async () => {
         include: [
           {
             model: models.Pessoa,
-            attributes: ['nome']
+            attributes: ['nome', 'numeroDocumento', 'tipoDocumento'],
           },
           {
             model: models.UnidadeSaude,
             attributes: ['nome'],
           },
         ],
-      }
+      },
     ],
+    limit,
+    offset,
   });
-}
+};

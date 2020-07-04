@@ -71,7 +71,8 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
 
   const { notificacaoCovid19 } = notificacaoUpdate;
   notificacaoCovid19.notificacaoId = notificacaoRequest.id;
-  notificacaoCovid19.tpTransmissaoApiSecretaria = tpTransmissaoApiSecretaria.values.PendenteAtualizacao;
+  notificacaoCovid19.tpTransmissaoApiSecretaria = tpTransmissaoApiSecretaria
+    .values.PendenteAtualizacao;
   await repos.notificacaoCovid19Repository.atualizar(notificacaoCovid19);
 
   const primeiraEvolucao = evolucoesSort.first();

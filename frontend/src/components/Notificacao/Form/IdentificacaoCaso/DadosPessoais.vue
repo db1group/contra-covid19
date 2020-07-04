@@ -62,6 +62,16 @@
           @input="updateNumeroDocumento"
         />
       </v-col>
+      <v-col cols="12" sm="4" md="4">
+        <v-text-field
+          v-show="suspeito.tipoClassificacaoPessoa === 'ESTRANGEIRO'"
+          :value="suspeito.passaporte"
+          label="Passaporte"
+          :disabled="disabled"
+          :rules="rules.passaporte"
+          @input="updatePassaporte"
+        />
+      </v-col>
     </v-row>
     <v-row dense>
       <v-col cols="12" sm="6" md="5">
@@ -228,6 +238,7 @@ export default {
       tipoPeriodoGestacional: [],
       racaCor: [required],
       tipoClassificacaoPessoa: [required],
+      passaporte: [],
     },
     disabledTipoDocumento: true,
     labelNumeroDocumento: 'Número do documento *',
@@ -302,6 +313,9 @@ export default {
       }
       return required(value);
     },
+    requiredIfEstrangeiro(value) {
+      return this.suspeito.tipoClassificacaoPessoa !== 'ESTRANGEIRO' ? true : required(value);
+    },
     validateFutureDate(value) {
       return dateMustBeLesserThanToday(value, 'Informe uma data anterior ao dia de hoje.');
     },
@@ -328,6 +342,9 @@ export default {
     hintPossuiFechamento() {
       return this.possuiFechamento ? 'Não é possivel alterar pois já foi realizado o fechamento.' : '';
     },
+    updatePassaporte(passaporte) {
+      this.$emit('update:passaporte', passaporte);
+    },
   },
   watch: {
     'suspeito.tipoClassificacaoPessoa': function classificacaoPessoa(novoValor) {
@@ -339,6 +356,7 @@ export default {
     this.rules.gestante.push(this.requiredIfSexoForFeminino);
     this.rules.tipoPeriodoGestacional.push(this.requiredIfGestante);
     this.rules.dataDeNascimento.push(this.validateFutureDate);
+    this.rules.passaporte.push(this.requiredIfEstrangeiro);
   },
 };
 </script>

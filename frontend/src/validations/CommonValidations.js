@@ -103,3 +103,7 @@ export const maxAge = (limitAge) => (value) => {
 export const mustBeEmpty = (value, message = 'O campo deve estar vazio.') => !value
   || value.toString().length === 0
   || message;
+
+export const notBrasil = (value,
+  message = 'Utilize um país diferente de "Brasil" caso seja estrangeiro.') => value.toString() !== '1'
+  || message;

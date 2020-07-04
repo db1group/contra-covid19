@@ -173,7 +173,7 @@ const salvarNotificacao = async (notificacao) => {
     await models.NotificacaoCovid19.create({
       notificacaoId,
       ...notificacao.notificacaoCovid19,
-      tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteEnvio
+      tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteEnvio,
     }, { transaction });
     await models.NotificacaoEvolucao.create({
       notificacaoId,

@@ -1,37 +1,32 @@
 const axios = require('axios');
 
 const axiosInstance = axios.create({
-    baseURL: `${process.env.SECRETARIA_SAUDE_API_URL}/`,
-    timeout: 1000,
-    headers: {
-        'Authorization': `Bearer ${process.env.SECRETARIA_SAUDE_API_TOKEN}`,
-    }
+  baseURL: `${process.env.SECRETARIA_SAUDE_API_URL}/`,
+  timeout: 5000,
 });
 
-exports.enviarNotificacao = async (request) => {
-    const data = JSON.stringify(request);
+exports.enviarNotificacao = async (request, token) => {
+  const data = JSON.stringify(request);
 
-    const responseData = axiosInstance.post(`v1/notificacao/`, data)
-        .then((response) => {
-            return response.data;
-        })
-        .catch((error) => {
-            return error.response;
-        });
+  return axiosInstance.post('v1/notificacao/', data,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => response.data)
+    .catch((error) => error.response);
+};
 
-    return responseData;
-}
+exports.atualizarNotificacao = async (request, token) => {
+  const data = JSON.stringify(request);
 
-exports.atualizarNotificacao = async (request) => {
-    const data = JSON.stringify(request);
-
-    const responseData = axiosInstance.put(`v1/notificacao/${request.id}`, data)
-        .then((response) => {
-            return response.data;
-        })
-        .catch((error) => {
-            return error.response;
-        });
-
-    return responseData;
-}
+  return axiosInstance.put(`v1/notificacao/${request.id}`, data,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => response.data)
+    .catch((error) => error.response);
+};

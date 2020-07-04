@@ -37,5 +37,7 @@ exports.handle = async (notificacaoId, notificacaoEvolucaoId) => {
         transaction,
       },
     );
+    await repos.notificacaoCovid19Repository
+      .atualizarTpTransmissaoPendenteAtualizacao(notificacaoId, transaction);
   });
 };

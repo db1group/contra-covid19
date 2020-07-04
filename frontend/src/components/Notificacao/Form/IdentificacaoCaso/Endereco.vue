@@ -57,7 +57,7 @@
       </v-col>
     </v-row>
     <v-row dense>
-      <v-col cols="6">
+      <v-col cols="9">
         <v-text-field
           :value="suspeito.complemento"
           label="Complemento"
@@ -68,6 +68,24 @@
       </v-col>
       <v-col cols="3">
         <v-text-field :value="suspeito.uf" label="UF" disabled />
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="9">
+        <v-autocomplete
+          autocomplete="new-password"
+          :value="suspeito.paisId"
+          :rules="rules.paisId"
+          label="País *"
+          :items="paises.items"
+          @update:search-input="searchPaises"
+          item-text="nome"
+          item-value="id"
+          :loading="paises.loading"
+          no-data-text="País não encontrado"
+          :disabled="disabled"
+          @input="updatePaisId"
+        />
       </v-col>
       <v-col cols="3">
         <v-text-field
@@ -84,10 +102,11 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
-import { required, minLength } from '@/validations/CommonValidations';
+import { required, minLength, notBrasil } from '@/validations/CommonValidations';
 import Pessoa from '@/entities/Pessoa';
 import BairroService from '@/services/BairroService';
 import MunicipioService from '@/services/MunicipioService';
+import PaisService from '@/services/PaisService';
 
 export default {
   directives: { mask },
@@ -108,11 +127,16 @@ export default {
   data: () => ({
     searchMunicipio: null,
     searchBairro: null,
+    searchPais: null,
     municipios: {
       items: [],
       loading: true,
     },
     bairros: {
+      items: [],
+      loading: false,
+    },
+    paises: {
       items: [],
       loading: false,
     },
@@ -123,6 +147,7 @@ export default {
       bairroId: [required],
       municipioId: [required],
       complemento: [minLength(3)],
+      paisId: [],
     },
   }),
   watch: {
@@ -198,6 +223,7 @@ export default {
     carregarDadosSuspeito(suspeito) {
       this.findMunicipios(suspeito.municipioNome);
       this.findBairros(suspeito.bairroNome);
+      this.findPaises(suspeito.paisNome);
     },
     requiredBairroGeral(value) {
       return required(value, 'Complemento é obrigatório para o bairro GERAL.');
@@ -213,10 +239,34 @@ export default {
     hintPossuiFechamento() {
       return this.possuiFechamento ? 'Não é possivel alterar pois já foi realizado o fechamento.' : '';
     },
+    searchPaises(search = '') {
+      if (search === this.searchPais) return;
+      this.searchPais = search ? search.trim().toUpperCase() : '';
+      this.findPaises(this.searchPais);
+    },
+    findPaises(searchPais = '') {
+      this.paises.loading = true;
+      PaisService.findAll(searchPais)
+        .then(({ data }) => {
+          this.paises.items = data;
+        })
+        .finally(() => { this.paises.loading = false; });
+    },
+    updatePaisId(paisId) {
+      this.$emit('update:paisId', paisId);
+    },
+    notBrasilIfEstrangeiro(value) {
+      if (this.suspeito.tipoClassificacaoPessoa !== 'ESTRANGEIRO') {
+        return true;
+      }
+      return notBrasil(value);
+    },
   },
   created() {
+    this.rules.paisId.push(required, this.notBrasilIfEstrangeiro);
     this.findMunicipios();
     this.findBairros();
+    this.findPaises();
   },
 };
 </script>
