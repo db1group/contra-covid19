@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
+const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secretaria-enum');
 
 const { Op } = Sequelize;
 
@@ -23,9 +24,9 @@ module.exports.deletarEvolucaoPorId = async (id, transaction) => {
       id,
     },
   },
-  {
-    transaction,
-  });
+    {
+      transaction,
+    });
 };
 
 module.exports.atualizarEvolucaoPorId = async (evolucao, transaction) => {
@@ -53,6 +54,7 @@ module.exports.getPorId = async (id) => models.Notificacao.findOne({
         { model: models.Ocupacao },
       ],
     },
+    { model: models.NotificacaoEvolucao },
     { model: models.NotificacaoCovid19 },
     { model: models.Municipio },
     { model: models.UnidadeSaude },
@@ -94,3 +96,88 @@ exports.atualizar = async (notificacao) => {
     { where: { id } },
   );
 };
+
+exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids) => {
+  return models.Notificacao.findAll({
+    where: {
+      id: ids
+    },
+    include: [
+      {
+        model: models.Pessoa,
+        include: [
+          { model: models.Bairro },
+          { model: models.Municipio },
+          { model: models.Ocupacao },
+        ],
+      },
+      {
+        model: models.NotificacaoEvolucao
+      },
+      {
+        model: models.NotificacaoCovid19,
+        where: {
+          [Op.and]: [
+            {
+              [Op.or]:
+                [
+                  {
+                    tpTransmissaoApiSecretaria: 
+                      tpTransmissaoApiSecretaria.values.PendenteEnvio,
+                  },
+                  {
+                    tpTransmissaoApiSecretaria: 
+                      tpTransmissaoApiSecretaria.values.PendenteAtualizacao,
+                  },
+                  {
+                    tpTransmissaoApiSecretaria: null,
+                  }
+                ]
+            }
+          ]
+        },
+      },
+      { model: models.Municipio },
+      { model: models.UnidadeSaude },
+      { model: models.User },
+      { model: models.ProfissionalSaude },
+      { model: models.Profissao },
+    ],
+  });
+}
+
+exports.getNotificacoesPendentesEnvioSecretaria = async () => {
+  return models.NotificacaoCovid19.findAll({
+    where: {
+      [Op.or]:
+        [
+          {
+            tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteEnvio,
+          },
+          {
+            tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteAtualizacao,
+          },
+          {
+            tpTransmissaoApiSecretaria: null,
+          }
+        ],
+    },
+    attributes: ['id', 'notificacaoId', 'tpTransmissaoApiSecretaria'],
+    include: [
+      {
+        model: models.Notificacao,
+        attributes: ['id', 'unidadeSaudeId', 'pessoaId'],
+        include: [
+          {
+            model: models.Pessoa,
+            attributes: ['nome']
+          },
+          {
+            model: models.UnidadeSaude,
+            attributes: ['nome'],
+          },
+        ],
+      }
+    ],
+  });
+}

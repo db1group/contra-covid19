@@ -8,6 +8,7 @@ const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
 const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
 const atualizacaoNotificacaoService = require('../services/atualizar-notificacao-service');
+const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secretaria-enum');
 
 const { Op } = Sequelize;
 
@@ -172,6 +173,7 @@ const salvarNotificacao = async (notificacao) => {
     await models.NotificacaoCovid19.create({
       notificacaoId,
       ...notificacao.notificacaoCovid19,
+      tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteEnvio
     }, { transaction });
     await models.NotificacaoEvolucao.create({
       notificacaoId,

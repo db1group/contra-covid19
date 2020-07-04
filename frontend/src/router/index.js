@@ -4,6 +4,7 @@ import Home from '../views/Home.vue';
 import NotificacaoForm from '../views/NotificacaoForm.vue';
 import NotificacaoCons from '../views/NotificacaoCons.vue';
 import FechamentoDiario from '../views/FechamentoDiario.vue';
+import EnvioSecretaria from '../views/EnvioSecretaria.vue';
 import EvolucaoForm from '../views/EvolucaoForm.vue';
 import NotificacaoExportar from '../views/NotificacaoExportar.vue';
 import UnidadeSaudeCons from '../views/UnidadeSaudeCons.vue';
@@ -67,6 +68,11 @@ const routes = [
     name: 'unidades-saude-edit',
     component: UnidadeSaudeForm,
     props: { edit: true },
+  },
+  {
+    path: '/envio-secretaria',
+    name: 'envio-secretaria',
+    component: EnvioSecretaria,
   },
 ];
 
