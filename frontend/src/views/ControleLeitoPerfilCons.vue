@@ -1,6 +1,6 @@
 <template>
   <section style="margin-top: 45px;">
-    <header-controle-leito-perfil title="Controle de Leito Perfil" :showIcon="false" />
+    <!-- <header-controle-leito-perfil title="Controle de Leito Perfil" :showIcon="true" /> -->
     <controle-leito-perfil-table
       :id="controleLeitoId"
       @erro:consultaControleLeitosPerfis="mostrarMensagemErro"
@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import HeaderControleLeitoPerfil from '@/components/ControleLeitoPerfil/HeaderControleLeitoPerfil.vue';
+// import HeaderControleLeitoPerfil from '@/components/ControleLeitoPerfil/HeaderControleLeitoPerfil.vue';
 import ControleLeitoPerfilTable from '@/components/ControleLeitoPerfil/ControleLeitoPerfilTable.vue';
 
 export default {
   components: {
-    HeaderControleLeitoPerfil,
+    // HeaderControleLeitoPerfil,
     ControleLeitoPerfilTable,
   },
   data: () => ({

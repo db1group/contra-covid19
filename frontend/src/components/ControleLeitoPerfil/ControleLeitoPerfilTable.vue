@@ -1,5 +1,6 @@
  <template>
   <v-container fluid>
+    <header-title :title="'Controle Leito Perfil'" backRoute="controle-leitos-cons" />
     <confirm-dialog
       v-model="removingControleLeitoPerfilDialog.showDialog"
       confirm-color="error"
@@ -13,53 +14,52 @@
         </div>
       </div>
     </confirm-dialog>
-    <v-data-table
-      :headers="headers"
-      :items="leitos"
-      item-key="id"
-      :server-items-length="totalLeitos"
-      :options.sync="options"
-      @update:options="consultaControleLeitosPerfis"
-      :loading="loading"
-      loading-text="Carregando os leitos perfis de saúde."
-      no-data-text="Não há leitos perfis até o momento."
-      no-results-text="Não há leitos perfis com estes dados."
-      :footer-props="{
-        pageText: '{0}-{1} de {2}',
-        itemsPerPageText: 'Linhas por página',
-        itemsPerPageOptions: [10, 30, 50, 100],
-      }"
-      class="elevation-1"
-    >
-      <template v-slot:item.actions="{ item }">
-        <v-row justify="end" align="center" dense>
-          <v-col>
-            <v-btn
-              text
-              small
-              color="#F54D09"
-              :to="{ name: 'controle-leito-edit', params: { id: item.id, edit: true } }"
-            >EDITAR</v-btn>
-          </v-col>
-          <v-col>
-            <v-btn
-              text
-              small
-              color="red"
-              @click="showExclusionConfirmDialog(item)"
-            >EXCLUIR</v-btn>
-          </v-col>
-        </v-row>
+    <v-data-table :headers="headers" :items="leitosPerfis">
+      <template v-slot:item.causa="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.causa"
+          @save="save"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.causa }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.causa" label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.perfilNome="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.perfilNome"
+          @save="save"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.perfilNome }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.perfilNome" label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
       </template>
     </v-data-table>
+    <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
+      {{ snackText }}
+      <template v-slot:action="{ attrs }">
+        <v-btn v-bind="attrs" text @click="snack = false">Close</v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 <script>
 import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import ControleLeitoPerfilService from '@/services/ControleLeitoPerfilService';
+import HeaderTitle from '@/components/commons/HeaderTitle.vue';
+import ControleLeitoPerfil from '@/entities/ControleLeitoPerfil';
 
 export default {
-  components: { ConfirmDialog },
+  components: { ConfirmDialog, HeaderTitle },
   data: () => ({
     items: [],
     loading: true,
@@ -70,22 +70,28 @@ export default {
     pagination: {},
     headers: [
       {
-        text: 'Data da Notificação',
-        align: 'start',
-        sortable: false,
-        value: 'dtNotificacao',
+        text: 'Causa', align: 'start', sortable: true, value: 'causa',
       },
-      { text: 'Unidade Saúde', value: 'controleLeitoId' },
-      { text: 'Data cadastro', value: 'createdAt' },
-      { sortable: false, value: 'actions', width: '240px' },
+      {
+        text: 'Perfil', align: 'start', sortable: true, value: 'perfilNome',
+      },
+      {
+        text: 'Unidade Saúde', value: 'unidadeSaudeNome',
+      },
+      {
+        text: 'Data cadastro', value: 'createdAt', sortable: true,
+      },
+      {
+        sortable: false, value: 'actions', width: '240px',
+      },
     ],
-    leitos: [],
+    leitosPerfis: [],
     filter: '',
     filterCons: null,
     options: {
       page: 1,
       itemsPerPage: 10,
-      sortBy: ['dtNotificacao', 'createdAt'],
+      sortBy: ['causa', 'createdAt'],
       sortDesc: 'false',
     },
     user: {},
@@ -110,7 +116,7 @@ export default {
       ControleLeitoPerfilService.findAllControleLeitosByUnidadeSaude(id)
         .then(({ count, data }) => {
           this.totalLeitos = count;
-          this.leitos = data;
+          this.leitosPerfis = data.map((d) => new ControleLeitoPerfil(d).toTable(this.user.unidadeSaudeNome));
           this.loading = false;
         })
         .catch((error) => {
@@ -118,13 +124,29 @@ export default {
           this.$emit('erro:consultaControleLeitosPerfis', data.error);
         });
     },
+    atualizarControleLeitoPerfil(leitoPerfil) {
+      console.log('leito', leitoPerfil);
+      return ControleLeitoPerfilService.update({
+        perfilId: leitoPerfil.id,
+        causa: leitoPerfil.causa,
+      }, leitoPerfil.controleLeitoId)
+        .then(() => {
+          this.showSuccess = true;
+          this.mensagemSucesso = 'Controle de Leitos atualizada com sucesso.';
+        })
+        .catch(({ response }) => {
+          this.showError = true;
+          this.mensagemErro = response.data.error;
+        })
+        .finally(() => { this.loading = false; });
+    },
     confirmExclusion() {
       this.excluirItem(this.removingControleLeitoPerfilDialog.id);
     },
     excluirItem(id) {
       ControleLeitoPerfilService.delete(this.user.unidadeSaudeId, id)
         .then(() => {
-          const page = this.leitos.length === 1 ? 1 : this.options.page;
+          const page = this.leitosPerfis.length === 1 ? 1 : this.options.page;
           this.options = { ...this.options, page };
           this.$emit('delete:controleLeitoPerfil', 'Controle de leito Perfil excluído com sucesso.');
         })
@@ -142,6 +164,30 @@ export default {
     },
     carregarControleLeitoPerfil(id) {
       this.consultaControleLeitosPerfis(id);
+    },
+    save() {
+      this.snack = true;
+      this.snackColor = 'success';
+      this.snackText = 'Alteração salva';
+    },
+    cancel() {
+      this.snack = true;
+      this.snackColor = 'error';
+      this.snackText = 'Cancelado';
+    },
+    open() {
+      this.snack = true;
+      this.snackColor = 'info';
+      this.snackText = 'Edição disponível';
+    },
+    close() {
+      this.atualizaLeitosPerfis();
+    },
+    async atualizaLeitosPerfis() {
+      this.loading = true;
+      const promises = this.leitosPerfis.map(async (leitoPerfil) => this.atualizarControleLeitoPerfil(leitoPerfil));
+      await Promise.all(promises);
+      console.log('Finished!');
     },
   },
   created() {

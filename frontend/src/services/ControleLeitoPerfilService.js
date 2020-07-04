@@ -14,9 +14,10 @@ export default {
     return http.get(`/notifica-leitos/${unidadeId}/perfil/${controleLeitoPerfilId}`).then(({ data }) => data);
   },
 
-  update(controleLeitoPerfil, controleLeitoPerfilId) {
-    const { unidadeId } = controleLeitoPerfil;
-    return http.put(`notifica-leitos/${unidadeId}/perfil/${controleLeitoPerfilId}`, controleLeitoPerfil);
+  update(controleLeitoPerfil, controleLeitoId) {
+    console.log(controleLeitoPerfil);
+    const { perfilId } = controleLeitoPerfil;
+    return http.put(`notifica-leitos/${controleLeitoId}/perfil/${perfilId}`, controleLeitoPerfil);
   },
 
   delete(unidadeId, controleLeitoPerfilId) {
