@@ -166,8 +166,7 @@ const salvarNotificacao = async (notificacao) => {
   const transaction = await models.sequelize.transaction();
   try {
     const novaNotificacao = await models.Notificacao.create(
-      { ...notificacao, dtSuspeito: models.sequelize.literal('CURRENT_TIMESTAMP') },
-      { transaction },
+      notificacao, { transaction },
     );
     const { id: notificacaoId } = novaNotificacao;
     await models.NotificacaoCovid19.create({
