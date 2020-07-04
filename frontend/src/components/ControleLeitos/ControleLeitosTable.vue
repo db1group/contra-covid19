@@ -35,7 +35,6 @@
         <v-row justify="end" align="center" dense>
           <v-col>
             <v-btn
-              v-if="isPermiteAlterar(item)"
               text
               small
               color="##B8860B"
@@ -134,27 +133,6 @@ export default {
           const { data } = error.response;
           this.$emit('erro:deleteUnidadeSaude', data.error);
         });
-    },
-    save() {
-      this.snack = true;
-      this.snackColor = 'success';
-      this.snackText = 'Data saved';
-    },
-    cancel() {
-      this.snack = true;
-      this.snackColor = 'error';
-      this.snackText = 'Canceled';
-    },
-    open() {
-      this.snack = true;
-      this.snackColor = 'info';
-      this.snackText = 'Dialog opened';
-    },
-    close() {
-      console.log('Dialog closed');
-    },
-    isPermiteAlterar() {
-      return true;
     },
     showExclusionConfirmDialog({ id }) {
       this.removingControleLeitoDialog.showDialog = true;
