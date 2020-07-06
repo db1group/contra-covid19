@@ -1,8 +1,7 @@
 import http from './Http';
 
 export default {
-  save(controleLeitoPerfil) {
-    const { unidadeId } = controleLeitoPerfil;
+  save(controleLeitoPerfil, unidadeId) {
     return http.post(`/notifica-leitos/${unidadeId}/perfil`, controleLeitoPerfil);
   },
 
@@ -15,7 +14,6 @@ export default {
   },
 
   update(controleLeitoPerfil, controleLeitoId) {
-    console.log(controleLeitoPerfil);
     const { perfilId } = controleLeitoPerfil;
     return http.put(`notifica-leitos/${controleLeitoId}/perfil/${perfilId}`, controleLeitoPerfil);
   },

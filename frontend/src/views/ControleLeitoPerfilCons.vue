@@ -3,6 +3,7 @@
     <!-- <header-controle-leito-perfil title="Controle de Leito Perfil" :showIcon="true" /> -->
     <controle-leito-perfil-table
       :id="controleLeitoId"
+      :controleLeito="controleLeito"
       @erro:consultaControleLeitosPerfis="mostrarMensagemErro"
       @delete:controleLeitoPerfil="mostrarMensagemSucesso"
       @erro:deleteControleLeitoPerfil="mostrarMensagemErro"
@@ -18,7 +19,6 @@
 </template>
 
 <script>
-// import HeaderControleLeitoPerfil from '@/components/ControleLeitoPerfil/HeaderControleLeitoPerfil.vue';
 import ControleLeitoPerfilTable from '@/components/ControleLeitoPerfil/ControleLeitoPerfilTable.vue';
 
 export default {
@@ -32,6 +32,7 @@ export default {
     mensagemSucesso: '',
     mensagemErro: '',
     controleLeitoId: null,
+    controleLeito: null,
   }),
   methods: {
     mostrarMensagemErro(msg) {
@@ -42,14 +43,15 @@ export default {
       this.showSuccess = true;
       this.mensagemSucesso = msg;
     },
-    verPerfil(id) {
+    verPerfil(id, controleLeito) {
       this.controleLeitoId = id;
+      this.controleLeito = controleLeito;
     },
   },
   beforeRouteEnter(to, from, next) {
-    const { id } = to.params;
+    const { id, controleLeito } = to.params;
     let enter = true;
-    enter = (vm) => vm.verPerfil(id);
+    enter = (vm) => vm.verPerfil(id, controleLeito);
     next(enter);
   },
 };
