@@ -38,7 +38,7 @@
               text
               small
               color="##B8860B"
-              :to="{ name: 'controle-leito-perfil-cons', params: { id: item.id, edit: true } }"
+              :to="{ name: 'controle-leito-perfil-cons', params: { id: item.id, controleLeito: item, edit: true } }"
             >PERFIL</v-btn>
           </v-col>
           <v-col>
@@ -65,6 +65,7 @@
 <script>
 import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import ControleLeitoService from '@/services/ControleLeitoService';
+import ControleLeitoLista from '@/entities/ControleLeitoLista';
 
 export default {
   components: { ConfirmDialog },
@@ -83,7 +84,7 @@ export default {
         sortable: false,
         value: 'dtNotificacao',
       },
-      { text: 'Unidade Saúde', value: 'controleLeitoId' },
+      { text: 'Unidade Saúde', value: 'unidadeSaudeNome' },
       { text: 'Data cadastro', value: 'createdAt' },
       { sortable: false, value: 'actions', width: '240px' },
     ],
@@ -108,7 +109,7 @@ export default {
       ControleLeitoService.findAllControleLeitosByUnidadeSaude(this.user.unidadeSaudeId)
         .then(({ count, data }) => {
           this.totalLeitos = count;
-          this.leitos = data;
+          this.leitos = data.map((d) => new ControleLeitoLista(d).toTable(this.user.unidadeSaudeNome));
           this.loading = false;
         })
         .catch((error) => {

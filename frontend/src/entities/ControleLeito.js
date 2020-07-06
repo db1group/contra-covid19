@@ -74,4 +74,13 @@ export default class ControleLeito {
       qtUTINeoPrivado: this.qtUTINeoPrivado.toString(),
     };
   }
+
+  toTable(unidadeSaudeNome) {
+    const { id, ...controleLeito } = this;
+    return {
+      ...controleLeito,
+      id,
+      unidadeSaudeNome,
+    };
+  }
 }
