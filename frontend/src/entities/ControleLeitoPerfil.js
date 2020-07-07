@@ -3,25 +3,29 @@ export default class ControleLeitoPerfil {
     this.perfilNome = perfil.perfilNome || '';
     this.causa = perfil.causa || '';
     this.ControleLeito = {
-      qtEnfermariaCovid: ControleLeito.qtEnfermariaCovid || '',
-      qtUTIAdultaCovid: ControleLeito.qtUTIAdultaCovid || '',
-      qtUTIPedCovid: ControleLeito.qtUTIPedCovid || '',
-      qtUTINeoCovid: ControleLeito.qtUTINeoCovid || '',
-      qtEnfermariaNormal: ControleLeito.qtEnfermariaNormal || '',
-      qtUTIAdultaNormal: ControleLeito.qtUTIAdultaNormal || '',
-      qtUTIPedNormal: ControleLeito.qtUTIPedNormal || '',
-      qtUTINeoNormal: ControleLeito.qtUTINeoNormal || '',
-      qtEnfermariaPrivado: ControleLeito.qtEnfermariaPrivado || '',
-      qtUTIAdultaPrivado: ControleLeito.qtUTIAdultaPrivado || '',
-      qtUTIPedPrivado: ControleLeito.qtUTIPedPrivado || '',
-      qtUTINeoPrivado: ControleLeito.qtUTINeoPrivado || '',
+      qtEnfermariaCovid: ControleLeito.qtEnfermariaCovid || 0,
+      qtUTIAdultaCovid: ControleLeito.qtUTIAdultaCovid || 0,
+      qtUTIPedCovid: ControleLeito.qtUTIPedCovid || 0,
+      qtUTINeoCovid: ControleLeito.qtUTINeoCovid || 0,
+      qtEnfermariaNormal: ControleLeito.qtEnfermariaNormal || 0,
+      qtUTIAdultaNormal: ControleLeito.qtUTIAdultaNormal || 0,
+      qtUTIPedNormal: ControleLeito.qtUTIPedNormal || 0,
+      qtUTINeoNormal: ControleLeito.qtUTINeoNormal || 0,
+      qtEnfermariaPrivado: ControleLeito.qtEnfermariaPrivado || 0,
+      qtUTIAdultaPrivado: ControleLeito.qtUTIAdultaPrivado || 0,
+      qtUTIPedPrivado: ControleLeito.qtUTIPedPrivado || 0,
+      qtUTINeoPrivado: ControleLeito.qtUTINeoPrivado || 0,
     };
   }
 
+
   toRequestBody() {
-    const { ...controleLeitoPerfil } = this;
+    const copy = { ...this.ControleLeito };
+    delete copy.id;
     return {
-      ...controleLeitoPerfil,
+      ControleLeito: {
+        ...copy,
+      },
       perfilNome: this.perfilNome.toString(),
       causa: this.causa.toString(),
     };

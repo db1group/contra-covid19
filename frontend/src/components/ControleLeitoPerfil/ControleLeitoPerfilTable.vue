@@ -83,6 +83,18 @@
           </template>
         </v-edit-dialog>
       </template>
+      <template v-slot:item.actions="{ item }">
+        <v-row justify="end" align="center" dense>
+          <v-col>
+            <v-btn
+              text
+              small
+              color="red"
+              @click="showExclusionConfirmDialog(item)"
+            >EXCLUIR</v-btn>
+          </v-col>
+        </v-row>
+      </template>
     </v-data-table>
     <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
       {{ snackText }}
@@ -173,9 +185,7 @@ export default {
         this.controleLeito.id,
       ).then((response) => {
         const controleLeitoPerfil = new ControleLeitoPerfil(this.perfil, response.data.ControleLeito);
-        controleLeitoPerfil.ControleLeito.id = null;
-        console.log('controleLeitoPerfil', controleLeitoPerfil);
-        ControleLeitoPerfilService.save(controleLeitoPerfil, this.user.unidadeSaudeId)
+        ControleLeitoPerfilService.save(controleLeitoPerfil.toRequestBody(), response.data.unidadeSaudeId)
           .then(() => {
             const page = this.leitosPerfis.length === 1 ? 1 : this.options.page;
             this.options = { ...this.options, page };
@@ -236,9 +246,9 @@ export default {
           this.$emit('erro:deleteControleLeitoPerfil', data.error);
         });
     },
-    showExclusionConfirmDialog({ id }) {
+    showExclusionConfirmDialog({ notificaLeitoId }) {
       this.removingControleLeitoPerfilDialog.showDialog = true;
-      this.removingControleLeitoPerfilDialog.id = id;
+      this.removingControleLeitoPerfilDialog.id = notificaLeitoId;
     },
     carregarControleLeitoPerfil(id) {
       this.consultaControleLeitosPerfis(id);
