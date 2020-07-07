@@ -4,6 +4,7 @@ const { validarMenorQueDataHoraAtual } = require('../lib/validacoes-comuns/data'
 const repos = require('../repositories/repository-factory');
 const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
+const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secretaria-enum');
 
 module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
   validarMenorQueDataHoraAtual(notificacaoRequest.dataHoraNotificacao, 'A', 'data/hora da notificação');
@@ -70,6 +71,8 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
 
   const { notificacaoCovid19 } = notificacaoUpdate;
   notificacaoCovid19.notificacaoId = notificacaoRequest.id;
+  notificacaoCovid19.tpTransmissaoApiSecretaria = tpTransmissaoApiSecretaria
+    .values.PendenteAtualizacao;
   await repos.notificacaoCovid19Repository.atualizar(notificacaoCovid19);
 
   const primeiraEvolucao = evolucoesSort.first();

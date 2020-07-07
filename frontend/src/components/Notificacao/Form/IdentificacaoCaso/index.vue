@@ -17,6 +17,7 @@
       @update:racaCor="updateRacaCor"
       @update:dataDeNascimento="updateDataDeNascimento"
       @update:tipoClassificacaoPessoa="updateTipoClassificacaoPessoa"
+      @update:passaporte="updatePassaporte"
       :disabled="disabled"
     />
     <endereco
@@ -28,6 +29,7 @@
       @update:bairroId="updateBairroId"
       @update:complemento="updateComplemento"
       @update:municipioId="updateMunicipioId"
+      @update:paisId="updatePaisId"
       :disabled="disabled"
     />
     <contato
@@ -146,6 +148,12 @@ export default {
     },
     updateTipoClassificacaoPessoa(tipoClassificacaoPessoa) {
       this.$emit('update:tipoClassificacaoPessoa', tipoClassificacaoPessoa);
+    },
+    updatePassaporte(passaporte) {
+      this.$emit('update:passaporte', passaporte);
+    },
+    updatePaisId(paisId) {
+      this.$emit('update:paisId', paisId);
     },
   },
 };

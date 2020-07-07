@@ -8,6 +8,7 @@ const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
 const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
 const atualizacaoNotificacaoService = require('../services/atualizar-notificacao-service');
+const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secretaria-enum');
 
 const { Op } = Sequelize;
 
@@ -35,7 +36,6 @@ const buscarPessoasDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findA
     nomeDaMae: normalizarTexto(nomeDaMae),
   },
 });
-
 
 const obterGestante = (sexo, gestante) => {
   if (sexo === 'M') {
@@ -165,13 +165,13 @@ const salvarNotificacao = async (notificacao) => {
   const transaction = await models.sequelize.transaction();
   try {
     const novaNotificacao = await models.Notificacao.create(
-      { ...notificacao, dtSuspeito: models.sequelize.literal('CURRENT_TIMESTAMP') },
-      { transaction },
+      notificacao, { transaction },
     );
     const { id: notificacaoId } = novaNotificacao;
     await models.NotificacaoCovid19.create({
       notificacaoId,
       ...notificacao.notificacaoCovid19,
+      tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteEnvio,
     }, { transaction });
     await models.NotificacaoEvolucao.create({
       notificacaoId,

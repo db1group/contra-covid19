@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     qtUTIAdultaPrivado: DataTypes.INTEGER,
     qtUTIPedPrivado: DataTypes.INTEGER,
     qtUTINeoPrivado: DataTypes.INTEGER,
+    tokenSecretaria: DataTypes.STRING(1000),
   });
   UnidadeSaude.associate = (models) => {
     UnidadeSaude.belongsTo(models.Municipio, { foreignKey: 'municipioId' });

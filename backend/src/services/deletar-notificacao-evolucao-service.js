@@ -30,12 +30,11 @@ exports.handle = async (notificacaoId, notificacaoEvolucaoId) => {
     await models.Notificacao.update(
       { status: 'ABERTA', [dtTpEvolucao]: null },
       {
-        where:
-                {
-                  id: notificacaoId,
-                },
+        where: { id: notificacaoId },
         transaction,
       },
     );
+    await repos.notificacaoCovid19Repository
+      .atualizarTpTransmissaoPendenteAtualizacao(notificacaoId, transaction);
   });
 };

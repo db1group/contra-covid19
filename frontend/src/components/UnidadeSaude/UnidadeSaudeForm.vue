@@ -48,6 +48,18 @@
             />
           </v-col>
         </v-row>
+        <v-row dense v-if="isSecretariaSaude">
+          <v-col>
+            <v-textarea
+              label="Token Secretaria de Saúde"
+              :value="unidade.tokenSecretaria"
+              @input="updateToken"
+              hint="Token gerado pela Secretaria de Saúde necessário para o envio das notificações."
+              rows="3"
+              readonly
+            ></v-textarea>
+          </v-col>
+        </v-row>
         <v-row align="center">
           <v-col>
             <h3 class="primary--text">Leitos Existentes</h3>
@@ -259,6 +271,7 @@ import {
 import UnidadeSaude from '@/entities/UnidadeSaude';
 import MunicipioService from '@/services/MunicipioService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
+import keycloak from '@/services/KeycloakService';
 
 const StateForm = {
   NEW: 'NEW',
@@ -297,6 +310,7 @@ export default {
       cnes: [required, minLengthNumbers(3)],
       leitos: [onlyCardinalNumbers],
     },
+    isSecretariaSaude: false,
   }),
   computed: {
     title() {
@@ -351,6 +365,9 @@ export default {
     },
     updateCNES(cnes) {
       this.unidade.cnes = cnes;
+    },
+    updateToken(token) {
+      this.unidade.tokenSecretaria = token;
     },
     updateEnfermariaCovid(qtEnfermaria) {
       this.unidade.qtEnfermariaCovid = qtEnfermaria;
@@ -424,6 +441,7 @@ export default {
     },
   },
   created() {
+    this.isSecretariaSaude = keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
     this.findMunicipios();
   },
 };

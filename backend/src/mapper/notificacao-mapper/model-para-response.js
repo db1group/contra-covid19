@@ -1,4 +1,3 @@
-
 const RegraNegocioErro = require('../../lib/erros/RegraNegocioErro');
 
 class NotificacaoResponseMapper {
@@ -94,6 +93,9 @@ class NotificacaoResponseMapper {
     Municipio,
     cep,
     tipoClassificacaoPessoa,
+    passaporte,
+    paisId,
+    Pais,
   }) {
     return {
       pessoaId: id,
@@ -122,6 +124,9 @@ class NotificacaoResponseMapper {
       idade,
       gestante,
       tipoPeriodoGestacional,
+      passaporte,
+      paisId,
+      pais: Pais ? Pais.nome : 'Brasil',
     };
   }
 
