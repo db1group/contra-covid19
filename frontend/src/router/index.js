@@ -92,6 +92,8 @@ const routes = [
     path: '/controle-leito/perfil/:id',
     name: 'controle-leito-perfil-cons',
     component: ControleLeitoPerfilCons,
+  },
+  {
     path: '/envio-secretaria',
     name: 'envio-secretaria',
     component: EnvioSecretaria,
