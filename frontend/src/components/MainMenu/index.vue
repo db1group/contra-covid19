@@ -55,7 +55,12 @@
           <v-list-item-title>Fechamento</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item v-if="isSecretariaSaude" value="envio-secretaria" @click="onClick('envio-secretaria')">
+      <!--
+      <v-list-item
+        v-if="isSecretariaSaude"
+        value="envio-secretaria"
+        @click="onClick('envio-secretaria')"
+      >
         <v-list-item-icon>
           <v-icon>mdi-send</v-icon>
         </v-list-item-icon>
@@ -63,6 +68,7 @@
           <v-list-item-title>Envio para Secretaria</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      -->
       <v-subheader>Ações</v-subheader>
       <v-list-item @click="logout">
         <v-list-item-icon>
