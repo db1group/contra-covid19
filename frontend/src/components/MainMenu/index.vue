@@ -56,7 +56,11 @@
         </v-list-item-content>
       </v-list-item>
       <!--
-      <v-list-item v-if="isSecretariaSaude" value="envio-secretaria" @click="onClick('envio-secretaria')">
+      <v-list-item
+        v-if="isSecretariaSaude"
+        value="envio-secretaria"
+        @click="onClick('envio-secretaria')"
+      >
         <v-list-item-icon>
           <v-icon>mdi-send</v-icon>
         </v-list-item-icon>
