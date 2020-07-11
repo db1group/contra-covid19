@@ -22,6 +22,11 @@ const removeCacheByKey = (key) => {
   if (connected) redis.del(key);
 };
 
+const getCacheByKey = async (key) => {
+  if (connected) return redis.get(key);
+  return null;
+};
+
 const setCacheByKey = (key, content, expire) => {
   if (!connected) return;
   const body = content instanceof Buffer ? content.toString() : content;
@@ -62,6 +67,7 @@ const middlewareRedis = (req, res, next) => {
     req.setCache = setCacheQuery;
     req.setCacheByKey = setCacheByKey;
     req.removeCacheByKey = removeCacheByKey;
+    req.getCacheByKey = getCacheByKey;
     req.redisConnected = connected;
     req.redis = {};
     if (!connected) {

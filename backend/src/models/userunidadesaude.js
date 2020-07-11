@@ -7,11 +7,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     userId: {
       type: DataTypes.UUID,
+      allowNull: false,
     },
     unidadeSaudeId: {
       type: DataTypes.UUID,
+      allowNull: false,
     },
-  });
+  }, {});
   UserUnidadeSaude.associate = (models) => {
     UserUnidadeSaude.belongsTo(models.UnidadeSaude, {
       foreignKey: 'unidadeSaudeId',

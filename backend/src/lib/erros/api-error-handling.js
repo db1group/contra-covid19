@@ -2,9 +2,14 @@ const { ValidationError } = require('sequelize');
 const NotificaSaudeErro = require('./NotificaSaudeErro');
 
 const tratarErrorsRetornoAPI = (response, erro) => {
-  let codigoResposta = 500;
+  let codigoResposta = erro.isAxiosError ? 400 : 500;
+  const errorAxios = erro.isAxiosError && erro.response.data.error
+    ? erro.response.data.error
+    : erro.response.data.errorMessage;
   const objetoRetorno = {
-    error: erro.message,
+    error: erro.isAxiosError
+      ? errorAxios
+      : erro.message,
     stack: process.env.NODE_ENV === 'development' ? erro.stack : null,
   };
 

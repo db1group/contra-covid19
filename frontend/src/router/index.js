@@ -9,6 +9,8 @@ import EvolucaoForm from '../views/EvolucaoForm.vue';
 import NotificacaoExportar from '../views/NotificacaoExportar.vue';
 import UnidadeSaudeCons from '../views/UnidadeSaudeCons.vue';
 import UnidadeSaudeForm from '../views/UnidadeSaudeForm.vue';
+import UsuarioCons from '../views/UsuarioCons.vue';
+import UsuarioForm from '../views/UsuarioForm.vue';
 
 Vue.use(VueRouter);
 
@@ -67,6 +69,22 @@ const routes = [
     path: '/unidades-saude/:id/edit',
     name: 'unidades-saude-edit',
     component: UnidadeSaudeForm,
+    props: { edit: true },
+  },
+  {
+    path: '/usuarios',
+    name: 'usuario-cons',
+    component: UsuarioCons,
+  },
+  {
+    path: '/usuarios/cadastro',
+    name: 'usuario-form',
+    component: UsuarioForm,
+  },
+  {
+    path: '/usuarios/:id/edit',
+    name: 'usuario-edit',
+    component: UsuarioForm,
     props: { edit: true },
   },
   {
