@@ -63,7 +63,6 @@
           <v-list-item-title>Fechamento</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <!--
       <v-list-item
         v-if="isSecretariaSaude"
         value="envio-secretaria"
@@ -76,7 +75,6 @@
           <v-list-item-title>Envio para Secretaria</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      -->
       <v-subheader>Ações</v-subheader>
       <v-list-item @click="logout">
         <v-list-item-icon>
