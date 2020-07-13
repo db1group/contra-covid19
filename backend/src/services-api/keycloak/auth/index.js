@@ -2,24 +2,26 @@ const KeycloakAPI = require('..');
 const Redis = require('../../../redis');
 
 const KEYCLOAK_TOKEN = 'KEYCLOAK_TOKEN';
+const ROLES_KEY = 'ROLES_KEY';
+const USER_ROLES_KEY = 'USER_ROLES_KEY';
 const EXPIRE_TOKEN = process.env.KEYCLOAK_EXPIRE || 350;
 
 const redis = Redis();
 
 const filterAppRoles = (r) => r.name !== 'offline_access' && r.name !== 'uma_authorization';
 
-const getKeycloakToken = async () => {
-  let token;
+const getCacheKey = async (key) => {
+  let keyValue;
   try {
-    token = await redis.get(KEYCLOAK_TOKEN);
+    keyValue = await redis.get(key);
   } catch (err) {
     console.error(err);
   }
-  return token;
+  return keyValue;
 };
-const setKeycloakToken = (response) => {
+const setCacheKey = (key, value, expire = EXPIRE_TOKEN) => {
   try {
-    redis.set(KEYCLOAK_TOKEN, JSON.stringify(response), 'EX', EXPIRE_TOKEN);
+    redis.set(key, JSON.stringify(value), 'EX', expire);
   } catch (err) {
     console.error(err);
   }
@@ -27,7 +29,7 @@ const setKeycloakToken = (response) => {
 
 exports.login = async () => {
   try {
-    const cache = await getKeycloakToken();
+    const cache = await getCacheKey(KEYCLOAK_TOKEN);
     if (cache) return JSON.parse(cache);
 
     const params = new URLSearchParams();
@@ -40,7 +42,7 @@ exports.login = async () => {
       .post('realms/master/protocol/openid-connect/token', params)
       .then(({ data }) => data);
 
-    setKeycloakToken(response);
+    setCacheKey(KEYCLOAK_TOKEN, response);
 
     return response;
   } catch (err) {
@@ -49,20 +51,49 @@ exports.login = async () => {
   }
 };
 
-exports.roles = async (token) => KeycloakAPI
-  .get(`admin/realms/${process.env.KEYCLOAK_REALM}/roles`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-  .then(({ data }) => data.filter(filterAppRoles));
+exports.roles = async (token) => {
+  try {
+    const cache = await getCacheKey(ROLES_KEY);
+    if (cache) return JSON.parse(cache);
 
-exports.userRoles = async (id, token) => KeycloakAPI
-  .get(`admin/realms/${process.env.KEYCLOAK_REALM}/users/${id}/role-mappings`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-  .then(({ data }) => data.realmMappings.filter(filterAppRoles));
+    const response = await KeycloakAPI
+      .get(`admin/realms/${process.env.KEYCLOAK_REALM}/roles`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      .then(({ data }) => data.filter(filterAppRoles));
+
+    setCacheKey(ROLES_KEY, response);
+
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+exports.userRoles = async (id, token) => {
+  try {
+    const userKey = `${USER_ROLES_KEY}_${id}`;
+    const cache = await getCacheKey(userKey);
+    if (cache) return JSON.parse(cache);
+
+    const response = await KeycloakAPI
+      .get(`admin/realms/${process.env.KEYCLOAK_REALM}/users/${id}/role-mappings`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+      .then(({ data }) => data.realmMappings.filter(filterAppRoles));
+
+    setCacheKey(userKey, response);
+
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
