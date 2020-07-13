@@ -2,7 +2,7 @@
   <v-container fluid>
     <header-title :title="title" backRoute="usuario-cons" />
 
-    <v-card class="mx-auto" width="500">
+    <v-card class="mx-auto" width="500" :loading="loading">
       <v-card-title>
         <h3 class="primary--text">Usuário</h3>
       </v-card-title>
@@ -54,6 +54,7 @@
           </v-col>
         </v-row>
         <h4>Permissões</h4>
+        <v-progress-linear :active="permissions.loading" indeterminate></v-progress-linear>
         <div class="d-flex flex-wrap">
           <div v-for="p in permissions.items" :key="p.name" :loading="permissions.loading">
             <v-switch v-model="usuario.permissoes" :label="p.description" :value="p.name"></v-switch>
