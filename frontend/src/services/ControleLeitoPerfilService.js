@@ -1,24 +1,23 @@
 import http from './Http';
 
 export default {
-  save(controleLeitoPerfil, unidadeId) {
-    return http.post(`/notifica-leitos/${unidadeId}/perfil`, controleLeitoPerfil);
+  save(controleLeitoPerfil, controleLeitoId) {
+    return http.post(`/notifica-leitos/${controleLeitoId}/perfil`, controleLeitoPerfil);
   },
 
-  findAllControleLeitosByUnidadeSaude(controleLeitoPerfilId) {
-    return http.get(`/notifica-leitos/${controleLeitoPerfilId}/perfil?`).then(({ data }) => data);
+  findAllControleLeitosPerfilByControleLeito(controleLeitoId) {
+    return http.get(`/notifica-leitos/${controleLeitoId}/perfil?`).then(({ data }) => data);
   },
 
-  findByControleLeitoId(unidadeId, controleLeitoPerfilId) {
-    return http.get(`/notifica-leitos/${unidadeId}/perfil/${controleLeitoPerfilId}`).then(({ data }) => data);
+  findByControleLeitoId(controleLeitoId, controleLeitoPerfilId) {
+    return http.get(`/notifica-leitos/${controleLeitoId}/perfil/${controleLeitoPerfilId}`).then(({ data }) => data);
   },
 
-  update(controleLeitoPerfil, controleLeitoId) {
-    const { perfilId } = controleLeitoPerfil;
-    return http.put(`notifica-leitos/${controleLeitoId}/perfil/${perfilId}`, controleLeitoPerfil);
+  update(controleLeitoPerfil, controleLeitoId, id) {
+    return http.put(`notifica-leitos/${controleLeitoId}/perfil/${id}`, controleLeitoPerfil);
   },
 
-  delete(unidadeId, controleLeitoPerfilId) {
-    return http.delete(`/notifica-leitos/${unidadeId}/perfil/${controleLeitoPerfilId}`);
+  delete(controleLeitoId, controleLeitoPerfilId) {
+    return http.delete(`/notifica-leitos/${controleLeitoId}/perfil/${controleLeitoPerfilId}`);
   },
 };

@@ -58,7 +58,7 @@
       <template v-slot:item.causa="props">
         <v-edit-dialog
           :return-value.sync="props.item.causa"
-          @save="save"
+          @save="save(props.item)"
           @cancel="cancel"
           @open="open"
           @close="close"
@@ -72,7 +72,7 @@
       <template v-slot:item.perfilNome="props">
         <v-edit-dialog
           :return-value.sync="props.item.perfilNome"
-          @save="save"
+          @save="save(props.item)"
           @cancel="cancel"
           @open="open"
           @close="close"
@@ -80,6 +80,186 @@
           {{ props.item.perfilNome }}
           <template v-slot:input>
             <v-text-field v-model="props.item.perfilNome" label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtEnfermariaCovid="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtEnfermariaCovid"
+         @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtEnfermariaCovid }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtEnfermariaCovid"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtUTIAdultaCovid="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtUTIAdultaCovid"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtUTIAdultaCovid }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtUTIAdultaCovid"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtUTIPedCovid="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtUTIPedCovid"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtUTIPedCovid }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtUTIPedCovid"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtUTINeoCovid="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtUTINeoCovid"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtUTINeoCovid }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtUTINeoCovid"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtEnfermariaNormal="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtEnfermariaNormal"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtEnfermariaNormal }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtEnfermariaNormal"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtUTIAdultaNormal="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtUTIAdultaNormal"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtUTIAdultaNormal }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtUTIAdultaNormal"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtUTIPedNormal="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtUTIPedNormal"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtUTIPedNormal }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtUTIPedNormal"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtUTINeoNormal="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtUTINeoNormal"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtUTINeoNormal }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtUTINeoNormal"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtEnfermariaPrivado="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtEnfermariaPrivado"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtEnfermariaPrivado }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtEnfermariaPrivado"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtUTIAdultaPrivado="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtUTIAdultaPrivado"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtUTIAdultaPrivado }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtUTIAdultaPrivado"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtUTIPedPrivado="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtUTIPedPrivado"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtUTIPedPrivado }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtUTIPedPrivado"
+            label="Edit" single-line counter></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ControleLeito.qtUTINeoPrivado="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ControleLeito.qtUTINeoPrivado"
+          @save="save(props.item)"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          {{ props.item.ControleLeito.qtUTINeoPrivado }}
+          <template v-slot:input>
+            <v-text-field v-model="props.item.ControleLeito.qtUTINeoPrivado"
+            label="Edit" single-line counter></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -109,7 +289,6 @@ import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import ControleLeitoPerfilService from '@/services/ControleLeitoPerfilService';
 import ControleLeitoService from '@/services/ControleLeitoService';
 import HeaderTitle from '@/components/commons/HeaderTitle.vue';
-import ControleLeitoPerfilLista from '@/entities/ControleLeitoPerfilLista';
 import ControleLeitoPerfil from '@/entities/ControleLeitoPerfil';
 
 export default {
@@ -131,10 +310,40 @@ export default {
         text: 'Perfil', align: 'start', sortable: true, value: 'perfilNome',
       },
       {
-        text: 'Unidade Saúde', value: 'unidadeSaudeNome',
+        text: 'EnfermariaCovid', value: 'ControleLeito.qtEnfermariaCovid',
       },
       {
-        text: 'Data cadastro', value: 'createdAt', sortable: true,
+        text: 'UTIAdultaCovid', value: 'ControleLeito.qtUTIAdultaCovid', sortable: true,
+      },
+      {
+        text: 'UTIPedCovid', value: 'ControleLeito.qtUTIPedCovid', sortable: true,
+      },
+      {
+        text: 'UTINeoCovid', value: 'ControleLeito.qtUTINeoCovid', sortable: true,
+      },
+      {
+        text: 'EnfermariaNormal', value: 'ControleLeito.qtEnfermariaNormal', sortable: true,
+      },
+      {
+        text: 'UTIAdultaNormal', value: 'ControleLeito.qtUTIAdultaNormal', sortable: true,
+      },
+      {
+        text: 'UTIPedNormal', value: 'ControleLeito.qtUTIPedNormal', sortable: true,
+      },
+      {
+        text: 'UTINeoNormal', value: 'ControleLeito.qtUTINeoNormal', sortable: true,
+      },
+      {
+        text: 'EnfermariaPrivado', value: 'ControleLeito.qtEnfermariaPrivado', sortable: true,
+      },
+      {
+        text: 'UTIAdultaPrivado', value: 'ControleLeito.qtUTIAdultaPrivado', sortable: true,
+      },
+      {
+        text: 'UTIPedPrivado', value: 'ControleLeito.qtUTIPedPrivado', sortable: true,
+      },
+      {
+        text: 'UTINeoPrivado', value: 'ControleLeito.qtUTINeoPrivado', sortable: true,
       },
       {
         sortable: false, value: 'actions', width: '240px',
@@ -143,56 +352,64 @@ export default {
     perfil: {
       causa: '',
       perfilNome: '',
+      ControleLeito: {
+        qtEnfermariaCovid: 0,
+        qtUTIAdultaCovid: 0,
+        qtUTIPedCovid: 0,
+        qtUTINeoCovid: 0,
+        qtEnfermariaNormal: 0,
+        qtUTIAdultaNormal: 0,
+        qtUTIPedNormal: 0,
+        qtUTINeoNormal: 0,
+        qtEnfermariaPrivado: 0,
+        qtUTIAdultaPrivado: 0,
+        qtUTIPedPrivado: 0,
+        qtUTINeoPrivado: 0,
+      },
     },
     defaultPerfil: {
       causa: '',
       perfilNome: '',
+      ControleLeito: {
+        qtEnfermariaCovid: 0,
+        qtUTIAdultaCovid: 0,
+        qtUTIPedCovid: 0,
+        qtUTINeoCovid: 0,
+        qtEnfermariaNormal: 0,
+        qtUTIAdultaNormal: 0,
+        qtUTIPedNormal: 0,
+        qtUTINeoNormal: 0,
+        qtEnfermariaPrivado: 0,
+        qtUTIAdultaPrivado: 0,
+        qtUTIPedPrivado: 0,
+        qtUTINeoPrivado: 0,
+      },
     },
     leitosPerfis: [],
     filter: '',
     filterCons: null,
-    options: {
-      page: 1,
-      itemsPerPage: 10,
-      sortBy: ['causa', 'createdAt'],
-      sortDesc: 'false',
-    },
     user: {},
     removingControleLeitoPerfilDialog: {
       showDialog: false,
       id: null,
     },
   }),
-  props: {
-    id: String,
-    controleLeito: Object,
-  },
-  computed: {
-    formTitle() {
-      return 'New Item';
-    },
-  },
-  watch: {
-    id(controleLeitoId) {
-      this.carregarControleLeitoPerfil(controleLeitoId);
-      return controleLeitoId;
-    },
-  },
   methods: {
     salvaControleLeitoPerfil() {
       ControleLeitoService.findByControleLeitoId(
         this.user.unidadeSaudeId,
-        this.controleLeito.id,
+        this.$route.params.id,
       ).then((response) => {
+        console.log('response', response);
+        console.log('this.perfil', this.perfil);
         const controleLeitoPerfil = new ControleLeitoPerfil(this.perfil, response.data.ControleLeito);
-        ControleLeitoPerfilService.save(controleLeitoPerfil.toRequestBody(), response.data.unidadeSaudeId)
+        ControleLeitoPerfilService.save(controleLeitoPerfil.toRequestBody(), this.$route.params.id)
           .then(() => {
-            const page = this.leitosPerfis.length === 1 ? 1 : this.options.page;
-            this.options = { ...this.options, page };
-            this.$emit('delete:controleLeitoPerfil', 'Controle de leito Perfil excluído com sucesso.');
+            this.$emit('delete:controleLeitoPerfil', 'Controle de leito Perfil salvo com sucesso.');
           })
           .then(() => {
             this.consultaControleLeitosPerfis();
+            this.cancelNovoPerfil();
           })
           .catch((error) => {
             const { data } = error.response;
@@ -200,12 +417,19 @@ export default {
           });
       });
     },
-    consultaControleLeitosPerfis(id) {
+    consultaControleLeitosPerfis() {
       this.loading = true;
-      ControleLeitoPerfilService.findAllControleLeitosByUnidadeSaude(id)
+      ControleLeitoPerfilService.findAllControleLeitosPerfilByControleLeito(this.$route.params.id)
         .then(({ count, data }) => {
           this.totalLeitos = count;
-          this.leitosPerfis = data.map((d) => new ControleLeitoPerfilLista(d).toTable(this.user.unidadeSaudeNome));
+          this.leitosPerfis = data.map((d) => new ControleLeitoPerfil(d));
+          this.leitosPerfis.forEach((leitoPerfil) => {
+            leitoPerfil.setPerfilCausa(leitoPerfil.perfilNome, leitoPerfil.causa);
+            ControleLeitoPerfilService.findByControleLeitoId(this.$route.params.id, leitoPerfil.id)
+              .then((response) => {
+                leitoPerfil.setControleLeito(response.data.ControleLeito);
+              });
+          });
           this.loading = false;
         })
         .catch((error) => {
@@ -217,10 +441,24 @@ export default {
       return ControleLeitoPerfilService.update({
         perfilId: leitoPerfil.id,
         causa: leitoPerfil.causa,
-      }, leitoPerfil.controleLeitoId)
+        ControleLeito: {
+          qtEnfermariaCovid: 0,
+          qtUTIAdultaCovid: 0,
+          qtUTIPedCovid: 0,
+          qtUTINeoCovid: 0,
+          qtEnfermariaNormal: 0,
+          qtUTIAdultaNormal: 0,
+          qtUTIPedNormal: 0,
+          qtUTINeoNormal: 0,
+          qtEnfermariaPrivado: 0,
+          qtUTIAdultaPrivado: 0,
+          qtUTIPedPrivado: 0,
+          qtUTINeoPrivado: 0,
+        },
+      }, this.$route.params.id, leitoPerfil.id)
         .then(() => {
           this.showSuccess = true;
-          this.mensagemSucesso = 'Controle de Leitos atualizada com sucesso.';
+          this.mensagemSucesso = 'Controle de Leitos Perfil atualizado com sucesso.';
         })
         .catch(({ response }) => {
           this.showError = true;
@@ -232,10 +470,8 @@ export default {
       this.excluirItem(this.removingControleLeitoPerfilDialog.id);
     },
     excluirItem(id) {
-      ControleLeitoPerfilService.delete(this.user.unidadeSaudeId, id)
+      ControleLeitoPerfilService.delete(this.$route.params.id, id)
         .then(() => {
-          const page = this.leitosPerfis.length === 1 ? 1 : this.options.page;
-          this.options = { ...this.options, page };
           this.$emit('delete:controleLeitoPerfil', 'Controle de leito Perfil excluído com sucesso.');
         })
         .then(() => {
@@ -246,15 +482,15 @@ export default {
           this.$emit('erro:deleteControleLeitoPerfil', data.error);
         });
     },
-    showExclusionConfirmDialog({ notificaLeitoId }) {
+    showExclusionConfirmDialog({ id }) {
       this.removingControleLeitoPerfilDialog.showDialog = true;
-      this.removingControleLeitoPerfilDialog.id = notificaLeitoId;
+      this.removingControleLeitoPerfilDialog.id = id;
     },
-    carregarControleLeitoPerfil(id) {
-      this.consultaControleLeitosPerfis(id);
+    carregarControleLeitoPerfil() {
+      this.consultaControleLeitosPerfis();
     },
-    save() {
-      this.atualizaLeitosPerfis();
+    save(event) {
+      this.atualizarControleLeitoPerfil(event);
     },
     cancel() {
       this.snack = true;
@@ -267,7 +503,7 @@ export default {
       this.snackText = 'Edição disponível';
     },
     close() {
-      this.atualizaLeitosPerfis();
+
     },
     saveNovoPerfil() {
       this.salvaControleLeitoPerfil();
@@ -275,20 +511,12 @@ export default {
     cancelNovoPerfil() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.perfil = Object.assign({}, ...this.defaultItem);
       });
-    },
-    async atualizaLeitosPerfis() {
-      this.loading = true;
-      const promises = this.leitosPerfis.map(async (leitoPerfil) => this.atualizarControleLeitoPerfil(leitoPerfil));
-      await Promise.all(promises);
-      this.snack = true;
-      this.snackColor = 'success';
-      this.snackText = 'Alteração salva';
     },
   },
   created() {
     this.user = this.$store.state.user;
+    this.consultaControleLeitosPerfis();
   },
 };
 </script>

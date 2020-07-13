@@ -1,7 +1,10 @@
 export default class ControleLeitoPerfil {
-  constructor(perfil = {}, ControleLeito = {}) {
-    this.perfilNome = perfil.perfilNome || '';
-    this.causa = perfil.causa || '';
+  constructor(data = {}, ControleLeito = {}) {
+    this.id = data.id || '';
+    this.causa = data.causa || '';
+    if (data.Perfil) {
+      this.perfilNome = data.Perfil.nome || '';
+    }
     this.ControleLeito = {
       qtEnfermariaCovid: ControleLeito.qtEnfermariaCovid || 0,
       qtUTIAdultaCovid: ControleLeito.qtUTIAdultaCovid || 0,
@@ -18,6 +21,20 @@ export default class ControleLeitoPerfil {
     };
   }
 
+  setId(id) {
+    this.id = id;
+  }
+
+  setPerfilCausa(perfilNome, causa) {
+    this.perfilNome = perfilNome;
+    this.causa = causa;
+  }
+
+  setControleLeito(controleLeito) {
+    this.ControleLeito = {
+      ...controleLeito,
+    };
+  }
 
   toRequestBody() {
     const copy = { ...this.ControleLeito };

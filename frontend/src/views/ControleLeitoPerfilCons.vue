@@ -31,8 +31,8 @@ export default {
     showSuccess: false,
     mensagemSucesso: '',
     mensagemErro: '',
-    controleLeitoId: null,
-    controleLeito: null,
+    controleLeitoId: '',
+    controleLeito: {},
   }),
   methods: {
     mostrarMensagemErro(msg) {
