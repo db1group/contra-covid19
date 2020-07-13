@@ -83,10 +83,10 @@ const criarPromiseEnvioNotificacao = (notificacao, unidadeSaude) => new Promise(
           tpTransmissaoApiSecretaria.values.Enviada,
         );
         retorno = { success: 'Notificação enviada com sucesso.' };
-      } else if (apiErrors.isFichaJaExiste(response.data)) {
+      } else if (apiErrors.isFichaJaExiste(response)) {
         retorno = { message: `A notificação do paciente ${notificacao.Pessoa.nome} já possui cadastro.` };
       } else {
-        retorno = { ...response.data };
+        retorno = { ...response };
       }
       return resolve({ id: notificacao.id, ...retorno });
     } catch (err) {

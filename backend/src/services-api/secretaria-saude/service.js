@@ -2,7 +2,9 @@ const axios = require('axios');
 
 const axiosInstance = axios.create({
   baseURL: `${process.env.SECRETARIA_SAUDE_API_URL}/`,
-  timeout: process.env.TIMEOUT_SECRETARIA || 10000,
+  timeout: process.env.TIMEOUT_SECRETARIA
+    ? parseInt(process.env.TIMEOUT_SECRETARIA, 10)
+    : 10000,
 });
 
 exports.enviarNotificacao = async (request, token) => {
