@@ -10,6 +10,8 @@ const kcConfig = {
   resource: process.env.KEYCLOAK_REALM,
   'public-client': true,
   'confidential-port': 0,
+  'verify-token-audience': true,
+  'use-resource-role-mappings': true,
   'bearer-only': true,
 };
 
@@ -22,7 +24,7 @@ const initKeycloak = (app) => {
     saveUninitialized: true,
     store: memoryStore,
   }));
-
+  console.info(kcConfig);
   keycloak = new Keycloak({ store: memoryStore }, kcConfig);
 };
 
