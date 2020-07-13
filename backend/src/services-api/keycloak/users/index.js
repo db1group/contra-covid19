@@ -13,7 +13,7 @@ exports.listarUsuarios = async (search = '', token) => {
   try {
     token = await getToken(token);
 
-    return KeycloakAPI.get(`admin/realms/notificasaude/users?search=${search}`,
+    return KeycloakAPI.get(`admin/realms/notificasaude/users?search=${search}&first=0&max=-1`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
