@@ -34,6 +34,8 @@ module.exports = (sequelize, DataTypes) => {
   });
   UnidadeSaude.associate = (models) => {
     UnidadeSaude.belongsTo(models.Municipio, { foreignKey: 'municipioId' });
+    UnidadeSaude.hasMany(models.UserUnidadeSaude, { foreignKey: 'unidadeSaudeId' });
+    UnidadeSaude.belongsToMany(models.User, { through: models.UserUnidadeSaude, foreignKey: 'userId' });
   };
   UnidadeSaude.beforeSave((unidade, _options) => {
     normalizarTextoUnidade(unidade);

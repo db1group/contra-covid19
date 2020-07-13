@@ -15,6 +15,10 @@ class UsuarioLogado {
   isRoleVisualizaNotificacoes() {
     return this.roles.some((data) => data === rolesAuth.values.VisualizaNotificacoes);
   }
+
+  isRoleFechamento() {
+    return this.roles.some((data) => data === rolesAuth.values.Fechamento);
+  }
 }
 
 module.exports.UsuarioLogado = UsuarioLogado;
