@@ -400,10 +400,11 @@ export default {
         this.user.unidadeSaudeId,
         this.$route.params.id,
       ).then((response) => {
-        console.log('response', response);
-        console.log('this.perfil', this.perfil);
         const controleLeitoPerfil = new ControleLeitoPerfil(this.perfil, response.data.ControleLeito);
-        ControleLeitoPerfilService.save(controleLeitoPerfil.toRequestBody(), this.$route.params.id)
+        controleLeitoPerfil.setPerfilCausa(this.perfil.perfilNome, this.perfil.causa);
+        controleLeitoPerfil.setControleLeito(this.perfil.ControleLeito);
+        const { id, ...perfil } = controleLeitoPerfil;
+        ControleLeitoPerfilService.save(perfil, this.$route.params.id)
           .then(() => {
             this.$emit('delete:controleLeitoPerfil', 'Controle de leito Perfil salvo com sucesso.');
           })
@@ -438,24 +439,15 @@ export default {
         });
     },
     atualizarControleLeitoPerfil(leitoPerfil) {
-      return ControleLeitoPerfilService.update({
-        perfilId: leitoPerfil.id,
-        causa: leitoPerfil.causa,
-        ControleLeito: {
-          qtEnfermariaCovid: 0,
-          qtUTIAdultaCovid: 0,
-          qtUTIPedCovid: 0,
-          qtUTINeoCovid: 0,
-          qtEnfermariaNormal: 0,
-          qtUTIAdultaNormal: 0,
-          qtUTIPedNormal: 0,
-          qtUTINeoNormal: 0,
-          qtEnfermariaPrivado: 0,
-          qtUTIAdultaPrivado: 0,
-          qtUTIPedPrivado: 0,
-          qtUTINeoPrivado: 0,
-        },
-      }, this.$route.params.id, leitoPerfil.id)
+      const { id, ControleLeito, ...perfil } = leitoPerfil;
+      const {
+        id: idControle,
+        createdAt: createdAtControle,
+        updatedAt: updatedAtControle,
+        ...controle
+      } = ControleLeito;
+      const perfilUpdate = { ...perfil, ControleLeito: controle };
+      return ControleLeitoPerfilService.update(this.$route.params.id, leitoPerfil.id, perfilUpdate)
         .then(() => {
           this.showSuccess = true;
           this.mensagemSucesso = 'Controle de Leitos Perfil atualizado com sucesso.';

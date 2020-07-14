@@ -6,7 +6,6 @@
       </v-col>
       <v-col cols="auto">
         <v-btn
-          v-show="isSecretariaSaude"
           class="mr-2"
           color="primary"
           rounded
@@ -18,14 +17,3 @@
     </v-row>
   </v-container>
 </template>
-<script>
-import keycloak from '@/services/KeycloakService';
-
-export default {
-  computed: {
-    isSecretariaSaude() {
-      return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
-    },
-  },
-};
-</script>

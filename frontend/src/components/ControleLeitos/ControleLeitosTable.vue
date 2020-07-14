@@ -106,7 +106,12 @@ export default {
   methods: {
     consultaControleLeitos() {
       this.loading = true;
-      ControleLeitoService.findAllControleLeitosByUnidadeSaude(this.user.unidadeSaudeId)
+      ControleLeitoService
+        .findAllControleLeitosByUnidadeSaude(
+          this.user.unidadeSaudeId,
+          this.options.page,
+          this.options.itemsPerPage,
+        )
         .then(({ count, data }) => {
           this.totalLeitos = count;
           this.leitos = data.map((d) => new ControleLeitoLista(d).toTable(this.user.unidadeSaudeNome));

@@ -5,8 +5,9 @@ export default {
     return http.post(`/unidades-saude/${unidadeId}/notifica-leitos`, controleLeito);
   },
 
-  findAllControleLeitosByUnidadeSaude(unidadeId) {
-    return http.get(`/unidades-saude/${unidadeId}/notifica-leitos`).then(({ data }) => data);
+  findAllControleLeitosByUnidadeSaude(unidadeId, page, itemsPerPage) {
+    return http.get(`/unidades-saude/${unidadeId}/notifica-leitos?page=${page}&itemsPerPage=${itemsPerPage}`)
+      .then(({ data }) => data);
   },
 
   findByControleLeitoId(unidadeId, controleLeitoId) {

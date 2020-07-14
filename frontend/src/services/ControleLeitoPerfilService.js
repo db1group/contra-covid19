@@ -13,7 +13,7 @@ export default {
     return http.get(`/notifica-leitos/${controleLeitoId}/perfil/${controleLeitoPerfilId}`).then(({ data }) => data);
   },
 
-  update(controleLeitoPerfil, controleLeitoId, id) {
+  update(controleLeitoId, id, controleLeitoPerfil) {
     return http.put(`notifica-leitos/${controleLeitoId}/perfil/${id}`, controleLeitoPerfil);
   },
 
