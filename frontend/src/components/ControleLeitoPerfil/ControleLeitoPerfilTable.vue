@@ -59,9 +59,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.causa"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.causa }}
           <template v-slot:input>
@@ -73,9 +71,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.perfilNome"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.perfilNome }}
           <template v-slot:input>
@@ -87,9 +83,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtEnfermariaCovid"
          @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtEnfermariaCovid }}
           <template v-slot:input>
@@ -102,9 +96,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtUTIAdultaCovid"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtUTIAdultaCovid }}
           <template v-slot:input>
@@ -117,9 +109,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtUTIPedCovid"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtUTIPedCovid }}
           <template v-slot:input>
@@ -132,9 +122,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtUTINeoCovid"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtUTINeoCovid }}
           <template v-slot:input>
@@ -147,9 +135,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtEnfermariaNormal"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtEnfermariaNormal }}
           <template v-slot:input>
@@ -162,9 +148,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtUTIAdultaNormal"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtUTIAdultaNormal }}
           <template v-slot:input>
@@ -177,9 +161,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtUTIPedNormal"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtUTIPedNormal }}
           <template v-slot:input>
@@ -192,9 +174,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtUTINeoNormal"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtUTINeoNormal }}
           <template v-slot:input>
@@ -207,9 +187,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtEnfermariaPrivado"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtEnfermariaPrivado }}
           <template v-slot:input>
@@ -222,9 +200,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtUTIAdultaPrivado"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtUTIAdultaPrivado }}
           <template v-slot:input>
@@ -237,9 +213,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtUTIPedPrivado"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtUTIPedPrivado }}
           <template v-slot:input>
@@ -252,9 +226,7 @@
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtUTINeoPrivado"
           @save="save(props.item)"
-          @cancel="cancel"
           @open="open"
-          @close="close"
         >
           {{ props.item.ControleLeito.qtUTINeoPrivado }}
           <template v-slot:input>
@@ -406,15 +378,15 @@ export default {
         const { id, ...perfil } = controleLeitoPerfil;
         ControleLeitoPerfilService.save(perfil, this.$route.params.id)
           .then(() => {
-            this.$emit('delete:controleLeitoPerfil', 'Controle de leito Perfil salvo com sucesso.');
-          })
-          .then(() => {
             this.consultaControleLeitosPerfis();
             this.cancelNovoPerfil();
           })
           .catch((error) => {
-            const { data } = error.response;
-            this.$emit('erro:deleteControleLeitoPerfil', data.error);
+            const { data } = error.response || {};
+            this.callSnackMessage('error', data.error);
+          })
+          .finally(() => {
+            this.callSnackMessage('success', 'Controle de leito Perfil salvo com sucesso.');
           });
       });
     },
@@ -435,7 +407,7 @@ export default {
         })
         .catch((error) => {
           const { data } = error.response || {};
-          this.$emit('erro:consultaControleLeitosPerfis', data.error);
+          this.callSnackMessage('error', data.error);
         });
     },
     atualizarControleLeitoPerfil(leitoPerfil) {
@@ -447,16 +419,13 @@ export default {
         ...controle
       } = ControleLeito;
       const perfilUpdate = { ...perfil, ControleLeito: controle };
-      return ControleLeitoPerfilService.update(this.$route.params.id, leitoPerfil.id, perfilUpdate)
-        .then(() => {
-          this.showSuccess = true;
-          this.mensagemSucesso = 'Controle de Leitos Perfil atualizado com sucesso.';
-        })
-        .catch(({ response }) => {
-          this.showError = true;
-          this.mensagemErro = response.data.error;
-        })
-        .finally(() => { this.loading = false; });
+      ControleLeitoPerfilService.update(this.$route.params.id, leitoPerfil.id, perfilUpdate)
+        .then(() => {})
+        .catch(() => {})
+        .finally(() => {
+          this.loading = false;
+          this.callSnackMessage('success', 'Controle de leito Perfil atualizado com sucesso.');
+        });
     },
     confirmExclusion() {
       this.excluirItem(this.removingControleLeitoPerfilDialog.id);
@@ -464,14 +433,15 @@ export default {
     excluirItem(id) {
       ControleLeitoPerfilService.delete(this.$route.params.id, id)
         .then(() => {
-          this.$emit('delete:controleLeitoPerfil', 'Controle de leito Perfil excluído com sucesso.');
-        })
-        .then(() => {
           this.consultaControleLeitosPerfis();
         })
         .catch((error) => {
           const { data } = error.response;
-          this.$emit('erro:deleteControleLeitoPerfil', data.error);
+          this.callSnackMessage('error', data.error);
+        })
+        .finally(() => {
+          this.loading = false;
+          this.callSnackMessage('success', 'Controle de leito Perfil excluído com sucesso.');
         });
     },
     showExclusionConfirmDialog({ id }) {
@@ -485,17 +455,10 @@ export default {
       this.atualizarControleLeitoPerfil(event);
     },
     cancel() {
-      this.snack = true;
-      this.snackColor = 'error';
-      this.snackText = 'Cancelado';
+      this.callSnackMessage('error', 'Cancelado');
     },
     open() {
-      this.snack = true;
-      this.snackColor = 'info';
-      this.snackText = 'Edição disponível';
-    },
-    close() {
-
+      this.callSnackMessage('info', 'Edição disponível');
     },
     saveNovoPerfil() {
       this.salvaControleLeitoPerfil();
@@ -503,7 +466,13 @@ export default {
     cancelNovoPerfil() {
       this.dialog = false;
       this.$nextTick(() => {
+        this.callSnackMessage('error', 'Cancelado');
       });
+    },
+    callSnackMessage(type, message) {
+      this.snack = true;
+      this.snackColor = type;
+      this.snackText = message;
     },
   },
   created() {

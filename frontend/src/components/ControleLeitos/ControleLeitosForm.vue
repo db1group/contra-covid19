@@ -3,7 +3,7 @@
     <header-title :title="title" backRoute="controle-leitos-cons" />
     <v-card class="mx-auto" width="500">
       <v-card-title>
-        <h3 class="primary--text">Controle de Leitoss</h3>
+        <h3 class="primary--text">Controle de Leitos</h3>
       </v-card-title>
       <v-form ref="form" class="ma-2 form-unid">
         <v-row align="center">
@@ -268,7 +268,10 @@ export default {
       if (this.$refs.form.validate()) {
         this.loading = true;
         ControleLeitoService.save({
-          dtNotificacao: DateService.formatNowAsStringDateTime(),
+          dtNotificacao: DateService.toMomentObject(
+            DateService.formatNowAsStringDateTime(),
+            'DD/MM/YYYY HH:mm',
+          ).toISOString(),
           ControleLeito: this.controleLeito.toRequestBody(),
         }, this.user.unidadeSaudeId)
           .then(() => {
@@ -287,7 +290,10 @@ export default {
       if (this.$refs.form.validate()) {
         this.loading = true;
         ControleLeitoService.update({
-          dtNotificacao: DateService.formatNowAsStringDateTime(),
+          dtNotificacao: DateService.toMomentObject(
+            DateService.formatNowAsStringDateTime(),
+            'DD/MM/YYYY HH:mm',
+          ).toISOString(),
           ControleLeito: this.controleLeito.toRequestBody(),
         }, this.user.unidadeSaudeId, this.id)
           .then(() => {
