@@ -95,7 +95,7 @@ const routes = [
     name: 'envio-secretaria',
     component: EnvioSecretaria,
   },
-    {
+  {
     path: '/controle-leitos',
     name: 'controle-leitos-cons',
     component: ControleLeitosCons,
