@@ -47,6 +47,15 @@
           </v-row>
         </v-card-title>
       </template>
+      <template v-slot:item.nomePaciente="{ item }">
+        <v-btn
+          text
+          small
+          color="primary"
+          :to="{ name: 'notificacao-edit', params: { id: item.notificacaoId, edit: true } }"
+          title="Editar Notificação"
+        >{{ item.nomePaciente }}</v-btn>
+      </template>
       <template v-slot:item.numeroDocumento="{ item }">
         <span>{{item.tipoDocumento}}: {{ item.numeroDocumento | FormatDocument(item.tipoDocumento) }}</span>
       </template>
