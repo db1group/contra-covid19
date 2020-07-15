@@ -11,6 +11,9 @@ import UnidadeSaudeCons from '../views/UnidadeSaudeCons.vue';
 import UnidadeSaudeForm from '../views/UnidadeSaudeForm.vue';
 import UsuarioCons from '../views/UsuarioCons.vue';
 import UsuarioForm from '../views/UsuarioForm.vue';
+import ControleLeitosCons from '../views/ControleLeitosCons.vue';
+import ControleLeitosForm from '../views/ControleLeitosForm.vue';
+import ControleLeitoPerfilCons from '../views/ControleLeitoPerfilCons.vue';
 
 Vue.use(VueRouter);
 
@@ -91,6 +94,27 @@ const routes = [
     path: '/envio-secretaria',
     name: 'envio-secretaria',
     component: EnvioSecretaria,
+  },
+  {
+    path: '/controle-leitos',
+    name: 'controle-leitos-cons',
+    component: ControleLeitosCons,
+  },
+  {
+    path: '/controle-leitos/cadastro',
+    name: 'controle-leitos-form',
+    component: ControleLeitosForm,
+  },
+  {
+    path: '/controle-leitos/:id/edit',
+    name: 'controle-leito-edit',
+    component: ControleLeitosForm,
+    props: { edit: true },
+  },
+  {
+    path: '/controle-leito/perfil/:id',
+    name: 'controle-leito-perfil-cons',
+    component: ControleLeitoPerfilCons,
   },
 ];
 

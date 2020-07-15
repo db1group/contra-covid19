@@ -66,6 +66,7 @@
 import BasePage from '@/components/commons/BasePage.vue';
 import keycloak from '@/services/KeycloakService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
+import { mapActions } from 'vuex';
 
 export default {
   components: { BasePage },
@@ -78,13 +79,24 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      'SET_USER',
+    ]),
     consultarUnidadesSaudeUsuario() {
       UnidadeSaudeService.findByUserEmail(keycloak.tokenParsed.email)
         .then(({ data }) => {
           if (data.length === 0) return;
           const [primeiraUnidade] = data;
           this.unidadesSaudeUserLogged = primeiraUnidade.nome;
+          this.saveUser({
+            email: keycloak.tokenParsed.email,
+            unidadeSaudeNome: primeiraUnidade.nome,
+            unidadeSaudeId: primeiraUnidade.id,
+          });
         });
+    },
+    saveUser(user) {
+      this.$store.commit('setUser', user);
     },
   },
   created() {

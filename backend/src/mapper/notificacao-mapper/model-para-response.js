@@ -1,4 +1,3 @@
-
 const RegraNegocioErro = require('../../lib/erros/RegraNegocioErro');
 
 class NotificacaoResponseMapper {

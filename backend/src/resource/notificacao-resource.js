@@ -37,7 +37,6 @@ const buscarPessoasDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findA
   },
 });
 
-
 const obterGestante = (sexo, gestante) => {
   if (sexo === 'M') {
     return 'NAO_APLICADO';

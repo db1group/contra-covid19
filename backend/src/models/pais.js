@@ -1,4 +1,3 @@
-
 module.exports = (sequelize, DataTypes) => {
   const Pais = sequelize.define('Pais', {
     nome: DataTypes.STRING,

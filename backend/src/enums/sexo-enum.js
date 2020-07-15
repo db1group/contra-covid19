@@ -1,4 +1,4 @@
 exports.values = {
-    Masculino: 'M',
-    Feminino: 'F',
+  Masculino: 'M',
+  Feminino: 'F',
 };

@@ -1,5 +1,5 @@
 exports.values = {
-    Suspeito: 'SUSPEITO',
-    Confirmado: 'CONFIRMADO',
-    SemContato: 'SEM_CONTATO',
-}
+  Suspeito: 'SUSPEITO',
+  Confirmado: 'CONFIRMADO',
+  SemContato: 'SEM_CONTATO',
+};
