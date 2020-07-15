@@ -420,11 +420,15 @@ export default {
       } = ControleLeito;
       const perfilUpdate = { ...perfil, ControleLeito: controle };
       ControleLeitoPerfilService.update(this.$route.params.id, leitoPerfil.id, perfilUpdate)
-        .then(() => {})
-        .catch(() => {})
+        .then(() => {
+          this.callSnackMessage('success', 'Controle de leito Perfil atualizado com sucesso.');
+        })
+        .catch((error) => {
+          const { data } = error.response || {};
+          this.callSnackMessage('error', data.error);
+        })
         .finally(() => {
           this.loading = false;
-          this.callSnackMessage('success', 'Controle de leito Perfil atualizado com sucesso.');
         });
     },
     confirmExclusion() {
@@ -433,15 +437,15 @@ export default {
     excluirItem(id) {
       ControleLeitoPerfilService.delete(this.$route.params.id, id)
         .then(() => {
-          this.consultaControleLeitosPerfis();
+          this.callSnackMessage('success', 'Controle de leito Perfil excluído com sucesso.');
         })
         .catch((error) => {
-          const { data } = error.response;
+          const { data } = error.response || {};
           this.callSnackMessage('error', data.error);
         })
         .finally(() => {
           this.loading = false;
-          this.callSnackMessage('success', 'Controle de leito Perfil excluído com sucesso.');
+          this.consultaControleLeitosPerfis();
         });
     },
     showExclusionConfirmDialog({ id }) {
