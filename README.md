@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/db1group/contra-covid19/tree/master.svg?style=svg)](https://circleci.com/gh/db1group/contra-covid19/tree/master)
+
 # Notifica Saúde
 
 É uma iniciativa pensando na divulgação de informações confiáveis e de forma eficiente pelas secretarias de saúde de cada municipio.

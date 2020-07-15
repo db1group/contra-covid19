@@ -1,20 +1,15 @@
 <template>
   <section style="margin-top: 45px;">
-    <header-title
-      title="Unidades de Saúde"
-      :showIcon="false"
-      :showCadButton="true"
-      cadRoute="unidades-saude-form"
-    />
-    <unidade-saude-table
-      @erro:consultaUnidadeSaude="mostrarMensagemErro"
-      @delete:unidadeSaude="mostrarMensagemSucesso"
-      @erro:deleteUnidadeSaude="mostrarMensagemErro"
+    <header-title title="Usuários" :showIcon="false" :showCadButton="true" cadRoute="usuario-form" />
+    <usuario-table
+      @erro:consultaUsuario="mostrarMensagemErro"
+      @delete:usuario="mostrarMensagemSucesso"
+      @erro:deleteUsuario="mostrarMensagemErro"
     />
     <v-snackbar v-model="showError" color="error" bottom>{{ this.mensagemErro }}</v-snackbar>
     <v-snackbar
       v-model="showSuccess"
-      class="unidade-cons__snack-success"
+      class="usuario-cons__snack-success"
       color="success"
       bottom
     >{{ this.mensagemSucesso }}</v-snackbar>
@@ -23,12 +18,13 @@
 
 <script>
 import HeaderTitle from '@/components/commons/HeaderTitle.vue';
-import UnidadeSaudeTable from '@/components/UnidadeSaude/UnidadeSaudeTable.vue';
+import UsuarioTable from '@/components/Usuario/UsuarioTable.vue';
+import keycloak from '@/services/KeycloakService';
 
 export default {
   components: {
     HeaderTitle,
-    UnidadeSaudeTable,
+    UsuarioTable,
   },
   data: () => ({
     showError: false,
@@ -47,6 +43,9 @@ export default {
     },
   },
   beforeRouteEnter(to, from, next) {
+    if (!keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE')) {
+      return;
+    }
     const { msg } = to.params;
     let enter = true;
     if (msg) {
@@ -57,7 +56,7 @@ export default {
 };
 </script>
 <style lang="sass" scoped>
-.unidade-cons
+.usuario-cons
   &__snack-success
     &::v-deep .v-snack__content
       justify-content: center

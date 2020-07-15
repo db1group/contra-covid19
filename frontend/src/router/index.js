@@ -9,6 +9,8 @@ import EvolucaoForm from '../views/EvolucaoForm.vue';
 import NotificacaoExportar from '../views/NotificacaoExportar.vue';
 import UnidadeSaudeCons from '../views/UnidadeSaudeCons.vue';
 import UnidadeSaudeForm from '../views/UnidadeSaudeForm.vue';
+import UsuarioCons from '../views/UsuarioCons.vue';
+import UsuarioForm from '../views/UsuarioForm.vue';
 import ControleLeitosCons from '../views/ControleLeitosCons.vue';
 import ControleLeitosForm from '../views/ControleLeitosForm.vue';
 import ControleLeitoPerfilCons from '../views/ControleLeitoPerfilCons.vue';
@@ -73,6 +75,27 @@ const routes = [
     props: { edit: true },
   },
   {
+    path: '/usuarios',
+    name: 'usuario-cons',
+    component: UsuarioCons,
+  },
+  {
+    path: '/usuarios/cadastro',
+    name: 'usuario-form',
+    component: UsuarioForm,
+  },
+  {
+    path: '/usuarios/:id/edit',
+    name: 'usuario-edit',
+    component: UsuarioForm,
+    props: { edit: true },
+  },
+  {
+    path: '/envio-secretaria',
+    name: 'envio-secretaria',
+    component: EnvioSecretaria,
+  },
+    {
     path: '/controle-leitos',
     name: 'controle-leitos-cons',
     component: ControleLeitosCons,
@@ -92,11 +115,6 @@ const routes = [
     path: '/controle-leito/perfil/:id',
     name: 'controle-leito-perfil-cons',
     component: ControleLeitoPerfilCons,
-  },
-  {
-    path: '/envio-secretaria',
-    name: 'envio-secretaria',
-    component: EnvioSecretaria,
   },
 ];
 

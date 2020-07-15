@@ -47,7 +47,7 @@ resource "aws_alb_listener_rule" "aws_alb_listener_rule_https_backend" {
   }
 }
 
-resource "random_uuid" "secret" { }
+resource "random_uuid" "secret" {}
 
 resource "aws_ecs_task_definition" "backend" {
   family                = "${var.project}-${var.environment}-backend"
@@ -95,6 +95,18 @@ resource "aws_ecs_task_definition" "backend" {
       {
         "name" : "KEYCLOAK_URL",
         "value" : "${var.is_production == true ? "https://auth.${var.hosted_zone}/auth" : "https://${var.environment}-auth.${var.hosted_zone}/auth"}"
+      },
+      {
+        "name" : "KEYCLOAK_REALM",
+        "value" : "${var.project}"
+      },
+      {
+        "name" : "KEYCLOAK_TIMEOUT",
+        "value" : "5000"
+      },
+      {
+        "name" : "KEYCLOAK_EXPIRE",
+        "value" : "350"
       },
       {
         "name" : "SECRET_SESSION",

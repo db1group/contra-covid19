@@ -43,6 +43,14 @@
           <v-list-item-title>Unidades de Saúde</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <v-list-item v-if="isSecretariaSaude" value="usuario-cons" @click="onClick('usuario-cons')">
+        <v-list-item-icon>
+          <v-icon>mdi-account-multiple</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Usuários</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-list-item
         value="controle-leitos-cons"
         @click="onClick('controle-leitos-cons')"
@@ -66,7 +74,11 @@
           <v-list-item-title>Fechamento</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item v-if="isSecretariaSaude" value="envio-secretaria" @click="onClick('envio-secretaria')">
+      <v-list-item
+        v-if="isSecretariaSaude"
+        value="envio-secretaria"
+        @click="onClick('envio-secretaria')"
+      >
         <v-list-item-icon>
           <v-icon>mdi-send</v-icon>
         </v-list-item-icon>

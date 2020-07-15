@@ -2,7 +2,9 @@ const axios = require('axios');
 
 const axiosInstance = axios.create({
   baseURL: `${process.env.SECRETARIA_SAUDE_API_URL}/`,
-  timeout: 10000,
+  timeout: process.env.TIMEOUT_SECRETARIA
+    ? parseInt(process.env.TIMEOUT_SECRETARIA, 10)
+    : 10000,
 });
 
 exports.enviarNotificacao = async (request, token) => {
@@ -15,7 +17,10 @@ exports.enviarNotificacao = async (request, token) => {
       },
     })
     .then((response) => response.data)
-    .catch((error) => error.response);
+    .catch((error) => {
+      console.error(error);
+      return error.response.data ? error.response.data : error.response;
+    });
 };
 
 exports.atualizarNotificacao = async (request, token) => {
@@ -28,5 +33,8 @@ exports.atualizarNotificacao = async (request, token) => {
       },
     })
     .then((response) => response.data)
-    .catch((error) => error.response);
+    .catch((error) => {
+      console.error(error);
+      return error.response.data ? error.response.data : error.response;
+    });
 };
