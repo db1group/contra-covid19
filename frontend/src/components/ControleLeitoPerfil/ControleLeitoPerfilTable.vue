@@ -20,13 +20,7 @@
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                dark
-                class="mb-2"
-                v-bind="attrs"
-                v-on="on"
-              >Novo Perfil</v-btn>
+              <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Novo Perfil</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -56,11 +50,7 @@
         </v-toolbar>
       </template>
       <template v-slot:item.causa="props">
-        <v-edit-dialog
-          :return-value.sync="props.item.causa"
-          @save="save(props.item)"
-          @open="open"
-        >
+        <v-edit-dialog :return-value.sync="props.item.causa" @save="save(props.item)" @open="open">
           {{ props.item.causa }}
           <template v-slot:input>
             <v-text-field v-model="props.item.causa" label="Edit" single-line counter></v-text-field>
@@ -82,13 +72,17 @@
       <template v-slot:item.ControleLeito.qtEnfermariaCovid="props">
         <v-edit-dialog
           :return-value.sync="props.item.ControleLeito.qtEnfermariaCovid"
-         @save="save(props.item)"
+          @save="save(props.item)"
           @open="open"
         >
           {{ props.item.ControleLeito.qtEnfermariaCovid }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtEnfermariaCovid"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtEnfermariaCovid"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -100,8 +94,12 @@
         >
           {{ props.item.ControleLeito.qtUTIAdultaCovid }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtUTIAdultaCovid"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtUTIAdultaCovid"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -113,8 +111,12 @@
         >
           {{ props.item.ControleLeito.qtUTIPedCovid }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtUTIPedCovid"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtUTIPedCovid"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -126,8 +128,12 @@
         >
           {{ props.item.ControleLeito.qtUTINeoCovid }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtUTINeoCovid"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtUTINeoCovid"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -139,8 +145,12 @@
         >
           {{ props.item.ControleLeito.qtEnfermariaNormal }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtEnfermariaNormal"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtEnfermariaNormal"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -152,8 +162,12 @@
         >
           {{ props.item.ControleLeito.qtUTIAdultaNormal }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtUTIAdultaNormal"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtUTIAdultaNormal"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -165,8 +179,12 @@
         >
           {{ props.item.ControleLeito.qtUTIPedNormal }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtUTIPedNormal"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtUTIPedNormal"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -178,8 +196,12 @@
         >
           {{ props.item.ControleLeito.qtUTINeoNormal }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtUTINeoNormal"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtUTINeoNormal"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -191,8 +213,12 @@
         >
           {{ props.item.ControleLeito.qtEnfermariaPrivado }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtEnfermariaPrivado"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtEnfermariaPrivado"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -204,8 +230,12 @@
         >
           {{ props.item.ControleLeito.qtUTIAdultaPrivado }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtUTIAdultaPrivado"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtUTIAdultaPrivado"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -217,8 +247,12 @@
         >
           {{ props.item.ControleLeito.qtUTIPedPrivado }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtUTIPedPrivado"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtUTIPedPrivado"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
@@ -230,20 +264,19 @@
         >
           {{ props.item.ControleLeito.qtUTINeoPrivado }}
           <template v-slot:input>
-            <v-text-field v-model="props.item.ControleLeito.qtUTINeoPrivado"
-            label="Edit" single-line counter></v-text-field>
+            <v-text-field
+              v-model="props.item.ControleLeito.qtUTINeoPrivado"
+              label="Edit"
+              single-line
+              counter
+            ></v-text-field>
           </template>
         </v-edit-dialog>
       </template>
       <template v-slot:item.actions="{ item }">
         <v-row justify="end" align="center" dense>
           <v-col>
-            <v-btn
-              text
-              small
-              color="red"
-              @click="showExclusionConfirmDialog(item)"
-            >EXCLUIR</v-btn>
+            <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
           </v-col>
         </v-row>
       </template>
@@ -262,6 +295,7 @@ import ControleLeitoPerfilService from '@/services/ControleLeitoPerfilService';
 import ControleLeitoService from '@/services/ControleLeitoService';
 import HeaderTitle from '@/components/commons/HeaderTitle.vue';
 import ControleLeitoPerfil from '@/entities/ControleLeitoPerfil';
+import ErrorService from '@/services/ErrorService';
 
 export default {
   components: { ConfirmDialog, HeaderTitle },
@@ -382,8 +416,7 @@ export default {
             this.cancelNovoPerfil();
           })
           .catch((error) => {
-            const { data } = error.response || {};
-            this.callSnackMessage('error', data.error);
+            this.callSnackMessage('error', ErrorService.getMessage(error));
           })
           .finally(() => {
             this.callSnackMessage('success', 'Controle de leito Perfil salvo com sucesso.');
@@ -401,13 +434,15 @@ export default {
             ControleLeitoPerfilService.findByControleLeitoId(this.$route.params.id, leitoPerfil.id)
               .then((response) => {
                 leitoPerfil.setControleLeito(response.data.ControleLeito);
+              })
+              .catch((error) => {
+                this.callSnackMessage('error', ErrorService.getMessage(error));
               });
           });
           this.loading = false;
         })
         .catch((error) => {
-          const { data } = error.response || {};
-          this.callSnackMessage('error', data.error);
+          this.callSnackMessage('error', ErrorService.getMessage(error));
         });
     },
     atualizarControleLeitoPerfil(leitoPerfil) {
@@ -424,8 +459,7 @@ export default {
           this.callSnackMessage('success', 'Controle de leito Perfil atualizado com sucesso.');
         })
         .catch((error) => {
-          const { data } = error.response || {};
-          this.callSnackMessage('error', data.error);
+          this.callSnackMessage('error', ErrorService.getMessage(error));
         })
         .finally(() => {
           this.loading = false;
@@ -440,8 +474,7 @@ export default {
           this.callSnackMessage('success', 'Controle de leito Perfil excluído com sucesso.');
         })
         .catch((error) => {
-          const { data } = error.response || {};
-          this.callSnackMessage('error', data.error);
+          this.callSnackMessage('error', ErrorService.getMessage(error));
         })
         .finally(() => {
           this.loading = false;

@@ -78,6 +78,7 @@
 
 import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import EvolucaoService from '@/services/EvolucaoService';
+import ErrorService from '@/services/ErrorService';
 
 export default {
   components: { ConfirmDialog },
@@ -117,8 +118,7 @@ export default {
           this.$emit('delete:evolucao', 'Evolução excluída com sucesso.');
         })
         .catch((error) => {
-          const { data } = error.response;
-          this.$emit('erro:deleteEvolucao', data.error);
+          this.$emit('erro:deleteEvolucao', ErrorService.getMessage(error));
         });
     },
     canDelete(item) {

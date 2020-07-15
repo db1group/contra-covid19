@@ -272,6 +272,7 @@ import UnidadeSaude from '@/entities/UnidadeSaude';
 import MunicipioService from '@/services/MunicipioService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
 import keycloak from '@/services/KeycloakService';
+import ErrorService from '@/services/ErrorService';
 
 const StateForm = {
   NEW: 'NEW',
@@ -337,9 +338,9 @@ export default {
             this.showSuccess = true;
             this.mensagemSucesso = 'Unidade de Saúde cadastrada com sucesso.';
           })
-          .catch(({ response }) => {
+          .catch((error) => {
             this.showError = true;
-            this.mensagemErro = response.data.error;
+            this.mensagemErro = ErrorService.getMessage(error);
           })
           .finally(() => { this.loading = false; });
       }
@@ -353,9 +354,9 @@ export default {
             this.showSuccess = true;
             this.mensagemSucesso = 'Unidade de Saúde atualizada com sucesso.';
           })
-          .catch(({ response }) => {
+          .catch((error) => {
             this.showError = true;
-            this.mensagemErro = response.data.error;
+            this.mensagemErro = ErrorService.getMessage(error);
           })
           .finally(() => { this.loading = false; });
       }
@@ -416,6 +417,10 @@ export default {
         .then(({ data }) => {
           this.municipios.items = data;
         })
+        .catch((error) => {
+          this.showError = true;
+          this.mensagemErro = ErrorService.getMessage(error);
+        })
         .finally(() => { this.municipios.loading = false; });
     },
     updateMunicipioId(municipioId) {
@@ -428,9 +433,9 @@ export default {
           this.unidade = new UnidadeSaude({ ...data, municipio: data.Municipio.municipio });
           this.findMunicipios(this.unidade.municipio);
         })
-        .catch(({ response }) => {
+        .catch((error) => {
           this.showError = true;
-          this.mensagemErro = response.data.error;
+          this.mensagemErro = ErrorService.getMessage(error);
         })
         .finally(() => { this.loading = false; });
     },

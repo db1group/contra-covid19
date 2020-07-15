@@ -62,7 +62,12 @@ export default class UnidadeSaude {
   }
 
   toRequestBody() {
-    const { id, municipio, ...unidade } = this;
+    const {
+      id,
+      municipio,
+      tokenSecretaria,
+      ...unidade
+    } = this;
     return {
       ...unidade,
       qtEnfermariaCovid: this.qtEnfermariaCovid.toString(),

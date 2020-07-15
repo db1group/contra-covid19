@@ -1,4 +1,3 @@
-const moment = require('moment');
 const Joi = require('@hapi/joi');
 
 const schemas = {
@@ -224,7 +223,7 @@ const schemas = {
       historicoDeViagem: Joi.bool(),
       dataDaViagem: Joi.date()
         .iso()
-        .less(moment(new Date()).tz('America/Sao_Paulo'))
+        .max('now')
         .message('Data da viagem deve ser menor ou igual de hoje.')
         .allow(null, ''),
       localDaViagem: Joi.string()

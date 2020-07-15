@@ -77,6 +77,7 @@ import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import UserService from '@/services/UserService';
 import keycloak from '@/services/KeycloakService';
 import Usuario from '@/entities/Usuario';
+import ErrorService from '@/services/ErrorService';
 
 export default {
   components: { ConfirmDialog },
@@ -116,8 +117,7 @@ export default {
           this.loading = false;
         })
         .catch((error) => {
-          const { data } = error.response || {};
-          this.$emit('erro:consultaUsuario', data.error);
+          this.$emit('erro:consultaUsuario', ErrorService.getMessage(error));
         });
     },
     showExclusionConfirmDialog({ id }) {
@@ -138,8 +138,7 @@ export default {
           this.consultarUsuarios();
         })
         .catch((error) => {
-          const { data } = error.response;
-          this.$emit('erro:deleteUsuario', data.error);
+          this.$emit('erro:deleteUsuario', ErrorService.getMessage(error));
         });
     },
     filterUsuarios() {

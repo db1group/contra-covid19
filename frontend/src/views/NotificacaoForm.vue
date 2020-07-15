@@ -207,6 +207,7 @@ import OutrasInformacoes from '@/components/Notificacao/Form/OutrasInformacoes/i
 import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
+import ErrorService from '@/services/ErrorService';
 
 const StateForm = {
   NEW: 'NEW',
@@ -327,10 +328,10 @@ export default {
               name: 'notificacao-cons',
               params: { msg },
             });
-          }).catch(({ response }) => {
+          }).catch((error) => {
             this.disabledButton = false;
             this.showError = true;
-            this.errorMessage = response.data.error;
+            this.errorMessage = ErrorService.getMessage(error);
           });
         } else {
           NotificacaoService.save(requestNotificacao).then(() => {
@@ -339,10 +340,10 @@ export default {
               name: 'notificacao-cons',
               params: { msg },
             });
-          }).catch(({ response }) => {
+          }).catch((error) => {
             this.disabledButton = false;
             this.showError = true;
-            this.errorMessage = response.data.error;
+            this.errorMessage = ErrorService.getMessage(error);
           });
         }
       } else {
@@ -362,14 +363,14 @@ export default {
         .then(({ data }) => {
           this.notificacao = new Notificacao(data);
         })
-        .catch(({ response }) => {
-          if (response.status === 403) {
+        .catch((error) => {
+          if (error.response.status === 403) {
             this.$router.push({
               name: 'notificacao-cons',
             });
           }
           this.showError = true;
-          this.errorMessage = response.data.error;
+          this.errorMessage = ErrorService.getMessage(error);
         });
     },
   },

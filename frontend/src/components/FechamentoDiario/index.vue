@@ -99,6 +99,7 @@ import moment from 'moment';
 import FechamentoDiario from '@/entities/FechamentoDiario';
 import FechamentoService from '@/services/FechamentoService';
 import { dateFormat, dateMustBeLesserEqualsThanToday } from '@/validations/CommonValidations';
+import ErrorService from '@/services/ErrorService';
 
 export default {
   directives: { mask },
@@ -172,18 +173,16 @@ export default {
         const value = data;
         value.status = 'ABERTO';
         this.fechamentos.splice(0, 0, new FechamentoDiario(value));
-      }).catch((err) => {
-        const { data } = err.response || {};
-        this.$emit('erro:novoFechamento', data.error);
+      }).catch((error) => {
+        this.$emit('erro:novoFechamento', ErrorService.getMessage(error));
       });
     },
     encerrarFechamento(item) {
       FechamentoService.postProximoFechamento(item).then(() => {
         this.consultarFechamentos();
         this.$emit('success:encerrarFechamento');
-      }).catch((err) => {
-        const { data } = err.response || {};
-        this.$emit('erro:encerrarFechamento', data.err);
+      }).catch((error) => {
+        this.$emit('erro:encerrarFechamento', ErrorService.getMessage(error));
       });
     },
     cancelarFechamento() {
@@ -205,8 +204,7 @@ export default {
           this.fechamentos = data.rows.map((d) => new FechamentoDiario(d));
         })
         .catch((error) => {
-          const { data } = error.response || {};
-          this.$emit('erro:consultarFechamentos', data.error);
+          this.$emit('erro:consultarFechamentos', ErrorService.getMessage(error));
         })
         .finally(() => { this.loading = false; });
     },
@@ -220,9 +218,8 @@ export default {
       FechamentoService.reabrirFechamento(id).then(() => {
         this.consultarFechamentos();
         this.$emit('success:reabrirFechamento');
-      }).catch((err) => {
-        const { data } = err.response || {};
-        this.$emit('erro:reabrirFechamento', data.error);
+      }).catch((error) => {
+        this.$emit('erro:reabrirFechamento', ErrorService.getMessage(error));
       });
     },
   },
