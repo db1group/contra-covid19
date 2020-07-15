@@ -3,13 +3,14 @@ const NotificaSaudeErro = require('./NotificaSaudeErro');
 
 const tratarErrorsRetornoAPI = (response, erro) => {
   let codigoResposta = erro.isAxiosError ? 400 : 500;
-  const errorAxios = erro.isAxiosError
-  && erro.response && erro.data
-  && erro.response.data.error
-    ? erro.response.data.error
-    : erro.response.data.errorMessage;
+  let errorAxios = erro.message;
+  if (erro.response && erro.response.data) {
+    errorAxios = erro.response.data.error
+      ? erro.response.data.error
+      : erro.response.data.errorMessage;
+  }
 
-  const errorMessage = erro.isAxiosError ? errorAxios : erro.message;
+  const errorMessage = errorAxios || erro.message;
   const objetoRetorno = {
     error: errorMessage || erro.message,
     stack: process.env.NODE_ENV === 'development' ? erro.stack : null,

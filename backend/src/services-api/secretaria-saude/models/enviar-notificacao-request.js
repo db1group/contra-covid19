@@ -22,9 +22,10 @@ class EnviarNotificacaoRequest {
     this.cnes_unidade_notifica = notificacao.UnidadeSaude.cnes;
     this.nome_notificador = notificacao.nomeNotificador;
     this.raca_cor = this.getRacaCor(notificacao);
-    this.assintomatico = notificacao.NotificacaoCovid19.dataInicioDosSintomas
-      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
-    this.data_1o_sintomas = notificacao.NotificacaoCovid19.dataInicioDosSintomas || null;
+    this.assintomatico = this.getAssintomatico(notificacao);
+    if (this.assintomatico === dicionarioValores.boleano.Nao) {
+      this.data_1o_sintomas = notificacao.NotificacaoCovid19.dataInicioDosSintomas || null;
+    }
     this.pais_residencia = notificacao.Pessoa.Pais ? notificacao.Pessoa.Pais : 1;
     if (this.tipo_paciente === 1) {
       this.passaporte = notificacao.Pessoa.passaporte;
@@ -44,9 +45,25 @@ class EnviarNotificacaoRequest {
       this.cpf = notificacao.Pessoa.numeroDocumento;
     }
 
-    if (notificacao.Pessoa.telefoneContato) {
-      this.telefone_paciente = notificacao.Pessoa.telefoneContato;
+    this.preencherTelefone(notificacao);
+    this.preencherOcupacao(notificacao);
+  }
+
+  preencherTelefone(notificacao) {
+    const { telefoneResidencial, telefoneCelular, telefoneContato } = notificacao.Pessoa;
+    let telefone = '';
+    if (telefoneResidencial !== '') {
+      telefone = telefoneResidencial;
+    } else if (telefoneContato !== '') {
+      telefone = telefoneContato;
+    } else {
+      telefone = telefoneCelular;
     }
+    this.telefone_paciente = telefone;
+  }
+
+  preencherOcupacao(notificacao) {
+    this.ocupacao = notificacao.Pessoa.Ocupacao.classificacao;
   }
 
   preencherResidencia(notificacao) {
@@ -121,6 +138,8 @@ class EnviarNotificacaoRequest {
   }
 
   preencherColetaMaterial(notificacao) {
+    this.coleta_amostra = notificacao.NotificacaoCovid19.coletaMaterialParaDiagnostico
+      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.data_coleta = notificacao.NotificacaoCovid19.dataDaColeta;
     this.lab_executor = notificacao.NotificacaoCovid19.nomeLaboratorioEnvioMaterial;
     switch (notificacao.NotificacaoCovid19.metodoExame) {
@@ -160,7 +179,9 @@ class EnviarNotificacaoRequest {
   }
 
   preencherTomografia(notificacao) {
-    if (notificacao.NotificacaoCovid19.tomografiaDerrame) {
+    if (notificacao.NotificacaoCovid19.tomografiaVitro) {
+      this.tomografia = dicionarioValores.tomografia.VidroFosco;
+    } else if (notificacao.NotificacaoCovid19.tomografiaDerrame) {
       this.tomografia = dicionarioValores.tomografia.AusenciaDerramePreural;
     } else if (notificacao.NotificacaoCovid19.tomografiaLinfonodo) {
       this.tomografia = dicionarioValores.tomografia.AusenciaLinfonodoMediastinal;
@@ -172,7 +193,8 @@ class EnviarNotificacaoRequest {
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   preencherSintomas(notificacao) {
-    this.febre = notificacao.NotificacaoCovid19.temperaturaFebre || 0;
+    this.febre = notificacao.NotificacaoCovid19.temperaturaFebre
+      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.doenca_cardiovascular = notificacao.NotificacaoCovid19.doencaCardioVascularCronica
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.asas_nasais = notificacao.NotificacaoCovid19.batimentoAsasNasais
@@ -245,6 +267,10 @@ class EnviarNotificacaoRequest {
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.outras_morbidades = notificacao.NotificacaoCovid19.outrosComorbidades
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
+    const outrosSintomas = notificacao.NotificacaoCovid19.outrosSintomas.trim();
+    if (outrosSintomas !== '') {
+      this.outros_sintomas = outrosSintomas;
+    }
   }
 
   preencherEndereco(notificacao) {
@@ -253,7 +279,11 @@ class EnviarNotificacaoRequest {
     }
 
     if (notificacao.Pessoa.Bairro.nome) {
-      this.bairro_residencia = notificacao.Pessoa.Bairro.nome;
+      const bairro = notificacao.Pessoa.Bairro.nome;
+      this.bairro_residencia = bairro;
+      if (bairro === 'GERAL') {
+        this.bairro_residencia = notificacao.Pessoa.complemento;
+      }
     }
 
     if (notificacao.Pessoa.endereco) {
