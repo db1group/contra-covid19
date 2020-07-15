@@ -216,6 +216,7 @@ import {
 import ControleLeito from '@/entities/ControleLeito';
 import ControleLeitoService from '@/services/ControleLeitoService';
 import DateService from '@/services/DateService';
+import ErrorService from '@/services/ErrorService';
 
 const StateForm = {
   NEW: 'NEW',
@@ -279,9 +280,9 @@ export default {
             this.showSuccess = true;
             this.mensagemSucesso = 'Controle de Leitos cadastrada com sucesso.';
           })
-          .catch(({ response }) => {
+          .catch((error) => {
             this.showError = true;
-            this.mensagemErro = response.data.error;
+            this.mensagemErro = ErrorService.getMessage(error);
           })
           .finally(() => { this.loading = false; });
       }
@@ -300,9 +301,9 @@ export default {
             this.showSuccess = true;
             this.mensagemSucesso = 'Controle de Leitos atualizada com sucesso.';
           })
-          .catch(({ response }) => {
+          .catch((error) => {
             this.showError = true;
-            this.mensagemErro = response.data.error;
+            this.mensagemErro = ErrorService.getMessage(error);
           })
           .finally(() => { this.loading = false; });
       }
@@ -349,9 +350,9 @@ export default {
         .then(({ data }) => {
           this.controleLeito = new ControleLeito(data.ControleLeito);
         })
-        .catch(({ response }) => {
+        .catch((error) => {
           this.showError = true;
-          this.mensagemErro = response.data.error;
+          this.mensagemErro = ErrorService.getMessage(error);
         })
         .finally(() => { this.loading = false; });
     },

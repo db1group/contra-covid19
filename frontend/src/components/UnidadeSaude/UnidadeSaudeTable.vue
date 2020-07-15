@@ -77,6 +77,7 @@ import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
 import keycloak from '@/services/KeycloakService';
 import UnidadeSaude from '@/entities/UnidadeSaude';
+import ErrorService from '@/services/ErrorService';
 
 export default {
   components: { ConfirmDialog },
@@ -117,8 +118,7 @@ export default {
           this.loading = false;
         })
         .catch((error) => {
-          const { data } = error.response || {};
-          this.$emit('erro:consultaUnidadeSaude', data.error);
+          this.$emit('erro:consultaUnidadeSaude', ErrorService.getMessage(error));
         });
     },
     showExclusionConfirmDialog({ id }) {
@@ -139,8 +139,7 @@ export default {
           this.consultarUnidades();
         })
         .catch((error) => {
-          const { data } = error.response;
-          this.$emit('erro:deleteUnidadeSaude', data.error);
+          this.$emit('erro:deleteUnidadeSaude', ErrorService.getMessage(error));
         });
     },
     filterUnidades() {
@@ -167,6 +166,9 @@ export default {
       UnidadeSaudeService.findByUserEmail(keycloak.tokenParsed.email)
         .then(({ data }) => {
           this.unidadesSaudeUserLogged = data;
+        })
+        .catch((error) => {
+          this.$emit('erro:consultaUnidadeSaude', ErrorService.getMessage(error));
         })
         .finally(() => {
           this.consultarUnidades();

@@ -56,9 +56,12 @@
         <v-card-actions>
           <v-row align="center" justify="end">
             <v-col cols="auto">
-              <v-btn color="primary" rounded
+              <v-btn
+                color="primary"
+                rounded
                 :disabled="disableFields || disableButton"
-                @click="cadastrarEvolucao">Incluir</v-btn>
+                @click="cadastrarEvolucao"
+              >Incluir</v-btn>
             </v-col>
           </v-row>
         </v-card-actions>
@@ -76,6 +79,7 @@ import NotificacaoEvolucao,
 }
   from '@/entities/NotificacaoEvolucao';
 import EvolucaoService from '@/services/EvolucaoService';
+import ErrorService from '@/services/ErrorService';
 
 export default {
   directives: { mask },
@@ -163,8 +167,7 @@ export default {
           this.$emit('cadastro:evolucao', msg);
         }).catch((error) => {
           this.disableButton = false;
-          const { data } = error.response;
-          this.$emit('error:cadastroEvolucao', data.error);
+          this.$emit('error:cadastroEvolucao', ErrorService.getMessage(error));
         });
       }
       this.rules.dataHoraAtualizacao.pop();

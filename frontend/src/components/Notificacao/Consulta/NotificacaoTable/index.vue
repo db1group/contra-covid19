@@ -102,6 +102,7 @@ import NotificacaoService from '@/services/NotificacaoService';
 import keycloak from '@/services/KeycloakService';
 import NotificacaoConsulta from '@/entities/NotificacaoConsulta';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
+import ErrorService from '@/services/ErrorService';
 
 const SITUACAO_NOTIFICACAO = [
   { key: '', value: 'TODAS' },
@@ -157,8 +158,7 @@ export default {
           this.loading = false;
         })
         .catch((error) => {
-          const { data } = error.response || {};
-          this.$emit('erro:consultaNotificacao', data.error);
+          this.$emit('erro:consultaNotificacao', ErrorService.getMessage(error));
         });
     },
     showExclusionConfirmDialog({ id }) {
@@ -179,8 +179,7 @@ export default {
           this.consultarNotificacoes();
         })
         .catch((error) => {
-          const { data } = error.response;
-          this.$emit('erro:deleteNotificacao', data.error);
+          this.$emit('erro:deleteNotificacao', ErrorService.getMessage(error));
         });
     },
     filterNotificacoes() {
@@ -223,6 +222,8 @@ export default {
       UnidadeSaudeService.findByUserEmail(keycloak.tokenParsed.email)
         .then(({ data }) => {
           this.unidadesSaudeUserLogged = data;
+        }).catch((error) => {
+          this.$emit('erro:unidadeSaude', ErrorService.getMessage(error));
         })
         .finally(() => {
           this.consultarNotificacoes();

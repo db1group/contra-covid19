@@ -47,6 +47,7 @@
 import moment from 'moment';
 import DetalhesFechamentoDiario from '@/entities/DetalhesFechamentoDiario';
 import FechamentoService from '@/services/FechamentoService';
+import ErrorService from '@/services/ErrorService';
 
 export default {
   props: {
@@ -108,8 +109,7 @@ export default {
           this.detalhesFechamento = data.rows.map((d) => new DetalhesFechamentoDiario(d));
         })
         .catch((error) => {
-          const { data } = error.response || {};
-          this.$emit('erro:consultarFechamentos', data.error);
+          this.$emit('erro:consultarFechamentos', ErrorService.getMessage(error));
         })
         .finally(() => { this.loading = false; });
     },

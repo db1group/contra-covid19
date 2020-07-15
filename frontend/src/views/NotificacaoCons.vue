@@ -7,20 +7,15 @@
       @erro:deleteNotificacao="mostrarMensagemErro"
       @delete:notificacaoLote="mostrarMensagemSucesso"
       @erro:deleteNotificacaoLote="mostrarMensagemErro"
+      @erro:unidadeSaude="mostrarMensagemErro"
     />
-    <v-snackbar
-      v-model="showError"
-      color="error"
-      bottom>
-      {{ this.mensagemErro }}
-    </v-snackbar>
+    <v-snackbar v-model="showError" color="error" bottom>{{ this.mensagemErro }}</v-snackbar>
     <v-snackbar
       v-model="showSuccess"
       class="notificacao-cons__snack-success"
       color="success"
-      bottom>
-      {{ this.mensagemSucesso }}
-    </v-snackbar>
+      bottom
+    >{{ this.mensagemSucesso }}</v-snackbar>
   </section>
 </template>
 

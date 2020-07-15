@@ -50,12 +50,7 @@
             >EDITAR</v-btn>
           </v-col>
           <v-col>
-            <v-btn
-              text
-              small
-              color="red"
-              @click="showExclusionConfirmDialog(item)"
-            >EXCLUIR</v-btn>
+            <v-btn text small color="red" @click="showExclusionConfirmDialog(item)">EXCLUIR</v-btn>
           </v-col>
         </v-row>
       </template>
@@ -66,6 +61,7 @@
 import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import ControleLeitoService from '@/services/ControleLeitoService';
 import ControleLeitoLista from '@/entities/ControleLeitoLista';
+import ErrorService from '@/services/ErrorService';
 
 export default {
   components: { ConfirmDialog },
@@ -118,8 +114,7 @@ export default {
           this.loading = false;
         })
         .catch((error) => {
-          const { data } = error.response || {};
-          this.$emit('erro:consultaControleLeitos', data.error);
+          this.$emit('erro:consultaControleLeitos', ErrorService.getMessage(error));
         });
     },
     confirmExclusion() {
@@ -136,8 +131,7 @@ export default {
           this.consultaControleLeitos();
         })
         .catch((error) => {
-          const { data } = error.response;
-          this.$emit('erro:deleteControleLeitos', data.error);
+          this.$emit('erro:deleteControleLeitos', ErrorService.getMessage(error));
         });
     },
     showExclusionConfirmDialog({ id }) {

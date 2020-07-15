@@ -68,6 +68,7 @@
 <script>
 import NotificacaoPendenteEnvioService from '@/services/NotificacaoPendenteEnvioService';
 import NotificacaoPendenteEnvioSecretaria from '@/entities/NotificacaoPendenteEnvioSecretaria';
+import ErrorService from '@/services/ErrorService';
 
 export default {
   directives: { },
@@ -104,8 +105,7 @@ export default {
           this.totalItens = count;
         })
         .catch((error) => {
-          const { data } = error.response || {};
-          this.$emit('erro:consultarItensPendentesEnvio', data.error);
+          this.$emit('erro:consultarItensPendentesEnvio', ErrorService.getMessage(error));
         })
         .finally(() => { this.loading = false; });
     },
@@ -139,10 +139,8 @@ export default {
           const msg = 'Notificações enviadas com sucesso.';
           this.$emit('success:enviarItensPendentesEnvio', msg);
         }
-      }).catch((err) => {
-        console.log(err);
-        const { data } = err.response || {};
-        this.$emit('erro:enviarItensPendentesEnvio', data.err);
+      }).catch((error) => {
+        this.$emit('erro:enviarItensPendentesEnvio', ErrorService.getMessage(error));
       }).finally(() => {
         this.buttomDisabled = false;
         this.loadingEnvio = false;

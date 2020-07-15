@@ -103,6 +103,7 @@ import Usuario from '@/entities/Usuario';
 import UserService from '@/services/UserService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
 import keycloak from '@/services/KeycloakService';
+import ErrorService from '@/services/ErrorService';
 
 const StateForm = {
   NEW: 'NEW',
@@ -173,9 +174,9 @@ export default {
             this.showSuccess = true;
             this.mensagemSucesso = 'Usuário cadastrado com sucesso.';
           })
-          .catch(({ response }) => {
+          .catch((error) => {
             this.showError = true;
-            this.mensagemErro = response.data.error;
+            this.mensagemErro = ErrorService.getMessage(error);
           })
           .finally(() => { this.loading = false; });
       }
@@ -189,9 +190,9 @@ export default {
             this.showSuccess = true;
             this.mensagemSucesso = 'Usuário atualizado com sucesso.';
           })
-          .catch(({ response }) => {
+          .catch((error) => {
             this.showError = true;
-            this.mensagemErro = response.data.error;
+            this.mensagemErro = ErrorService.getMessage(error);
           })
           .finally(() => { this.loading = false; });
       }
@@ -213,6 +214,10 @@ export default {
         .then(({ data }) => {
           this.unidades.items = data;
         })
+        .catch((error) => {
+          this.showError = true;
+          this.mensagemErro = ErrorService.getMessage(error);
+        })
         .finally(() => {
           this.unidades.loading = false;
         });
@@ -228,9 +233,9 @@ export default {
           this.findUnidadesSaude(this.usuario.unidadeSaudeNome);
           this.$refs.form.resetValidation();
         })
-        .catch(({ response }) => {
+        .catch((error) => {
           this.showError = true;
-          this.mensagemErro = response.data.error;
+          this.mensagemErro = ErrorService.getMessage(error);
         })
         .finally(() => { this.loading = false; });
     },
@@ -244,9 +249,9 @@ export default {
         .then(({ data }) => {
           this.permissions.items = data;
         })
-        .catch(({ response }) => {
+        .catch((error) => {
           this.showError = true;
-          this.mensagemErro = response.data.error;
+          this.mensagemErro = ErrorService.getMessage(error);
         })
         .finally(() => { this.permissions.loading = false; });
     },
