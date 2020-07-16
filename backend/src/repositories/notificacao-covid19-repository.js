@@ -1,5 +1,5 @@
 const models = require('../models');
-const tpTransmissaoApiSecretariaEnum = require('../enums/tipo-transmissao-api-secretaria-enum');
+// const tpTransmissaoApiSecretariaEnum = require('../enums/tipo-transmissao-api-secretaria-enum');
 
 exports.atualizar = async (notificacaoCovid19) => {
   const { notificacaoId } = notificacaoCovid19;
@@ -26,7 +26,8 @@ exports.atualizarTpTransmissaoApiSecretaria = async (
   );
 };
 
-exports.atualizarTpTransmissaoPendenteAtualizacao = async (notificacaoId, transaction) => {
+exports.atualizarTpTransmissaoPendenteAtualizacao = async (/* notificacaoId, transaction */) => {
+  /*
   const covid19 = await models.NotificacaoCovid19.findOne({ where: { notificacaoId } });
   if (covid19.tpTransmissaoApiSecretaria !== tpTransmissaoApiSecretariaEnum.values.Enviada) return;
   models.NotificacaoCovid19.update(
@@ -40,4 +41,5 @@ exports.atualizarTpTransmissaoPendenteAtualizacao = async (notificacaoId, transa
       transaction,
     },
   );
+  */
 };
