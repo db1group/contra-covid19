@@ -159,6 +159,9 @@ const criarPromiseSincronizacaoNotificacao = (notificacao, unidadeSaude, reenvia
       if (reenviar) {
         retorno = await reenviarNotificacao(notificacao, unidadeSaude, id);
       }
+      if (typeof retorno === 'string') {
+        retorno = { message: retorno };
+      }
       return resolve({
         id: notificacao.id, secretariaId: id, nome, cpf, ...retorno,
       });
