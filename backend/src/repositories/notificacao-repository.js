@@ -216,7 +216,7 @@ module.exports.getNotificacoesPorPeriodo = async (periodo, page = 1, limit = 500
   const offset = (page - 1) * limit;
   const where = periodo ? { createdAt: { [Op.gte]: periodo } } : {};
   where.status = { [Op.ne]: 'EXCLUIDA' };
-  return models.Notificacao.findAll({
+  return models.Notificacao.findAndCountAll({
     where,
     include: [
       {
