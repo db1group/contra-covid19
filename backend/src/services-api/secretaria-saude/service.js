@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { getErrorMessage } = require('../../lib/erros/api-error-handling');
 
 const axiosInstance = axios.create({
   baseURL: `${process.env.SECRETARIA_SAUDE_API_URL}/`,
@@ -17,10 +18,7 @@ exports.enviarNotificacao = async (request, token) => {
       },
     })
     .then((response) => response.data)
-    .catch((error) => {
-      console.error(error);
-      return error.response.data ? error.response.data : error.response;
-    });
+    .catch(getErrorMessage);
 };
 
 exports.atualizarNotificacao = async (request, token) => {
@@ -33,8 +31,14 @@ exports.atualizarNotificacao = async (request, token) => {
       },
     })
     .then((response) => response.data)
-    .catch((error) => {
-      console.error(error);
-      return error.response.data ? error.response.data : error.response;
-    });
+    .catch(getErrorMessage);
 };
+
+exports.buscarNotificacao = async (cpf, token) => axiosInstance.get(`v1/notificacao/cpf/${cpf}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  .then((response) => response.data)
+  .catch(getErrorMessage);

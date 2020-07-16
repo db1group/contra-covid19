@@ -1,18 +1,23 @@
 const { ValidationError } = require('sequelize');
 const NotificaSaudeErro = require('./NotificaSaudeErro');
 
+const getErrorMessage = async (event) => {
+  const { isAxiosError = false, response, message } = event;
+  let messageError = message;
+  if (isAxiosError && response && response.data) {
+    const { error, errorMessage } = response.data;
+    messageError = error || errorMessage;
+    messageError = messageError || response.data;
+  }
+  return messageError || message;
+};
+
 const tratarErrorsRetornoAPI = (response, erro) => {
   let codigoResposta = erro.isAxiosError ? 400 : 500;
-  let errorAxios = erro.message;
-  if (erro.response && erro.response.data) {
-    errorAxios = erro.response.data.error
-      ? erro.response.data.error
-      : erro.response.data.errorMessage;
-  }
+  const errorMessage = getErrorMessage(erro);
 
-  const errorMessage = errorAxios || erro.message;
   const objetoRetorno = {
-    error: errorMessage || erro.message,
+    error: errorMessage,
     stack: process.env.NODE_ENV === 'development' ? erro.stack : null,
   };
 
@@ -29,4 +34,4 @@ const tratarErrorsRetornoAPI = (response, erro) => {
   return response.status(codigoResposta).json(objetoRetorno);
 };
 
-module.exports = { tratarErrorsRetornoAPI };
+module.exports = { tratarErrorsRetornoAPI, getErrorMessage };

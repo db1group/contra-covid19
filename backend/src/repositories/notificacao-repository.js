@@ -211,3 +211,33 @@ exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, s
     offset,
   });
 };
+
+module.exports.getNotificacoesPorPeriodo = async (periodo) => {
+  const where = periodo ? { createdAt: { [Op.gte]: periodo } } : {};
+  where.status = { [Op.ne]: 'EXCLUIDA' };
+  return models.Notificacao.findAll({
+    where,
+    include: [
+      {
+        model: models.Pessoa,
+        where: { tipoDocumento: { [Op.eq]: 'CPF' } },
+        include: [
+          { model: models.Bairro },
+          { model: models.Municipio },
+          { model: models.Ocupacao },
+          { model: models.Pais, as: 'Pais' },
+        ],
+      },
+      { model: models.NotificacaoEvolucao },
+      {
+        model: models.NotificacaoCovid19,
+        where: { apiSecretariaId: { [Op.eq]: null } },
+      },
+      { model: models.Municipio },
+      { model: models.UnidadeSaude },
+      { model: models.User },
+      { model: models.ProfissionalSaude },
+      { model: models.Profissao },
+    ],
+  });
+};
