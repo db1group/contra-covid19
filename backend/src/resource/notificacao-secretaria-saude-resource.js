@@ -181,8 +181,9 @@ const SincronizarNotificacoesSecretariaSaude = async (notificacoes,
 
 exports.sincronizarNotificacoes = async (req, res, next) => {
   try {
-    const { periodo, reenviar = false } = req.query;
-    const notificacoes = await repos.notificacaoRepository.getNotificacoesPorPeriodo(periodo);
+    const { periodo, reenviar = false, limit = 500 } = req.query;
+    const notificacoes = await repos.notificacaoRepository
+      .getNotificacoesPorPeriodo(periodo, limit);
     const { email } = req.kauth.grant.access_token.content;
     const [unidadeUsuario] = await retornarUnidadeUsuarioLogado(email);
     const dataErrors = await SincronizarNotificacoesSecretariaSaude(
