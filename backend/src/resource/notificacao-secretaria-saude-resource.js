@@ -118,3 +118,75 @@ exports.enviarNotificacoes = async (req, res, next) => {
     return next(err);
   }
 };
+
+const reenviarNotificacao = async (notificacao, unidadeSaude, secretariaId) => {
+  // eslint-disable-next-line no-param-reassign
+  notificacao.NotificacaoCovid19.apiSecretariaId = secretariaId;
+  const { tpTransmissaoApiSecretaria: tpTransmissao = 'PENDENTE_ATUALIZACAO' } = notificacao.NotificacaoCovid19;
+  if (tpTransmissao === 'PENDENTE_ENVIO') {
+    // eslint-disable-next-line no-param-reassign
+    notificacao.NotificacaoCovid19.tpTransmissaoApiSecretaria = 'PENDENTE_ATUALIZACAO';
+  }
+  let retorno = await criarPromiseEnvioNotificacao(notificacao, unidadeSaude);
+  retorno = retorno.success ? { ...retorno, success: 'Notificação atualizada com sucesso.' } : retorno;
+  return retorno;
+};
+
+const criarPromiseSincronizacaoNotificacao = (notificacao, unidadeSaude, reenviar) => new Promise(
+  // eslint-disable-next-line no-async-promise-executor
+  async (resolve, reject) => {
+    const { nome, numeroDocumento: cpf } = notificacao.Pessoa;
+    try {
+      if (!unidadeSaude.tokenSecretaria) {
+        throw new Error('Não foi gerado o Token da Secretaria de Saúde para a Unidade de Saúde informada.');
+      }
+
+      const response = await secretariaApi.buscarNotificacao(
+        cpf, unidadeSaude.tokenSecretaria,
+      );
+
+      const found = response
+      && response.registros ? response.registros >= 1 : false;
+
+      if (!found || !response.data) throw new Error(`Não foi possível buscar a notificação para o CPF: ${cpf}`);
+      const [{ id }] = response.data;
+      await repos.notificacaoCovid19Repository.atualizarTpTransmissaoApiSecretaria(
+        notificacao.NotificacaoCovid19.id,
+        id,
+        tpTransmissaoApiSecretaria.values.Enviada,
+      );
+      let retorno = { success: 'Notificação sincronizada com sucesso.' };
+      if (reenviar) {
+        retorno = await reenviarNotificacao(notificacao, unidadeSaude, id);
+      }
+      return resolve({
+        id: notificacao.id, secretariaId: id, nome, cpf, ...retorno,
+      });
+    } catch (err) {
+      // eslint-disable-next-line prefer-promise-reject-errors
+      return reject({
+        id: notificacao.id, nome, cpf, message: err.message,
+      });
+    }
+  },
+);
+
+const SincronizarNotificacoesSecretariaSaude = async (notificacoes,
+  unidadeSaude, reenviar) => Promise.allSettled(
+  notificacoes.map((n) => criarPromiseSincronizacaoNotificacao(n, unidadeSaude, reenviar)),
+).then((res) => res.map((p) => (p.status === 'rejected' ? p.reason : p.value)));
+
+exports.sincronizarNotificacoes = async (req, res, next) => {
+  try {
+    const { periodo, reenviar = false } = req.query;
+    const notificacoes = await repos.notificacaoRepository.getNotificacoesPorPeriodo(periodo);
+    const { email } = req.kauth.grant.access_token.content;
+    const [unidadeUsuario] = await retornarUnidadeUsuarioLogado(email);
+    const dataErrors = await SincronizarNotificacoesSecretariaSaude(
+      notificacoes, unidadeUsuario, reenviar,
+    );
+    return res.json({ count: dataErrors.length, data: dataErrors });
+  } catch (err) {
+    return next(err);
+  }
+};
