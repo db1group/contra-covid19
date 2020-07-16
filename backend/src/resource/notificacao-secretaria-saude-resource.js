@@ -45,6 +45,9 @@ exports.getPendentesEnvio = async (req, res, next) => {
   }
 };
 
+const getResponseMessage = (response) => (typeof response === 'string'
+  ? { message: response } : { ...response });
+
 const criarPromiseEnvioNotificacao = (notificacao, unidadeSaude) => new Promise(
   // eslint-disable-next-line no-async-promise-executor
   async (resolve, reject) => {
@@ -86,7 +89,7 @@ const criarPromiseEnvioNotificacao = (notificacao, unidadeSaude) => new Promise(
       } else if (apiErrors.isFichaJaExiste(response)) {
         retorno = { message: `A notificação do paciente ${notificacao.Pessoa.nome} já possui cadastro.` };
       } else {
-        retorno = { ...response };
+        retorno = getResponseMessage(response);
       }
       return resolve({ id: notificacao.id, ...retorno });
     } catch (err) {
@@ -158,9 +161,6 @@ const criarPromiseSincronizacaoNotificacao = (notificacao, unidadeSaude, reenvia
       let retorno = { success: 'Notificação sincronizada com sucesso.' };
       if (reenviar) {
         retorno = await reenviarNotificacao(notificacao, unidadeSaude, id);
-      }
-      if (typeof retorno === 'string') {
-        retorno = { message: retorno };
       }
       return resolve({
         id: notificacao.id, secretariaId: id, nome, cpf, ...retorno,
