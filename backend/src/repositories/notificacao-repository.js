@@ -212,7 +212,7 @@ exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, s
   });
 };
 
-module.exports.getNotificacoesPorPeriodo = async (periodo) => {
+module.exports.getNotificacoesPorPeriodo = async (periodo, limit = 500) => {
   const where = periodo ? { createdAt: { [Op.gte]: periodo } } : {};
   where.status = { [Op.ne]: 'EXCLUIDA' };
   return models.Notificacao.findAll({
@@ -239,5 +239,6 @@ module.exports.getNotificacoesPorPeriodo = async (periodo) => {
       { model: models.ProfissionalSaude },
       { model: models.Profissao },
     ],
+    limit,
   });
 };
