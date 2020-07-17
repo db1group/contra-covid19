@@ -48,6 +48,22 @@ exports.getPendentesEnvio = async (req, res, next) => {
 const getResponseMessage = (response) => (typeof response === 'string'
   ? { message: response } : { ...response });
 
+const atualizarNotificacaoEnviada = async (notificacao, response) => {
+  if (!response) return;
+  const { data = {} } = response;
+  const { id } = data;
+  const idSecretaria = notificacao.NotificacaoCovid19.apiSecretariaId || id;
+  if (apiErrors.isFichaJaExiste(response)
+    || apiErrors.isCPFJaExiste(response)
+    || (response.success && response.success === 'true')) {
+    await repos.notificacaoCovid19Repository.atualizarTpTransmissaoApiSecretaria(
+      notificacao.NotificacaoCovid19.id,
+      idSecretaria,
+      tpTransmissaoApiSecretaria.values.Enviada,
+    );
+  }
+};
+
 const criarPromiseEnvioNotificacao = (notificacao, unidadeSaude) => new Promise(
   // eslint-disable-next-line no-async-promise-executor
   async (resolve, reject) => {
@@ -76,15 +92,11 @@ const criarPromiseEnvioNotificacao = (notificacao, unidadeSaude) => new Promise(
         );
       }
 
+      await atualizarNotificacaoEnviada(notificacao, response);
+
       if (!response) {
         retorno = { message: 'Não foi possível realizar o envio da notificação.' };
       } else if (response.success && response.success === 'true') {
-      // eslint-disable-next-line no-await-in-loop
-        await repos.notificacaoCovid19Repository.atualizarTpTransmissaoApiSecretaria(
-          notificacao.NotificacaoCovid19.id,
-          response.data.id,
-          tpTransmissaoApiSecretaria.values.Enviada,
-        );
         retorno = { success: 'Notificação enviada com sucesso.' };
       } else if (apiErrors.isFichaJaExiste(response)) {
         retorno = { message: `A notificação do paciente ${notificacao.Pessoa.nome} já possui cadastro.` };
