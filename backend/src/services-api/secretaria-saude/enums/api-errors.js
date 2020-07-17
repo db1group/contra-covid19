@@ -8,3 +8,8 @@ exports.isCPFJaExiste = (error) => error.cpf
 
 exports.isIdNaoEncontrado = (error) => error.id
   && /notificação com id [0-9]+ não foi encontada!/.test(error.id);
+
+exports.isClassificacaoEvolucaoEncerrada = (error) => (
+  (error.classificacao_final && /Notificação encerrada/.test(error.classificacao_final))
+  || (error.evolucao && /Notificação encerrada/.test(error.evolucao))
+);
