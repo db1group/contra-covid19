@@ -5,3 +5,6 @@ exports.isFichaJaExiste = (error) => error.paciente
 
 exports.isCPFJaExiste = (error) => error.cpf
   && /Já existe uma ficha aberta para este CPF/.test(error.cpf);
+
+exports.isIdNaoEncontrado = (error) => error.id
+  && /notificação com id [0-9]+ não foi encontada!/.test(error.id);
