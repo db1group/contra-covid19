@@ -2,12 +2,15 @@ const { ValidationError } = require('sequelize');
 const NotificaSaudeErro = require('./NotificaSaudeErro');
 
 const getErrorMessage = async (event) => {
-  const { isAxiosError = false, response, message } = event;
+  const {
+    isAxiosError = false, response, message, detail,
+  } = event;
   let messageError = message;
   if (isAxiosError && response && response.data) {
     const { error, errorMessage } = response.data;
     messageError = error || errorMessage;
     messageError = messageError || response.data;
+    if (!messageError && detail) return detail;
   }
   return messageError || message;
 };

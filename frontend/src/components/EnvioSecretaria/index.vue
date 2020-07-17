@@ -127,6 +127,7 @@ export default {
       NotificacaoPendenteEnvioService.sendAll(notificacaoIds).then(({ data }) => {
         data.forEach((notif) => {
           const item = this.itensPendentesEnvioSecretaria.find((i) => i.notificacaoId === notif.id);
+          if (!item) return;
           if (notif.message) {
             item.mensagem = `<span class="mensagemErro">${notif.message}</span>`;
             return;
