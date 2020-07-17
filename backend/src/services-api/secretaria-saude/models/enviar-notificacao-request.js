@@ -305,9 +305,10 @@ class EnviarNotificacaoRequest {
   }
 
   getAssintomatico(notificacao) {
-    return notificacao.NotificacaoCovid19.sintomatico
-      ? dicionarioValores.boleano.Nao
-      : dicionarioValores.boleano.Sim;
+    const { sintomatico = false } = notificacao.NotificacaoCovid19;
+    return !sintomatico
+      ? dicionarioValores.boleano.Sim
+      : dicionarioValores.boleano.Nao;
   }
 
   getRacaCor(notificacao) {
