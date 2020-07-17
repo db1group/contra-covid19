@@ -100,3 +100,10 @@ exports.boleano = {
   Nao: 2,
   NaoInformado: 3,
 };
+
+exports.periodoGestacao = {
+  PrimeiroTrimestre: 1,
+  SegundoTrimestre: 2,
+  TerceiroTrimestre: 3,
+  IdadeGestIgnorada: 4,
+};

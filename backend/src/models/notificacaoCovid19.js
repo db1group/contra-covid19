@@ -115,6 +115,7 @@ module.exports = (sequelize, DataTypes) => {
     situacaoNoMomentoDaNotificacao: DataTypes.ENUM('ALTA_ISOLAMENTO_DOMICILIAR', 'INTERNAMENTO_LEITO_COMUM', 'INTERNAMENTO_LEITO_UTI', 'EVOLUCAO_OBITO'),
     tpTransmissaoApiSecretaria: DataTypes.ENUM('PENDENTE_ENVIO', 'ENVIADA', 'PENDENTE_ATUALIZACAO'),
     apiSecretariaId: DataTypes.INTEGER,
+    doencaPulmonar: DataTypes.BOOLEAN,
   }, {});
   NotificacaoCovid19.associate = (models) => {
     NotificacaoCovid19.belongsTo(models.Notificacao, { foreignKey: 'notificacaoId' });

@@ -2,7 +2,10 @@ const moment = require('moment');
 const dicionarioValores = require('./dicionario-valores');
 const tipoClassificacaoPessoaEnum = require('../../../enums/tipo-classificacao-pessoa-enum');
 const sexoEnum = require('../../../enums/sexo-enum');
+const gestanteEnum = require('../../../enums/gestante-enum');
+const periodoGestacaoEnum = require('../../../enums/periodo-gestacao-enum');
 const tipoDocumentoEnum = require('../../../enums/tipo-documento-enum');
+const tipoLocalEvolucaoEnum = require('../../../enums/tipo-local-evolucao-enum');
 const racaCorEnum = require('../../../enums/raca-cor-enum');
 const metodoExameEnum = require('../../../enums/metodo-exame-enum');
 const contatoSuspeitoEnum = require('../../../enums/contato-suspeito-enum');
@@ -20,23 +23,26 @@ class EnviarNotificacaoRequest {
     this.tipo_paciente = this.getTipoPaciente(notificacao);
     this.paciente = notificacao.Pessoa.nome;
     this.sexo = this.getSexo(notificacao);
+    this.gestante = this.getGestante(notificacao);
+    this.gestante_alto_risco = null;
+    this.periodo_gestacao = this.getPeriodoGestacional(notificacao);
     this.data_nascimento = moment(notificacao.Pessoa.dataDeNascimento)
       .format(FORMATO_DATA);
+    this.idade = moment().diff(moment(notificacao.Pessoa.dataDeNascimento), 'years');
     this.nome_mae = notificacao.Pessoa.nomeDaMae;
     this.cnes_unidade_notifica = notificacao.UnidadeSaude.cnes;
     this.nome_notificador = notificacao.nomeNotificador;
     this.raca_cor = this.getRacaCor(notificacao);
     this.assintomatico = this.getAssintomatico(notificacao);
-    if (this.assintomatico === dicionarioValores.boleano.Sim) {
-      this.data_1o_sintomas = dataInicioDosSintomas
-        ? moment(dataInicioDosSintomas).format(FORMATO_DATA)
-        : null;
-    }
+    this.data_1o_sintomas = dataInicioDosSintomas
+      ? moment(dataInicioDosSintomas).format(FORMATO_DATA)
+      : null;
     this.pais_residencia = notificacao.Pessoa.Pais ? notificacao.Pessoa.Pais.codigo : 1;
     if (this.tipo_paciente === 1) {
       this.passaporte = notificacao.Pessoa.passaporte;
     }
     this.pais_municipio_residencia = '';
+    this.preencherGestante(notificacao);
     this.preencherEndereco(notificacao);
     this.preencherRaioX(notificacao);
     this.preencherTomografia(notificacao);
@@ -47,12 +53,45 @@ class EnviarNotificacaoRequest {
     this.preencherContatoSuspeito(notificacao);
     this.preencherClassificacao(notificacao);
     this.preencherResidencia(notificacao);
-    if (notificacao.Pessoa.tipoDocumento === tipoDocumentoEnum.values.CPF) {
-      this.cpf = notificacao.Pessoa.numeroDocumento;
-    }
-
+    this.preencherDocumentos(notificacao);
     this.preencherTelefone(notificacao);
     this.preencherOcupacao(notificacao);
+    this.preencherHospitalizacao(notificacao);
+  }
+
+  getPeriodoGestacional(notificacao) {
+    switch (notificacao.Pessoa.tipoPeriodoGestacional) {
+      case periodoGestacaoEnum.values.PrimeiroTrimestre:
+        return dicionarioValores.periodoGestacao.PrimeiroTrimestre;
+      case periodoGestacaoEnum.values.SegundoTrimestre:
+        return dicionarioValores.periodoGestacao.SegundoTrimestre;
+      case periodoGestacaoEnum.values.TerceiroTrimestre:
+        return dicionarioValores.periodoGestacao.TerceiroTrimestre;
+      case periodoGestacaoEnum.values.IdadeGestacionalIgnorada:
+        return dicionarioValores.periodoGestacao.IdadeGestIgnorada;
+      default:
+        return null;
+    }
+  }
+
+  getGestante(notificacao) {
+    switch (notificacao.Pessoa.gestante) {
+      case gestanteEnum.values.Sim:
+        return dicionarioValores.gestante.Sim;
+      case gestanteEnum.values.Nao:
+        return dicionarioValores.gestante.Nao;
+      default:
+        return dicionarioValores.gestante.NaoInformado;
+    }
+  }
+
+  preencherDocumentos(notificacao) {
+    const { tipoDocumento, numeroDocumento } = notificacao.Pessoa;
+    if (tipoDocumento === tipoDocumentoEnum.values.CPF) {
+      this.cpf = numeroDocumento;
+    } else if (tipoDocumento === tipoDocumentoEnum.values.SUS) {
+      this.cns = numeroDocumento;
+    }
   }
 
   preencherTelefone(notificacao) {
@@ -69,7 +108,9 @@ class EnviarNotificacaoRequest {
   }
 
   preencherOcupacao(notificacao) {
-    this.ocupacao = notificacao.Pessoa.Ocupacao.classificacao;
+    const { classificacao, descricao } = notificacao.Pessoa.Ocupacao;
+    this.ocupacao = classificacao;
+    this.ocupacao_descricao = descricao;
   }
 
   preencherResidencia(notificacao) {
@@ -233,6 +274,8 @@ class EnviarNotificacaoRequest {
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.congestao_nasal = notificacao.NotificacaoCovid19.congestaoNasal
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
+    this.congestao_conjuntiva = notificacao.NotificacaoCovid19.conjuntivite
+      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.dificuldade_deglutir = notificacao.NotificacaoCovid19.dificuldadeDeglutir
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.manchas_vermelhas = notificacao.NotificacaoCovid19.manchasVermelhas
@@ -266,6 +309,8 @@ class EnviarNotificacaoRequest {
     this.infeccao_hiv = notificacao.NotificacaoCovid19.infeccaoHIV
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.doenca_renal = notificacao.NotificacaoCovid19.doencaRenalCronica
+      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
+    this.doenca_pulmonar = notificacao.NotificacaoCovid19.doencaPulmonar
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.neoplasia = notificacao.NotificacaoCovid19.neoplasia
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
@@ -376,6 +421,16 @@ class EnviarNotificacaoRequest {
     }
 
     return tipoPacinete;
+  }
+
+  preencherHospitalizacao(notificacao) {
+    const ultimaEvolucao = notificacao.NotificacaoEvolucaos.pop();
+    if (!ultimaEvolucao) return;
+    const { tpLocal } = ultimaEvolucao;
+
+    this.hospitalizado = tpLocal === tipoLocalEvolucaoEnum.values.LeitoComun;
+    this.internacao_sus = null;
+    this.tipo_internacao = null;
   }
 }
 

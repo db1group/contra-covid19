@@ -209,6 +209,7 @@ exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, s
     ],
     limit,
     offset,
+    order: [['createdAt', 'ASC']],
   });
 };
 
