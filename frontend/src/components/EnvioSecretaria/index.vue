@@ -23,7 +23,7 @@
       <template v-slot:top>
         <v-card-title>
           <v-row>
-            <v-col cols="4">
+            <v-col>
               <v-btn
                 rounded
                 color="primary"
@@ -32,6 +32,15 @@
                 :loading="loadingEnvio"
               >Enviar notificações</v-btn>
             </v-col>
+            <v-col>
+              <v-btn
+                rounded
+                color="#42A5F5"
+                @click="consultarItensPendentesEnvio(options)"
+                :loading="loadingEnvio"
+              >ATUALIZAR LISTA</v-btn>
+            </v-col>
+            <v-spacer></v-spacer>
           </v-row>
           <v-spacer></v-spacer>
           <v-row>
@@ -105,7 +114,8 @@ export default {
     loadingEnvio: false,
   }),
   methods: {
-    consultarItensPendentesEnvio({ page, itemsPerPage } = this.options) {
+    consultarItensPendentesEnvio({ page = 1, itemsPerPage = 50 } = this.options) {
+      console.log(page, itemsPerPage);
       this.loading = true;
       const search = this.filter;
       NotificacaoPendenteEnvioService.findAll({ page, itemsPerPage, search })

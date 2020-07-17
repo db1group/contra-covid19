@@ -32,7 +32,7 @@ class EnviarNotificacaoRequest {
         ? moment(dataInicioDosSintomas).format(FORMATO_DATA)
         : null;
     }
-    this.pais_residencia = notificacao.Pessoa.Pais ? notificacao.Pessoa.Pais : 1;
+    this.pais_residencia = notificacao.Pessoa.Pais ? notificacao.Pessoa.Pais.codigo : 1;
     if (this.tipo_paciente === 1) {
       this.passaporte = notificacao.Pessoa.passaporte;
     }

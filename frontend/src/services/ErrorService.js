@@ -5,7 +5,7 @@ export default {
     console.info(error.detail);
     if (!error.response) {
       if (error.detail) return error.detail;
-      if (!error.message || (error.message && error.message.trim() === '')) {
+      if (!error.message || (error.message && typeof error.message === 'string' && error.message.trim() === '')) {
         return 'Não foi possível completar a ação. Tente novamente mais tarde.';
       }
       return error.message;
