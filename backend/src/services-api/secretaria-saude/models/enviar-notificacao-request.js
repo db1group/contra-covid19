@@ -9,22 +9,28 @@ const contatoSuspeitoEnum = require('../../../enums/contato-suspeito-enum');
 const localContatoSuspeitoEnum = require('../../../enums/local-contato-suspeito-enum');
 const tipoNotificacaoEvolucaoEnum = require('../../../enums/tipo-notificacao-evolucao-enum');
 
+const FORMATO_DATA = 'YYYY-MM-DD';
+
 class EnviarNotificacaoRequest {
   constructor(notificacao) {
+    const { dataHoraNotificacao, dataInicioDosSintomas } = notificacao.NotificacaoCovid19;
     this.possui_cpf = this.getPossuiCpf(notificacao);
-    this.data_notificacao = moment(notificacao.NotificacaoCovid19.dataHoraNotificacao)
-      .format('YYYY-MM-DD');
+    this.data_notificacao = moment(dataHoraNotificacao)
+      .format(FORMATO_DATA);
     this.tipo_paciente = this.getTipoPaciente(notificacao);
     this.paciente = notificacao.Pessoa.nome;
     this.sexo = this.getSexo(notificacao);
-    this.data_nascimento = notificacao.Pessoa.dataDeNascimento;
+    this.data_nascimento = moment(notificacao.Pessoa.dataDeNascimento)
+      .format(FORMATO_DATA);
     this.nome_mae = notificacao.Pessoa.nomeDaMae;
     this.cnes_unidade_notifica = notificacao.UnidadeSaude.cnes;
     this.nome_notificador = notificacao.nomeNotificador;
     this.raca_cor = this.getRacaCor(notificacao);
     this.assintomatico = this.getAssintomatico(notificacao);
-    if (this.assintomatico === dicionarioValores.boleano.Nao) {
-      this.data_1o_sintomas = notificacao.NotificacaoCovid19.dataInicioDosSintomas || null;
+    if (this.assintomatico === dicionarioValores.boleano.Sim) {
+      this.data_1o_sintomas = dataInicioDosSintomas
+        ? moment(dataInicioDosSintomas).format(FORMATO_DATA)
+        : null;
     }
     this.pais_residencia = notificacao.Pessoa.Pais ? notificacao.Pessoa.Pais : 1;
     if (this.tipo_paciente === 1) {
@@ -93,10 +99,10 @@ class EnviarNotificacaoRequest {
             === tipoNotificacaoEvolucaoEnum.values.Obito);
     if (evolucaoCurado) {
       this.evolucao = dicionarioValores.evolucao.Cura;
-      this.data_cura_obito = evolucaoCurado.dtEvolucao;
+      this.data_cura_obito = moment(evolucaoCurado.dtEvolucao).format(FORMATO_DATA);
     } else if (evolucaoObito) {
       this.evolucao = dicionarioValores.evolucao.Obito;
-      this.data_cura_obito = evolucaoCurado.dtEvolucao;
+      this.data_cura_obito = moment(evolucaoObito.dtEvolucao).format(FORMATO_DATA);
     } else {
       this.evolucao = dicionarioValores.evolucao.Ignorado;
     }
@@ -129,20 +135,24 @@ class EnviarNotificacaoRequest {
   }
 
   prencherViagem(notificacao) {
-    this.historico_viagem = notificacao.NotificacaoCovid19.historicoDeViagem
+    const { historicoDeViagem, dataDaViagem, localDaViagem } = notificacao.NotificacaoCovid19;
+    this.historico_viagem = historicoDeViagem
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
-    if (notificacao.NotificacaoCovid19.historicoDeViagem) {
-      this.data_ida_local = notificacao.NotificacaoCovid19.dataDaViagem;
-      this.local_viagem = notificacao.NotificacaoCovid19.localDaViagem;
+    if (historicoDeViagem) {
+      this.data_ida_local = dataDaViagem ? moment(dataDaViagem).format(FORMATO_DATA) : null;
+      this.local_viagem = localDaViagem;
     }
   }
 
   preencherColetaMaterial(notificacao) {
-    this.coleta_amostra = notificacao.NotificacaoCovid19.coletaMaterialParaDiagnostico
+    const {
+      coletaMaterialParaDiagnostico, dataDaColeta, nomeLaboratorioEnvioMaterial, metodoExame,
+    } = notificacao.NotificacaoCovid19;
+    this.coleta_amostra = coletaMaterialParaDiagnostico
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
-    this.data_coleta = notificacao.NotificacaoCovid19.dataDaColeta;
-    this.lab_executor = notificacao.NotificacaoCovid19.nomeLaboratorioEnvioMaterial;
-    switch (notificacao.NotificacaoCovid19.metodoExame) {
+    this.data_coleta = dataDaColeta ? moment(dataDaColeta).format(FORMATO_DATA) : null;
+    this.lab_executor = nomeLaboratorioEnvioMaterial;
+    switch (metodoExame) {
       case metodoExameEnum.values.RTPCR:
         this.metodo = dicionarioValores.metodoExame.RTPCR;
         break;
@@ -306,7 +316,7 @@ class EnviarNotificacaoRequest {
 
   getAssintomatico(notificacao) {
     const { sintomatico = false } = notificacao.NotificacaoCovid19;
-    return !sintomatico
+    return sintomatico
       ? dicionarioValores.boleano.Sim
       : dicionarioValores.boleano.Nao;
   }
