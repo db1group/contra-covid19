@@ -53,7 +53,8 @@ const atualizarNotificacaoEnviada = async (notificacao, response) => {
   const { data = {} } = response;
   const { id } = data;
   const idSecretaria = notificacao.NotificacaoCovid19.apiSecretariaId || id;
-  if (apiErrors.isFichaJaExiste(response)
+  if (apiErrors.isIdNaoEncontrado(response)
+    || apiErrors.isFichaJaExiste(response)
     || apiErrors.isCPFJaExiste(response)
     || (response.success && response.success === 'true')) {
     await repos.notificacaoCovid19Repository.atualizarTpTransmissaoApiSecretaria(
