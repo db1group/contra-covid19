@@ -91,7 +91,8 @@ const criarPromiseEnvioNotificacao = (notificacao, unidadeSaude) => new Promise(
       } else {
         retorno = getResponseMessage(response);
       }
-      return resolve({ id: notificacao.id, ...retorno });
+      const { id, ...retornoApi } = retorno;
+      return resolve({ id: notificacao.id, ...retornoApi });
     } catch (err) {
     // eslint-disable-next-line prefer-promise-reject-errors
       return reject({ id: notificacao.id, message: err.message });
