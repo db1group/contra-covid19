@@ -1,4 +1,5 @@
 const axios = require('axios');
+const https = require('https');
 const { getErrorMessage } = require('../../lib/erros/api-error-handling');
 
 const axiosInstance = axios.create({
@@ -11,11 +12,14 @@ const axiosInstance = axios.create({
 exports.enviarNotificacao = async (request, token) => {
   const data = JSON.stringify(request);
 
+  const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+
   return axiosInstance.post('v1/notificacao/', data,
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      httpsAgent,
     })
     .then((response) => response.data)
     .catch(getErrorMessage);
