@@ -94,10 +94,7 @@ const criarPromiseEnvioNotificacao = (notificacao, unidadeSaude) => new Promise(
         );
       }
 
-      console.info();
-      console.info('Retorno Envio Secretaria: ');
-      console.info(response);
-      console.info();
+      console.info('Retorno Envio Secretaria: ', response);
 
       await atualizarNotificacaoEnviada(notificacao, response);
 
