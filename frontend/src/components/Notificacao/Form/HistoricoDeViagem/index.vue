@@ -1,8 +1,6 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">
-      9. HISTÓRICO DE VIAGEM
-    </h4>
+    <h4 class="primary--text title">10. HISTÓRICO DE VIAGEM</h4>
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12" sm="8" md="6">

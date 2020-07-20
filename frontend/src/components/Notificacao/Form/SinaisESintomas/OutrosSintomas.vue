@@ -107,6 +107,13 @@
           :disabled="disableFields"
           @change="updateNauseaVomito"
         />
+        <v-checkbox
+          :input-value="sintomas.perdaOlfatoPaladar"
+          label="DIMINUIÇÃO DO OLFATO E PALADAR"
+          hide-details
+          :disabled="disableFields"
+          @change="updatePerdaOlfatoPaladar"
+        />
       </v-col>
       <v-col cols="12">
         <v-checkbox
@@ -203,6 +210,9 @@ export default {
     },
     updateNauseaVomito(nauseaVomito) {
       this.$emit('update:nauseaVomito', nauseaVomito);
+    },
+    updatePerdaOlfatoPaladar(perdaOlfatoPaladar) {
+      this.$emit('update:perdaOlfatoPaladar', perdaOlfatoPaladar);
     },
     updateOutros(outros) {
       this.$emit('update:outros', outros);

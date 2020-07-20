@@ -4,6 +4,9 @@ export default {
   findAll(nome = '') {
     return http.get(`/unidades-saude?nome=${nome}`).then(({ data }) => data);
   },
+  findAllHospitais(nome = '') {
+    return http.get(`/unidades-saude?nome=${nome}&hospital=true`).then(({ data }) => data);
+  },
   findByUserEmail(email = '') {
     return http.get(`/unidades-saude/userEmail/${email}`).then(({ data }) => data);
   },

@@ -62,11 +62,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    tipoClassificacaoPessoa: DataTypes.ENUM('CRIANCA_ATE_12_ANOS', 'EM_SITUACAO_RUA', 'ESTRANGEIRO', 'INDIGENA', 'OUTRO'),
+    tipoClassificacaoPessoa: DataTypes.ENUM('CRIANCA_ATE_12_ANOS', 'EM_SITUACAO_RUA', 'ESTRANGEIRO', 'INDIGENA', 'OUTRO', 'PRIVADO_LIBERDADE'),
     cep: DataTypes.STRING(8),
     tipoPeriodoGestacional: DataTypes.ENUM('PRIMEIRO_TRIMESTRE', 'SEGUNDO_TRIMESTRE', 'TERCEIRO_TRIMESTRE', 'IDADE_GESTACIONAL_IGNORADA'),
     passaporte: DataTypes.STRING(20),
     paisId: DataTypes.UUID,
+    gestanteAltoRisco: DataTypes.BOOLEAN,
   });
   Pessoa.associate = (models) => {
     Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });

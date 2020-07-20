@@ -113,6 +113,7 @@ module.exports = {
       outrosComorbidades: 'OUTROS RISCOS',
       tamiflu: true,
       hidroxicloroquina: true,
+      cloroquina: true,
       nomeMedicamento: 'ESPECIFIQUE MEDICAMENTO',
       historicoDeViagem: true,
       dataDaViagem: '2020-04-28',
@@ -299,6 +300,7 @@ module.exports = {
   informacaoComplementarMapeadoResponse: {
     tamiflu: true,
     hidroxicloroquina: true,
+    cloroquina: true,
     nomeMedicamento: 'ESPECIFIQUE MEDICAMENTO',
     historicoDeViagem: true,
     dataDaViagem: '2020-04-28',

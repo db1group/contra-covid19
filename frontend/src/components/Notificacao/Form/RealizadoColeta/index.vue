@@ -1,12 +1,7 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">
-      8. REALIZADO COLETA DE MATERIAL PARA DIAGNÓSTICO
-    </h4>
-    <v-container
-      fluid
-      class="pa-0"
-    >
+    <h4 class="primary--text title">9. REALIZADO COLETA DE MATERIAL PARA DIAGNÓSTICO</h4>
+    <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
           <v-checkbox
@@ -35,8 +30,8 @@
             @change="changeTipoLaboratorio"
             :disabled="disableFields"
           >
-            <v-radio value="OFICIAL" label="Laboratório Oficial"/>
-            <v-radio value="PRIVADO" label="Laboratório da rede PRIVADA"/>
+            <v-radio value="OFICIAL" label="Laboratório Oficial" />
+            <v-radio value="PRIVADO" label="Laboratório da rede PRIVADA" />
           </v-radio-group>
           <v-text-field
             :value="conclusaoAtendimento.nomeLaboratorioEnvioMaterial"
@@ -55,8 +50,11 @@
             :disabled="disableFields"
             @change="updateMetodoDeExame"
           >
-            <v-radio value="RT-PCR" label="RT-PCR"/>
-            <v-radio value="TESTE_RAPIDO" label="Teste rápido"/>
+            <v-radio value="RT-PCR" label="RT-PCR" />
+            <v-radio value="TESTE_RAPIDO" label="Teste rápido" />
+            <v-radio value="ELISA" label="ELISA" />
+            <v-radio value="QUIMIOLUMINESCENCIA" label="Quimioluminescência" />
+            <v-radio value="IMUNOFLUORESCENCIA" label="Imunofluorescência" />
           </v-radio-group>
         </v-col>
       </v-row>

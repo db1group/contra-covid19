@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    notificacaoId: DataTypes.INTEGER,
+    notificacaoId: DataTypes.UUID,
     sintomatico: DataTypes.BOOLEAN,
     dataInicioDosSintomas: {
       type: DataTypes.DATEONLY,
@@ -95,7 +95,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    metodoDeExame: DataTypes.ENUM('RT-PCR', 'TESTE_RAPIDO', 'SOROLOGIA_OUTROS'),
+    metodoDeExame: DataTypes.ENUM('RT-PCR', 'TESTE_RAPIDO', 'SOROLOGIA_OUTROS', 'ELISA', 'QUIMIOLUMINESCENCIA', 'IMUNOFLUORESCENCIA'),
     realizouExameDeImagem: DataTypes.BOOLEAN,
     raioXNormal: DataTypes.BOOLEAN,
     raioXInfiltrado: DataTypes.BOOLEAN,
@@ -115,10 +115,33 @@ module.exports = (sequelize, DataTypes) => {
     situacaoNoMomentoDaNotificacao: DataTypes.ENUM('ALTA_ISOLAMENTO_DOMICILIAR', 'INTERNAMENTO_LEITO_COMUM', 'INTERNAMENTO_LEITO_UTI', 'EVOLUCAO_OBITO'),
     tpTransmissaoApiSecretaria: DataTypes.ENUM('PENDENTE_ENVIO', 'ENVIADA', 'PENDENTE_ATUALIZACAO'),
     apiSecretariaId: DataTypes.INTEGER,
+    cloroquina: DataTypes.BOOLEAN,
     doencaPulmonar: DataTypes.BOOLEAN,
+    perdaOlfatoPaladar: DataTypes.BOOLEAN,
+    hospitalizado: DataTypes.BOOLEAN,
+    cnesHospitalId: DataTypes.UUID,
+    internacaoSus: DataTypes.BOOLEAN,
+    tipoLeito: DataTypes.ENUM('ENFERMARIA', 'UTI'),
+    dataInternamento: DataTypes.DATEONLY,
+    dataIsolamento: DataTypes.DATEONLY,
+    dataAlta: DataTypes.DATEONLY,
+    codigoExame: DataTypes.STRING(18),
+    exameId: DataTypes.UUID,
+    requisicao: DataTypes.STRING(18),
+    resultadoExameId: DataTypes.UUID,
+    dataCadastroExame: DataTypes.DATEONLY,
+    dataRecebimentoExame: DataTypes.DATEONLY,
+    dataLiberacaoExame: DataTypes.DATEONLY,
+    labAmostraId: DataTypes.UUID,
+    pesquisaGal: DataTypes.STRING(10),
   }, {});
   NotificacaoCovid19.associate = (models) => {
     NotificacaoCovid19.belongsTo(models.Notificacao, { foreignKey: 'notificacaoId' });
+    NotificacaoCovid19.belongsTo(models.Exame, { foreignKey: 'exameId' });
+    NotificacaoCovid19.belongsTo(models.ResultadoExame, { foreignKey: 'resultadoExameId' });
+    NotificacaoCovid19.belongsTo(models.Pais, { foreignKey: 'cnesHospitalId', as: 'Hospital' });
+    NotificacaoCovid19.belongsTo(models.Exame, { foreignKey: 'exameId' });
+    NotificacaoCovid19.belongsTo(models.ResultadoExame, { foreignKey: 'resultadoExameId' });
   };
   return NotificacaoCovid19;
 };

@@ -4,6 +4,7 @@ export default class InformacoesComplementares {
   constructor(data = {}) {
     this.tamiflu = data.tamiflu || false;
     this.hidroxicloroquina = data.hidroxicloroquina || false;
+    this.cloroquina = data.cloroquina || false;
     this.nomeMedicamento = data.nomeMedicamento || '';
     this.historicoDeViagem = data.historicoDeViagem || false;
     this.dataDaViagem = DateService.changeFormat(

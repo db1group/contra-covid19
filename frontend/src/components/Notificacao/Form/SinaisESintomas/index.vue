@@ -1,12 +1,7 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">
-      4. SINAIS E SINTOMAS
-    </h4>
-    <v-container
-      fluid
-      class="pa-0"
-    >
+    <h4 class="primary--text title">4. SINAIS E SINTOMAS</h4>
+    <v-container fluid class="pa-0">
       <sintomas-gerais
         :sintomatico="sintomatico"
         :data-inicio-dos-sintomas="dataInicioDosSintomas"
@@ -49,6 +44,7 @@
         @update:manchasVermelhas="updateManchasVermelhas"
         @update:mialgia="updateMialgia"
         @update:nauseaVomito="updateNauseaVomito"
+        @update:perdaOlfatoPaladar="updatePerdaOlfatoPaladar"
         @update:hipotensao="updateHipotensao"
         @update:outros="updateOutros"
         :disabled="disabled"
@@ -173,6 +169,9 @@ export default {
     },
     updateNauseaVomito(nauseaVomito) {
       this.$emit('update:nauseaVomito', nauseaVomito);
+    },
+    updatePerdaOlfatoPaladar(perdaOlfatoPaladar) {
+      this.$emit('update:perdaOlfatoPaladar', perdaOlfatoPaladar);
     },
     updateHipotensao(hipotensao) {
       this.$emit('update:hipotensao', hipotensao);

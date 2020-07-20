@@ -153,6 +153,15 @@
         </v-col>
         <v-col cols="12" md="6">
           <v-checkbox
+            :input-value="comorbidades.doencaPulmonar"
+            label="Doença pulmonar"
+            hide-details
+            :disabled="disabled"
+            @change="updateDoencaPulmonar"
+          />
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-checkbox
             :input-value="comorbidades.outrasComorbidades"
             label="Outros"
             hide-details
@@ -253,6 +262,9 @@ export default {
     },
     updateTabagismo(tabagismo) {
       this.$emit('update:tabagismo', tabagismo);
+    },
+    updateDoencaPulmonar(doencaPulmonar) {
+      this.$emit('update:doencaPulmonar', doencaPulmonar);
     },
     updateOutrasComorbidades(outrasComorbidades) {
       this.comorbidades.outrasComorbidades = outrasComorbidades;

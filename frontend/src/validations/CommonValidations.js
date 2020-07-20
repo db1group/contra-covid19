@@ -95,7 +95,7 @@ export const dateMustBeLesserThanToday = (
   || message;
 export const maxAge = (limitAge) => (value) => {
   const stringToDate = moment(value, 'DD/MM/YYYY').toDate('YYYY-MM-DD');
-  const personAge = moment().diff(stringToDate, 'years', false);
+  const personAge = moment().diff(stringToDate, 'years', true);
   return !value || personAge <= limitAge
     || `O paciente deve ter até ${limitAge} anos.`;
 };

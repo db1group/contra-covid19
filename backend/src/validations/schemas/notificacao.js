@@ -247,7 +247,7 @@ const schemas = {
       nomeLaboratorioEnvioMaterial: Joi.string().allow(null, ''),
       dataDaColeta: Joi.date().iso().allow(null),
       metodoDeExame: Joi.string().allow(null)
-        .pattern(/RT-PCR|TESTE_RAPIDO|SOROLOGIA_OUTROS/),
+        .pattern(/RT-PCR|TESTE_RAPIDO|SOROLOGIA_OUTROS|ELISA|QUIMIOLUMINESCENCIA|IMUNOFLUORESCENCIA/),
     }),
   }),
 };

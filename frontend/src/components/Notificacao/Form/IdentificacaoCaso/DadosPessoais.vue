@@ -23,11 +23,12 @@
           row
           :disabled="disabled"
         >
-          <v-radio label="Criança até 12 anos" value="CRIANCA_ATE_12_ANOS" />
-          <v-radio label="Em situação de Rua" value="EM_SITUACAO_RUA" />
-          <v-radio label="Estrangeiro" value="ESTRANGEIRO" />
-          <v-radio label="Indígena" value="INDIGENA" />
-          <v-radio label="Outro" value="OUTRO" />
+          <v-radio label="Criança até 15 anos" value="CRIANCA_ATE_12_ANOS" class="mb-2" />
+          <v-radio label="Em situação de Rua" value="EM_SITUACAO_RUA" class="mb-2" />
+          <v-radio label="Estrangeiro" value="ESTRANGEIRO" class="mb-2" />
+          <v-radio label="Indígena" value="INDIGENA" class="mb-2" />
+          <v-radio label="Privado de Liberdade" value="PRIVADO_LIBERDADE" class="mb-2" />
+          <v-radio label="Outro" value="OUTRO" class="mb-2" />
         </v-radio-group>
       </v-col>
     </v-row>
@@ -295,7 +296,7 @@ export default {
     },
     checkMaxAge(value) {
       if (value === 'CRIANCA_ATE_12_ANOS') {
-        this.rules.dataDeNascimento.push(maxAge(12));
+        this.rules.dataDeNascimento.push(maxAge(15));
       } else {
         this.rules.dataDeNascimento = [required, dateFormat, this.validateFutureDate];
       }

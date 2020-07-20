@@ -237,6 +237,7 @@ class NotificacaoResponseMapper {
     const {
       tamiflu,
       hidroxicloroquina,
+      cloroquina,
       nomeMedicamento,
       historicoDeViagem,
       dataDaViagem,
@@ -246,6 +247,7 @@ class NotificacaoResponseMapper {
     return {
       tamiflu,
       hidroxicloroquina,
+      cloroquina,
       nomeMedicamento,
       historicoDeViagem,
       dataDaViagem,

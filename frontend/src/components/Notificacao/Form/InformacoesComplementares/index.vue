@@ -1,12 +1,7 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">
-      7. MEDICAMENTO
-    </h4>
-    <v-container
-      fluid
-      class="pa-0"
-    >
+    <h4 class="primary--text title">7. MEDICAMENTO</h4>
+    <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="4">
           <v-checkbox
@@ -17,12 +12,21 @@
             :disabled="disabled"
           />
         </v-col>
-        <v-col cols="6">
+        <v-col cols="4">
           <v-checkbox
             :input-value="informacoesComplementares.hidroxicloroquina"
             label="Hidroxicloroquina"
             hide-details
             @change="updateHidroxicloroquina"
+            :disabled="disabled"
+          />
+        </v-col>
+        <v-col cols="4">
+          <v-checkbox
+            :input-value="informacoesComplementares.cloroquina"
+            label="Cloroquina"
+            hide-details
+            @change="updateCloroquina"
             :disabled="disabled"
           />
         </v-col>
@@ -61,6 +65,9 @@ export default {
     },
     updateHidroxicloroquina(hidroxicloroquina) {
       this.$emit('update:hidroxicloroquina', hidroxicloroquina);
+    },
+    updateCloroquina(cloroquina) {
+      this.$emit('update:cloroquina', cloroquina);
     },
     updateNomeMedicamento(nomeMedicamento) {
       this.$emit('update:nomeMedicamento', nomeMedicamento);

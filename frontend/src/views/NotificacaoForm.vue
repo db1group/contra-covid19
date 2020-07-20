@@ -80,6 +80,7 @@
           @update:diarreia="updateSintoma('diarreia', $event)"
           @update:cefaleia="updateSintoma('cefaleia', $event)"
           @update:nauseaVomito="updateSintoma('nauseaVomito', $event)"
+          @update:perdaOlfatoPaladar="updateSintoma('perdaOlfatoPaladar', $event)"
           @update:adinamiaFraqueza="updateSintoma('adinamiaFraqueza', $event)"
           @update:artralgia="updateSintoma('artralgia', $event)"
           @update:calafrios="updateSintoma('calafrios', $event)"
@@ -133,14 +134,26 @@
           @update:infeccaoHIV="updateComorbidade('infeccaoHIV', $event)"
           @update:neoplasia="updateComorbidade('neoplasia', $event)"
           @update:tabagismo="updateComorbidade('tabagismo', $event)"
+          @update:doencaPulmonar="updateComorbidade('doencaPulmonar', $event)"
           @update:outros="updateComorbidade('outros', $event)"
         />
         <informacoes-complementares
           :informacoes-complementares="notificacao.informacaoComplementar"
           @update:tamiflu="updateInformacaoComplementar('tamiflu', $event)"
           @update:hidroxicloroquina="updateInformacaoComplementar('hidroxicloroquina', $event)"
+          @update:cloroquina="updateInformacaoComplementar('cloroquina', $event)"
           @update:nomeMedicamento="updateInformacaoComplementar('nomeMedicamento', $event)"
           :disabled="disableFields"
+        />
+        <hospitalizacao
+          :hospitalizacao="notificacao.hospitalizacao"
+          @update:hospitalizado="updateHospitalizacao('hospitalizado', $event)"
+          @update:cnesHospitalId="updateHospitalizacao('cnesHospitalId', $event)"
+          @update:internacaoSus="updateHospitalizacao('internacaoSus', $event)"
+          @update:tipoLeito="updateHospitalizacao('tipoLeito', $event)"
+          @update:dataInternamento="updateHospitalizacao('dataInternamento', $event)"
+          @update:dataIsolamento="updateHospitalizacao('dataIsolamento', $event)"
+          @update:dataAlta="updateHospitalizacao('dataAlta', $event)"
         />
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
@@ -208,6 +221,7 @@ import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
 import ErrorService from '@/services/ErrorService';
+import Hospitalizacao from '@/components/Notificacao/Form/Hospitalizacao/index.vue';
 
 const StateForm = {
   NEW: 'NEW',
@@ -232,6 +246,7 @@ export default {
     OutrasInformacoes,
     Observacoes,
     BotaoEnviar,
+    Hospitalizacao,
   },
   data: () => ({
     notificacao: new Notificacao(),
@@ -372,6 +387,9 @@ export default {
           this.showError = true;
           this.errorMessage = ErrorService.getMessage(error);
         });
+    },
+    updateHospitalizacao(campo, valor) {
+      this.notificacao.hospitalizacao[campo] = valor;
     },
   },
   beforeRouteEnter(to, from, next) {

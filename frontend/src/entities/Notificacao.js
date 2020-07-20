@@ -6,6 +6,7 @@ import ExamesImagem from './ExamesImagem';
 import InformacoesComplementares from './InformacoesComplementares';
 import VinculoEpidemiologico from './VinculoEpidemiologico';
 import ConclusaoAtendimento from './ConclusaoAtendimento';
+import Hospitalizacao from './Hospitalizacao';
 
 export default class Notificacao {
   constructor(data = {}) {
@@ -40,6 +41,7 @@ export default class Notificacao {
     this.conclusaoAtendimento = new ConclusaoAtendimento(data.conclusaoAtendimento || {});
     this.unidadeSaudeNome = data.unidadeSaudeNome || '';
     this.possuiFechamento = data.possuiFechamento || false;
+    this.hospitalizacao = new Hospitalizacao(data.hospitalizacao || {});
   }
 
   toRequestBody() {
