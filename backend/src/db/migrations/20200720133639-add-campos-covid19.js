@@ -96,9 +96,47 @@ module.exports = {
         transaction,
       });
       await queryInterface.addColumn('NotificacaoCovid19', 'pesquisaGal', {
-        type: Sequelize.STRING(10),
+        type: Sequelize.STRING(18),
         transaction,
       });
+      await queryInterface.addColumn('NotificacaoCovid19', 'numeroDo', {
+        type: Sequelize.STRING(18),
+        transaction,
+      });
+      await queryInterface.addColumn('NotificacaoCovid19', 'frequentouUnidade', {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        transaction,
+      });
+      await queryInterface.addColumn('NotificacaoCovid19', 'unidadeFrequentadaId', {
+        type: Sequelize.UUID,
+        references: {
+          model: 'UnidadeSaude',
+          key: 'id',
+        },
+        transaction,
+      });
+      await queryInterface.addColumn('NotificacaoCovid19', 'descritivoViagem', {
+        type: Sequelize.STRING,
+        transaction,
+      });
+      await queryInterface.addColumn('NotificacaoCovid19', 'dataRetornoLocal', {
+        type: Sequelize.DATEONLY,
+        transaction,
+      });
+      await queryInterface.addColumn('NotificacaoCovid19', 'dataChegadaBrasil', {
+        type: Sequelize.DATEONLY,
+        transaction,
+      });
+      await queryInterface.addColumn('NotificacaoCovid19', 'dataChegadaUF', {
+        type: Sequelize.DATEONLY,
+        transaction,
+      });
+      await queryInterface.addColumn('NotificacaoCovid19', 'descricaoLocal', {
+        type: Sequelize.STRING(255),
+        transaction,
+      });
+
       await transaction.commit();
     } catch (err) {
       await transaction.rollback();
@@ -127,6 +165,14 @@ module.exports = {
       await queryInterface.removeColumn('NotificacaoCovid19', 'dataLiberacaoExame', { transaction });
       await queryInterface.removeColumn('NotificacaoCovid19', 'labEnvioAmostra', { transaction });
       await queryInterface.removeColumn('NotificacaoCovid19', 'pesquisaGal', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'numeroDo', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'frequentouUnidade', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'unidadeFrequentadaId', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'descritivoViagem', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'dataRetornoLocal', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'dataChegadaBrasil', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'dataChegadaUF', { transaction });
+      await queryInterface.removeColumn('NotificacaoCovid19', 'descricaoLocal', { transaction });
       await transaction.commit();
     } catch (err) {
       await transaction.rollback();

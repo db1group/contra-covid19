@@ -116,6 +116,11 @@ export default {
       defaultValue: false,
     },
   },
+  watch: {
+    hospitalizacao(hospitalizacao) {
+      this.carregarDadosHospitalizacao(hospitalizacao);
+    },
+  },
   data: () => ({
     hospitais: {
       items: [],
@@ -173,9 +178,12 @@ export default {
           this.hospitais.loading = false;
         });
     },
+    carregarDadosHospitalizacao(hospitalizacao) {
+      this.findHospitais(hospitalizacao.nomeHospital);
+    },
   },
   created() {
-
+    this.findHospitais();
   },
 };
 </script>

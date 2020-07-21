@@ -55,8 +55,17 @@ module.exports.getPorId = async (id) => models.Notificacao.findOne({
         { model: models.Pais, as: 'Pais' },
       ],
     },
+    {
+      model: models.NotificacaoCovid19,
+      include: [
+        { model: models.Exame },
+        { model: models.ResultadoExame },
+        { model: models.UnidadeSaude, as: 'Hospital' },
+        { model: models.UnidadeSaude, as: 'Laboratorio' },
+        { model: models.UnidadeSaude, as: 'UnidadeFrequentada' },
+      ],
+    },
     { model: models.NotificacaoEvolucao },
-    { model: models.NotificacaoCovid19 },
     { model: models.Municipio },
     { model: models.UnidadeSaude },
     { model: models.User },
@@ -117,6 +126,13 @@ exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids) => models.No
     },
     {
       model: models.NotificacaoCovid19,
+      include: [
+        { model: models.Exame },
+        { model: models.ResultadoExame },
+        { model: models.UnidadeSaude, as: 'Hospital' },
+        { model: models.UnidadeSaude, as: 'Laboratorio' },
+        { model: models.UnidadeSaude, as: 'UnidadeFrequentada' },
+      ],
       where: {
         [Op.and]: [
           {

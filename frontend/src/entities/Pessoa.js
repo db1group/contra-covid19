@@ -44,8 +44,9 @@ export default class Pessoa {
       this.numeroCpf = Utils.cpfMask(data.numeroDocumento) || '';
     }
     this.passaporte = data.passaporte || null;
-    this.paisId = data.paisId || null;
+    this.paisId = data.paisId || 1;
     this.paisNome = data.pais || 'Brasil';
+    this.gestanteAltoRisco = data.gestanteAltoRisco || false;
   }
 
   toRequestBody() {

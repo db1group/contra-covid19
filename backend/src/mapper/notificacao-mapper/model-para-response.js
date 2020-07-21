@@ -15,6 +15,7 @@ class NotificacaoResponseMapper {
     const informacaoComplementar = this._extrairInformacaoComplementar();
     const vinculoEpidemiologico = this._extrairVinculoEpidemiologico();
     const conclusaoAtendimento = this._extrairConclusaoAtendimento();
+    const hospitalizacao = this._extrairHospitalizacao();
     return {
       ...notificacao,
       suspeito,
@@ -24,6 +25,7 @@ class NotificacaoResponseMapper {
       informacaoComplementar,
       vinculoEpidemiologico,
       conclusaoAtendimento,
+      hospitalizacao,
     };
   }
 
@@ -35,7 +37,7 @@ class NotificacaoResponseMapper {
     } = this.notificacao;
     const {
       dataHoraNotificacao, dataInicioDosSintomas, sintomatico, realizouExameDeImagem,
-      contatoComSuspeito, localDoContatoComSuspeito, nomeSuspeito, observacoes,
+      contatoComSuspeito, localDoContatoComSuspeito, nomeSuspeito, observacoes, descricaoLocal,
     } = this.notificacaoCovid19;
     return {
       id: this.notificacao.id,
@@ -52,6 +54,7 @@ class NotificacaoResponseMapper {
       tipoDeContatoComCaso: contatoComSuspeito,
       tipoDeLocalDoCaso: localDoContatoComSuspeito,
       nomeDoCaso: nomeSuspeito,
+      descricaoLocal,
       observacoes,
       possuiFechamento,
     };
@@ -96,6 +99,7 @@ class NotificacaoResponseMapper {
     passaporte,
     paisId,
     Pais,
+    gestanteAltoRisco,
   }) {
     return {
       pessoaId: id,
@@ -123,6 +127,7 @@ class NotificacaoResponseMapper {
       uf: Municipio ? Municipio.uf : 'PR',
       idade,
       gestante,
+      gestanteAltoRisco,
       tipoPeriodoGestacional,
       passaporte,
       paisId,
@@ -137,7 +142,7 @@ class NotificacaoResponseMapper {
       irritabilidadeConfusao, manchasVermelhas, tosse, dorDeGarganta, mialgia, escarro,
       sibilo, batimentoAsasNasais, dispneia, taquipneia, saturacaoDeOximetriaDePulso,
       cianoseCentral, diminuicaoDePulsoPeriferico, hipotensao, diarreia, cefaleia,
-      nauseaVomito, tiragemIntercostal, outrosSintomas,
+      nauseaVomito, tiragemIntercostal, outrosSintomas, perdaOlfatoPaladar,
     } = this.notificacaoCovid19;
     return {
       febreAferidaReferida,
@@ -168,6 +173,7 @@ class NotificacaoResponseMapper {
       cefaleia,
       nauseaVomito,
       tiragemIntercostal,
+      perdaOlfatoPaladar,
       outros: outrosSintomas,
     };
   }
@@ -190,6 +196,7 @@ class NotificacaoResponseMapper {
       infeccaoHIV,
       neoplasia,
       tabagismo,
+      doencaPulmonar,
       outrosComorbidades,
     } = this.notificacaoCovid19;
     return {
@@ -209,6 +216,7 @@ class NotificacaoResponseMapper {
       infeccaoHIV,
       neoplasia,
       tabagismo,
+      doencaPulmonar,
       outros: outrosComorbidades,
     };
   }
@@ -243,6 +251,10 @@ class NotificacaoResponseMapper {
       dataDaViagem,
       localDaViagem,
       recebeuVacinaDaGripeNosUltimosDozeMeses,
+      dataRetornoLocal,
+      dataChegadaBrasil,
+      dataChegadaUF,
+      descritivoViagem,
     } = this.notificacaoCovid19;
     return {
       tamiflu,
@@ -253,6 +265,10 @@ class NotificacaoResponseMapper {
       dataDaViagem,
       localDaViagem,
       recebeuVacinaDaGripeNosUltimosDozeMeses,
+      dataRetornoLocal,
+      dataChegadaBrasil,
+      dataChegadaUF,
+      descritivoViagem,
     };
   }
 
@@ -281,6 +297,30 @@ class NotificacaoResponseMapper {
       nomeLaboratorioEnvioMaterial,
       dataDaColeta,
       metodoDeExame,
+    };
+  }
+
+  _extrairHospitalizacao() {
+    const {
+      hospitalizado,
+      cnesHospitalId,
+      internacaoSus,
+      tipoLeito,
+      dataInternamento,
+      dataIsolamento,
+      dataAlta,
+      Hospital,
+    } = this.notificacaoCovid19;
+    const { nome } = Hospital;
+    return {
+      hospitalizado,
+      cnesHospitalId,
+      nomeHospital: nome,
+      internacaoSus,
+      tipoLeito,
+      dataInternamento,
+      dataIsolamento,
+      dataAlta,
     };
   }
 }

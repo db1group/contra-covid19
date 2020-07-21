@@ -31,7 +31,13 @@ class EnviarNotificacaoRequest {
     this.idade = moment().diff(moment(notificacao.Pessoa.dataDeNascimento), 'years');
     this.nome_mae = notificacao.Pessoa.nomeDaMae;
     this.cnes_unidade_notifica = notificacao.UnidadeSaude.cnes;
+    this.nome_unidade_notifica = notificacao.UnidadeSaude.nome;
+    this.uf_unidade_notifica = null;
+    this.ibge_unidade_notifica = null;
     this.nome_notificador = notificacao.nomeNotificador;
+    this.email_notificador = notificacao.User.email;
+    this.ocupacao_notificador = notificacao.Profissao.nome;
+    this.telefone_notificador = null;
     this.raca_cor = this.getRacaCor(notificacao);
     this.assintomatico = this.getAssintomatico(notificacao);
     this.data_1o_sintomas = dataInicioDosSintomas
@@ -50,12 +56,14 @@ class EnviarNotificacaoRequest {
     this.preencherColetaMaterial(notificacao);
     this.prencherViagem(notificacao);
     this.preencherContatoSuspeito(notificacao);
+    this.preencherContatoConfirmado(notificacao);
     this.preencherClassificacao(notificacao);
     this.preencherResidencia(notificacao);
     this.preencherDocumentos(notificacao);
     this.preencherTelefone(notificacao);
     this.preencherOcupacao(notificacao);
     this.preencherHospitalizacao(notificacao);
+    this.preencherFrequentouUnidade(notificacao);
   }
 
   getPeriodoGestacional(notificacao) {
@@ -129,18 +137,28 @@ class EnviarNotificacaoRequest {
 
   preencherClassificacao(notificacao) {
     const evolucoes = notificacao.NotificacaoEvolucaos;
+    const {
+      coletaMaterialParaDiagnostico = false, numeroDo,
+      dataEncerramento,
+    } = notificacao.NotificacaoCovid19;
 
-    if (evolucoes.some((data) => data.tpEvolucao
-            === tipoNotificacaoEvolucaoEnum.values.Descartado)) {
+    this.data_encerramento = dataEncerramento;
+
+    if (evolucoes.some((data) => (data.tpEvolucao
+            === tipoNotificacaoEvolucaoEnum.values.Descartado) || (data.tpEvolucao
+              === tipoNotificacaoEvolucaoEnum.values.Encerrado))) {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoDescartado;
-    } else if (evolucoes.some((data) => data.tpEvolucao
-            === tipoNotificacaoEvolucaoEnum.values.Encerrado)) {
-      this.classificacao_final = dicionarioValores.classificacaoFinal.CasoDescartado;
+      this.criterio_classificacao = dicionarioValores.criterioClassificacao.NaoSeAplica;
     } else if (evolucoes.some((data) => data.tpEvolucao
             === tipoNotificacaoEvolucaoEnum.values.Confirmado)) {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoConfirmado;
+      this.criterio_classificacao = dicionarioValores.criterioClassificacao.ClinicoEpidemiologico;
+      if (coletaMaterialParaDiagnostico) {
+        this.criterio_classificacao = dicionarioValores.criterioClassificacao.Laboratorial;
+      }
     } else {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoSuspeito;
+      this.criterio_classificacao = dicionarioValores.criterioClassificacao.EmInvestigacao;
     }
 
     const evolucaoCurado = evolucoes.find((data) => data.tpEvolucao
@@ -153,6 +171,7 @@ class EnviarNotificacaoRequest {
     } else if (evolucaoObito) {
       this.evolucao = dicionarioValores.evolucao.Obito;
       this.data_cura_obito = moment(evolucaoObito.dtEvolucao).format(FORMATO_DATA);
+      this.numero_do = numeroDo;
     } else {
       this.evolucao = dicionarioValores.evolucao.Ignorado;
     }
@@ -160,48 +179,101 @@ class EnviarNotificacaoRequest {
 
   preencherContatoSuspeito(notificacao) {
     this.contato_suspeito = dicionarioValores.boleano.Nao;
-    if (notificacao.NotificacaoCovid19.contatoComSuspeito
-            && notificacao.NotificacaoCovid19.contatoComSuspeito
-            !== contatoSuspeitoEnum.values.SemContato) {
+    const {
+      contatoComSuspeito, localDoContatoComSuspeito,
+      nomeSuspeito,
+    } = notificacao.NotificacaoCovid19;
+    if (contatoComSuspeito && contatoComSuspeito !== contatoSuspeitoEnum.values.SemContato) {
       this.contato_suspeito = dicionarioValores.boleano.Sim;
 
-      switch (notificacao.NotificacaoCovid19.localDoContatoComSuspeito) {
+      switch (localDoContatoComSuspeito) {
         case localContatoSuspeitoEnum.values.Domicilio:
-          this.contato_suspeito = dicionarioValores.localContatoSuspeito.Domicilio;
+          this.local_contato_suspeito = dicionarioValores.localContatoSuspeito.Domicilio;
           break;
         case localContatoSuspeitoEnum.values.UnidadeSaude:
-          this.contato_suspeito = dicionarioValores.localContatoSuspeito.UnidadeSaude;
+          this.local_contato_suspeito = dicionarioValores.localContatoSuspeito.UnidadeSaude;
           break;
         case localContatoSuspeitoEnum.values.LocalTrabalho:
-          this.contato_suspeito = dicionarioValores.localContatoSuspeito.LocalTrabalho;
+          this.local_contato_suspeito = dicionarioValores.localContatoSuspeito.LocalTrabalho;
           break;
         default:
-          this.contato_suspeito = dicionarioValores.localContatoSuspeito.Desconhecido;
+          this.local_contato_suspeito = dicionarioValores.localContatoSuspeito.Desconhecido;
           break;
       }
 
-      this.local_contato_suspeito_descricao = notificacao.NotificacaoCovid19.nomeSuspeito;
+      this.local_contato_suspeito_descricao = nomeSuspeito;
+    }
+  }
+
+  preencherContatoConfirmado(notificacao) {
+    this.contato_confirmado = dicionarioValores.boleano.Nao;
+    const {
+      contatoConfirmado, localContatoConfirmado,
+      nomeConfirmado, nomeCasoFonte,
+    } = notificacao.NotificacaoCovid19;
+    if (contatoConfirmado && contatoConfirmado !== contatoSuspeitoEnum.values.SemContato) {
+      this.contato_confirmado = dicionarioValores.boleano.Sim;
+
+      switch (localContatoConfirmado) {
+        case localContatoSuspeitoEnum.values.Domicilio:
+          this.local_contato_confirmado = dicionarioValores.localContatoSuspeito.Domicilio;
+          break;
+        case localContatoSuspeitoEnum.values.UnidadeSaude:
+          this.local_contato_confirmado = dicionarioValores.localContatoSuspeito.UnidadeSaude;
+          break;
+        case localContatoSuspeitoEnum.values.LocalTrabalho:
+          this.local_contato_confirmado = dicionarioValores.localContatoSuspeito.LocalTrabalho;
+          break;
+        default:
+          this.local_contato_confirmado = dicionarioValores.localContatoSuspeito.Desconhecido;
+          break;
+      }
+
+      this.local_contato_confirmado_descricao = nomeConfirmado;
+      this.nome_caso_fonte = nomeCasoFonte;
     }
   }
 
   prencherViagem(notificacao) {
-    const { historicoDeViagem, dataDaViagem, localDaViagem } = notificacao.NotificacaoCovid19;
+    const {
+      historicoDeViagem, dataDaViagem, localDaViagem,
+      dataRetornoLocal, descritivoViagem, dataChegadaBrasil,
+      dataChegadaUF,
+    } = notificacao.NotificacaoCovid19;
     this.historico_viagem = historicoDeViagem
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     if (historicoDeViagem) {
       this.data_ida_local = dataDaViagem ? moment(dataDaViagem).format(FORMATO_DATA) : null;
       this.local_viagem = localDaViagem;
+      this.data_retorno_local = dataRetornoLocal;
+      this.descritivo_viagem = descritivoViagem;
+      this.data_chegada_brasil = dataChegadaBrasil;
+      this.data_chegada_estado = dataChegadaUF;
     }
   }
 
   preencherColetaMaterial(notificacao) {
     const {
       coletaMaterialParaDiagnostico, dataDaColeta, nomeLaboratorioEnvioMaterial, metodoExame,
+      codigoExame, requisicao, dataCadastroExame, dataRecebimentoExame, dataLiberacaoExame,
+      Exame, ResultadoExame, Laboratorio, pesquisaGal,
     } = notificacao.NotificacaoCovid19;
+    const { codigo: codExame } = Exame;
+    const { codigo: codResultado } = ResultadoExame;
+    const { cnes: cnesLab } = Laboratorio;
     this.coleta_amostra = coletaMaterialParaDiagnostico
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.data_coleta = dataDaColeta ? moment(dataDaColeta).format(FORMATO_DATA) : null;
     this.lab_executor = nomeLaboratorioEnvioMaterial;
+    this.co_seq_exame = codigoExame;
+    this.requisicao = requisicao;
+    this.data_cadastro = dataCadastroExame;
+    this.data_recebimento = dataRecebimentoExame;
+    this.data_liberacao = dataLiberacaoExame;
+    this.exame = codExame;
+    this.resultado = codResultado;
+    this.unidade_solicitante_gal = cnesLab;
+    this.pesquisa_gal = pesquisaGal;
     switch (metodoExame) {
       case metodoExameEnum.values.RTPCR:
         this.metodo = dicionarioValores.metodoExame.RTPCR;
@@ -466,6 +538,18 @@ class EnviarNotificacaoRequest {
     this.data_alta = dataAlta
       ? moment(dataAlta).format(FORMATO_DATA)
       : null;
+  }
+
+  preencherFrequentouUnidade(notificacao) {
+    const {
+      frequentouUnidade = false,
+      UnidadeFrequentada,
+    } = notificacao.NotificacaoCovid19;
+    const { nome, cnes } = UnidadeFrequentada;
+    this.frequentou_unidade = dicionarioValores.boleano.Nao;
+    if (!frequentouUnidade) return;
+    this.frequentou_unidade_cnes = cnes;
+    this.frequentou_unidade_descricao = nome;
   }
 }
 

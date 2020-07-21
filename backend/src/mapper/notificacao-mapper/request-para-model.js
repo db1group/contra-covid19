@@ -76,7 +76,8 @@ const requestParaModeloNotificacaoCovid19 = (objetoRequest) => {
     sintomas, comorbidades, informacaoComplementar,
     vinculoEpidemiologico, conclusaoAtendimento, examesImagem,
     tipoDeContatoComCaso, tipoDeLocalDoCaso,
-    nomeDoCaso, realizouExamesImagem, sintomatico,
+    nomeDoCaso, realizouExamesImagem, sintomatico, descricaoLocal,
+    hospitalizacao,
   } = objetoRequest;
 
   const sintomasAferidos = mapearSintomas(sintomas);
@@ -99,6 +100,8 @@ const requestParaModeloNotificacaoCovid19 = (objetoRequest) => {
     localDoContatoComSuspeito: tipoDeLocalDoCaso,
     nomeSuspeito: nomeDoCaso,
     realizouExameDeImagem: realizouExamesImagem,
+    descricaoLocal,
+    ...hospitalizacao,
   };
 };
 

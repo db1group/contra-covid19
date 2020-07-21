@@ -76,6 +76,13 @@ exports.classificacaoFinal = {
   CasoAConfirmar: 4,
 };
 
+exports.criterioClassificacao = {
+  Laboratorial: 1,
+  ClinicoEpidemiologico: 2,
+  EmInvestigacao: 3,
+  NaoSeAplica: 4,
+};
+
 exports.evolucao = {
   Cura: 1,
   Obito: 2,

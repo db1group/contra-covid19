@@ -31,6 +31,7 @@ export default class Notificacao {
     this.tipoDeContatoComCaso = data.tipoDeContatoComCaso || null;
     this.tipoDeLocalDoCaso = data.tipoDeLocalDoCaso || null;
     this.nomeDoCaso = data.nomeDoCaso || '';
+    this.descricaoLocal = data.descricaoLocal || '';
     this.observacoes = data.observacoes || '';
     this.suspeito = new Pessoa(data.suspeito || {});
     this.sintomas = new Sintomas(data.sintomas || {});
@@ -54,6 +55,7 @@ export default class Notificacao {
       conclusaoAtendimento: this.conclusaoAtendimento.toRequestBody(),
       comorbidades: this.comorbidades.toRequestBody(),
       sintomas: this.sintomas.toRequestBody(),
+      hospitalizacao: this.hospitalizacao.toRequestBody(),
     };
 
     delete notificacao.id;

@@ -8,7 +8,7 @@ export default class Hospitalizacao {
     this.internacaoSus = data.internacaoSus || null;
     this.tipoLeito = data.tipoLeito || null;
     this.dataInternamento = DateService.changeFormat(
-      data.dataIsolamento,
+      data.dataInternamento,
       'YYYY-MM-DD',
       'DD/MM/YYYY',
     ) || '';
@@ -27,6 +27,7 @@ export default class Hospitalizacao {
   toRequestBody() {
     return {
       ...this,
+      dataInternamento: DateService.changeFormat(this.dataInternamento, 'DD/MM/YYYY', 'YYYY-MM-DD'),
       dataIsolamento: DateService.changeFormat(this.dataIsolamento, 'DD/MM/YYYY', 'YYYY-MM-DD'),
       dataAlta: DateService.changeFormat(this.dataAlta, 'DD/MM/YYYY', 'YYYY-MM-DD'),
     };

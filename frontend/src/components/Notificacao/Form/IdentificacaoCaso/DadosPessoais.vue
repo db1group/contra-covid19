@@ -108,7 +108,7 @@
     </v-row>
 
     <v-row dense v-show="suspeito.sexo === 'F' && suspeito.gestante === 'true'">
-      <v-col cols="12">
+      <v-col>
         <v-radio-group
           :value="suspeito.tipoPeriodoGestacional"
           :rules="rules.tipoPeriodoGestacional"
@@ -123,6 +123,15 @@
           <v-radio value="TERCEIRO_TRIMESTRE" label="3º Trimestre" />
           <v-radio value="IDADE_GESTACIONAL_IGNORADA" label="Idade gestacional ignorada" />
         </v-radio-group>
+      </v-col>
+      <v-col>
+        <v-checkbox
+          :input-value="suspeito.gestanteAltoRisco"
+          label="Gestante de Alto Risco?"
+          hide-details
+          @change="updateGestanteAltoRisco"
+          :disabled="disabled"
+        />
       </v-col>
     </v-row>
 
@@ -283,6 +292,9 @@ export default {
     },
     updateTipoPeriodoGestacional(tipoPeriodoGestacional) {
       this.$emit('update:tipoPeriodoGestacional', tipoPeriodoGestacional);
+    },
+    updateGestanteAltoRisco(gestanteAltoRisco) {
+      this.$emit('update:gestanteAltoRisco', gestanteAltoRisco);
     },
     unselectTipoPeriodoGestacional() {
       if (this.suspeito.sexo === 'M' || this.suspeito.gestante !== 'true') {

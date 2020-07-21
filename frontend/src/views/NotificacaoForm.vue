@@ -52,6 +52,7 @@
           :disabled="disableFields"
           @update:passaporte="updateSuspeito('passaporte', $event)"
           @update:paisId="updateSuspeito('paisId', $event)"
+          @update:gestanteAltoRisco="updateSuspeito('gestanteAltoRisco', $event)"
         />
         <sinais-e-sintomas
           :sintomatico="notificacao.sintomatico"
@@ -154,6 +155,7 @@
           @update:dataInternamento="updateHospitalizacao('dataInternamento', $event)"
           @update:dataIsolamento="updateHospitalizacao('dataIsolamento', $event)"
           @update:dataAlta="updateHospitalizacao('dataAlta', $event)"
+          :disabled="disableFields"
         />
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
@@ -169,6 +171,10 @@
           @update:historicoDeViagem="updateInformacaoComplementar('historicoDeViagem', $event)"
           @update:dataDaViagem="updateInformacaoComplementar('dataDaViagem', $event)"
           @update:localDaViagem="updateInformacaoComplementar('localDaViagem', $event)"
+          @update:dataRetornoLocal="updateInformacaoComplementar('dataRetornoLocal', $event)"
+          @update:dataChegadaBrasil="updateInformacaoComplementar('dataChegadaBrasil', $event)"
+          @update:dataChegadaUF="updateInformacaoComplementar('dataChegadaUF', $event)"
+          @update:descritivoViagem="updateInformacaoComplementar('descritivoViagem', $event)"
           :disabled="disableFields"
         />
         <contato-com-suspeito-ou-confirmado
@@ -176,6 +182,7 @@
           @update:tipoDeContatoComCaso="updateTipoDeContatoComCaso"
           @update:tipoDeLocalDoCaso="updateTipoDeLocalDoCaso"
           @update:nomeDoCaso="updateNomeDoCaso"
+          @update:descricaoLocal="updateDescricaoLocal"
           :disabled="disableFields"
         />
         <outras-informacoes
@@ -305,6 +312,9 @@ export default {
     },
     updateNomeDoCaso(nomeDoCaso) {
       this.notificacao.nomeDoCaso = nomeDoCaso;
+    },
+    updateDescricaoLocal(descricaoLocal) {
+      this.notificacao.descricaoLocal = descricaoLocal;
     },
     updateSuspeito(campo, valor) {
       this.notificacao.suspeito[campo] = valor;

@@ -17,7 +17,8 @@ const schemas = {
     tipoDeLocalDoCaso: Joi.string()
       .allow('', null)
       .pattern(/DOMICILIO|UNIDADE_SAUDE|LOCAL_TRABALHO/),
-    nomeDoCaso: Joi.string().allow('', null).max(120),
+    nomeDoCaso: Joi.string().allow('', null).max(150),
+    descricaoLocal: Joi.string().allow('', null).max(255),
     observacoes: Joi.string().allow('', null),
     suspeito: Joi.object().keys({
       numeroDocumento: Joi.string()
@@ -80,6 +81,8 @@ const schemas = {
       tipoPeriodoGestacional: Joi.string()
         .pattern(/PRIMEIRO_TRIMESTRE|SEGUNDO_TRIMESTRE|TERCEIRO_TRIMESTRE|IDADE_GESTACIONAL_IGNORADA/)
         .allow(null, ''),
+      gestanteAltoRisco: Joi.bool()
+        .allow(null),
       racaCor: Joi.string()
         .pattern(/BRANCA|PRETA|AMARELA|PARDA|INDIGENA|IGNORADO/)
         .required(),
@@ -149,6 +152,8 @@ const schemas = {
         .allow(null),
       nauseaVomito: Joi.bool()
         .allow(null),
+      perdaOlfatoPaladar: Joi.bool()
+        .allow(null),
       tiragemIntercostal: Joi.bool()
         .allow(null),
       outros: Joi.string()
@@ -190,6 +195,8 @@ const schemas = {
         .allow(null),
       tabagismo: Joi.bool()
         .allow(null),
+      doencaPulmonar: Joi.bool()
+        .allow(null),
       outros: Joi.string()
         .allow(null),
       outrasComorbidades: Joi.bool()
@@ -217,6 +224,7 @@ const schemas = {
     informacaoComplementar: Joi.object().keys({
       tamiflu: Joi.bool(),
       hidroxicloroquina: Joi.bool(),
+      cloroquina: Joi.bool(),
       nomeMedicamento: Joi.string()
         .allow('', null)
         .max(120),
@@ -228,9 +236,27 @@ const schemas = {
         .allow(null, ''),
       localDaViagem: Joi.string()
         .allow('', null)
-        .max(120),
+        .max(255),
       recebeuVacinaDaGripeNosUltimosDozeMeses: Joi.string().allow(null, '')
         .pattern(/SIM|NAO|NAO_SABE/),
+      dataRetornoLocal: Joi.date()
+        .iso()
+        .max('now')
+        .message('Data do retorno deve ser menor ou igual de hoje.')
+        .allow(null, ''),
+      dataChegadaBrasil: Joi.date()
+        .iso()
+        .max('now')
+        .message('Data de chegada no Brasil deve ser menor ou igual de hoje.')
+        .allow(null, ''),
+      dataChegadaUF: Joi.date()
+        .iso()
+        .max('now')
+        .message('Data de chegada no estado deve ser menor ou igual de hoje.')
+        .allow(null, ''),
+      descritivoViagem: Joi.string()
+        .allow('', null)
+        .max(255),
     }),
     vinculoEpidemiologico: Joi.object().keys({
       situacao1: Joi.bool().allow(null),
@@ -248,6 +274,16 @@ const schemas = {
       dataDaColeta: Joi.date().iso().allow(null),
       metodoDeExame: Joi.string().allow(null)
         .pattern(/RT-PCR|TESTE_RAPIDO|SOROLOGIA_OUTROS|ELISA|QUIMIOLUMINESCENCIA|IMUNOFLUORESCENCIA/),
+    }),
+    hospitalizacao: Joi.object().keys({
+      hospitalizado: Joi.bool().allow(null),
+      cnesHospitalId: Joi.string().guid({ version: 'uuidv4' }).allow(null),
+      nomeHospital: Joi.string().allow(null, ''),
+      internacaoSus: Joi.bool().allow(null),
+      tipoLeito: Joi.string().allow(null, ''),
+      dataInternamento: Joi.date().iso().allow(null),
+      dataIsolamento: Joi.date().iso().allow(null),
+      dataAlta: Joi.date().iso().allow(null),
     }),
   }),
 };

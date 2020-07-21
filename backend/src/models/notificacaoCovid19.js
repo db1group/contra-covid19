@@ -133,15 +133,24 @@ module.exports = (sequelize, DataTypes) => {
     dataRecebimentoExame: DataTypes.DATEONLY,
     dataLiberacaoExame: DataTypes.DATEONLY,
     labAmostraId: DataTypes.UUID,
-    pesquisaGal: DataTypes.STRING(10),
+    pesquisaGal: DataTypes.STRING(18),
+    numeroDo: DataTypes.STRING(18),
+    frequentouUnidade: DataTypes.BOOLEAN,
+    unidadeFrequentadaId: DataTypes.UUID,
+    descritivoViagem: DataTypes.STRING,
+    dataRetornoLocal: DataTypes.DATEONLY,
+    dataChegadaBrasil: DataTypes.DATEONLY,
+    dataChegadaUF: DataTypes.DATEONLY,
+    descricaoLocal: DataTypes.STRING(255),
   }, {});
   NotificacaoCovid19.associate = (models) => {
     NotificacaoCovid19.belongsTo(models.Notificacao, { foreignKey: 'notificacaoId' });
     NotificacaoCovid19.belongsTo(models.Exame, { foreignKey: 'exameId' });
     NotificacaoCovid19.belongsTo(models.ResultadoExame, { foreignKey: 'resultadoExameId' });
-    NotificacaoCovid19.belongsTo(models.Pais, { foreignKey: 'cnesHospitalId', as: 'Hospital' });
-    NotificacaoCovid19.belongsTo(models.Exame, { foreignKey: 'exameId' });
-    NotificacaoCovid19.belongsTo(models.ResultadoExame, { foreignKey: 'resultadoExameId' });
+    NotificacaoCovid19.belongsTo(models.UnidadeSaude, { foreignKey: 'cnesHospitalId', as: 'Hospital' });
+    NotificacaoCovid19.belongsTo(models.UnidadeSaude, { foreignKey: 'labAmostraId', as: 'Laboratorio' });
+    NotificacaoCovid19.belongsTo(models.UnidadeSaude, { foreignKey: 'unidadeFrequentadaId', as: 'UnidadeFrequentada' });
   };
+
   return NotificacaoCovid19;
 };

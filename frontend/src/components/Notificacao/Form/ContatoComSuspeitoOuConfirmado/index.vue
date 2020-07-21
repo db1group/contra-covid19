@@ -39,6 +39,15 @@
               @input="updateNomeDoCaso"
             />
           </v-col>
+          <v-col cols="12">
+            <v-text-field
+              :value="notificacao.descricaoLocal"
+              :rules="rules.descricaoLocal"
+              label="Descrição do local"
+              :disabled="disableNomeCaso"
+              @input="updateDescricaoLocal"
+            />
+          </v-col>
         </v-col>
       </v-row>
     </v-container>
@@ -73,7 +82,8 @@ export default {
     tiposDeContato: TIPOS_DE_CONTATO,
     rules: {
       tipoDeContatoComCaso: [required],
-      nomeDoCaso: [onlyLetters, minLength(3), maxLength(80)],
+      nomeDoCaso: [onlyLetters, minLength(3), maxLength(150)],
+      descricaoLocal: [maxLength(255)],
     },
   }),
   computed: {
@@ -94,6 +104,9 @@ export default {
     },
     updateNomeDoCaso(nomeDoCaso) {
       this.$emit('update:nomeDoCaso', nomeDoCaso);
+    },
+    updateDescricaoLocal(descricaoLocal) {
+      this.$emit('update:descricaoLocal', descricaoLocal);
     },
   },
 };
