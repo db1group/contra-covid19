@@ -4,6 +4,10 @@ const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secret
 const EnviarNotificacaoRequest = require('../services-api/secretaria-saude/models/enviar-notificacao-request');
 const { RegraNegocioErro } = require('../lib/erros');
 const apiErrors = require('../services-api/secretaria-saude/enums/api-errors');
+const { UsuarioLogado } = require('../secure/usuario-logado');
+
+const retornarUnidadeUsuarioLogado = async (email) => repos
+  .unidadeSaudeRepository.getPorUserEmail(email);
 
 exports.enviarNotificacao = async (req, res, next) => {
   try {
@@ -26,8 +30,16 @@ exports.enviarNotificacao = async (req, res, next) => {
 exports.getPendentesEnvio = async (req, res, next) => {
   try {
     const { page = 1, itemsPerPage = 50, search = '' } = req.query;
+    const { email } = req.kauth.grant.access_token.content;
+    const usuarioLogado = new UsuarioLogado(req);
+    let unidadeSaudeId;
+    if (!usuarioLogado.isRoleSecretariaSaude()) {
+      const [unidadeSaude] = await retornarUnidadeUsuarioLogado(email);
+      unidadeSaudeId = unidadeSaude.id;
+    }
+
     const notificacoes = await repos.notificacaoRepository
-      .getNotificacoesPendentesEnvioSecretaria(page, itemsPerPage, search);
+      .getNotificacoesPendentesEnvioSecretaria(page, itemsPerPage, search, unidadeSaudeId);
 
     const notificacoesPendentes = notificacoes.rows.map((data) => ({
       notificacaoId: data.Notificacao.id,
@@ -120,9 +132,6 @@ const criarPromiseEnvioNotificacao = (notificacao, unidadeSaude) => new Promise(
 const EnviarNotificacoesSecretariaSaude = (notificacoes, unidadeSaude) => Promise.allSettled(
   notificacoes.map((n) => criarPromiseEnvioNotificacao(n, unidadeSaude)),
 ).then((res) => res.map((p) => (p.status === 'rejected' ? p.reason : p.value)));
-
-const retornarUnidadeUsuarioLogado = async (email) => repos
-  .unidadeSaudeRepository.getPorUserEmail(email);
 
 exports.enviarNotificacoes = async (req, res, next) => {
   try {

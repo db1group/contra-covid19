@@ -146,47 +146,51 @@ exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids) => models.No
   ],
 });
 
-exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, search = '') => {
+exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, search = '', unidadeId) => {
   const offset = (page - 1) * limit;
-  const filtroConsulta = {
-    where: {
-      [Op.or]:
-      [
-        {
-          tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteEnvio,
-        },
-        {
-          tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteAtualizacao,
-        },
-        {
-          tpTransmissaoApiSecretaria: null,
-        },
-      ],
-    },
+  const filtroPadrao = {
+    [Op.or]: [
+      {
+        tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteEnvio,
+      },
+      {
+        tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.PendenteAtualizacao,
+      },
+      {
+        tpTransmissaoApiSecretaria: null,
+      },
+    ],
   };
+  const filtros = [filtroPadrao];
+
+  if (unidadeId) {
+    const filtroUnidade = Sequelize.where(Sequelize.col('Notificacao.UnidadeSaude.id'), unidadeId);
+    filtros.push(filtroUnidade);
+  }
 
   if (search !== '') {
-    filtroConsulta.where = {
-      [Op.and]: [
-        { ...filtroConsulta.where },
-        {
-          [Op.or]: [
-            Sequelize.where(
-              Sequelize.fn('upper', Sequelize.col('Notificacao.Pessoa.nome')),
-              {
-                [Op.like]: `%${search.toUpperCase()}%`,
-              },
-            ),
-            Sequelize.where(
-              Sequelize.fn('upper', Sequelize.col('Notificacao.Pessoa.numeroDocumento')),
-              {
-                [Op.like]: `%${search.toUpperCase()}%`,
-              },
-            ),
-          ],
-        }],
+    const filtroSearch = {
+      [Op.or]: [
+        Sequelize.where(
+          Sequelize.fn('upper', Sequelize.col('Notificacao.Pessoa.nome')),
+          {
+            [Op.like]: `%${search.toUpperCase()}%`,
+          },
+        ),
+        Sequelize.where(
+          Sequelize.fn('upper', Sequelize.col('Notificacao.Pessoa.numeroDocumento')),
+          {
+            [Op.like]: `%${search.toUpperCase()}%`,
+          },
+        ),
+      ],
     };
+    filtros.push(filtroSearch);
   }
+
+  const filtroConsulta = {
+    where: { [Op.and]: [...filtros] },
+  };
 
   return models.NotificacaoCovid19.findAndCountAll({
     where: filtroConsulta.where,

@@ -27,7 +27,7 @@ class EnviarNotificacaoRequest {
     this.nome_notificador = notificacao.nomeNotificador;
     this.raca_cor = this.getRacaCor(notificacao);
     this.assintomatico = this.getAssintomatico(notificacao);
-    if (this.assintomatico === dicionarioValores.boleano.Sim) {
+    if (this.assintomatico === dicionarioValores.boleano.Nao) {
       this.data_1o_sintomas = dataInicioDosSintomas
         ? moment(dataInicioDosSintomas).format(FORMATO_DATA)
         : null;
@@ -315,10 +315,10 @@ class EnviarNotificacaoRequest {
   }
 
   getAssintomatico(notificacao) {
-    const { sintomatico = false } = notificacao.NotificacaoCovid19;
+    const { sintomatico = true } = notificacao.NotificacaoCovid19;
     return sintomatico
-      ? dicionarioValores.boleano.Sim
-      : dicionarioValores.boleano.Nao;
+      ? dicionarioValores.boleano.Nao
+      : dicionarioValores.boleano.Sim;
   }
 
   getRacaCor(notificacao) {

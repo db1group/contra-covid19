@@ -4,6 +4,7 @@ const repos = require('../repositories/repository-factory');
 const Mappers = require('../mapper');
 const { RegraNegocioErro, UsuarioNaoAutorizadoErro } = require('../lib/erros');
 const { UsuarioLogado } = require('../secure/usuario-logado');
+
 const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
 const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
