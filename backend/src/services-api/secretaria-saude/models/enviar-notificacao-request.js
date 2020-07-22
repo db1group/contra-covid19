@@ -315,7 +315,7 @@ class EnviarNotificacaoRequest {
   }
 
   getAssintomatico(notificacao) {
-    const { sintomatico = true } = notificacao.NotificacaoCovid19;
+    const { sintomatico = false } = notificacao.NotificacaoCovid19;
     return sintomatico
       ? dicionarioValores.boleano.Nao
       : dicionarioValores.boleano.Sim;
