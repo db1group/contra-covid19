@@ -1,6 +1,7 @@
 const repos = require('../repositories/repository-factory');
 const cadastrarNotificacaoEvolucaoService = require('../services/cadastrar-notificacao-evolucao-service');
 const deletarNotificacaoEvolucaoService = require('../services/deletar-notificacao-evolucao-service');
+const models = require('../models');
 
 exports.consultar = async (req, res, next) => {
   try {
@@ -37,6 +38,25 @@ exports.deletar = async (req, res, next) => {
     const { notificacaoId, id } = req.params;
 
     await deletarNotificacaoEvolucaoService.handle(notificacaoId, id);
+
+    return res.status(204).json();
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.alterarEvolucao = async (req, res, next) => {
+  try {
+    const { notificacaoId, id } = req.params;
+    const { createdAt } = req.body;
+
+    await models.NotificacaoEvolucao.update({ createdAt }, {
+      where:
+        {
+          id,
+          notificacaoId,
+        },
+    });
 
     return res.status(204).json();
   } catch (err) {

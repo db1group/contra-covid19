@@ -18,6 +18,8 @@
             :evolucao="evolucao"
             @delete:evolucao="mostrarMensagemSucesso"
             @erro:deleteEvolucao="mostrarMensagemErro"
+            @update:createdAt="mostrarMensagemSucesso"
+            @erro:createdAt="mostrarMensagemErro"
           />
         </v-col>
       </v-row>

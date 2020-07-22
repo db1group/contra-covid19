@@ -7,6 +7,7 @@ const unidadeSaude = require('./unidadeSaude');
 const perfil = require('./perfil');
 const notificaLeito = require('./notificaLeito');
 const notificaLeitoPerfil = require('./notificaLeitoPerfil');
+const evolucao = require('./evolucao');
 
 module.exports = {
   pessoa,
@@ -18,4 +19,5 @@ module.exports = {
   perfil,
   notificaLeito,
   notificaLeitoPerfil,
+  evolucao,
 };

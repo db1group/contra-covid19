@@ -7,6 +7,9 @@ const getErrorMessage = async (event) => {
   } = event;
   let messageError = message;
   if (isAxiosError && response && response.data) {
+    if (typeof response.data === 'string') {
+      return response.data;
+    }
     const { error, errorMessage } = response.data;
     messageError = error || errorMessage;
     messageError = messageError || response.data;
