@@ -128,6 +128,14 @@ resource "aws_ecs_task_definition" "backend" {
         "name": "SECRETARIA_SAUDE_API_URL",
         "value": "https://api.covid19.appsesa.pr.gov.br"
       },
+      {
+        "name": "TIMEOUT_SECRETARIA",
+        "value": "15000"
+      },
+      {
+        "name": "SECRETARIA_DISABLE_SSL",
+        "value": "false"
+      },
     ],
     "requiresAttributes": [
         {

@@ -11,4 +11,8 @@ export default {
   delete(notificacaoId, notificacaoEvolucaoId) {
     return http.delete(`/notificacoes/${notificacaoId}/evolucoes/${notificacaoEvolucaoId}`);
   },
+  updateCreatedAt(notificacaoId, evolucao) {
+    const { id, createdAt } = evolucao;
+    return http.put(`/notificacoes/${notificacaoId}/evolucoes/${id}`, { createdAt });
+  },
 };

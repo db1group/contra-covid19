@@ -1,8 +1,16 @@
 const models = require('../models');
 
-exports.isRealmSecretariaSaude = (token) => token.hasRole('realm:SECRETARIA_SAUDE');
+const isRealmSecretariaSaude = (token) => token.hasRole('realm:SECRETARIA_SAUDE');
+
+exports.isRealmSecretariaSaude = isRealmSecretariaSaude;
 
 exports.isRealmFechamento = (token) => token.hasRole('realm:FECHAMENTO');
+
+exports.isRealmAlteraEvolucao = (token) => token.hasRole('realm:ALTERA_EVOLUCAO');
+
+exports.isRealmEnvioSecretaria = (token) => (
+  isRealmSecretariaSaude(token) || token.hasRole('realm:ENVIO_SECRETARIA')
+);
 
 exports.isRealSecretariaOuUnidadeSaude = async (token, req) => {
   if (token.hasRole('realm:SECRETARIA_SAUDE')) return true;

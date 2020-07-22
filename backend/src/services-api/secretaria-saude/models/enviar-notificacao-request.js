@@ -40,9 +40,11 @@ class EnviarNotificacaoRequest {
     this.telefone_notificador = null;
     this.raca_cor = this.getRacaCor(notificacao);
     this.assintomatico = this.getAssintomatico(notificacao);
-    this.data_1o_sintomas = dataInicioDosSintomas
-      ? moment(dataInicioDosSintomas).format(FORMATO_DATA)
-      : null;
+    if (this.assintomatico === dicionarioValores.boleano.Nao) {
+      this.data_1o_sintomas = dataInicioDosSintomas
+        ? moment(dataInicioDosSintomas).format(FORMATO_DATA)
+        : null;
+    }
     this.pais_residencia = notificacao.Pessoa.Pais ? notificacao.Pessoa.Pais.codigo : 1;
     if (this.tipo_paciente === 1) {
       this.passaporte = notificacao.Pessoa.passaporte;
@@ -452,8 +454,8 @@ class EnviarNotificacaoRequest {
   getAssintomatico(notificacao) {
     const { sintomatico = false } = notificacao.NotificacaoCovid19;
     return sintomatico
-      ? dicionarioValores.boleano.Sim
-      : dicionarioValores.boleano.Nao;
+      ? dicionarioValores.boleano.Nao
+      : dicionarioValores.boleano.Sim;
   }
 
   getRacaCor(notificacao) {

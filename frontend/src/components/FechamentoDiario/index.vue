@@ -27,6 +27,7 @@
                 color="primary"
                 :dark="!temFechamentoEmAberto"
                 :disabled="temFechamentoEmAberto"
+                :loading="gerandoFechando"
                 @click="novoFechamento"
               >Iniciar novo fechamento</v-btn>
             </v-col>
@@ -59,11 +60,19 @@
                 text
                 color="#4CAF50"
                 @click="reabrirFechamento(item)"
+                :loading="reabrindo"
               >ABRIR</v-btn>
               <span v-else class="primary--text">FECHADO</span>
             </div>
             <div v-else>
-              <v-btn small rounded dark color="primary" @click="encerrarFechamento(item)">FECHAR</v-btn>
+              <v-btn
+                small
+                rounded
+                dark
+                color="primary"
+                :loading="fechando"
+                @click="encerrarFechamento(item)"
+              >FECHAR</v-btn>
               <v-btn
                 v-if="item.status === 'ABERTO'"
                 small
@@ -71,6 +80,7 @@
                 rounded
                 color="#B8860B"
                 class="ml-5"
+                :loading="fechando"
                 @click="cancelarFechamento"
               >CANCELAR</v-btn>
               <v-btn
@@ -79,6 +89,7 @@
                 rounded
                 color="#F54D09"
                 class="ml-5"
+                :loading="fechando"
                 @click="toggleDetailModal(true, item.dataFechamento)"
               >DETALHES</v-btn>
             </div>
@@ -112,6 +123,9 @@ export default {
     filter: '',
     filterCons: null,
     loading: true,
+    gerandoFechando: false,
+    fechando: false,
+    reabrindo: false,
     options: {
       page: 1,
       itemsPerPage: 10,
@@ -166,24 +180,33 @@ export default {
       }, 500);
     },
     novoFechamento() {
-      FechamentoService.getProximoFechamento().then((data) => {
-        if (!this.fechamentos.length) {
-          this.totalNotif = 1;
-        }
-        const value = data;
-        value.status = 'ABERTO';
-        this.fechamentos.splice(0, 0, new FechamentoDiario(value));
-      }).catch((error) => {
-        this.$emit('erro:novoFechamento', ErrorService.getMessage(error));
-      });
+      this.gerandoFechando = true;
+      FechamentoService.getProximoFechamento()
+        .then((data) => {
+          if (!this.fechamentos.length) {
+            this.totalNotif = 1;
+          }
+          const value = data;
+          value.status = 'ABERTO';
+          this.fechamentos.splice(0, 0, new FechamentoDiario(value));
+        })
+        .catch((error) => {
+          this.$emit('erro:novoFechamento', ErrorService.getMessage(error));
+        })
+        .finally(() => { this.gerandoFechando = false; });
     },
     encerrarFechamento(item) {
-      FechamentoService.postProximoFechamento(item).then(() => {
-        this.consultarFechamentos();
-        this.$emit('success:encerrarFechamento');
-      }).catch((error) => {
-        this.$emit('erro:encerrarFechamento', ErrorService.getMessage(error));
-      });
+      this.fechando = true;
+      FechamentoService.postProximoFechamento(item)
+        .then(() => {
+          this.$emit('success:encerrarFechamento');
+          this.consultarFechamentos();
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$emit('erro:encerrarFechamento', ErrorService.getMessage(error));
+        })
+        .finally(() => { this.fechando = false; });
     },
     cancelarFechamento() {
       if (!this.fechamentos.length) {
@@ -195,6 +218,7 @@ export default {
       page, itemsPerPage, sortBy = 'dataFechamento', sortDesc = 'true',
     } = this.options) {
       this.loading = true;
+      this.gerandoFechando = true;
       const search = this.filter;
       FechamentoService.findAll({
         page, itemsPerPage, sortBy, sortDesc, search,
@@ -206,7 +230,10 @@ export default {
         .catch((error) => {
           this.$emit('erro:consultarFechamentos', ErrorService.getMessage(error));
         })
-        .finally(() => { this.loading = false; });
+        .finally(() => {
+          this.loading = false;
+          this.gerandoFechando = false;
+        });
     },
     podeReabrirFechamento(item) {
       if (this.options.page > 1) return false;
@@ -214,17 +241,21 @@ export default {
       return item === primeiroFechado;
     },
     reabrirFechamento({ id }) {
-      // this.fechamentos = this.fechamentos.map((f) => (f.id === item.id ? { ...item, status: 'ABERTO' } : f));
-      FechamentoService.reabrirFechamento(id).then(() => {
-        this.consultarFechamentos();
-        this.$emit('success:reabrirFechamento');
-      }).catch((error) => {
-        this.$emit('erro:reabrirFechamento', ErrorService.getMessage(error));
-      });
+      this.reabrindo = true;
+      FechamentoService.reabrirFechamento(id)
+        .then(() => {
+          this.$emit('success:reabrirFechamento');
+          this.consultarFechamentos();
+        })
+        .catch((error) => {
+          this.$emit('erro:reabrirFechamento', ErrorService.getMessage(error));
+        })
+        .finally(() => { this.reabrindo = false; });
     },
   },
   computed: {
     temFechamentoEmAberto() {
+      if (this.fechando) return true;
       return this.fechamentos.some((el) => el.status === 'ABERTO');
     },
   },

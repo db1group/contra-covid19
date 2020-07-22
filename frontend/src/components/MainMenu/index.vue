@@ -51,6 +51,7 @@
           <v-list-item-title>Usuários</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <!--
       <v-list-item
         value="controle-leitos-cons"
         @click="onClick('controle-leitos-cons')"
@@ -62,6 +63,7 @@
           <v-list-item-title>Controle de Leitos</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      -->
       <v-list-item
         v-if="isUserFechamento"
         value="fechamento-diario"
@@ -75,7 +77,7 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item
-        v-if="isSecretariaSaude"
+        v-if="isUserEnvioSecretaria"
         value="envio-secretaria"
         @click="onClick('envio-secretaria')"
       >
@@ -122,6 +124,10 @@ export default {
     },
     isUserFechamento() {
       return keycloak.realmAccess.roles.includes('FECHAMENTO');
+    },
+    isUserEnvioSecretaria() {
+      if (this.isSecretariaSaude) return true;
+      return keycloak.realmAccess.roles.includes('ENVIO_SECRETARIA');
     },
   },
 };
