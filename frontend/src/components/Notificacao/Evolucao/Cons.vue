@@ -13,6 +13,37 @@
         </div>
       </div>
     </confirm-dialog>
+    <v-dialog v-model="dialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Alterar Data de Criação</span>
+        </v-card-title>
+
+        <v-card-text>
+          <v-container>
+            <v-form ref="form" class="ma-2">
+              <v-row dense>
+                <v-col>
+                  <v-text-field
+                    v-model="evolucaoChanged.createdAt"
+                    v-mask="'##/##/#### ##:##'"
+                    :rules="rules.createdAt"
+                    label="Data de criação"
+                    single-line
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-container>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="close">Cancelar</v-btn>
+          <v-btn color="blue darken-1" text :loading="updating" @click="save">Salvar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <div>
       <v-row>
         <v-col>
@@ -61,6 +92,15 @@
             <template v-slot:top>
               <v-card-title>Listagem das Evoluções do Paciente</v-card-title>
             </template>
+            <template v-slot:item.createdAt="{ item } ">
+              <v-btn
+                v-if="isAlteraEvolucao"
+                text
+                @click="edit(item)"
+                title="Alterar data de criação"
+              >{{ item.createdAt }}</v-btn>
+              <span v-else>{{ item.createdAt }}</span>
+            </template>
             <template v-slot:item.actions="{ item }">
               <v-row justify="end" align="center" dense>
                 <v-col v-if="canDelete(item)">
@@ -75,12 +115,16 @@
   </v-container>
 </template>
 <script>
-
+import { mask } from 'vue-the-mask';
+import { dateHourMinuteFormat } from '@/validations/CommonValidations';
 import ConfirmDialog from '@/components/commons/ConfirmDialog.vue';
 import EvolucaoService from '@/services/EvolucaoService';
 import ErrorService from '@/services/ErrorService';
+import DateService from '@/services/DateService';
+import keycloak from '@/services/KeycloakService';
 
 export default {
+  directives: { mask },
   components: { ConfirmDialog },
   props: {
     evolucao: {
@@ -102,7 +146,16 @@ export default {
       showDialog: false,
       id: null,
     },
+    rules: {
+      createdAt: [dateHourMinuteFormat],
+    },
     notificacaoId: '',
+    dialog: false,
+    evolucaoChanged: {
+      id: null,
+      createdAt: null,
+    },
+    updating: false,
   }),
   methods: {
     showExclusionConfirmDialog({ id }) {
@@ -127,10 +180,45 @@ export default {
       const notClosed = item.dtfechamento === null;
       return notClosed && notFirstItem;
     },
+    edit({ id, createdAt }) {
+      this.evolucaoChanged.id = id;
+      this.evolucaoChanged.createdAt = createdAt;
+      this.dialog = true;
+    },
+    close() {
+      this.evolucaoChanged.id = null;
+      this.evolucaoChanged.createdAt = null;
+      this.dialog = false;
+    },
+    save() {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
+      this.updating = true;
+      this.evolucaoChanged.createdAt = DateService
+        .toMomentObject(this.evolucaoChanged.createdAt, 'DD/MM/YYYY HH:mm')
+        .toISOString();
+      EvolucaoService.updateCreatedAt(this.notificacaoId, this.evolucaoChanged)
+        .then(() => {
+          this.$emit('update:createdAt', 'Data de cadastro atualizada com sucesso.');
+        })
+        .catch((error) => {
+          this.$emit('erro:createdAt', ErrorService.getMessage(error));
+        })
+        .finally(() => {
+          this.evolucaoChanged.id = null;
+          this.evolucaoChanged.createdAt = null;
+          this.dialog = false;
+          this.updating = false;
+        });
+    },
   },
   computed: {
     evolucoes() {
       return this.evolucao.items;
+    },
+    isAlteraEvolucao() {
+      return keycloak.realmAccess.roles.includes('ALTERA_EVOLUCAO');
     },
   },
   created() {

@@ -11,16 +11,22 @@ const axiosInstance = axios.create({
 
 exports.enviarNotificacao = async (request, token) => {
   const data = JSON.stringify(request);
+  const header = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
-  const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+  console.info('Envio Secretaria: ', data);
+  console.info('Usando SSL: ', process.env.SECRETARIA_SAUDE_SSL);
 
-  return axiosInstance.post('v1/notificacao/', data,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      httpsAgent,
-    })
+  const disableSSL = process.env.SECRETARIA_DISABLE_SSL === 'true';
+  if (disableSSL) {
+    const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+    header.httpsAgent = httpsAgent;
+  }
+
+  return axiosInstance.post('v1/notificacao/', data, header)
     .then((response) => response.data)
     .catch(getErrorMessage);
 };

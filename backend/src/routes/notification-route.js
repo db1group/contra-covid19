@@ -5,7 +5,7 @@ const NotificacaoResource = require('../resource/notificacao-resource');
 const NotificacaoEvolucaoResource = require('../resource/notificacao-evolucao-resource');
 const { validate, schemas } = require('../validations');
 const secure = require('../secure');
-const { isRealmSecretariaSaude } = require('../lib/secureRealm');
+const { isRealmSecretariaSaude, isRealmAlteraEvolucao } = require('../lib/secureRealm');
 
 const keycloack = secure();
 
@@ -29,5 +29,9 @@ router.delete(`${prefixoRoute}`, NotificacaoResource.excluirLoteLogicamenteNotif
 router.get(`${prefixoRoute}/:id/evolucoes`, keycloack.protect(isRealmSecretariaSaude), NotificacaoEvolucaoResource.consultar);
 router.post(`${prefixoRoute}/:id/evolucoes`, keycloack.protect(isRealmSecretariaSaude), NotificacaoEvolucaoResource.cadastrar);
 router.delete(`${prefixoRoute}/:notificacaoId/evolucoes/:id`, keycloack.protect(isRealmSecretariaSaude), NotificacaoEvolucaoResource.deletar);
+router.put(`${prefixoRoute}/:notificacaoId/evolucoes/:id`,
+  keycloack.protect(isRealmAlteraEvolucao),
+  validate(schemas.evolucao.alterar),
+  NotificacaoEvolucaoResource.alterarEvolucao);
 
 module.exports = router;

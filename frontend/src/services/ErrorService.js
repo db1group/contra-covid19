@@ -12,7 +12,10 @@ export default {
     }
     console.info(error.response);
     console.info(error.response.data || '');
-    const { data } = error.response || {};
+    const { data = {} } = error.response;
+    if (typeof data === 'string') {
+      return data;
+    }
     return data.error || error.response;
   },
 };

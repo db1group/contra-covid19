@@ -19,6 +19,14 @@ class UsuarioLogado {
   isRoleFechamento() {
     return this.roles.some((data) => data === rolesAuth.values.Fechamento);
   }
+
+  isRoleAlteraEvolucao() {
+    return this.roles.some((data) => data === rolesAuth.values.AlteraEvolucao);
+  }
+
+  isRoleEnvioSecretaria() {
+    return this.roles.some((data) => data === rolesAuth.values.EnvioSecretaria);
+  }
 }
 
 module.exports.UsuarioLogado = UsuarioLogado;
