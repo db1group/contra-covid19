@@ -115,7 +115,6 @@ export default {
   }),
   methods: {
     consultarItensPendentesEnvio({ page = 1, itemsPerPage = 50 } = this.options) {
-      console.log(page, itemsPerPage);
       this.loading = true;
       const search = this.filter;
       NotificacaoPendenteEnvioService.findAll({ page, itemsPerPage, search })
