@@ -14,10 +14,10 @@ config.define = {
   logging: console.info,
 };
 config.pool = {
-  max: 10,
+  max: 30,
   min: 3,
-  idle: 60000,
-  acquire: 20000,
+  idle: 5000,
+  acquire: 60000,
 };
 
 let sequelize;
