@@ -309,7 +309,7 @@ class NotificacaoResponseMapper {
       dataInternamento,
       dataIsolamento,
       dataAlta,
-      Hospital,
+      Hospital = {},
     } = this.notificacaoCovid19;
     const { nome } = Hospital;
     return {

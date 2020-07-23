@@ -87,7 +87,7 @@ const schemas = {
         .pattern(/BRANCA|PRETA|AMARELA|PARDA|INDIGENA|IGNORADO/)
         .required(),
       tipoClassificacaoPessoa: Joi.string()
-        .pattern(/CRIANCA_ATE_12_ANOS|EM_SITUACAO_RUA|ESTRANGEIRO|INDIGENA|OUTRO/)
+        .pattern(/CRIANCA_ATE_12_ANOS|EM_SITUACAO_RUA|ESTRANGEIRO|INDIGENA|OUTRO|PRIVADO_LIBERDADE/)
         .required(),
       uf: Joi.string()
         .allow(null, '')

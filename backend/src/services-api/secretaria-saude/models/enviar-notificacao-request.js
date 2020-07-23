@@ -5,12 +5,12 @@ const sexoEnum = require('../../../enums/sexo-enum');
 const gestanteEnum = require('../../../enums/gestante-enum');
 const periodoGestacaoEnum = require('../../../enums/periodo-gestacao-enum');
 const tipoDocumentoEnum = require('../../../enums/tipo-documento-enum');
-// const tipoLocalEvolucaoEnum = require('../../../enums/tipo-local-evolucao-enum');
 const racaCorEnum = require('../../../enums/raca-cor-enum');
 const metodoExameEnum = require('../../../enums/metodo-exame-enum');
 const contatoSuspeitoEnum = require('../../../enums/contato-suspeito-enum');
 const localContatoSuspeitoEnum = require('../../../enums/local-contato-suspeito-enum');
 const tipoNotificacaoEvolucaoEnum = require('../../../enums/tipo-notificacao-evolucao-enum');
+const tipoInternacaoEnum = require('../../../enums/tipo-internacao-enum');
 
 const FORMATO_DATA = 'YYYY-MM-DD';
 
@@ -255,14 +255,28 @@ class EnviarNotificacaoRequest {
   }
 
   preencherColetaMaterial(notificacao) {
+    const { coletaMaterialParaDiagnostico } = notificacao.NotificacaoCovid19;
+    if (!coletaMaterialParaDiagnostico) return;
+
     const {
-      coletaMaterialParaDiagnostico, dataDaColeta, nomeLaboratorioEnvioMaterial, metodoExame,
+      dataDaColeta, nomeLaboratorioEnvioMaterial, metodoExame,
       codigoExame, requisicao, dataCadastroExame, dataRecebimentoExame, dataLiberacaoExame,
       Exame, ResultadoExame, Laboratorio, pesquisaGal,
     } = notificacao.NotificacaoCovid19;
-    const { codigo: codExame } = Exame;
-    const { codigo: codResultado } = ResultadoExame;
-    const { cnes: cnesLab } = Laboratorio;
+
+    if (Exame) {
+      const { codigo: codExame } = Exame;
+      this.exame = codExame;
+    }
+    if (ResultadoExame) {
+      const { codigo: codResultado } = ResultadoExame;
+      this.resultado = codResultado;
+    }
+    if (Laboratorio) {
+      const { cnes: cnesLab } = Laboratorio;
+      this.unidade_solicitante_gal = cnesLab;
+    }
+
     this.coleta_amostra = coletaMaterialParaDiagnostico
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.data_coleta = dataDaColeta ? moment(dataDaColeta).format(FORMATO_DATA) : null;
@@ -272,9 +286,7 @@ class EnviarNotificacaoRequest {
     this.data_cadastro = dataCadastroExame;
     this.data_recebimento = dataRecebimentoExame;
     this.data_liberacao = dataLiberacaoExame;
-    this.exame = codExame;
-    this.resultado = codResultado;
-    this.unidade_solicitante_gal = cnesLab;
+
     this.pesquisa_gal = pesquisaGal;
     switch (metodoExame) {
       case metodoExameEnum.values.RTPCR:
@@ -371,7 +383,7 @@ class EnviarNotificacaoRequest {
     this.congestao_conjuntiva = notificacao.NotificacaoCovid19.conjuntivite
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.dificuldade_deglutir = notificacao.NotificacaoCovid19.dificuldadeDeglutir
-      ? dicionarioValores.bolfeano.Sim : dicionarioValores.boleano.Nao;
+      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.manchas_vermelhas = notificacao.NotificacaoCovid19.manchasVermelhas
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.ganglios_linfaticos = notificacao.NotificacaoCovid19.gangliosLinfaticos
@@ -411,6 +423,8 @@ class EnviarNotificacaoRequest {
     this.obesidade = notificacao.NotificacaoCovid19.obesidade
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.tabagismo = notificacao.NotificacaoCovid19.tabagismo
+      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
+    this.perda_olfato_paladar = notificacao.NotificacaoCovid19.perdaOlfatoPaladar
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.outras_morbidades = notificacao.NotificacaoCovid19.outrosComorbidades
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
@@ -515,22 +529,37 @@ class EnviarNotificacaoRequest {
     return tipoPacinete;
   }
 
+  getTipoInternacao(tipoLeito) {
+    switch (tipoLeito) {
+      case tipoInternacaoEnum.values.Enfermaria:
+        return dicionarioValores.tipoInternacao.Enfermaria;
+      case tipoInternacaoEnum.values.UTI:
+        return dicionarioValores.tipoInternacao.UTI;
+      default:
+        return dicionarioValores.tipoInternacao.NaoInformado;
+    }
+  }
+
   preencherHospitalizacao(notificacao) {
     const { hospitalizado = false } = notificacao.NotificacaoCovid19;
     if (!hospitalizado) return;
     const {
-      internacaoSus, tipoLeito, cnesHospitalId, nomeHospital = '',
-      dataInternamento, dataIsolamento, dataAlta,
+      internacaoSus, tipoLeito, dataInternamento, dataIsolamento,
+      dataAlta, Hospital = {},
     } = notificacao.NotificacaoCovid19;
-
+    const { nome, cnes, Municipio = {} } = Hospital;
+    const { ufIBGE, residenciaIBGE } = Municipio;
 
     this.hospitalizado = hospitalizado;
-    this.cnes_hospital = cnesHospitalId;
-    this.nome_hospital = nomeHospital;
-    this.uf_hospital = null;
-    this.ibge_hospital = null;
-    this.internacao_sus = internacaoSus;
-    this.tipo_internacao = tipoLeito;
+    this.cnes_hospital = cnes;
+    this.nome_hospital = nome;
+    this.uf_hospital = ufIBGE;
+    this.ibge_hospital = residenciaIBGE;
+    this.internacao_sus = internacaoSus
+      ? dicionarioValores.boleano.Sim
+      : dicionarioValores.boleano.Nao;
+
+    this.tipo_internacao = this.getTipoInternacao(tipoLeito);
     this.data_entrada = dataInternamento
       ? moment(dataInternamento).format(FORMATO_DATA)
       : null;
@@ -547,6 +576,7 @@ class EnviarNotificacaoRequest {
       frequentouUnidade = false,
       UnidadeFrequentada,
     } = notificacao.NotificacaoCovid19;
+    if (!frequentouUnidade) return;
     const { nome, cnes } = UnidadeFrequentada;
     this.frequentou_unidade = dicionarioValores.boleano.Nao;
     if (!frequentouUnidade) return;

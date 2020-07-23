@@ -18,6 +18,7 @@ export default class UnidadeSaude {
     this.qtUTIPedPrivado = data.qtUTIPedPrivado || '0';
     this.qtUTINeoPrivado = data.qtUTINeoPrivado || '0';
     this.tokenSecretaria = data.tokenSecretaria || '';
+    this.tpUnidade = data.tpUnidade || 'OUTRO';
   }
 
   totalEnfermarias() {

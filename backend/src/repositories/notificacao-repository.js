@@ -60,7 +60,11 @@ module.exports.getPorId = async (id) => models.Notificacao.findOne({
       include: [
         { model: models.Exame },
         { model: models.ResultadoExame },
-        { model: models.UnidadeSaude, as: 'Hospital' },
+        {
+          model: models.UnidadeSaude,
+          as: 'Hospital',
+          include: [{ model: models.Municipio }],
+        },
         { model: models.UnidadeSaude, as: 'Laboratorio' },
         { model: models.UnidadeSaude, as: 'UnidadeFrequentada' },
       ],
@@ -129,7 +133,11 @@ exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids) => models.No
       include: [
         { model: models.Exame },
         { model: models.ResultadoExame },
-        { model: models.UnidadeSaude, as: 'Hospital' },
+        {
+          model: models.UnidadeSaude,
+          as: 'Hospital',
+          include: [{ model: models.Municipio }],
+        },
         { model: models.UnidadeSaude, as: 'Laboratorio' },
         { model: models.UnidadeSaude, as: 'UnidadeFrequentada' },
       ],

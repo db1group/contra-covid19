@@ -100,6 +100,7 @@ export default {
       { text: 'Municipio', value: 'municipio', sortable: false },
       { text: 'Unidade de Saúde', value: 'nome', sortable: false },
       { text: 'CNES', value: 'cnes', sortable: false },
+      { text: 'Tipo', value: 'tpUnidade', sortable: false },
       { sortable: false, value: 'actions', width: '240px' },
     ],
     removingUnidadeDialog: {
