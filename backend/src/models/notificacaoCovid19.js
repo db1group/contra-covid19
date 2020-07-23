@@ -127,7 +127,7 @@ module.exports = (sequelize, DataTypes) => {
     dataAlta: DataTypes.DATEONLY,
     codigoExame: DataTypes.STRING(18),
     exameId: DataTypes.UUID,
-    requisicao: DataTypes.STRING(18),
+    requisicao: DataTypes.STRING(150),
     resultadoExameId: DataTypes.UUID,
     dataCadastroExame: DataTypes.DATEONLY,
     dataRecebimentoExame: DataTypes.DATEONLY,

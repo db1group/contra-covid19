@@ -79,7 +79,7 @@
             :disabled="disableFields"
             @input="updateRequisicao"
           />
-         </v-col>
+        </v-col>
       </v-row>
       <v-row dense>
         <v-col cols="12" sm="6" md="6">
@@ -101,7 +101,7 @@
             :disabled="disableNomeLab"
             @input="updateNomeLaboratorioEnvioMaterial"
           />
-         </v-col>
+        </v-col>
       </v-row>
       <v-row dense>
         <v-col cols="12" sm="6" md="6">
@@ -138,38 +138,43 @@
       <v-row dense>
         <v-col>
           <v-select
-          v-model="conclusaoAtendimento.metodoDeExame"
-          :items="itemsMetodoExame"
-          item-text="label"
-          item-value="value"
-          :rules="rules.metodoDeExame"
-          ref="metodoDeExame"
-          label="Método do exame"
-          :disabled="disableFields"
-          @input="updateMetodoDeExame"
-         />
+            v-model="conclusaoAtendimento.metodoDeExame"
+            :items="itemsMetodoExame"
+            item-text="label"
+            item-value="value"
+            :rules="rules.metodoDeExame"
+            ref="metodoDeExame"
+            label="Método do exame"
+            :disabled="disableFields"
+            @input="updateMetodoDeExame"
+          />
         </v-col>
       </v-row>
       <v-row dense>
         <v-col cols="12" sm="6" md="6">
           <v-autocomplete
+            :value="conclusaoAtendimento.labAmostraId"
             label="Lab. para envio da amostra"
             :items="laboratorio.items"
+            @update:search-input="searchLaboratorios"
+            item-text="nome"
+            item-value="id"
             :loading="laboratorio.loading"
             no-data-text="Laboratório não encontrado"
+            @input="updateLabAmostraId"
             :disabled="disableFields"
           />
         </v-col>
         <v-col cols="12" sm="6" md="6">
           <v-select
-          v-model="conclusaoAtendimento.pesquisaGal"
-          :items="itemsPesquisa"
-          item-text="label"
-          clearable
-          item-value="value"
-          label="Pesquisa"
-          :disabled="disableFields"
-         />
+            v-model="conclusaoAtendimento.pesquisaGal"
+            :items="itemsPesquisa"
+            item-text="label"
+            clearable
+            item-value="value"
+            label="Pesquisa"
+            :disabled="disableFields"
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -181,6 +186,7 @@ import { required, dateFormat, dateMustBeLesserEqualsThanToday } from '@/validat
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
 import ExameService from '@/services/ExameService';
 import ResultadoExameService from '@/services/ResultadoExameService';
+import UnidadeSaudeService from '@/services/UnidadeSaudeService';
 
 export default {
   directives: { mask },
@@ -217,6 +223,7 @@ export default {
       { label: 'COVID-19 Profissionais da Saúde e Ambulatorial não internado', value: '10017' },
       { label: 'Pesquisa de Vírus Respiratórios', value: '10087' },
     ],
+    searchLab: null,
     laboratorio: {
       items: [],
       loading: false,
@@ -259,6 +266,7 @@ export default {
         this.updateNomeLaboratorioEnvioMaterial('');
         this.updateExameId(null);
         this.updateResultadoExameId(null);
+        this.updateLabAmostraId(null);
         this.removeRequiredInFields();
         return;
       }
@@ -324,6 +332,9 @@ export default {
     updateResultadoExameId(resultadoExameId) {
       this.$emit('update:resultadoExameId', resultadoExameId);
     },
+    updateLabAmostraId(labAmostraId) {
+      this.$emit('update:labAmostraId', labAmostraId);
+    },
     searchExames(search) {
       if (search === this.searchExame) return;
       this.searchExame = search ? search.trim() : undefined;
@@ -356,14 +367,32 @@ export default {
           this.resultados.loading = false;
         });
     },
+    searchLaboratorios(search) {
+      if (search === this.searchLab) return;
+      this.searchLab = search ? search.trim() : undefined;
+      this.findLaboratorios(this.searchLab);
+    },
+    findLaboratorios(searchLab) {
+      if (this.laboratorio.loading) return;
+      this.laboratorio.loading = true;
+      UnidadeSaudeService.findAllLaboratorios(searchLab)
+        .then(({ data }) => {
+          this.laboratorio.items = data;
+        })
+        .finally(() => {
+          this.laboratorio.loading = false;
+        });
+    },
     carregarDadosConclusao(conclusaoAtendimento) {
       this.findExames(conclusaoAtendimento.nomeExame);
       this.findResultados(conclusaoAtendimento.nomeResultado);
+      this.findLaboratorios(conclusaoAtendimento.nomeLabAmostra);
     },
   },
   created() {
     this.findExames();
     this.findResultados();
+    this.findLaboratorios();
   },
 };
 </script>

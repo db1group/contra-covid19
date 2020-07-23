@@ -45,6 +45,8 @@ const schemas = {
     qtUTINeoPrivado: Joi.string()
       .pattern(/^[0-9]+$/)
       .required(),
+    tpUnidade: Joi.string()
+      .pattern(/OUTRO|HOSPITAL|LABORATORIO/),
   }),
 };
 module.exports = schemas;

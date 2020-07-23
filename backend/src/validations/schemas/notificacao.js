@@ -274,6 +274,13 @@ const schemas = {
       dataDaColeta: Joi.date().iso().allow(null),
       metodoDeExame: Joi.string().allow(null)
         .pattern(/RT-PCR|TESTE_RAPIDO|SOROLOGIA_OUTROS|ELISA|QUIMIOLUMINESCENCIA|IMUNOFLUORESCENCIA/),
+      dataCadastroExame: Joi.date().iso().allow(null),
+      dataRecebimentoExame: Joi.date().iso().allow(null),
+      dataLiberacaoExame: Joi.date().iso().allow(null),
+      codigoExame: Joi.string().allow('', null)
+        .max(18),
+      requisicao: Joi.string().allow('', null)
+        .max(150),
     }),
     hospitalizacao: Joi.object().keys({
       hospitalizado: Joi.bool().allow(null),

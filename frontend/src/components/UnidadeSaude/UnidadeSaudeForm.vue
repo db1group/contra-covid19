@@ -56,7 +56,6 @@
               item-text="label"
               item-value="value"
               label="Tipo de unidade"
-              :disabled="disableFields"
               validate-on-blur
               required
             />
@@ -328,7 +327,7 @@ export default {
     isSecretariaSaude: false,
     itemsTipo: [
       { label: 'Hospital', value: 'HOSPITAL' },
-      { label: 'Laboraório', value: 'LABORATORIO' },
+      { label: 'Laboratório', value: 'LABORATORIO' },
       { label: 'Outro', value: 'OUTRO' },
     ],
   }),
