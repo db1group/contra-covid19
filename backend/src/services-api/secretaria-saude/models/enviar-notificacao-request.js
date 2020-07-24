@@ -141,29 +141,19 @@ class EnviarNotificacaoRequest {
 
   preencherClassificacao(notificacao) {
     const evolucoes = notificacao.NotificacaoEvolucaos;
-    const {
-      coletaMaterialParaDiagnostico = false, numeroDo,
-      dataEncerramento,
-    } = notificacao.NotificacaoCovid19;
+    const { numeroDo } = notificacao.NotificacaoCovid19;
+    this.criterio_classificacao = dicionarioValores.criterioClassificacao.EmInvestigacao;
 
-    this.data_encerramento = dataEncerramento;
-
-    if (evolucoes.some((data) => (data.tpEvolucao
-            === tipoNotificacaoEvolucaoEnum.values.Descartado) || (data.tpEvolucao
-              === tipoNotificacaoEvolucaoEnum.values.Encerrado))) {
+    if (evolucoes.some((data) => (data.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Descartado)
+        || (data.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Encerrado))) {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoDescartado;
       this.criterio_classificacao = dicionarioValores.criterioClassificacao.NaoSeAplica;
     } else if (evolucoes.some((data) => data.tpEvolucao
             === tipoNotificacaoEvolucaoEnum.values.Confirmado)) {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoConfirmado;
-      this.criterio_classificacao = dicionarioValores.criterioClassificacao.ClinicoEpidemiologico;
+      this.criterio_classificacao = dicionarioValores.criterioClassificacao.Laboratorial;
     } else {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoSuspeito;
-    }
-
-    this.criterio_classificacao = dicionarioValores.criterioClassificacao.EmInvestigacao;
-    if (coletaMaterialParaDiagnostico) {
-      this.criterio_classificacao = dicionarioValores.criterioClassificacao.Laboratorial;
     }
 
     const evolucaoCurado = evolucoes.find((data) => data.tpEvolucao
