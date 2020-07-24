@@ -4,13 +4,24 @@ const models = require('../models');
 const { Op } = Sequelize;
 
 exports.consultaPorNome = async (req, res) => {
-  const { nome = '' } = req.query;
-  const unidadesSaude = await models.UnidadeSaude.findAll({
-    where: {
-      nome: {
-        [Op.like]: `%${nome}%`,
-      },
+  const { nome = '', tipo } = req.query;
+  const filtroUnidadeNome = Sequelize.where(
+    Sequelize.fn('upper', Sequelize.col('nome')),
+    {
+      [Op.like]: `%${nome.toUpperCase()}%`,
     },
+  );
+
+  const filtros = [filtroUnidadeNome];
+  if (tipo) {
+    const filtroTipo = { tpUnidade: tipo.toUpperCase() };
+    filtros.push(filtroTipo);
+  }
+
+  const where = { [Op.and]: [...filtros] };
+
+  const unidadesSaude = await models.UnidadeSaude.findAll({
+    where,
     limit: 10,
     order: [['nome', 'ASC']],
   });

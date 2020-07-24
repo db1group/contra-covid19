@@ -16,6 +16,7 @@ export default class Comorbidades {
     this.infeccaoHIV = data.infeccaoHIV || false;
     this.neoplasia = data.neoplasia || false;
     this.tabagismo = data.tabagismo || false;
+    this.doencaPulmonar = data.doencaPulmonar || false;
     this.outros = data.outros || '';
     this.outrasComorbidades = !!data.outros || false;
   }

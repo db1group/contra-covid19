@@ -46,6 +46,7 @@ export default class Pessoa {
     this.passaporte = data.passaporte || null;
     this.paisId = data.paisId || 1;
     this.paisNome = data.pais || 'Brasil';
+    this.gestanteAltoRisco = data.gestanteAltoRisco || false;
   }
 
   toRequestBody() {

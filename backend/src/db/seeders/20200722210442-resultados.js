@@ -1,0 +1,106 @@
+const uuidv4 = require('uuid/v4');
+
+module.exports = {
+  up: (queryInterface) => queryInterface.bulkInsert('ResultadoExame', [
+    {
+      id: uuidv4(),
+      nome: 'Influenza A',
+      codigo: '1',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Influenza B',
+      codigo: '2',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Adenovírus',
+      codigo: '3',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Vírus Sincicial Respiratório',
+      codigo: '4',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Parainfluenza (1-4)',
+      codigo: '5',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Rinovírus',
+      codigo: '6',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Metapneumo',
+      codigo: '7',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Coronavírus (OC43, 229E, HKU1, NL63)',
+      codigo: '8',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Coronavírus (SARS-COV2)',
+      codigo: '9',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Outro vírus',
+      codigo: '10',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Negativo',
+      codigo: '11',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Reagente',
+      codigo: '12',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Não Reagente',
+      codigo: '13',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: uuidv4(),
+      nome: 'Inconclusivo',
+      codigo: '14',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ]),
+
+  down: (queryInterface) => queryInterface.bulkDelete('ResultadoExame', null, {}),
+};

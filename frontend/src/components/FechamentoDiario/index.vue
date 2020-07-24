@@ -203,7 +203,6 @@ export default {
           this.consultarFechamentos();
         })
         .catch((error) => {
-          console.log(error);
           this.$emit('erro:encerrarFechamento', ErrorService.getMessage(error));
         })
         .finally(() => { this.fechando = false; });

@@ -52,6 +52,7 @@
           :disabled="disableFields"
           @update:passaporte="updateSuspeito('passaporte', $event)"
           @update:paisId="updateSuspeito('paisId', $event)"
+          @update:gestanteAltoRisco="updateSuspeito('gestanteAltoRisco', $event)"
         />
         <sinais-e-sintomas
           :sintomatico="notificacao.sintomatico"
@@ -80,6 +81,7 @@
           @update:diarreia="updateSintoma('diarreia', $event)"
           @update:cefaleia="updateSintoma('cefaleia', $event)"
           @update:nauseaVomito="updateSintoma('nauseaVomito', $event)"
+          @update:perdaOlfatoPaladar="updateSintoma('perdaOlfatoPaladar', $event)"
           @update:adinamiaFraqueza="updateSintoma('adinamiaFraqueza', $event)"
           @update:artralgia="updateSintoma('artralgia', $event)"
           @update:calafrios="updateSintoma('calafrios', $event)"
@@ -133,13 +135,32 @@
           @update:infeccaoHIV="updateComorbidade('infeccaoHIV', $event)"
           @update:neoplasia="updateComorbidade('neoplasia', $event)"
           @update:tabagismo="updateComorbidade('tabagismo', $event)"
+          @update:doencaPulmonar="updateComorbidade('doencaPulmonar', $event)"
           @update:outros="updateComorbidade('outros', $event)"
         />
         <informacoes-complementares
           :informacoes-complementares="notificacao.informacaoComplementar"
           @update:tamiflu="updateInformacaoComplementar('tamiflu', $event)"
           @update:hidroxicloroquina="updateInformacaoComplementar('hidroxicloroquina', $event)"
+          @update:cloroquina="updateInformacaoComplementar('cloroquina', $event)"
           @update:nomeMedicamento="updateInformacaoComplementar('nomeMedicamento', $event)"
+          :disabled="disableFields"
+        />
+        <hospitalizacao
+          :hospitalizacao="notificacao.hospitalizacao"
+          @update:hospitalizado="updateHospitalizacao('hospitalizado', $event)"
+          @update:cnesHospitalId="updateHospitalizacao('cnesHospitalId', $event)"
+          @update:internacaoSus="updateHospitalizacao('internacaoSus', $event)"
+          @update:tipoLeito="updateHospitalizacao('tipoLeito', $event)"
+          @update:dataInternamento="updateHospitalizacao('dataInternamento', $event)"
+          @update:dataIsolamento="updateHospitalizacao('dataIsolamento', $event)"
+          @update:dataAlta="updateHospitalizacao('dataAlta', $event)"
+          :disabled="disableFields"
+        />
+        <frequentou-cnes
+          :frequentou-cnes="notificacao.frequentouCnes"
+          @update:frequentouUnidade="updateFrequentouCnes('frequentouUnidade', $event)"
+          @update:unidadeFrequentadaId="updateFrequentouCnes('unidadeFrequentadaId', $event)"
           :disabled="disableFields"
         />
         <realizado-coleta
@@ -149,6 +170,15 @@
           @update:nomeLaboratorioEnvioMaterial="updateConclusaoAtendimento('nomeLaboratorioEnvioMaterial', $event)"
           @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"
           @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
+          @update:dataCadastroExame="updateConclusaoAtendimento('dataCadastroExame', $event)"
+          @update:dataRecebimentoExame="updateConclusaoAtendimento('dataRecebimentoExame', $event)"
+          @update:dataLiberacaoExame="updateConclusaoAtendimento('dataLiberacaoExame', $event)"
+          @update:codigoExame="updateConclusaoAtendimento('codigoExame', $event)"
+          @update:requisicao="updateConclusaoAtendimento('requisicao', $event)"
+          @update:exameId="updateConclusaoAtendimento('exameId', $event)"
+          @update:resultadoExameId="updateConclusaoAtendimento('resultadoExameId', $event)"
+          @update:labAmostraId="updateConclusaoAtendimento('labAmostraId', $event)"
+          @update:pesquisaGal="updateConclusaoAtendimento('pesquisaGal', $event)"
           :disabled="disableFields"
         />
         <historico-de-viagem
@@ -156,6 +186,10 @@
           @update:historicoDeViagem="updateInformacaoComplementar('historicoDeViagem', $event)"
           @update:dataDaViagem="updateInformacaoComplementar('dataDaViagem', $event)"
           @update:localDaViagem="updateInformacaoComplementar('localDaViagem', $event)"
+          @update:dataRetornoLocal="updateInformacaoComplementar('dataRetornoLocal', $event)"
+          @update:dataChegadaBrasil="updateInformacaoComplementar('dataChegadaBrasil', $event)"
+          @update:dataChegadaUF="updateInformacaoComplementar('dataChegadaUF', $event)"
+          @update:descritivoViagem="updateInformacaoComplementar('descritivoViagem', $event)"
           :disabled="disableFields"
         />
         <contato-com-suspeito-ou-confirmado
@@ -163,6 +197,7 @@
           @update:tipoDeContatoComCaso="updateTipoDeContatoComCaso"
           @update:tipoDeLocalDoCaso="updateTipoDeLocalDoCaso"
           @update:nomeDoCaso="updateNomeDoCaso"
+          @update:descricaoLocal="updateDescricaoLocal"
           :disabled="disableFields"
         />
         <outras-informacoes
@@ -175,6 +210,7 @@
         <conclusao-atendimento
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
           @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
+          @update:numeroDo="updateConclusaoAtendimento('numeroDo', $event)"
           :disabled="disableFields"
         />
         <observacoes v-model="notificacao.observacoes" :disabled="disableFields" />
@@ -208,6 +244,8 @@ import Observacoes from '@/components/Notificacao/Form/Observacoes/index.vue';
 import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
 import ErrorService from '@/services/ErrorService';
+import Hospitalizacao from '@/components/Notificacao/Form/Hospitalizacao/index.vue';
+import FrequentouCnes from '@/components/Notificacao/Form/FrequentouCNES/index.vue';
 
 const StateForm = {
   NEW: 'NEW',
@@ -232,6 +270,8 @@ export default {
     OutrasInformacoes,
     Observacoes,
     BotaoEnviar,
+    Hospitalizacao,
+    FrequentouCnes,
   },
   data: () => ({
     notificacao: new Notificacao(),
@@ -290,6 +330,9 @@ export default {
     },
     updateNomeDoCaso(nomeDoCaso) {
       this.notificacao.nomeDoCaso = nomeDoCaso;
+    },
+    updateDescricaoLocal(descricaoLocal) {
+      this.notificacao.descricaoLocal = descricaoLocal;
     },
     updateSuspeito(campo, valor) {
       this.notificacao.suspeito[campo] = valor;
@@ -372,6 +415,15 @@ export default {
           this.showError = true;
           this.errorMessage = ErrorService.getMessage(error);
         });
+    },
+    updateHospitalizacao(campo, valor) {
+      this.notificacao.hospitalizacao[campo] = valor;
+      if (campo === 'cnesHospitalId' && !valor) {
+        this.notificacao.hospitalizacao.nomeHospital = null;
+      }
+    },
+    updateFrequentouCnes(campo, valor) {
+      this.notificacao.frequentouCnes[campo] = valor;
     },
   },
   beforeRouteEnter(to, from, next) {

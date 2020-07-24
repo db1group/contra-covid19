@@ -23,11 +23,12 @@
           row
           :disabled="disabled"
         >
-          <v-radio label="Criança até 12 anos" value="CRIANCA_ATE_12_ANOS" />
-          <v-radio label="Em situação de Rua" value="EM_SITUACAO_RUA" />
-          <v-radio label="Estrangeiro" value="ESTRANGEIRO" />
-          <v-radio label="Indígena" value="INDIGENA" />
-          <v-radio label="Outro" value="OUTRO" />
+          <v-radio label="Criança até 15 anos" value="CRIANCA_ATE_12_ANOS" class="mb-2" />
+          <v-radio label="Em situação de Rua" value="EM_SITUACAO_RUA" class="mb-2" />
+          <v-radio label="Estrangeiro" value="ESTRANGEIRO" class="mb-2" />
+          <v-radio label="Indígena" value="INDIGENA" class="mb-2" />
+          <v-radio label="Privado de Liberdade" value="PRIVADO_LIBERDADE" class="mb-2" />
+          <v-radio label="Outro" value="OUTRO" class="mb-2" />
         </v-radio-group>
       </v-col>
     </v-row>
@@ -107,7 +108,7 @@
     </v-row>
 
     <v-row dense v-show="suspeito.sexo === 'F' && suspeito.gestante === 'true'">
-      <v-col cols="12">
+      <v-col>
         <v-radio-group
           :value="suspeito.tipoPeriodoGestacional"
           :rules="rules.tipoPeriodoGestacional"
@@ -122,6 +123,15 @@
           <v-radio value="TERCEIRO_TRIMESTRE" label="3º Trimestre" />
           <v-radio value="IDADE_GESTACIONAL_IGNORADA" label="Idade gestacional ignorada" />
         </v-radio-group>
+      </v-col>
+      <v-col>
+        <v-checkbox
+          :input-value="suspeito.gestanteAltoRisco"
+          label="Gestante de Alto Risco?"
+          hide-details
+          @change="updateGestanteAltoRisco"
+          :disabled="disabled"
+        />
       </v-col>
     </v-row>
 
@@ -283,6 +293,9 @@ export default {
     updateTipoPeriodoGestacional(tipoPeriodoGestacional) {
       this.$emit('update:tipoPeriodoGestacional', tipoPeriodoGestacional);
     },
+    updateGestanteAltoRisco(gestanteAltoRisco) {
+      this.$emit('update:gestanteAltoRisco', gestanteAltoRisco);
+    },
     unselectTipoPeriodoGestacional() {
       if (this.suspeito.sexo === 'M' || this.suspeito.gestante !== 'true') {
         this.$emit('update:tipoPeriodoGestacional', null);
@@ -295,7 +308,7 @@ export default {
     },
     checkMaxAge(value) {
       if (value === 'CRIANCA_ATE_12_ANOS') {
-        this.rules.dataDeNascimento.push(maxAge(12));
+        this.rules.dataDeNascimento.push(maxAge(15));
       } else {
         this.rules.dataDeNascimento = [required, dateFormat, this.validateFutureDate];
       }

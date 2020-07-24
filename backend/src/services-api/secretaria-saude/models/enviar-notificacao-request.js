@@ -2,12 +2,15 @@ const moment = require('moment');
 const dicionarioValores = require('./dicionario-valores');
 const tipoClassificacaoPessoaEnum = require('../../../enums/tipo-classificacao-pessoa-enum');
 const sexoEnum = require('../../../enums/sexo-enum');
+const gestanteEnum = require('../../../enums/gestante-enum');
+const periodoGestacaoEnum = require('../../../enums/periodo-gestacao-enum');
 const tipoDocumentoEnum = require('../../../enums/tipo-documento-enum');
 const racaCorEnum = require('../../../enums/raca-cor-enum');
 const metodoExameEnum = require('../../../enums/metodo-exame-enum');
 const contatoSuspeitoEnum = require('../../../enums/contato-suspeito-enum');
 const localContatoSuspeitoEnum = require('../../../enums/local-contato-suspeito-enum');
 const tipoNotificacaoEvolucaoEnum = require('../../../enums/tipo-notificacao-evolucao-enum');
+const tipoInternacaoEnum = require('../../../enums/tipo-internacao-enum');
 
 const FORMATO_DATA = 'YYYY-MM-DD';
 
@@ -20,11 +23,23 @@ class EnviarNotificacaoRequest {
     this.tipo_paciente = this.getTipoPaciente(notificacao);
     this.paciente = notificacao.Pessoa.nome;
     this.sexo = this.getSexo(notificacao);
+    this.gestante = this.getGestante(notificacao);
+    this.gestante_alto_risco = this.getGestanteAltoRisco(notificacao);
+    this.periodo_gestacao = this.getPeriodoGestacional(notificacao);
     this.data_nascimento = moment(notificacao.Pessoa.dataDeNascimento)
       .format(FORMATO_DATA);
+    this.idade = moment().diff(moment(notificacao.Pessoa.dataDeNascimento), 'years');
     this.nome_mae = notificacao.Pessoa.nomeDaMae;
-    this.cnes_unidade_notifica = notificacao.UnidadeSaude.cnes;
+    const { nome, cnes, Municipio = {} } = notificacao.UnidadeSaude;
+    const { residenciaIBGE, ufIBGE } = Municipio || {};
+    this.nome_unidade_notifica = nome;
+    this.cnes_unidade_notifica = cnes;
+    this.uf_unidade_notifica = residenciaIBGE;
+    this.ibge_unidade_notifica = ufIBGE;
     this.nome_notificador = notificacao.nomeNotificador;
+    this.email_notificador = notificacao.User.email;
+    this.ocupacao_notificador = notificacao.Profissao.nome;
+    this.telefone_notificador = null;
     this.raca_cor = this.getRacaCor(notificacao);
     this.assintomatico = this.getAssintomatico(notificacao);
     if (this.assintomatico === dicionarioValores.boleano.Nao) {
@@ -45,14 +60,59 @@ class EnviarNotificacaoRequest {
     this.preencherColetaMaterial(notificacao);
     this.prencherViagem(notificacao);
     this.preencherContatoSuspeito(notificacao);
+    this.preencherContatoConfirmado(notificacao);
     this.preencherClassificacao(notificacao);
     this.preencherResidencia(notificacao);
-    if (notificacao.Pessoa.tipoDocumento === tipoDocumentoEnum.values.CPF) {
-      this.cpf = notificacao.Pessoa.numeroDocumento;
-    }
-
+    this.preencherDocumentos(notificacao);
     this.preencherTelefone(notificacao);
     this.preencherOcupacao(notificacao);
+    this.preencherHospitalizacao(notificacao);
+    this.preencherFrequentouUnidade(notificacao);
+  }
+
+  getPeriodoGestacional(notificacao) {
+    switch (notificacao.Pessoa.tipoPeriodoGestacional) {
+      case periodoGestacaoEnum.values.PrimeiroTrimestre:
+        return dicionarioValores.periodoGestacao.PrimeiroTrimestre;
+      case periodoGestacaoEnum.values.SegundoTrimestre:
+        return dicionarioValores.periodoGestacao.SegundoTrimestre;
+      case periodoGestacaoEnum.values.TerceiroTrimestre:
+        return dicionarioValores.periodoGestacao.TerceiroTrimestre;
+      case periodoGestacaoEnum.values.IdadeGestacionalIgnorada:
+        return dicionarioValores.periodoGestacao.IdadeGestIgnorada;
+      default:
+        return null;
+    }
+  }
+
+  getGestante(notificacao) {
+    if (this.sexo === dicionarioValores.sexo.Masculino) {
+      return dicionarioValores.boleano.Nao;
+    }
+    switch (notificacao.Pessoa.gestante) {
+      case gestanteEnum.values.Sim:
+        return dicionarioValores.gestante.Sim;
+      case gestanteEnum.values.Nao:
+        return dicionarioValores.gestante.Nao;
+      default:
+        return dicionarioValores.gestante.NaoInformado;
+    }
+  }
+
+  getGestanteAltoRisco(notificacao) {
+    const { gestanteAltoRisco = false } = notificacao.Pessoa;
+    return gestanteAltoRisco;
+  }
+
+  preencherDocumentos(notificacao) {
+    const { tipoDocumento, numeroDocumento } = notificacao.Pessoa;
+    this.cpf = 0;
+    if (tipoDocumento === tipoDocumentoEnum.values.CPF) {
+      this.cpf = numeroDocumento.trim() !== ''
+        ? numeroDocumento.trim() : undefined;
+    } else if (tipoDocumento === tipoDocumentoEnum.values.SUS) {
+      this.cns = numeroDocumento;
+    }
   }
 
   preencherTelefone(notificacao) {
@@ -69,7 +129,9 @@ class EnviarNotificacaoRequest {
   }
 
   preencherOcupacao(notificacao) {
-    this.ocupacao = notificacao.Pessoa.Ocupacao.classificacao;
+    const { classificacao } = notificacao.Pessoa.Ocupacao;
+    this.ocupacao = classificacao;
+    this.ocupacao_descricao = notificacao.Pessoa.ocupacao;
   }
 
   preencherResidencia(notificacao) {
@@ -79,18 +141,28 @@ class EnviarNotificacaoRequest {
 
   preencherClassificacao(notificacao) {
     const evolucoes = notificacao.NotificacaoEvolucaos;
+    const {
+      coletaMaterialParaDiagnostico = false, numeroDo,
+      dataEncerramento,
+    } = notificacao.NotificacaoCovid19;
 
-    if (evolucoes.some((data) => data.tpEvolucao
-            === tipoNotificacaoEvolucaoEnum.values.Descartado)) {
+    this.data_encerramento = dataEncerramento;
+
+    if (evolucoes.some((data) => (data.tpEvolucao
+            === tipoNotificacaoEvolucaoEnum.values.Descartado) || (data.tpEvolucao
+              === tipoNotificacaoEvolucaoEnum.values.Encerrado))) {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoDescartado;
-    } else if (evolucoes.some((data) => data.tpEvolucao
-            === tipoNotificacaoEvolucaoEnum.values.Encerrado)) {
-      this.classificacao_final = dicionarioValores.classificacaoFinal.CasoDescartado;
+      this.criterio_classificacao = dicionarioValores.criterioClassificacao.NaoSeAplica;
     } else if (evolucoes.some((data) => data.tpEvolucao
             === tipoNotificacaoEvolucaoEnum.values.Confirmado)) {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoConfirmado;
+      this.criterio_classificacao = dicionarioValores.criterioClassificacao.ClinicoEpidemiologico;
+      if (coletaMaterialParaDiagnostico) {
+        this.criterio_classificacao = dicionarioValores.criterioClassificacao.Laboratorial;
+      }
     } else {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoSuspeito;
+      this.criterio_classificacao = dicionarioValores.criterioClassificacao.EmInvestigacao;
     }
 
     const evolucaoCurado = evolucoes.find((data) => data.tpEvolucao
@@ -103,6 +175,7 @@ class EnviarNotificacaoRequest {
     } else if (evolucaoObito) {
       this.evolucao = dicionarioValores.evolucao.Obito;
       this.data_cura_obito = moment(evolucaoObito.dtEvolucao).format(FORMATO_DATA);
+      this.numero_do = numeroDo;
     } else {
       this.evolucao = dicionarioValores.evolucao.Ignorado;
     }
@@ -110,54 +183,130 @@ class EnviarNotificacaoRequest {
 
   preencherContatoSuspeito(notificacao) {
     this.contato_suspeito = dicionarioValores.boleano.Nao;
-    if (notificacao.NotificacaoCovid19.contatoComSuspeito
-            && notificacao.NotificacaoCovid19.contatoComSuspeito
-            !== contatoSuspeitoEnum.values.SemContato) {
+    const {
+      contatoComSuspeito, localDoContatoComSuspeito,
+      nomeSuspeito,
+    } = notificacao.NotificacaoCovid19;
+    if (contatoComSuspeito && contatoComSuspeito === contatoSuspeitoEnum.values.Suspeito) {
       this.contato_suspeito = dicionarioValores.boleano.Sim;
 
-      switch (notificacao.NotificacaoCovid19.localDoContatoComSuspeito) {
+      switch (localDoContatoComSuspeito) {
         case localContatoSuspeitoEnum.values.Domicilio:
-          this.contato_suspeito = dicionarioValores.localContatoSuspeito.Domicilio;
+          this.local_contato_suspeito = dicionarioValores.localContatoSuspeito.Domicilio;
           break;
         case localContatoSuspeitoEnum.values.UnidadeSaude:
-          this.contato_suspeito = dicionarioValores.localContatoSuspeito.UnidadeSaude;
+          this.local_contato_suspeito = dicionarioValores.localContatoSuspeito.UnidadeSaude;
           break;
         case localContatoSuspeitoEnum.values.LocalTrabalho:
-          this.contato_suspeito = dicionarioValores.localContatoSuspeito.LocalTrabalho;
+          this.local_contato_suspeito = dicionarioValores.localContatoSuspeito.LocalTrabalho;
           break;
         default:
-          this.contato_suspeito = dicionarioValores.localContatoSuspeito.Desconhecido;
+          this.local_contato_suspeito = dicionarioValores.localContatoSuspeito.Desconhecido;
           break;
       }
 
-      this.local_contato_suspeito_descricao = notificacao.NotificacaoCovid19.nomeSuspeito;
+      this.local_contato_suspeito_descricao = nomeSuspeito;
+    }
+  }
+
+  preencherContatoConfirmado(notificacao) {
+    this.contato_confirmado = dicionarioValores.boleano.Nao;
+    const {
+      contatoComSuspeito, localDoContatoComSuspeito,
+      nomeSuspeito, descricaoLocal,
+    } = notificacao.NotificacaoCovid19;
+    if (contatoComSuspeito && contatoComSuspeito === contatoSuspeitoEnum.values.Confirmado) {
+      this.contato_confirmado = dicionarioValores.boleano.Sim;
+
+      switch (localDoContatoComSuspeito) {
+        case localContatoSuspeitoEnum.values.Domicilio:
+          this.local_contato_confirmado = dicionarioValores.localContatoSuspeito.Domicilio;
+          break;
+        case localContatoSuspeitoEnum.values.UnidadeSaude:
+          this.local_contato_confirmado = dicionarioValores.localContatoSuspeito.UnidadeSaude;
+          break;
+        case localContatoSuspeitoEnum.values.LocalTrabalho:
+          this.local_contato_confirmado = dicionarioValores.localContatoSuspeito.LocalTrabalho;
+          break;
+        default:
+          this.local_contato_confirmado = dicionarioValores.localContatoSuspeito.Desconhecido;
+          break;
+      }
+
+      this.local_contato_confirmado_descricao = descricaoLocal;
+      this.nome_caso_fonte = nomeSuspeito;
     }
   }
 
   prencherViagem(notificacao) {
-    const { historicoDeViagem, dataDaViagem, localDaViagem } = notificacao.NotificacaoCovid19;
+    const {
+      historicoDeViagem, dataDaViagem, localDaViagem,
+      dataRetornoLocal, descritivoViagem, dataChegadaBrasil,
+      dataChegadaUF,
+    } = notificacao.NotificacaoCovid19;
     this.historico_viagem = historicoDeViagem
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     if (historicoDeViagem) {
       this.data_ida_local = dataDaViagem ? moment(dataDaViagem).format(FORMATO_DATA) : null;
       this.local_viagem = localDaViagem;
+      this.data_retorno_local = dataRetornoLocal;
+      this.descritivo_viagem = descritivoViagem;
+      this.data_chegada_brasil = dataChegadaBrasil;
+      this.data_chegada_estado = dataChegadaUF;
     }
   }
 
   preencherColetaMaterial(notificacao) {
+    const { coletaMaterialParaDiagnostico } = notificacao.NotificacaoCovid19;
+    if (!coletaMaterialParaDiagnostico) return;
+
     const {
-      coletaMaterialParaDiagnostico, dataDaColeta, nomeLaboratorioEnvioMaterial, metodoExame,
+      dataDaColeta, nomeLaboratorioEnvioMaterial, metodoExame,
+      codigoExame, requisicao, dataCadastroExame, dataRecebimentoExame, dataLiberacaoExame,
+      Exame, ResultadoExame, Laboratorio, pesquisaGal,
     } = notificacao.NotificacaoCovid19;
+
+    if (Exame) {
+      const { codigo: codExame } = Exame;
+      this.exame = codExame;
+    }
+    if (ResultadoExame) {
+      const { codigo: codResultado } = ResultadoExame;
+      this.resultado = codResultado;
+    }
+    if (Laboratorio) {
+      const { cnes: cnesLab } = Laboratorio;
+      this.unidade_solicitante_gal = cnesLab;
+    }
+
     this.coleta_amostra = coletaMaterialParaDiagnostico
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.data_coleta = dataDaColeta ? moment(dataDaColeta).format(FORMATO_DATA) : null;
     this.lab_executor = nomeLaboratorioEnvioMaterial;
+    this.co_seq_exame = codigoExame;
+    this.requisicao = requisicao;
+    this.data_cadastro = dataCadastroExame ? moment(dataCadastroExame).format(FORMATO_DATA) : null;
+    this.data_recebimento = dataRecebimentoExame
+      ? moment(dataRecebimentoExame).format(FORMATO_DATA) : null;
+    this.data_liberacao = dataLiberacaoExame
+      ? moment(dataLiberacaoExame).format(FORMATO_DATA) : null;
+
+    this.pesquisa_gal = pesquisaGal;
     switch (metodoExame) {
       case metodoExameEnum.values.RTPCR:
         this.metodo = dicionarioValores.metodoExame.RTPCR;
         break;
       case metodoExameEnum.values.TesteRapido:
         this.metodo = dicionarioValores.metodoExame.TesteRapido;
+        break;
+      case metodoExameEnum.values.Elisa:
+        this.metodo = dicionarioValores.metodoExame.Elisa;
+        break;
+      case metodoExameEnum.values.Quimioluminescencia:
+        this.metodo = dicionarioValores.metodoExame.Quimioluminescencia;
+        break;
+      case metodoExameEnum.values.Imunofluorescencia:
+        this.metodo = dicionarioValores.metodoExame.Imunofluorescencia;
         break;
       default:
         this.metodo = dicionarioValores.metodoExame.NaoInformado;
@@ -169,6 +318,8 @@ class EnviarNotificacaoRequest {
       this.uso_antiviral = dicionarioValores.medicamento.Hidroxicloroquina;
     } else if (notificacao.NotificacaoCovid19.tamiflu) {
       this.uso_antiviral = dicionarioValores.medicamento.Tamiflu;
+    } else if (notificacao.NotificacaoCovid19.cloroquina) {
+      this.uso_antiviral = dicionarioValores.medicamento.Cloroquina;
     }
     this.uso_antiviral_descricao = notificacao.NotificacaoCovid19.nomeMedicamento;
   }
@@ -233,6 +384,8 @@ class EnviarNotificacaoRequest {
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.congestao_nasal = notificacao.NotificacaoCovid19.congestaoNasal
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
+    this.congestao_conjuntiva = notificacao.NotificacaoCovid19.conjuntivite
+      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.dificuldade_deglutir = notificacao.NotificacaoCovid19.dificuldadeDeglutir
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.manchas_vermelhas = notificacao.NotificacaoCovid19.manchasVermelhas
@@ -255,8 +408,6 @@ class EnviarNotificacaoRequest {
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.doenca_hepatica = notificacao.NotificacaoCovid19.doencaHepaticaCronica
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
-    this.hipertensao = notificacao.NotificacaoCovid19.hipertensao
-      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.sindrome_down = notificacao.NotificacaoCovid19.sindromeDeDown
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.doenca_neurologica = notificacao.NotificacaoCovid19.doencaHepaticaCronica
@@ -267,6 +418,8 @@ class EnviarNotificacaoRequest {
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.doenca_renal = notificacao.NotificacaoCovid19.doencaRenalCronica
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
+    this.doenca_pulmonar = notificacao.NotificacaoCovid19.doencaPulmonar
+      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.neoplasia = notificacao.NotificacaoCovid19.neoplasia
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.puerperio = notificacao.NotificacaoCovid19.puerperaAte45DiasDoParto
@@ -274,6 +427,8 @@ class EnviarNotificacaoRequest {
     this.obesidade = notificacao.NotificacaoCovid19.obesidade
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.tabagismo = notificacao.NotificacaoCovid19.tabagismo
+      ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
+    this.perda_olfato_paladar = notificacao.NotificacaoCovid19.perdaOlfatoPaladar
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.outras_morbidades = notificacao.NotificacaoCovid19.outrosComorbidades
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
@@ -306,11 +461,11 @@ class EnviarNotificacaoRequest {
   }
 
   getPossuiCpf(notificacao) {
-    if (notificacao.Pessoa.tipoDocumento
-            !== tipoDocumentoEnum.values.CPF) { return dicionarioValores.possuiCpf.NaoInformado; }
-
-    if (!notificacao.Pessoa.numeroDocumento) { return dicionarioValores.possuiCpf.NaoInformado; }
-
+    const { tipoDocumento, numeroDocumento = '' } = notificacao.Pessoa;
+    if (tipoDocumento !== tipoDocumentoEnum.values.CPF) {
+      return dicionarioValores.possuiCpf.Nao;
+    }
+    if (numeroDocumento.trim() === '') { return dicionarioValores.possuiCpf.Nao; }
     return dicionarioValores.possuiCpf.Sim;
   }
 
@@ -350,7 +505,7 @@ class EnviarNotificacaoRequest {
   }
 
   getTipoPaciente(notificacao) {
-    let tipoPacinete = '';
+    let tipoPacinete = dicionarioValores.tipoPaciente.CpfInformado;
 
     switch (notificacao.Pessoa.tipoClassificacaoPessoa) {
       case tipoClassificacaoPessoaEnum.values.CriancaAte12Anos:
@@ -368,14 +523,69 @@ class EnviarNotificacaoRequest {
       case tipoClassificacaoPessoaEnum.values.Outro:
         tipoPacinete = dicionarioValores.tipoPaciente.CpfInformado;
         break;
-      case tipoClassificacaoPessoaEnum.values.Outros:
-        tipoPacinete = dicionarioValores.tipoPaciente.CpfInformado;
+      case tipoClassificacaoPessoaEnum.values.PrivadoLiberdade:
+        tipoPacinete = dicionarioValores.tipoPaciente.PrivadoDeLiberdade;
         break;
       default:
         break;
     }
 
     return tipoPacinete;
+  }
+
+  getTipoInternacao(tipoLeito) {
+    switch (tipoLeito) {
+      case tipoInternacaoEnum.values.Enfermaria:
+        return dicionarioValores.tipoInternacao.Enfermaria;
+      case tipoInternacaoEnum.values.UTI:
+        return dicionarioValores.tipoInternacao.UTI;
+      default:
+        return dicionarioValores.tipoInternacao.NaoInformado;
+    }
+  }
+
+  preencherHospitalizacao(notificacao) {
+    const { hospitalizado = false } = notificacao.NotificacaoCovid19;
+    if (!hospitalizado) return;
+    const {
+      internacaoSus, tipoLeito, dataInternamento, dataIsolamento,
+      dataAlta, Hospital = {},
+    } = notificacao.NotificacaoCovid19;
+    const { nome, cnes, Municipio = {} } = Hospital || {};
+    const { ufIBGE, residenciaIBGE } = Municipio || {};
+
+    this.hospitalizado = hospitalizado;
+    this.cnes_hospital = cnes;
+    this.nome_hospital = nome;
+    this.uf_hospital = ufIBGE;
+    this.ibge_hospital = residenciaIBGE;
+    this.internacao_sus = internacaoSus
+      ? dicionarioValores.boleano.Sim
+      : dicionarioValores.boleano.Nao;
+
+    this.tipo_internacao = this.getTipoInternacao(tipoLeito);
+    this.data_entrada = dataInternamento
+      ? moment(dataInternamento).format(FORMATO_DATA)
+      : null;
+    this.data_isolamento = dataIsolamento
+      ? moment(dataIsolamento).format(FORMATO_DATA)
+      : null;
+    this.data_alta = dataAlta
+      ? moment(dataAlta).format(FORMATO_DATA)
+      : null;
+  }
+
+  preencherFrequentouUnidade(notificacao) {
+    const {
+      frequentouUnidade = false,
+      UnidadeFrequentada = {},
+    } = notificacao.NotificacaoCovid19;
+    if (!frequentouUnidade) return;
+    const { nome, cnes } = UnidadeFrequentada || {};
+    this.frequentou_unidade = dicionarioValores.boleano.Nao;
+    if (!frequentouUnidade) return;
+    this.frequentou_unidade_cnes = cnes;
+    this.frequentou_unidade_descricao = nome;
   }
 }
 

@@ -30,6 +30,7 @@ export default class Sintomas {
     this.cefaleia = data.cefaleia || false;
     this.nauseaVomito = data.nauseaVomito || false;
     this.tiragemIntercostal = data.tiragemIntercostal || false;
+    this.perdaOlfatoPaladar = data.perdaOlfatoPaladar || false;
     this.outros = data.outros || '';
     this.existemOutrosSintomas = !!data.outros || false;
   }

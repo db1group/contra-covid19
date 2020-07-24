@@ -1,14 +1,12 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">
-      11. OUTRAS INFORMAÇÕES
-    </h4>
+    <h4 class="primary--text title">13. OUTRAS INFORMAÇÕES</h4>
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
-          <label class="primary--text body-1 font-weight-bold">
-            Recebeu vacina contra Gripe nos últimos doze meses? *
-          </label>
+          <label
+            class="primary--text body-1 font-weight-bold"
+          >Recebeu vacina contra Gripe nos últimos doze meses? *</label>
           <v-radio-group
             :value="informacoesComplementares.recebeuVacinaDaGripeNosUltimosDozeMeses"
             row
@@ -16,9 +14,9 @@
             @change="updateRecebeuVacinaDaGripeNosUltimosDozeMeses"
             :disabled="disabled"
           >
-            <v-radio value="NAO" label="Não"/>
-            <v-radio value="SIM" label="Sim"/>
-            <v-radio value="NAO_SABE" label="Não Sabe"/>
+            <v-radio value="NAO" label="Não" />
+            <v-radio value="SIM" label="Sim" />
+            <v-radio value="NAO_SABE" label="Não Sabe" />
           </v-radio-group>
         </v-col>
       </v-row>

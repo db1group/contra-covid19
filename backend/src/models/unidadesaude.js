@@ -31,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
     qtUTIPedPrivado: DataTypes.INTEGER,
     qtUTINeoPrivado: DataTypes.INTEGER,
     tokenSecretaria: DataTypes.STRING(1000),
+    tpUnidade:
+    {
+      type: DataTypes.ENUM('OUTRO', 'HOSPITAL', 'LABORATORIO'),
+      defaultValue: 'OUTRO',
+    },
   });
   UnidadeSaude.associate = (models) => {
     UnidadeSaude.belongsTo(models.Municipio, { foreignKey: 'municipioId' });

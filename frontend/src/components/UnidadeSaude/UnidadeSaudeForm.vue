@@ -11,7 +11,7 @@
           <v-col>
             <v-text-field
               :value="unidade.nome"
-              label="Unidade de Saúde"
+              label="Unidade de Saúde *"
               :rules="rules.nome"
               @input="updateNome"
               validate-on-blur
@@ -21,7 +21,7 @@
           </v-col>
         </v-row>
         <v-row align="center" dense>
-          <v-col cols="8">
+          <v-col>
             <v-autocomplete
               :value="unidade.municipioId"
               :rules="rules.municipioId"
@@ -37,12 +37,25 @@
               validate-on-blur
             />
           </v-col>
-          <v-col cols="4">
+        </v-row>
+        <v-row align="center" dense>
+          <v-col cols="12" sm="6" md="6">
             <v-text-field
-              label="CNES"
+              label="CNES *"
               :value="unidade.cnes"
               :rules="rules.cnes"
               @input="updateCNES"
+              validate-on-blur
+              required
+            />
+          </v-col>
+          <v-col cols="12" sm="6" md="6">
+            <v-select
+              v-model="unidade.tpUnidade"
+              :items="itemsTipo"
+              item-text="label"
+              item-value="value"
+              label="Tipo de unidade"
               validate-on-blur
               required
             />
@@ -312,6 +325,11 @@ export default {
       leitos: [onlyCardinalNumbers],
     },
     isSecretariaSaude: false,
+    itemsTipo: [
+      { label: 'Hospital', value: 'HOSPITAL' },
+      { label: 'Laboratório', value: 'LABORATORIO' },
+      { label: 'Outro', value: 'OUTRO' },
+    ],
   }),
   computed: {
     title() {

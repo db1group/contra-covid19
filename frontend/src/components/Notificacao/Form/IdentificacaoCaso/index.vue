@@ -18,6 +18,7 @@
       @update:dataDeNascimento="updateDataDeNascimento"
       @update:tipoClassificacaoPessoa="updateTipoClassificacaoPessoa"
       @update:passaporte="updatePassaporte"
+      @update:gestanteAltoRisco="updateGestanteAltoRisco"
       :disabled="disabled"
     />
     <endereco
@@ -154,6 +155,9 @@ export default {
     },
     updatePaisId(paisId) {
       this.$emit('update:paisId', paisId);
+    },
+    updateGestanteAltoRisco(gestanteAltoRisco) {
+      this.$emit('update:gestanteAltoRisco', gestanteAltoRisco);
     },
   },
 };

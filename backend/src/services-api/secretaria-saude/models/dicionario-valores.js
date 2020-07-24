@@ -8,8 +8,10 @@ exports.tipoPaciente = {
   Estrageiro: 1,
   Indigena: 2,
   CpfInformado: 3,
+  CpfNaoInformado: 4,
   EmSituacaoRua: 5,
   CriancaAte12Anos: 6,
+  PrivadoDeLiberdade: 8,
 };
 
 exports.racaCor = {
@@ -54,6 +56,9 @@ exports.metodoExame = {
   RTPCR: 1,
   TesteRapido: 2,
   NaoInformado: 3,
+  Elisa: 4,
+  Quimioluminescencia: 5,
+  Imunofluorescencia: 6,
 };
 
 exports.localContatoSuspeito = {
@@ -71,6 +76,13 @@ exports.classificacaoFinal = {
   CasoAConfirmar: 4,
 };
 
+exports.criterioClassificacao = {
+  Laboratorial: 1,
+  ClinicoEpidemiologico: 2,
+  EmInvestigacao: 3,
+  NaoSeAplica: 4,
+};
+
 exports.evolucao = {
   Cura: 1,
   Obito: 2,
@@ -85,8 +97,11 @@ exports.criterioClassificacao = {
 };
 
 exports.medicamento = {
+  Sim: '1',
+  Nao: '2',
   Tamiflu: '3',
   Hidroxicloroquina: '4',
+  Cloroquina: '5',
 };
 
 exports.gestante = {
@@ -98,5 +113,18 @@ exports.gestante = {
 exports.boleano = {
   Sim: 1,
   Nao: 2,
+  NaoInformado: 3,
+};
+
+exports.periodoGestacao = {
+  PrimeiroTrimestre: 1,
+  SegundoTrimestre: 2,
+  TerceiroTrimestre: 3,
+  IdadeGestIgnorada: 4,
+};
+
+exports.tipoInternacao = {
+  Enfermaria: 1,
+  UTI: 2,
   NaoInformado: 3,
 };

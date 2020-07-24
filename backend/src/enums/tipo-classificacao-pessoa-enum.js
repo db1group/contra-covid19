@@ -5,4 +5,5 @@ exports.values = {
   Indigena: 'INDIGENA',
   Outro: 'OUTRO',
   Outros: 'OUTROS',
+  PrivadoLiberdade: 'PRIVADO_LIBERDADE',
 };
