@@ -39,6 +39,11 @@ export const minLengthNumbersWithMask = (length) => (value) => {
   return !valueWithoutMask || valueWithoutMask.length >= length
     || `O campo precisa de pelo menos ${length} caracteres.`;
 };
+export const maxLengthNumbersWithMask = (length) => (value) => {
+  const valueWithoutMask = value.replace(/[^0-9]/g, '');
+  return !valueWithoutMask || valueWithoutMask.length <= length
+    || `O campo precisa ser menor que ${length} caracteres.`;
+};
 export const maxLength = (length) => (value) => !value
   || value.length <= length
   || `O campo tem limite máximo de ${length} caracteres.`;

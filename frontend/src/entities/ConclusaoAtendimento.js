@@ -36,6 +36,7 @@ export default class ConclusaoAtendimento {
     this.labAmostraId = data.labAmostraId || null;
     this.nomeLabAmostra = data.nomeLabAmostra || '';
     this.pesquisaGal = data.pesquisaGal || '';
+    this.numeroDo = data.numeroDo || null;
   }
 
   toRequestBody() {

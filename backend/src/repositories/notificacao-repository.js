@@ -163,7 +163,12 @@ exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids) => models.No
       },
     },
     { model: models.Municipio },
-    { model: models.UnidadeSaude },
+    {
+      model: models.UnidadeSaude,
+      include: [
+        { model: models.Municipio },
+      ],
+    },
     { model: models.User },
     { model: models.ProfissionalSaude },
     { model: models.Profissao },

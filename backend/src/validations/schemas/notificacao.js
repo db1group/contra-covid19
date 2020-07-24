@@ -281,6 +281,16 @@ const schemas = {
         .max(18),
       requisicao: Joi.string().allow('', null)
         .max(150),
+      exameId: Joi.string().guid({ version: 'uuidv4' })
+        .allow(null),
+      resultadoExameId: Joi.string().guid({ version: 'uuidv4' })
+        .allow(null),
+      labAmostraId: Joi.string().guid({ version: 'uuidv4' })
+        .allow(null),
+      pesquisaGal: Joi.string().allow('', null)
+        .max(18),
+      numeroDo: Joi.string().allow('', null)
+        .max(18),
     }),
     hospitalizacao: Joi.object().keys({
       hospitalizado: Joi.bool().allow(null),
@@ -291,6 +301,10 @@ const schemas = {
       dataInternamento: Joi.date().iso().allow(null),
       dataIsolamento: Joi.date().iso().allow(null),
       dataAlta: Joi.date().iso().allow(null),
+    }),
+    frequentouCnes: Joi.object().keys({
+      frequentouUnidade: Joi.bool().allow(null),
+      unidadeFrequentadaId: Joi.string().guid({ version: 'uuidv4' }).allow(null),
     }),
   }),
 };

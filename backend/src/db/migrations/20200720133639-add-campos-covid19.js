@@ -64,7 +64,7 @@ module.exports = {
         transaction,
       });
       await queryInterface.addColumn('NotificacaoCovid19', 'requisicao', {
-        type: Sequelize.STRING(18),
+        type: Sequelize.STRING(150),
         transaction,
       });
       await queryInterface.addColumn('NotificacaoCovid19', 'resultadoExameId', {
@@ -117,7 +117,7 @@ module.exports = {
         transaction,
       });
       await queryInterface.addColumn('NotificacaoCovid19', 'descritivoViagem', {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(255),
         transaction,
       });
       await queryInterface.addColumn('NotificacaoCovid19', 'dataRetornoLocal', {

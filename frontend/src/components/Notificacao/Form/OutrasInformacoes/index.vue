@@ -1,6 +1,6 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">12. OUTRAS INFORMAÇÕES</h4>
+    <h4 class="primary--text title">13. OUTRAS INFORMAÇÕES</h4>
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">

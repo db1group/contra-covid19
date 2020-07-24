@@ -18,14 +18,16 @@
           <v-autocomplete
             :value="hospitalizacao.cnesHospitalId"
             :rules="rules.cnesHospitalId"
-            label="Hospital"
+            label="Hospital *"
             :items="hospitais.items"
             @update:search-input="searchHospitais"
             item-text="nome"
             item-value="id"
+            ref="cnesHospitalId"
             :loading="hospitais.loading"
             no-data-text="Hospital não encontrada"
             @input="updateCnesHospitalId"
+            validate-on-blur
             :disabled="disableFields"
           />
         </v-col>
@@ -41,8 +43,9 @@
         <v-col>
           <v-radio-group
             :value="hospitalizacao.tipoLeito"
-            label="Leito de internação"
+            label="Leito de internação *"
             ref="tipoLeito"
+            :rules="rules.tipoLeito"
             class="d-inline-flex flex-row"
             @change="updateTipoLeito"
             :disabled="disableFields"
@@ -100,6 +103,11 @@
 import { mask } from 'vue-the-mask';
 import Hospitalizacao from '@/entities/Hospitalizacao';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
+import {
+  required,
+  dateFormat,
+  dateMustBeLesserEqualsThanToday,
+} from '@/validations/CommonValidations';
 
 export default {
   directives: { mask },
@@ -128,9 +136,11 @@ export default {
     },
     searchHospital: null,
     rules: {
+      dataInternamento: [],
+      cnesHospitalId: [],
+      tipoLeito: [],
       dataIsolamento: [],
       dataAlta: [],
-      dataInternamento: [],
     },
   }),
   computed: {
@@ -141,8 +151,51 @@ export default {
   },
   methods: {
     updateHospitalizado(hospitalizado) {
-      console.log(hospitalizado);
       this.$emit('update:hospitalizado', hospitalizado);
+      if (!hospitalizado) {
+        this.searchHospital = null;
+        this.updateCnesHospitalId(null);
+        this.updateInternacaoSus(null);
+        this.updateTipoLeito(null);
+        this.updateDataInternamento(null);
+        this.updateDataIsolamento(null);
+        this.updateDataAlta(null);
+        this.removeRequiredInFields();
+        return;
+      }
+      this.findHospitais();
+      this.addRequiredInFields();
+    },
+    resetarValidacoes() {
+      this.$refs.cnesHospitalId.resetValidation();
+      this.$refs.tipoLeito.resetValidation();
+      this.$refs.dataInternamento.resetValidation();
+      this.$refs.dataIsolamento.resetValidation();
+      this.$refs.dataAlta.resetValidation();
+    },
+    validate() {
+      this.$refs.cnesHospitalId.validate();
+      this.$refs.tipoLeito.validate();
+      this.$refs.dataInternamento.validate();
+      this.$refs.dataIsolamento.validate();
+      this.$refs.dataAlta.validate();
+    },
+    removeRequiredInFields() {
+      this.rules.dataInternamento = [];
+      this.rules.cnesHospitalId = [];
+      this.rules.tipoLeito = [];
+      this.rules.dataIsolamento = [];
+      this.rules.dataAlta = [];
+      this.resetarValidacoes();
+      this.validate();
+    },
+    addRequiredInFields() {
+      this.rules.cnesHospitalId.push(required);
+      this.rules.tipoLeito.push(required);
+      this.rules.dataInternamento.push(required, dateFormat, dateMustBeLesserEqualsThanToday);
+      this.rules.dataIsolamento.push(dateMustBeLesserEqualsThanToday);
+      this.rules.dataAlta.push(dateMustBeLesserEqualsThanToday);
+      this.validate();
     },
     updateCnesHospitalId(cnesHospitalId) {
       this.$emit('update:cnesHospitalId', cnesHospitalId);
@@ -152,6 +205,7 @@ export default {
     },
     updateTipoLeito(tipoLeito) {
       this.$emit('update:tipoLeito', tipoLeito);
+      this.$refs.tipoLeito.resetValidation();
     },
     updateDataIsolamento(dataIsolamento) {
       this.$emit('update:dataIsolamento', dataIsolamento);
@@ -180,6 +234,9 @@ export default {
     },
     carregarDadosHospitalizacao(hospitalizacao) {
       this.findHospitais(hospitalizacao.nomeHospital);
+      if (hospitalizacao.hospitalizado) {
+        this.addRequiredInFields();
+      }
     },
   },
   created() {

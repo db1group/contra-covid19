@@ -30,10 +30,12 @@ class EnviarNotificacaoRequest {
       .format(FORMATO_DATA);
     this.idade = moment().diff(moment(notificacao.Pessoa.dataDeNascimento), 'years');
     this.nome_mae = notificacao.Pessoa.nomeDaMae;
-    this.cnes_unidade_notifica = notificacao.UnidadeSaude.cnes;
-    this.nome_unidade_notifica = notificacao.UnidadeSaude.nome;
-    this.uf_unidade_notifica = null;
-    this.ibge_unidade_notifica = null;
+    const { nome, cnes, Municipio = {} } = notificacao.UnidadeSaude;
+    const { residenciaIBGE, ufIBGE } = Municipio || {};
+    this.nome_unidade_notifica = nome;
+    this.cnes_unidade_notifica = cnes;
+    this.uf_unidade_notifica = residenciaIBGE;
+    this.ibge_unidade_notifica = ufIBGE;
     this.nome_notificador = notificacao.nomeNotificador;
     this.email_notificador = notificacao.User.email;
     this.ocupacao_notificador = notificacao.Profissao.nome;
@@ -185,7 +187,7 @@ class EnviarNotificacaoRequest {
       contatoComSuspeito, localDoContatoComSuspeito,
       nomeSuspeito,
     } = notificacao.NotificacaoCovid19;
-    if (contatoComSuspeito && contatoComSuspeito !== contatoSuspeitoEnum.values.SemContato) {
+    if (contatoComSuspeito && contatoComSuspeito === contatoSuspeitoEnum.values.Suspeito) {
       this.contato_suspeito = dicionarioValores.boleano.Sim;
 
       switch (localDoContatoComSuspeito) {
@@ -210,13 +212,13 @@ class EnviarNotificacaoRequest {
   preencherContatoConfirmado(notificacao) {
     this.contato_confirmado = dicionarioValores.boleano.Nao;
     const {
-      contatoConfirmado, localContatoConfirmado,
-      nomeConfirmado, nomeCasoFonte,
+      contatoComSuspeito, localDoContatoComSuspeito,
+      nomeSuspeito, descricaoLocal,
     } = notificacao.NotificacaoCovid19;
-    if (contatoConfirmado && contatoConfirmado !== contatoSuspeitoEnum.values.SemContato) {
+    if (contatoComSuspeito && contatoComSuspeito === contatoSuspeitoEnum.values.Confirmado) {
       this.contato_confirmado = dicionarioValores.boleano.Sim;
 
-      switch (localContatoConfirmado) {
+      switch (localDoContatoComSuspeito) {
         case localContatoSuspeitoEnum.values.Domicilio:
           this.local_contato_confirmado = dicionarioValores.localContatoSuspeito.Domicilio;
           break;
@@ -231,8 +233,8 @@ class EnviarNotificacaoRequest {
           break;
       }
 
-      this.local_contato_confirmado_descricao = nomeConfirmado;
-      this.nome_caso_fonte = nomeCasoFonte;
+      this.local_contato_confirmado_descricao = descricaoLocal;
+      this.nome_caso_fonte = nomeSuspeito;
     }
   }
 
@@ -283,9 +285,11 @@ class EnviarNotificacaoRequest {
     this.lab_executor = nomeLaboratorioEnvioMaterial;
     this.co_seq_exame = codigoExame;
     this.requisicao = requisicao;
-    this.data_cadastro = dataCadastroExame;
-    this.data_recebimento = dataRecebimentoExame;
-    this.data_liberacao = dataLiberacaoExame;
+    this.data_cadastro = dataCadastroExame ? moment(dataCadastroExame).format(FORMATO_DATA) : null;
+    this.data_recebimento = dataRecebimentoExame
+      ? moment(dataRecebimentoExame).format(FORMATO_DATA) : null;
+    this.data_liberacao = dataLiberacaoExame
+      ? moment(dataLiberacaoExame).format(FORMATO_DATA) : null;
 
     this.pesquisa_gal = pesquisaGal;
     switch (metodoExame) {
@@ -547,8 +551,8 @@ class EnviarNotificacaoRequest {
       internacaoSus, tipoLeito, dataInternamento, dataIsolamento,
       dataAlta, Hospital = {},
     } = notificacao.NotificacaoCovid19;
-    const { nome, cnes, Municipio = {} } = Hospital;
-    const { ufIBGE, residenciaIBGE } = Municipio;
+    const { nome, cnes, Municipio = {} } = Hospital || {};
+    const { ufIBGE, residenciaIBGE } = Municipio || {};
 
     this.hospitalizado = hospitalizado;
     this.cnes_hospital = cnes;
@@ -574,10 +578,10 @@ class EnviarNotificacaoRequest {
   preencherFrequentouUnidade(notificacao) {
     const {
       frequentouUnidade = false,
-      UnidadeFrequentada,
+      UnidadeFrequentada = {},
     } = notificacao.NotificacaoCovid19;
     if (!frequentouUnidade) return;
-    const { nome, cnes } = UnidadeFrequentada;
+    const { nome, cnes } = UnidadeFrequentada || {};
     this.frequentou_unidade = dicionarioValores.boleano.Nao;
     if (!frequentouUnidade) return;
     this.frequentou_unidade_cnes = cnes;

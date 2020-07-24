@@ -137,7 +137,7 @@ module.exports = (sequelize, DataTypes) => {
     numeroDo: DataTypes.STRING(18),
     frequentouUnidade: DataTypes.BOOLEAN,
     unidadeFrequentadaId: DataTypes.UUID,
-    descritivoViagem: DataTypes.STRING,
+    descritivoViagem: DataTypes.STRING(255),
     dataRetornoLocal: DataTypes.DATEONLY,
     dataChegadaBrasil: DataTypes.DATEONLY,
     dataChegadaUF: DataTypes.DATEONLY,

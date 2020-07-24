@@ -1,6 +1,6 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">11. CONTATO COM SUSPEITO OU CONFIRMADO</h4>
+    <h4 class="primary--text title">12. CONTATO COM SUSPEITO OU CONFIRMADO</h4>
     <v-container fluid class="pa-0">
       <v-row dense>
         <v-col cols="12">

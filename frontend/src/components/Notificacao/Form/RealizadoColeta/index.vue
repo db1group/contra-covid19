@@ -1,6 +1,6 @@
 <template>
   <div class="px-2">
-    <h4 class="primary--text title">9. REALIZADO COLETA DE MATERIAL PARA DIAGNÓSTICO</h4>
+    <h4 class="primary--text title">10. REALIZADO COLETA DE MATERIAL PARA DIAGNÓSTICO</h4>
     <v-container fluid class="pa-0">
       <v-row dense>
         <v-col>
@@ -68,6 +68,8 @@
           <v-text-field
             :value="conclusaoAtendimento.codigoExame"
             label="Código do Exame"
+            v-mask="'##################'"
+            :rules="rules.codigoExame"
             :disabled="disableFields"
             @input="updateCodigoExame"
           />
@@ -76,6 +78,7 @@
           <v-text-field
             :value="conclusaoAtendimento.requisicao"
             label="Requisição"
+            :rules="rules.requisicao"
             :disabled="disableFields"
             @input="updateRequisicao"
           />
@@ -174,6 +177,7 @@
             item-value="value"
             label="Pesquisa"
             :disabled="disableFields"
+            @input="updatePesquisaGal"
           />
         </v-col>
       </v-row>
@@ -182,7 +186,13 @@
 </template>
 <script>
 import { mask } from 'vue-the-mask';
-import { required, dateFormat, dateMustBeLesserEqualsThanToday } from '@/validations/CommonValidations';
+import {
+  required,
+  dateFormat,
+  dateMustBeLesserEqualsThanToday,
+  maxLengthNumbersWithMask,
+  maxLength,
+} from '@/validations/CommonValidations';
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
 import ExameService from '@/services/ExameService';
 import ResultadoExameService from '@/services/ResultadoExameService';
@@ -208,6 +218,8 @@ export default {
       dataCadastroExame: [dateMustBeLesserEqualsThanToday],
       dataRecebimentoExame: [dateMustBeLesserEqualsThanToday],
       dataLiberacaoExame: [dateMustBeLesserEqualsThanToday],
+      codigoExame: [maxLengthNumbersWithMask(18)],
+      requisicao: [maxLength(150)],
     },
     searchExame: null,
     exames: {
@@ -255,6 +267,9 @@ export default {
     updateRealizadaColeta(coletaMaterialParaDiagnostico) {
       this.$emit('update:coletaMaterialParaDiagnostico', coletaMaterialParaDiagnostico);
       if (!coletaMaterialParaDiagnostico) {
+        this.searchExame = null;
+        this.searchResultado = null;
+        this.searchLab = null;
         this.unselectTipoLaboratorio();
         this.updateDataDaColeta('');
         this.updateDataCadastroExame('');
@@ -267,6 +282,7 @@ export default {
         this.updateExameId(null);
         this.updateResultadoExameId(null);
         this.updateLabAmostraId(null);
+        this.updatePesquisaGal('');
         this.removeRequiredInFields();
         return;
       }
@@ -287,6 +303,9 @@ export default {
     },
     updateMetodoDeExame(metodoDeExame) {
       this.$emit('update:metodoDeExame', metodoDeExame);
+    },
+    updatePesquisaGal(pesquisaGal) {
+      this.$emit('update:pesquisaGal', pesquisaGal);
     },
     updateNomeLaboratorioEnvioMaterial(nomeLaboratorioEnvioMaterial) {
       this.$emit('update:nomeLaboratorioEnvioMaterial', nomeLaboratorioEnvioMaterial);

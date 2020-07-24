@@ -16,6 +16,7 @@ class NotificacaoResponseMapper {
     const vinculoEpidemiologico = this._extrairVinculoEpidemiologico();
     const conclusaoAtendimento = this._extrairConclusaoAtendimento();
     const hospitalizacao = this._extrairHospitalizacao();
+    const frequentouCnes = this._extrairFrequentouCnes();
     return {
       ...notificacao,
       suspeito,
@@ -26,6 +27,7 @@ class NotificacaoResponseMapper {
       vinculoEpidemiologico,
       conclusaoAtendimento,
       hospitalizacao,
+      frequentouCnes,
     };
   }
 
@@ -289,6 +291,19 @@ class NotificacaoResponseMapper {
       situacaoNoMomentoDaNotificacao,
       dataDaColeta,
       metodoDeExame,
+      dataCadastroExame,
+      dataRecebimentoExame,
+      dataLiberacaoExame,
+      codigoExame,
+      requisicao,
+      exameId,
+      nomeExame,
+      resultadoExameId,
+      nomeResultado,
+      labAmostraId,
+      nomeLabAmostra,
+      pesquisaGal,
+      numeroDo,
     } = this.notificacaoCovid19;
     return {
       situacaoNoMomentoDaNotificacao,
@@ -297,6 +312,19 @@ class NotificacaoResponseMapper {
       nomeLaboratorioEnvioMaterial,
       dataDaColeta,
       metodoDeExame,
+      dataCadastroExame,
+      dataRecebimentoExame,
+      dataLiberacaoExame,
+      codigoExame,
+      requisicao,
+      exameId,
+      nomeExame,
+      resultadoExameId,
+      nomeResultado,
+      labAmostraId,
+      nomeLabAmostra,
+      pesquisaGal,
+      numeroDo,
     };
   }
 
@@ -311,7 +339,7 @@ class NotificacaoResponseMapper {
       dataAlta,
       Hospital = {},
     } = this.notificacaoCovid19;
-    const { nome } = Hospital;
+    const { nome = '' } = Hospital || {};
     return {
       hospitalizado,
       cnesHospitalId,
@@ -321,6 +349,20 @@ class NotificacaoResponseMapper {
       dataInternamento,
       dataIsolamento,
       dataAlta,
+    };
+  }
+
+  _extrairFrequentouCnes() {
+    const {
+      frequentouUnidade,
+      unidadeFrequentadaId,
+      UnidadeFrequentada = {},
+    } = this.notificacaoCovid19;
+    const { nome = '' } = UnidadeFrequentada || {};
+    return {
+      frequentouUnidade,
+      unidadeFrequentadaId,
+      nomeFrequentada: nome,
     };
   }
 }

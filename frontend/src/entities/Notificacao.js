@@ -7,6 +7,7 @@ import InformacoesComplementares from './InformacoesComplementares';
 import VinculoEpidemiologico from './VinculoEpidemiologico';
 import ConclusaoAtendimento from './ConclusaoAtendimento';
 import Hospitalizacao from './Hospitalizacao';
+import FrequentouCnes from './FrequentouCnes';
 
 export default class Notificacao {
   constructor(data = {}) {
@@ -43,6 +44,7 @@ export default class Notificacao {
     this.unidadeSaudeNome = data.unidadeSaudeNome || '';
     this.possuiFechamento = data.possuiFechamento || false;
     this.hospitalizacao = new Hospitalizacao(data.hospitalizacao || {});
+    this.frequentouCnes = new FrequentouCnes(data.frequentouCnes || {});
   }
 
   toRequestBody() {
@@ -56,6 +58,7 @@ export default class Notificacao {
       comorbidades: this.comorbidades.toRequestBody(),
       sintomas: this.sintomas.toRequestBody(),
       hospitalizacao: this.hospitalizacao.toRequestBody(),
+      frequentouCnes: this.frequentouCnes.toRequestBody(),
     };
 
     delete notificacao.id;

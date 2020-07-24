@@ -157,6 +157,12 @@
           @update:dataAlta="updateHospitalizacao('dataAlta', $event)"
           :disabled="disableFields"
         />
+        <frequentou-cnes
+          :frequentou-cnes="notificacao.frequentouCnes"
+          @update:frequentouUnidade="updateFrequentouCnes('frequentouUnidade', $event)"
+          @update:unidadeFrequentadaId="updateFrequentouCnes('unidadeFrequentadaId', $event)"
+          :disabled="disableFields"
+        />
         <realizado-coleta
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
           @update:coletaMaterialParaDiagnostico="updateConclusaoAtendimento('coletaMaterialParaDiagnostico', $event)"
@@ -164,6 +170,15 @@
           @update:nomeLaboratorioEnvioMaterial="updateConclusaoAtendimento('nomeLaboratorioEnvioMaterial', $event)"
           @update:dataDaColeta="updateConclusaoAtendimento('dataDaColeta', $event)"
           @update:metodoDeExame="updateConclusaoAtendimento('metodoDeExame', $event)"
+          @update:dataCadastroExame="updateConclusaoAtendimento('dataCadastroExame', $event)"
+          @update:dataRecebimentoExame="updateConclusaoAtendimento('dataRecebimentoExame', $event)"
+          @update:dataLiberacaoExame="updateConclusaoAtendimento('dataLiberacaoExame', $event)"
+          @update:codigoExame="updateConclusaoAtendimento('codigoExame', $event)"
+          @update:requisicao="updateConclusaoAtendimento('requisicao', $event)"
+          @update:exameId="updateConclusaoAtendimento('exameId', $event)"
+          @update:resultadoExameId="updateConclusaoAtendimento('resultadoExameId', $event)"
+          @update:labAmostraId="updateConclusaoAtendimento('labAmostraId', $event)"
+          @update:pesquisaGal="updateConclusaoAtendimento('pesquisaGal', $event)"
           :disabled="disableFields"
         />
         <historico-de-viagem
@@ -195,6 +210,7 @@
         <conclusao-atendimento
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
           @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
+          @update:numeroDo="updateConclusaoAtendimento('numeroDo', $event)"
           :disabled="disableFields"
         />
         <observacoes v-model="notificacao.observacoes" :disabled="disableFields" />
@@ -229,6 +245,7 @@ import BotaoEnviar from '@/components/Notificacao/Form/BotaoEnviar.vue';
 import Notificacao from '@/entities/Notificacao';
 import ErrorService from '@/services/ErrorService';
 import Hospitalizacao from '@/components/Notificacao/Form/Hospitalizacao/index.vue';
+import FrequentouCnes from '@/components/Notificacao/Form/FrequentouCNES/index.vue';
 
 const StateForm = {
   NEW: 'NEW',
@@ -254,6 +271,7 @@ export default {
     Observacoes,
     BotaoEnviar,
     Hospitalizacao,
+    FrequentouCnes,
   },
   data: () => ({
     notificacao: new Notificacao(),
@@ -400,6 +418,12 @@ export default {
     },
     updateHospitalizacao(campo, valor) {
       this.notificacao.hospitalizacao[campo] = valor;
+      if (campo === 'cnesHospitalId' && !valor) {
+        this.notificacao.hospitalizacao.nomeHospital = null;
+      }
+    },
+    updateFrequentouCnes(campo, valor) {
+      this.notificacao.frequentouCnes[campo] = valor;
     },
   },
   beforeRouteEnter(to, from, next) {
