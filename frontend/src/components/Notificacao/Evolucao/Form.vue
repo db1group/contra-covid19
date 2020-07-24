@@ -24,22 +24,6 @@
         <v-row>
           <v-col>
             <v-autocomplete
-              :value="evolucao.local"
-              :rules="rules.local"
-              label="Local do isolamento *"
-              :items="locais.items"
-              item-text="value"
-              item-value="key"
-              :loading="locais.loading"
-              :disabled="disableFields"
-              no-data-text="Local de isolamento não encontrado"
-              @input="updateLocal"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-autocomplete
               :value="evolucao.situacao"
               :rules="rules.situacao"
               label="Condição atual do paciente *"
@@ -75,7 +59,7 @@ import { mask } from 'vue-the-mask';
 import NotificacaoEvolucao,
 {
   situacoesPacienteSuspeitoList, situacoesPacienteConfirmadoList,
-  locaisList, situacoesList, situacoesQueEncerramFichaList,
+  situacoesList, situacoesQueEncerramFichaList,
 }
   from '@/entities/NotificacaoEvolucao';
 import EvolucaoService from '@/services/EvolucaoService';
@@ -97,28 +81,18 @@ export default {
   },
   data: () => ({
     evolucao: new NotificacaoEvolucao(),
-    locais: {
-      items: [],
-      loading: true,
-    },
     situacoes: {
       items: [],
       loading: true,
     },
     rules: {
       dataHoraAtualizacao: [dateHourMinuteFormat],
-      local: [required],
       situacao: [required],
     },
     disableFields: false,
     disableButton: false,
   }),
   methods: {
-    loadLocais() {
-      this.locais.loading = true;
-      this.locais.items = locaisList;
-      this.locais.loading = false;
-    },
     loadSituacoes(ultimaSituacaoEvolucao) {
       this.situacoes.loading = true;
       this.situacoes.items = situacoesList;
@@ -136,9 +110,6 @@ export default {
     },
     updateDataHoraAtualizacao(dataHoraAtualizacao) {
       this.evolucao.dataHoraAtualizacao = dataHoraAtualizacao;
-    },
-    updateLocal(local) {
-      this.evolucao.local = local;
     },
     updateSituacao(situacao) {
       this.evolucao.situacao = situacao;
@@ -179,7 +150,6 @@ export default {
     },
   },
   created() {
-    this.loadLocais();
     this.rules.dataHoraAtualizacao.push(this.validatePastDate);
   },
 };

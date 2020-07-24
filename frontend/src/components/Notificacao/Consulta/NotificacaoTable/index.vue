@@ -114,7 +114,7 @@ export default {
   components: { ConfirmDialog },
   data: () => ({
     situacaoNotif: SITUACAO_NOTIFICACAO,
-    filtroStatus: '',
+    filtroStatus: 'ABERTA',
     items: [],
     loading: true,
     options: {
@@ -131,6 +131,7 @@ export default {
       { text: 'Paciente', value: 'nome' },
       { text: 'Data Notificação', value: 'dataNotificacao' },
       { text: 'Unidade Notificadora', value: 'unidade' },
+      { text: 'Nº Notificação', value: 'apiSecretariaId' },
       { text: 'Situação', value: 'status' },
       { sortable: false, value: 'actions', width: '240px' },
     ],
@@ -158,7 +159,7 @@ export default {
           this.loading = false;
         })
         .catch((error) => {
-          this.$emit('erro:consultaNotificacao', ErrorService.getMessage(error));
+          this.$emit('erro:notificacao', ErrorService.getMessage(error));
         });
     },
     showExclusionConfirmDialog({ id }) {
@@ -173,13 +174,13 @@ export default {
         .then(() => {
           const page = this.notificacoes.length === 1 ? 1 : this.options.page;
           this.options = { ...this.options, page };
-          this.$emit('delete:notificacao', 'Notificação excluída com sucesso.');
+          this.$emit('success:notificacao', 'Notificação excluída com sucesso.');
         })
         .then(() => {
           this.consultarNotificacoes();
         })
         .catch((error) => {
-          this.$emit('erro:deleteNotificacao', ErrorService.getMessage(error));
+          this.$emit('erro:notificacao', ErrorService.getMessage(error));
         });
     },
     filterNotificacoes() {
@@ -223,7 +224,7 @@ export default {
         .then(({ data }) => {
           this.unidadesSaudeUserLogged = data;
         }).catch((error) => {
-          this.$emit('erro:unidadeSaude', ErrorService.getMessage(error));
+          this.$emit('erro:notificacao', ErrorService.getMessage(error));
         })
         .finally(() => {
           this.consultarNotificacoes();

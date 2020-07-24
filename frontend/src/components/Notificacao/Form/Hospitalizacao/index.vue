@@ -60,7 +60,7 @@
           <v-text-field
             :value="hospitalizacao.dataInternamento"
             ref="dataInternamento"
-            label="Data de Internamento"
+            label="Data de Internamento *"
             append-icon="mdi-calendar-blank"
             v-mask="'##/##/####'"
             :rules="rules.dataInternamento"
@@ -107,6 +107,7 @@ import {
   required,
   dateFormat,
   dateMustBeLesserEqualsThanToday,
+  greaterThanMinimumDate,
 } from '@/validations/CommonValidations';
 
 export default {
@@ -189,12 +190,16 @@ export default {
       this.resetarValidacoes();
       this.validate();
     },
+    validarDataAlta(value) {
+      return greaterThanMinimumDate(value,
+        this.hospitalizacao.dataInternamento, 'Informe uma data igual ou posterior a data de internamento.');
+    },
     addRequiredInFields() {
       this.rules.cnesHospitalId.push(required);
       this.rules.tipoLeito.push(required);
       this.rules.dataInternamento.push(required, dateFormat, dateMustBeLesserEqualsThanToday);
       this.rules.dataIsolamento.push(dateMustBeLesserEqualsThanToday);
-      this.rules.dataAlta.push(dateMustBeLesserEqualsThanToday);
+      this.rules.dataAlta.push(dateMustBeLesserEqualsThanToday, this.validarDataAlta);
       this.validate();
     },
     updateCnesHospitalId(cnesHospitalId) {

@@ -157,12 +157,13 @@ class EnviarNotificacaoRequest {
             === tipoNotificacaoEvolucaoEnum.values.Confirmado)) {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoConfirmado;
       this.criterio_classificacao = dicionarioValores.criterioClassificacao.ClinicoEpidemiologico;
-      if (coletaMaterialParaDiagnostico) {
-        this.criterio_classificacao = dicionarioValores.criterioClassificacao.Laboratorial;
-      }
     } else {
       this.classificacao_final = dicionarioValores.classificacaoFinal.CasoSuspeito;
-      this.criterio_classificacao = dicionarioValores.criterioClassificacao.EmInvestigacao;
+    }
+
+    this.criterio_classificacao = dicionarioValores.criterioClassificacao.EmInvestigacao;
+    if (coletaMaterialParaDiagnostico) {
+      this.criterio_classificacao = dicionarioValores.criterioClassificacao.Laboratorial;
     }
 
     const evolucaoCurado = evolucoes.find((data) => data.tpEvolucao

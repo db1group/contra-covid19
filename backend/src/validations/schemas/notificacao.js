@@ -7,7 +7,9 @@ const schemas = {
     notificadorId: Joi.string().guid({ version: 'uuidv4' }).required(),
     sintomatico: Joi.bool().required(),
     realizouExamesImagem: Joi.bool(),
-    dataInicioDosSintomas: Joi.date().iso().allow(null),
+    dataInicioDosSintomas: Joi.date().iso().max('now')
+      .message('Data de início dos sintomas deve ser menor ou igual de hoje.')
+      .allow(null),
     userId: Joi.string().guid({ version: 'uuidv4' }).required(),
     nomeNotificador: Joi.string().required().min(3).max(80),
     profissaoId: Joi.string().guid({ version: 'uuidv4' }).required(),
@@ -33,7 +35,9 @@ const schemas = {
         .min(3)
         .max(150)
         .required(),
-      dataDeNascimento: Joi.date().iso().required(),
+      dataDeNascimento: Joi.date().iso().max('now')
+        .message('Data de nascimento deve ser menor ou igual de hoje.')
+        .required(),
       sexo: Joi.string()
         .pattern(/F|M/)
         .required(),
@@ -271,12 +275,20 @@ const schemas = {
         .allow(null)
         .pattern(/OFICIAL|PRIVADO/),
       nomeLaboratorioEnvioMaterial: Joi.string().allow(null, ''),
-      dataDaColeta: Joi.date().iso().allow(null),
+      dataDaColeta: Joi.date().iso().max('now')
+        .message('Data da coleta deve ser menor ou igual de hoje.')
+        .allow(null),
       metodoDeExame: Joi.string().allow(null)
         .pattern(/RT-PCR|TESTE_RAPIDO|SOROLOGIA_OUTROS|ELISA|QUIMIOLUMINESCENCIA|IMUNOFLUORESCENCIA/),
-      dataCadastroExame: Joi.date().iso().allow(null),
-      dataRecebimentoExame: Joi.date().iso().allow(null),
-      dataLiberacaoExame: Joi.date().iso().allow(null),
+      dataCadastroExame: Joi.date().iso().max('now')
+        .message('Data de cadastro do exame deve ser menor ou igual de hoje.')
+        .allow(null),
+      dataRecebimentoExame: Joi.date().iso().max('now')
+        .message('Data de recebimento do exame deve ser menor ou igual de hoje.')
+        .allow(null),
+      dataLiberacaoExame: Joi.date().iso().max('now')
+        .message('Data de liberação do exame deve ser menor ou igual de hoje.')
+        .allow(null),
       codigoExame: Joi.string().allow('', null)
         .max(18),
       requisicao: Joi.string().allow('', null)
@@ -298,14 +310,26 @@ const schemas = {
       nomeHospital: Joi.string().allow(null, ''),
       internacaoSus: Joi.bool().allow(null),
       tipoLeito: Joi.string().allow(null, ''),
-      dataInternamento: Joi.date().iso().allow(null),
-      dataIsolamento: Joi.date().iso().allow(null),
-      dataAlta: Joi.date().iso().allow(null),
+      dataInternamento: Joi.date().iso().max('now')
+        .message('Data de internamento deve ser menor ou igual de hoje.')
+        .allow(null),
+      dataIsolamento: Joi.date().iso().max('now')
+        .message('Data de isolamento deve ser menor ou igual de hoje.')
+        .allow(null),
+      dataAlta: Joi.date().iso()
+        .min(Joi.ref('dataInternamento'))
+        .message('Data da alta deve ser maior que a de internamento.')
+        .max('now')
+        .message('Data da alta deve ser menor ou igual de hoje.')
+        .allow(null),
     }),
     frequentouCnes: Joi.object().keys({
       frequentouUnidade: Joi.bool().allow(null),
       unidadeFrequentadaId: Joi.string().guid({ version: 'uuidv4' }).allow(null),
     }),
+  }),
+  consultarId: Joi.object().keys({
+    id: Joi.string().guid({ version: 'uuidv4' }).required,
   }),
 };
 module.exports = schemas;

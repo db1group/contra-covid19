@@ -138,7 +138,6 @@ export default {
       { text: 'Data de criação', value: 'createdAt' },
       { text: 'Data da atualização', value: 'dataHoraAtualizacao' },
       { text: 'Data de fechamento', value: 'dtfechamento' },
-      { text: 'Local', value: 'local' },
       { text: 'Situação', value: 'situacao' },
       { sortable: false, value: 'actions', width: '140px' },
     ],

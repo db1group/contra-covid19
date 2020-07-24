@@ -87,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
     tipoLaboratorio: DataTypes.ENUM('OFICIAL', 'PRIVADO'),
     nomeLaboratorioEnvioMaterial: DataTypes.STRING(30),
     dataDaColeta: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       validate: {
         isDate: true,
         naoEhMaiorQueDataAtual(value) {

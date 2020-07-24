@@ -108,6 +108,18 @@ export default {
     updateDescricaoLocal(descricaoLocal) {
       this.$emit('update:descricaoLocal', descricaoLocal);
     },
+    requiredContatoSuspeitoConfirmado(value) {
+      return value !== 'SEM_CONTATO' || 'Deve ser selecionado o contato suspeito ou confirmado.';
+    },
+    tipoContatoConfirmadoIfSituacao2(value) {
+      if (!this.notificacao.vinculoEpidemiologico.situacao2) {
+        return true;
+      }
+      return this.requiredContatoSuspeitoConfirmado(value);
+    },
+  },
+  created() {
+    this.rules.tipoDeContatoComCaso.push(this.tipoContatoConfirmadoIfSituacao2);
   },
 };
 </script>
