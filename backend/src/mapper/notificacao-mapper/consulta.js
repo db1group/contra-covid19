@@ -18,4 +18,5 @@ module.exports = (notificacoes) => notificacoes.map((n) => ({
   unidadeSaudeId: n.unidadeSaudeId || '',
   status: n.status || '',
   createdAt: n.createdAt || '',
+  apiSecretariaId: n.NotificacaoCovid19 ? n.NotificacaoCovid19.apiSecretariaId : '',
 }));

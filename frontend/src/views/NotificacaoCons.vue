@@ -2,12 +2,8 @@
   <section style="margin-top: 45px;">
     <header-cons />
     <notificacao-table
-      @erro:consultaNotificacao="mostrarMensagemErro"
-      @delete:notificacao="mostrarMensagemSucesso"
-      @erro:deleteNotificacao="mostrarMensagemErro"
-      @delete:notificacaoLote="mostrarMensagemSucesso"
-      @erro:deleteNotificacaoLote="mostrarMensagemErro"
-      @erro:unidadeSaude="mostrarMensagemErro"
+      @success:notificacao="mostrarMensagemSucesso"
+      @erro:notificacao="mostrarMensagemErro"
     />
     <v-snackbar v-model="showError" color="error" bottom>{{ this.mensagemErro }}</v-snackbar>
     <v-snackbar

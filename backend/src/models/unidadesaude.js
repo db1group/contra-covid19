@@ -1,8 +1,9 @@
+/* eslint-disable no-undef */
 const { normalizarTexto } = require('../lib/normalizar-texto');
 
-const normalizarTextoUnidade = (unidade) => {
-  // eslint-disable-next-line no-param-reassign
-  unidade.nome = normalizarTexto(unidade.nome);
+const normalizarTextoUnidade = ({ nome, cnes = '' }) => {
+  unidade.nome = normalizarTexto(nome);
+  unidade.cnes = cnes.padStart(7, '0');
 };
 
 module.exports = (sequelize, DataTypes) => {

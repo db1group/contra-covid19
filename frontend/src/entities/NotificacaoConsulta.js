@@ -12,5 +12,6 @@ export default class NotificacaoConsulta {
     this.situacao = data.situacao || '';
     this.status = data.status || 'ABERTA';
     this.createdAt = data.createdAt || '';
+    this.apiSecretariaId = data.apiSecretariaId || '';
   }
 }

@@ -15,6 +15,29 @@
       </v-row>
       <v-row dense>
         <v-col cols="12" sm="6" md="6">
+          <v-radio-group
+            label="Tipo de laboratório *"
+            :value="conclusaoAtendimento.tipoLaboratorio"
+            :rules="rules.tipoLaboratorio"
+            ref="tipoLaboratorio"
+            @change="changeTipoLaboratorio"
+            :disabled="disableFields"
+          >
+            <v-radio value="OFICIAL" label="Laboratório Oficial" />
+            <v-radio value="PRIVADO" label="Laboratório da rede PRIVADA" />
+          </v-radio-group>
+        </v-col>
+        <v-col cols="12" sm="6" md="6">
+          <v-text-field
+            :value="conclusaoAtendimento.nomeLaboratorioEnvioMaterial"
+            label="Nome do laboratório"
+            :disabled="disableNomeLab"
+            @input="updateNomeLaboratorioEnvioMaterial"
+          />
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col cols="12" sm="6" md="6">
           <v-text-field
             :value="conclusaoAtendimento.dataDaColeta"
             label="Data da Coleta *"
@@ -85,24 +108,17 @@
         </v-col>
       </v-row>
       <v-row dense>
-        <v-col cols="12" sm="6" md="6">
-          <v-radio-group
-            :value="conclusaoAtendimento.tipoLaboratorio"
-            :rules="rules.tipoLaboratorio"
-            ref="tipoLaboratorio"
-            @change="changeTipoLaboratorio"
+        <v-col>
+          <v-select
+            v-model="conclusaoAtendimento.metodoDeExame"
+            :items="itemsMetodoExame"
+            item-text="label"
+            item-value="value"
+            :rules="rules.metodoDeExame"
+            ref="metodoDeExame"
+            label="Método do exame"
             :disabled="disableFields"
-          >
-            <v-radio value="OFICIAL" label="Laboratório Oficial" />
-            <v-radio value="PRIVADO" label="Laboratório da rede PRIVADA" />
-          </v-radio-group>
-        </v-col>
-        <v-col cols="12" sm="6" md="6">
-          <v-text-field
-            :value="conclusaoAtendimento.nomeLaboratorioEnvioMaterial"
-            label="Nome do laboratório"
-            :disabled="disableNomeLab"
-            @input="updateNomeLaboratorioEnvioMaterial"
+            @input="updateMetodoDeExame"
           />
         </v-col>
       </v-row>
@@ -135,21 +151,6 @@
             ref="resultadoExameId"
             @input="updateResultadoExameId"
             :disabled="disableFields"
-          />
-        </v-col>
-      </v-row>
-      <v-row dense>
-        <v-col>
-          <v-select
-            v-model="conclusaoAtendimento.metodoDeExame"
-            :items="itemsMetodoExame"
-            item-text="label"
-            item-value="value"
-            :rules="rules.metodoDeExame"
-            ref="metodoDeExame"
-            label="Método do exame"
-            :disabled="disableFields"
-            @input="updateMetodoDeExame"
           />
         </v-col>
       </v-row>
@@ -192,6 +193,8 @@ import {
   dateMustBeLesserEqualsThanToday,
   maxLengthNumbersWithMask,
   maxLength,
+  lessThanMaximumDate,
+  greaterThanMinimumDate,
 } from '@/validations/CommonValidations';
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
 import ExameService from '@/services/ExameService';
@@ -216,8 +219,8 @@ export default {
       tipoLaboratorio: [],
       metodoDeExame: [],
       dataCadastroExame: [dateMustBeLesserEqualsThanToday],
-      dataRecebimentoExame: [dateMustBeLesserEqualsThanToday],
-      dataLiberacaoExame: [dateMustBeLesserEqualsThanToday],
+      dataRecebimentoExame: [],
+      dataLiberacaoExame: [],
       codigoExame: [maxLengthNumbersWithMask(18)],
       requisicao: [maxLength(150)],
     },
@@ -322,12 +325,19 @@ export default {
       this.rules.dataDaColeta = [];
       this.rules.tipoLaboratorio = [];
       this.rules.metodoDeExame = [];
+      this.rules.dataRecebimentoExame = [];
+      this.rules.dataLiberacaoExame = [];
       this.validate();
     },
     addRequiredInFields() {
       this.rules.dataDaColeta.push(required, dateFormat, dateMustBeLesserEqualsThanToday);
       this.rules.tipoLaboratorio.push(required);
       this.rules.metodoDeExame.push(required);
+      this.rules.dataRecebimentoExame.push(dateMustBeLesserEqualsThanToday,
+        this.validarDataMenorColeta,
+        this.validarDataMaiorCadastro);
+      this.rules.dataLiberacaoExame.push(dateMustBeLesserEqualsThanToday,
+        this.validarDataMaiorCadastro);
       this.validate();
     },
     updateDataCadastroExame(dataCadastroExame) {
@@ -403,9 +413,18 @@ export default {
         });
     },
     carregarDadosConclusao(conclusaoAtendimento) {
+      this.updateRealizadaColeta(conclusaoAtendimento.coletaMaterialParaDiagnostico);
       this.findExames(conclusaoAtendimento.nomeExame);
       this.findResultados(conclusaoAtendimento.nomeResultado);
       this.findLaboratorios(conclusaoAtendimento.nomeLabAmostra);
+    },
+    validarDataMenorColeta(value) {
+      return lessThanMaximumDate(value,
+        this.conclusaoAtendimento.dataDaColeta, 'Informe uma data menor ou igual a da coleta.');
+    },
+    validarDataMaiorCadastro(value) {
+      return greaterThanMinimumDate(value,
+        this.conclusaoAtendimento.dataCadastroExame, 'Informe uma data maior ou igual a de cadastro.');
     },
   },
   created() {

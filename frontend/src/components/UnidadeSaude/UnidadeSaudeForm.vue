@@ -41,10 +41,12 @@
         <v-row align="center" dense>
           <v-col cols="12" sm="6" md="6">
             <v-text-field
+              v-mask="'#######'"
               label="CNES *"
               :value="unidade.cnes"
               :rules="rules.cnes"
               @input="updateCNES"
+              @change="updateCnesMask"
               validate-on-blur
               required
             />
@@ -276,6 +278,7 @@
   }
 </style>
 <script>
+import { mask } from 'vue-the-mask';
 import HeaderTitle from '@/components/commons/HeaderTitle.vue';
 import {
   required, maxLength, minLength, minLengthNumbers,
@@ -293,6 +296,7 @@ const StateForm = {
 };
 
 export default {
+  directives: { mask },
   components: {
     HeaderTitle,
   },
@@ -384,6 +388,9 @@ export default {
     },
     updateCNES(cnes) {
       this.unidade.cnes = cnes;
+    },
+    updateCnesMask(cnes) {
+      this.unidade.cnes = cnes.padStart(7, '0');
     },
     updateToken(token) {
       this.unidade.tokenSecretaria = token;

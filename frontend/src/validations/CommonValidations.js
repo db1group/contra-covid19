@@ -91,6 +91,13 @@ export const dateMustBeLesserEqualsThanToday = (
   || value.length < 10
   || (DateService.isLesserEqualsThanMaximumDate(value))
   || message;
+export const dateMustBeLesserEqualsThanTodayWithMinutes = (
+  value,
+  message = 'A data informada deve ser anterior ou igual a atual.',
+) => !value
+  || value.length < 16
+  || (DateService.isLesserEqualsThanMaximumDateWithMinutes(value))
+  || message;
 export const dateMustBeLesserThanToday = (
   value,
   message = 'A data informada deve ser anterior a de hoje.',

@@ -18,7 +18,7 @@
           <v-text-field
             :value="informacoesComplementares.dataDaViagem"
             class="pl-8"
-            label="Data da viagem *"
+            label="Data da viagem"
             append-icon="mdi-calendar-blank"
             v-mask="'##/##/####'"
             :rules="rules.dataDaViagem"
@@ -101,6 +101,7 @@ import {
   dateFormat,
   dateMustBeLesserEqualsThanToday,
   maxLength,
+  greaterThanMinimumDate,
 } from '@/validations/CommonValidations';
 import InformacoesComplementares from '@/entities/InformacoesComplementares';
 
@@ -174,13 +175,16 @@ export default {
     updateDescritivoViagem(descritivoViagem) {
       this.$emit('update:descritivoViagem', descritivoViagem);
     },
+    validarDataChegada(value) {
+      return greaterThanMinimumDate(value,
+        this.informacoesComplementares.dataDaViagem, 'Informe uma data igual ou posterior a data da viagem.');
+    },
   },
   created() {
-    this.rules.dataDaViagem.push(this.requiredIfHistoricoDeViagem);
     this.rules.dataDaViagem.push(this.formatDateIfHistoricoDeViagem);
     this.rules.localDaViagem.push(this.requiredIfHistoricoDeViagem);
     this.rules.dataRetornoLocal.push(this.formatDateIfHistoricoDeViagem);
-    this.rules.dataChegadaBrasil.push(this.formatDateIfHistoricoDeViagem);
+    this.rules.dataChegadaBrasil.push(this.formatDateIfHistoricoDeViagem, this.validarDataChegada);
     this.rules.dataChegadaUF.push(this.formatDateIfHistoricoDeViagem);
   },
 };

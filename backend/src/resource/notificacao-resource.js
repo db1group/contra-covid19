@@ -10,6 +10,7 @@ const DocumentValidator = require('../validations/custom/document-validator');
 const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
 const atualizacaoNotificacaoService = require('../services/atualizar-notificacao-service');
 const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secretaria-enum');
+const statusNotificacaoEnum = require('../enums/status-notificacao-enum');
 
 const { Op } = Sequelize;
 
@@ -337,7 +338,7 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
   const optionsConsulta = {
     where: {
       status: {
-        [Op.ne]: 'EXCLUIDA',
+        [Op.ne]: statusNotificacaoEnum.values.Excluida,
       },
     },
     attributes: ['id', 'unidadeSaudeId', 'status', 'createdAt'],
@@ -347,7 +348,7 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
       include: models.Municipio,
     }, {
       model: models.NotificacaoCovid19,
-      attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao'],
+      attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao', 'apiSecretariaId'],
     }, {
       model: models.UnidadeSaude,
       attributes: ['nome'],
@@ -455,12 +456,12 @@ exports.consultarPorId = async (req, res, next) => {
   }
 };
 
-exports.excluirLogicamenteNotificacao = async (req, res, next) => {
+exports.excluirLoteLogicamenteNotificacao = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const ids = req.body;
     await models.Notificacao.update(
-      { status: 'EXCLUIDA' },
-      { where: { id } },
+      { status: statusNotificacaoEnum.values.Excluida },
+      { where: { id: { [Op.in]: ids } } },
     );
     return res.status(204).json();
   } catch (err) {
@@ -468,13 +469,17 @@ exports.excluirLogicamenteNotificacao = async (req, res, next) => {
   }
 };
 
-exports.excluirLoteLogicamenteNotificacao = async (req, res, next) => {
+const alterarStatusNotificacao = async (id, status) => {
+  await models.Notificacao.update(
+    { status },
+    { where: { id } },
+  );
+};
+
+exports.excluirLogicamenteNotificacao = async (req, res, next) => {
   try {
-    const ids = req.body;
-    await models.Notificacao.update(
-      { status: 'EXCLUIDA' },
-      { where: { id: { [Op.in]: ids } } },
-    );
+    const { id } = req.params;
+    await alterarStatusNotificacao(id, statusNotificacaoEnum.values.Excluida);
     return res.status(204).json();
   } catch (err) {
     return next(err);
