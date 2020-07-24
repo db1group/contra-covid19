@@ -19,7 +19,7 @@ exports.enviarNotificacao = async (request, token) => {
 
   console.info('URL Envio Secretaria: ', `${axiosInstance.defaults.baseURL}v1/notificacao/`);
   console.info('Envio Secretaria: ', data);
-  console.info('Usando SSL: ', process.env.SECRETARIA_DISABLE_SSL);
+  console.info('Desabilitado SSL: ', process.env.SECRETARIA_DISABLE_SSL);
 
   const disableSSL = process.env.SECRETARIA_DISABLE_SSL === 'true';
   if (disableSSL) {
@@ -27,7 +27,7 @@ exports.enviarNotificacao = async (request, token) => {
     header.httpsAgent = httpsAgent;
   }
 
-  return axiosInstance.post('v1/notificacao', data, header)
+  return axiosInstance.post('v1/notificacao/', data, header)
     .then((response) => response.data)
     .catch(getErrorMessage);
 };
