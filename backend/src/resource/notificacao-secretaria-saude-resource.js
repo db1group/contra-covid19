@@ -23,6 +23,7 @@ exports.enviarNotificacao = async (req, res, next) => {
 
     return res.json({ data: response });
   } catch (err) {
+    console.error('Erro Envio Notificação: ', err);
     return next(err);
   }
 };
@@ -145,6 +146,7 @@ exports.enviarNotificacoes = async (req, res, next) => {
 
     return res.json({ data: dataErrors });
   } catch (err) {
+    console.error('Erro Envio Notificação: ', err);
     return next(err);
   }
 };

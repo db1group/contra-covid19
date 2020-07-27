@@ -452,6 +452,7 @@ exports.consultarPorId = async (req, res, next) => {
 
     return res.json({ data: retorno });
   } catch (err) {
+    console.error('Erro Consulta Notificação: ', err);
     return next(err);
   }
 };
