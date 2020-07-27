@@ -486,7 +486,7 @@ class EnviarNotificacaoRequest {
 
   getSexo(notificacao) {
     switch (notificacao.Pessoa.sexo) {
-      case sexoEnum.Masculino:
+      case sexoEnum.values.Masculino:
         return dicionarioValores.sexo.Masculino;
       case sexoEnum.values.Feminino:
         return dicionarioValores.sexo.Feminino;
