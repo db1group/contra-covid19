@@ -193,7 +193,6 @@ import {
   dateMustBeLesserEqualsThanToday,
   maxLengthNumbersWithMask,
   maxLength,
-  lessThanMaximumDate,
   greaterThanMinimumDate,
 } from '@/validations/CommonValidations';
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
@@ -334,7 +333,7 @@ export default {
       this.rules.tipoLaboratorio.push(required);
       this.rules.metodoDeExame.push(required);
       this.rules.dataRecebimentoExame.push(dateMustBeLesserEqualsThanToday,
-        this.validarDataMenorColeta,
+        this.validarDataMaiorColeta,
         this.validarDataMaiorCadastro);
       this.rules.dataLiberacaoExame.push(dateMustBeLesserEqualsThanToday,
         this.validarDataMaiorCadastro);
@@ -418,9 +417,9 @@ export default {
       this.findResultados(conclusaoAtendimento.nomeResultado);
       this.findLaboratorios(conclusaoAtendimento.nomeLabAmostra);
     },
-    validarDataMenorColeta(value) {
-      return lessThanMaximumDate(value,
-        this.conclusaoAtendimento.dataDaColeta, 'Informe uma data menor ou igual a da coleta.');
+    validarDataMaiorColeta(value) {
+      return greaterThanMinimumDate(value,
+        this.conclusaoAtendimento.dataDaColeta, 'Informe uma data maior ou igual a da coleta.');
     },
     validarDataMaiorCadastro(value) {
       return greaterThanMinimumDate(value,
