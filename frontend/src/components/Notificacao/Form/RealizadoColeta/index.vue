@@ -39,18 +39,6 @@
       <v-row dense>
         <v-col cols="12" sm="6" md="6">
           <v-text-field
-            :value="conclusaoAtendimento.dataDaColeta"
-            label="Data da Coleta *"
-            append-icon="mdi-calendar-blank"
-            v-mask="'##/##/####'"
-            :disabled="disableFields"
-            :rules="rules.dataDaColeta"
-            ref="dataDaColeta"
-            @input="updateDataDaColeta"
-          />
-        </v-col>
-        <v-col cols="12" sm="6" md="6">
-          <v-text-field
             :value="conclusaoAtendimento.dataCadastroExame"
             label="Data de Cadastro"
             append-icon="mdi-calendar-blank"
@@ -59,6 +47,18 @@
             :rules="rules.dataCadastroExame"
             ref="dataCadastroExame"
             @input="updateDataCadastroExame"
+          />
+        </v-col>
+        <v-col cols="12" sm="6" md="6">
+          <v-text-field
+            :value="conclusaoAtendimento.dataDaColeta"
+            label="Data da Coleta *"
+            append-icon="mdi-calendar-blank"
+            v-mask="'##/##/####'"
+            :disabled="disableFields"
+            :rules="rules.dataDaColeta"
+            ref="dataDaColeta"
+            @input="updateDataDaColeta"
           />
         </v-col>
         <v-col cols="12" sm="6" md="6">
