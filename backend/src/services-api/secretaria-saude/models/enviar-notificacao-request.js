@@ -38,7 +38,7 @@ class EnviarNotificacaoRequest {
     this.ibge_unidade_notifica = ufIBGE;
     this.nome_notificador = notificacao.nomeNotificador;
     this.email_notificador = notificacao.User.email;
-    this.ocupacao_notificador = notificacao.Profissao.nome;
+    // this.ocupacao_notificador = notificacao.Profissao.nome;
     this.telefone_notificador = null;
     this.raca_cor = this.getRacaCor(notificacao);
     this.assintomatico = this.getAssintomatico(notificacao);
