@@ -64,10 +64,41 @@
         "clientRole": false,
         "containerId": "notificasaude",
         "attributes": {}
+      },
+      {
+        "id": "4e58d598-f1a4-45ab-a2e4-7aefd260ce76",
+        "name": "VISUALIZA_NOTIFICACOES",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "notificasaude",
+        "attributes": {}
+      },
+      {
+        "id": "57b2479c-9212-4ead-9e78-3a076c1f4cef",
+        "name": "FECHAMENTO",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "notificasaude",
+        "attributes": {}
+      },
+      {
+        "id": "3220f312-1486-44f8-97ba-a23ff4afdc84",
+        "name": "ALTERA_EVOLUCAO",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "notificasaude",
+        "attributes": {}
+      },
+      {
+        "id": "8721e6eb-a50f-478a-8316-8d1fc6b0368b",
+        "name": "ENVIO_SECRETARIA",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "notificasaude",
+        "attributes": {}
       }
     ],
     "client": {
-      "notificasaude-api": [],
       "realm-management": [
         {
           "id": "fd3695a6-9931-453c-be4d-ef84016c7a19",
@@ -332,19 +363,7 @@
       ]
     }
   },
-  "groups": [
-    {
-      "id": "9a0dbe89-78e5-4e4a-95c4-d833da5c2817",
-      "name": "Secretaria de Saúde",
-      "path": "/Secretaria de Saúde",
-      "attributes": {},
-      "realmRoles": [
-        "SECRETARIA_SAUDE"
-      ],
-      "clientRoles": {},
-      "subGroups": []
-    }
-  ],
+  "groups": [],
   "defaultRoles": [
     "offline_access",
     "uma_authorization"
@@ -465,6 +484,7 @@
       "secret": "**********",
       "redirectUris": [
         "http://localhost:8080/*",
+        "http://localhost:8081/*",
         "https://app.notificasaude.com.br/*",
         "https://www.notificasaude.com.br/*",
         "https://qa-www.notificasaude.com.br/*",
@@ -472,72 +492,12 @@
       ],
       "webOrigins": [
         "http://localhost:8080/*",
+        "http://localhost:8081/*",
         "https://app.notificasaude.com.br/*",
         "https://www.notificasaude.com.br/*",
         "https://qa-www.notificasaude.com.br/*",
-        "https://qa-app.notificasaude.com.br/*"
-      ],
-      "notBefore": 0,
-      "bearerOnly": false,
-      "consentRequired": false,
-      "standardFlowEnabled": true,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": false,
-      "publicClient": true,
-      "frontchannelLogout": false,
-      "protocol": "openid-connect",
-      "attributes": {
-        "saml.assertion.signature": "false",
-        "saml.multivalued.roles": "false",
-        "saml.force.post.binding": "false",
-        "saml.encrypt": "false",
-        "saml.server.signature": "false",
-        "saml.server.signature.keyinfo.ext": "false",
-        "exclude.session.state.from.auth.response": "false",
-        "saml_force_name_id_format": "false",
-        "saml.client.signature": "false",
-        "tls.client.certificate.bound.access.tokens": "false",
-        "saml.authnstatement": "false",
-        "display.on.consent.screen": "false",
-        "saml.onetimeuse.condition": "false"
-      },
-      "authenticationFlowBindingOverrides": {},
-      "fullScopeAllowed": true,
-      "nodeReRegistrationTimeout": -1,
-      "defaultClientScopes": [
-        "web-origins",
-        "role_list",
-        "profile",
-        "roles",
-        "email"
-      ],
-      "optionalClientScopes": [
-        "address",
-        "phone",
-        "offline_access",
-        "microprofile-jwt"
-      ]
-    },
-    {
-      "id": "03656695-ea8d-4b6d-a1a0-c4e988b1909c",
-      "clientId": "notificasaude-api",
-      "name": "Notifica Saúde API",
-      "rootUrl": "https://api.notificasaude.com.br",
-      "adminUrl": "https://api.notificasaude.com.br",
-      "surrogateAuthRequired": false,
-      "enabled": true,
-      "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
-      "redirectUris": [
-        "https://api.notificasaude.com.br/*",
-        "https://qa-api.notificasaude.com.br/*",
-        "http://localhost:3000/*"
-      ],
-      "webOrigins": [
-        "https://api.notificasaude.com.br",
-        "https://qa-api.notificasaude.com.br/*",
-        "http://localhost:3000/*"
+        "https://qa-app.notificasaude.com.br/*",
+        "*"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -1862,6 +1822,6 @@
     "waitIncrementSeconds": "60",
     "offlineSessionMaxLifespanEnabled": "false"
   },
-  "keycloakVersion": "7.0.1",
+  "keycloakVersion": "10.0.0",
   "userManagedAccessAllowed": false
 }
