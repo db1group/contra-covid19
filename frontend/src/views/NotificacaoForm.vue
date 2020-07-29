@@ -313,8 +313,14 @@ export default {
     updateDataHoraNotificacao(dataHoraNotificacao) {
       this.notificacao.dataHoraNotificacao = dataHoraNotificacao;
     },
+    limparSintomas() {
+      if (this.notificacao.sintomatico) return;
+      this.notificacao.dataInicioDosSintomas = '';
+      this.notificacao.sintomas.limparSintomas();
+    },
     updateSintomatico(sintomatico) {
       this.notificacao.sintomatico = sintomatico;
+      this.limparSintomas();
     },
     updateRealizouExamesImagem(realizouExamesImagem) {
       this.notificacao.realizouExamesImagem = realizouExamesImagem;

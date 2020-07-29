@@ -42,6 +42,40 @@ export default class Sintomas {
     };
   }
 
+  limparSintomas() {
+    this.febreAferidaReferida = false;
+    this.temperaturaFebre = '';
+    this.adinamiaFraqueza = false;
+    this.artralgia = false;
+    this.calafrios = false;
+    this.conjuntivite = false;
+    this.coriza = false;
+    this.congestaoNasal = false;
+    this.dificuldadeDeglutir = false;
+    this.gangliosLinfaticos = false;
+    this.irritabilidadeOuConfusao = false;
+    this.manchasVermelhas = false;
+    this.tosse = false;
+    this.dorDeGarganta = false;
+    this.mialgia = false;
+    this.escarro = false;
+    this.sibilo = false;
+    this.batimentoAsasNasais = false;
+    this.dispneia = false;
+    this.taquipneia = false;
+    this.saturacaoDeOximetriaDePulso = false;
+    this.cianoseCentral = false;
+    this.diminuicaoDePulsoPeriferico = false;
+    this.hipotensao = false;
+    this.diarreia = false;
+    this.cefaleia = false;
+    this.nauseaVomito = false;
+    this.tiragemIntercostal = false;
+    this.perdaOlfatoPaladar = false;
+    this.outros = '';
+    this.existemOutrosSintomas = false;
+  }
+
   aplicarTemperaturaFebre() {
     const temperaturaFebreNumbers = Utils.numbersOnly(this.temperaturaFebre);
 
