@@ -107,6 +107,7 @@
           />
         </v-col>
       </v-row>
+      <!--
       <v-row dense>
         <v-col>
           <v-select
@@ -154,6 +155,7 @@
           />
         </v-col>
       </v-row>
+      -->
       <v-row dense>
         <v-col cols="12" sm="6" md="6">
           <v-autocomplete
