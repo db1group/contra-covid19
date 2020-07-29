@@ -101,7 +101,9 @@ class EnviarNotificacaoRequest {
 
   getGestanteAltoRisco(notificacao) {
     const { gestanteAltoRisco = false } = notificacao.Pessoa;
-    return gestanteAltoRisco;
+    return gestanteAltoRisco
+      ? dicionarioValores.gestanteAltoRisco.Sim
+      : dicionarioValores.gestanteAltoRisco.Nao;
   }
 
   preencherDocumentos(notificacao) {
