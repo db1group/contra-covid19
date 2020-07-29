@@ -114,7 +114,7 @@ export default {
   components: { ConfirmDialog },
   data: () => ({
     situacaoNotif: SITUACAO_NOTIFICACAO,
-    filtroStatus: 'ABERTA',
+    filtroStatus: '',
     items: [],
     loading: true,
     options: {
