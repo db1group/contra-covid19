@@ -110,6 +110,12 @@ exports.gestante = {
   NaoInformado: 3,
 };
 
+exports.gestanteAltoRisco = {
+  Sim: 1,
+  Nao: 2,
+  NaoInformado: 3,
+};
+
 exports.boleano = {
   Sim: 1,
   Nao: 2,
