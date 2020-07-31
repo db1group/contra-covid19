@@ -14,6 +14,12 @@ const tipoInternacaoEnum = require('../../../enums/tipo-internacao-enum');
 
 const FORMATO_DATA = 'YYYY-MM-DD';
 
+const toInt = (value) => {
+  const parsed = parseInt(value, 10);
+  // eslint-disable-next-line no-restricted-globals
+  return isNaN(parsed) ? null : parsed;
+};
+
 class EnviarNotificacaoRequest {
   constructor(notificacao) {
     const { dataHoraNotificacao, dataInicioDosSintomas } = notificacao.NotificacaoCovid19;
@@ -28,7 +34,7 @@ class EnviarNotificacaoRequest {
     this.periodo_gestacao = this.getPeriodoGestacional(notificacao);
     this.data_nascimento = moment(notificacao.Pessoa.dataDeNascimento)
       .format(FORMATO_DATA);
-    this.idade = moment().diff(moment(notificacao.Pessoa.dataDeNascimento), 'years');
+    this.idade = toInt(moment().diff(moment(notificacao.Pessoa.dataDeNascimento), 'years'));
     this.nome_mae = notificacao.Pessoa.nomeDaMae;
     const { nome, cnes, Municipio = {} } = notificacao.UnidadeSaude;
     const { residenciaIBGE, ufIBGE } = Municipio || {};
@@ -127,12 +133,12 @@ class EnviarNotificacaoRequest {
     } else {
       telefone = telefoneCelular;
     }
-    this.telefone_paciente = telefone;
+    this.telefone_paciente = toInt(telefone);
   }
 
   preencherOcupacao(notificacao) {
     const { classificacao } = notificacao.Pessoa.Ocupacao;
-    this.ocupacao = classificacao;
+    this.ocupacao = toInt(classificacao);
     this.ocupacao_descricao = notificacao.Pessoa.ocupacao;
   }
 
@@ -168,7 +174,7 @@ class EnviarNotificacaoRequest {
     } else if (evolucaoObito) {
       this.evolucao = dicionarioValores.evolucao.Obito;
       this.data_cura_obito = moment(evolucaoObito.dtEvolucao).format(FORMATO_DATA);
-      this.numero_do = numeroDo;
+      this.numero_do = toInt(numeroDo);
     } else {
       this.evolucao = dicionarioValores.evolucao.Ignorado;
     }
@@ -277,7 +283,7 @@ class EnviarNotificacaoRequest {
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.data_coleta = dataDaColeta ? moment(dataDaColeta).format(FORMATO_DATA) : null;
     this.lab_executor = nomeLaboratorioEnvioMaterial;
-    this.co_seq_exame = codigoExame;
+    this.co_seq_exame = toInt(codigoExame);
     this.requisicao = requisicao;
     this.data_cadastro = dataCadastroExame ? moment(dataCadastroExame).format(FORMATO_DATA) : null;
     this.data_recebimento = dataRecebimentoExame
@@ -285,7 +291,7 @@ class EnviarNotificacaoRequest {
     this.data_liberacao = dataLiberacaoExame
       ? moment(dataLiberacaoExame).format(FORMATO_DATA) : null;
 
-    this.pesquisa_gal = pesquisaGal;
+    this.pesquisa_gal = toInt(pesquisaGal);
     switch (metodoExame) {
       case metodoExameEnum.values.RTPCR:
         this.metodo = dicionarioValores.metodoExame.RTPCR;
@@ -434,7 +440,7 @@ class EnviarNotificacaoRequest {
 
   preencherEndereco(notificacao) {
     if (notificacao.Pessoa.cep) {
-      this.cep_residencia = notificacao.Pessoa.cep;
+      this.cep_residencia = toInt(notificacao.Pessoa.cep);
     }
 
     if (notificacao.Pessoa.Bairro.nome) {
@@ -450,7 +456,7 @@ class EnviarNotificacaoRequest {
     }
 
     if (notificacao.Pessoa.numero) {
-      this.numero_residencia = notificacao.Pessoa.numero;
+      this.numero_residencia = toInt(notificacao.Pessoa.numero);
     }
   }
 
