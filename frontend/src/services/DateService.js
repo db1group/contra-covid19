@@ -85,4 +85,13 @@ export default {
     return informedDate.isSame(maximumDate, 'day')
       || (informedDate.isBefore(maximumDate) && (maximumDate.diff(informedDate, 'days') <= 7));
   },
+  isLesserEqualsThanMaximumDateOr31Days(stringInformedDate, stringMaximumDate) {
+    const informedDate = toMomentObject(stringInformedDate, 'DD/MM/YYYY');
+    const maximumDate = stringMaximumDate
+      ? toMomentObject(stringMaximumDate, 'DD/MM/YYYY')
+      : moment();
+
+    return informedDate.isSame(maximumDate, 'day')
+      || (informedDate.isBefore(maximumDate) && (maximumDate.diff(informedDate, 'days') <= 31));
+  },
 };
