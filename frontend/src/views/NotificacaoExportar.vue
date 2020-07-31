@@ -9,6 +9,7 @@
         @update:dataFinal="updateExportar('dataFinal', $event)"
         @update:dataEvolucaoInicial="updateExportar('dataEvolucaoInicial', $event)"
         @update:dataEvolucaoFinal="updateExportar('dataEvolucaoFinal', $event)"
+        @update:tipoExportacao="updateTipoExportacao($event)"
         @click="send"
       ></exportar>
       <v-snackbar v-model="showError" color="error" bottom>{{errorMessage}}</v-snackbar>
@@ -36,27 +37,35 @@ export default {
     showError: false,
     loading: false,
     errorMessage: '',
+    tipoExportacao: 'XLSX',
   }),
   methods: {
     updateExportar(campo, valor) {
       this.exportar[campo] = valor;
     },
+    async tratarErro(response) {
+      const errorString = await response.data.text() || {};
+      const { error } = JSON.parse(errorString);
+      this.showError = true;
+      this.errorMessage = error || 'Não foi possível realizar o download.';
+    },
     send() {
       if (!this.validarPeriodo()) {
         this.showError = true;
-        this.errorMessage = 'A data inicial não pode ser posterior à data final e no período de 7 dias.';
+        this.errorMessage = 'A data inicial não pode ser posterior à data final e no período de 31 dias.';
         return;
       }
 
       this.loading = true;
-      NotificacaoService.downloadNotificacoes(this.exportar.toRequestBody())
-        .catch(async ({ response }) => {
-          const errorString = await response.data.text() || {};
-          const { error } = JSON.parse(errorString);
-          this.showError = true;
-          this.errorMessage = error || 'Não foi possível realizar o download.';
-        })
-        .finally(() => { this.loading = false; });
+      if (this.tipoExportacao === 'XLSX') {
+        NotificacaoService.downloadNotificacoes(this.exportar.toRequestBody())
+          .catch(async ({ response }) => { await this.tratarErro(response); })
+          .finally(() => { this.loading = false; });
+      } else {
+        NotificacaoService.downloadNotificacoesCSV(this.exportar.toRequestBody())
+          .catch(async ({ response }) => { await this.tratarErro(response); })
+          .finally(() => { this.loading = false; });
+      }
     },
     validarPeriodo() {
       const {
@@ -66,12 +75,16 @@ export default {
         dataEvolucaoFinal,
       } = this.exportar;
       if (dataInicial && dataFinal) {
-        return DateService.isLesserEqualsThanMaximumDateOr7Days(dataInicial, dataFinal);
+        return DateService.isLesserEqualsThanMaximumDateOr31Days(dataInicial, dataFinal);
       }
-      return DateService.isLesserEqualsThanMaximumDateOr7Days(dataEvolucaoInicial, dataEvolucaoFinal);
+      return DateService.isLesserEqualsThanMaximumDateOr31Days(dataEvolucaoInicial, dataEvolucaoFinal);
     },
     isSecretariaSaude() {
       return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
+    },
+    updateTipoExportacao(tipoExportacao) {
+      console.log(tipoExportacao);
+      this.tipoExportacao = tipoExportacao;
     },
   },
   created() {
