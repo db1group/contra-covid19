@@ -57,9 +57,9 @@ const validarPossuiConfirmacao = async (evolucao) => {
   }
 };
 
-const validarProximaEvolucao = async (evolucaoRequest) => {
+const validarProximaEvolucao = async (evolucaoRequest, tenant) => {
   const evolucoes = await repos.notificacaoRepository
-    .getEvolucoesPorNotificacaoId(evolucaoRequest.notificacaoId);
+    .getEvolucoesPorNotificacaoId(evolucaoRequest.notificacaoId, tenant);
 
   if (evolucoes.NotificacaoEvolucaos.length === 0) return;
 
@@ -102,20 +102,22 @@ const atualizarStatusNotificacao = async (evolucao, transaction) => {
   return evolucao;
 };
 
-exports.handle = async (evolucaoRequest) => models.sequelize.transaction(async (transaction) => {
-  const { notificacaoId } = evolucaoRequest;
-  const notificacao = await repos.notificacaoRepository.getPorId(notificacaoId);
+exports.handle = async (evolucaoRequest, tenant) => models.sequelize
+  .transaction(async (transaction) => {
+    const { notificacaoId } = evolucaoRequest;
+    const notificacao = await repos.notificacaoRepository.getPorId(notificacaoId, tenant);
 
-  if (notificacao.status !== 'ABERTA') throw new RegraNegocioErro('Notificação não está mais aberta.');
+    if (!notificacao) throw new RegraNegocioErro('Notificação não encontrada.');
+    if (notificacao.status !== 'ABERTA') throw new RegraNegocioErro('Notificação não está mais aberta.');
 
-  await validarDataEvolucaoSuperiorDataNotificacao(notificacao, evolucaoRequest.dtEvolucao);
-  await validarNotificacaoFinalizada(notificacao);
-  await validarPossuiConfirmacao(evolucaoRequest);
-  await validarProximaEvolucao(evolucaoRequest);
+    await validarDataEvolucaoSuperiorDataNotificacao(notificacao, evolucaoRequest.dtEvolucao);
+    await validarNotificacaoFinalizada(notificacao);
+    await validarPossuiConfirmacao(evolucaoRequest);
+    await validarProximaEvolucao(evolucaoRequest, tenant);
 
-  const evolucao = await repos.notificacaoRepository
-    .cadastrarEvolucao(evolucaoRequest, transaction);
-  await repos.notificacaoCovid19Repository
-    .atualizarTpTransmissaoPendenteAtualizacao(notificacaoId, transaction);
-  return atualizarStatusNotificacao(evolucao, transaction);
-});
+    const evolucao = await repos.notificacaoRepository
+      .cadastrarEvolucao(evolucaoRequest, transaction);
+    await repos.notificacaoCovid19Repository
+      .atualizarTpTransmissaoPendenteAtualizacao(notificacaoId, transaction);
+    return atualizarStatusNotificacao(evolucao, transaction);
+  });

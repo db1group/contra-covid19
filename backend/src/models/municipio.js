@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
     Municipio.hasMany(models.Bairro, { foreignKey: 'municipioId' });
     Municipio.hasMany(models.Pessoa, { foreignKey: 'municipioId' });
     Municipio.hasMany(models.UnidadeSaude, { foreignKey: 'municipioId' });
+    Municipio.hasMany(models.User, { foreignKey: 'municipioId' });
+    Municipio.hasMany(models.TenantConfig, { foreignKey: 'municipioId' });
+    Municipio.hasMany(models.TenantMunicipio, { foreignKey: 'municipioId' });
   };
   return Municipio;
 };

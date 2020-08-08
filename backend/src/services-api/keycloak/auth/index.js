@@ -1,5 +1,6 @@
 const KeycloakAPI = require('..');
 const Redis = require('../../../redis');
+const secureRoles = require('../../../secure/roles');
 
 const KEYCLOAK_TOKEN = 'KEYCLOAK_TOKEN';
 const ROLES_KEY = 'ROLES_KEY';
@@ -8,23 +9,18 @@ const EXPIRE_TOKEN = process.env.KEYCLOAK_EXPIRE || 350;
 
 const redis = Redis();
 
-const filterAppRoles = (r) => r.name !== 'offline_access' && r.name !== 'uma_authorization';
-
-const getCacheKey = async (key) => {
-  let keyValue;
-  try {
-    keyValue = await redis.get(key);
-  } catch (err) {
-    console.error(err);
-  }
-  return keyValue;
+const filterAppRoles = (includeSupervisor) => (r) => {
+  const defaultFilter = r.name !== 'offline_access'
+    && r.name !== 'uma_authorization';
+  if (includeSupervisor) return defaultFilter;
+  return defaultFilter && r.name !== secureRoles.values.Supervisor;
 };
+
+const getCacheKey = async (key) => redis.get(key).catch(() => undefined);
+
 const setCacheKey = (key, value, expire = EXPIRE_TOKEN) => {
-  try {
-    redis.set(key, JSON.stringify(value), 'EX', expire);
-  } catch (err) {
-    console.error(err);
-  }
+  redis.set(key, JSON.stringify(value), 'EX', expire)
+    .catch(() => console.error(`Não foi possível setar o cache para a key: ${key}`));
 };
 
 exports.login = async () => {
@@ -51,7 +47,7 @@ exports.login = async () => {
   }
 };
 
-exports.roles = async (token) => {
+exports.roles = async (token, includeSupervisor) => {
   try {
     const cache = await getCacheKey(ROLES_KEY);
     if (cache) return JSON.parse(cache);
@@ -63,7 +59,7 @@ exports.roles = async (token) => {
             Authorization: `Bearer ${token}`,
           },
         })
-      .then(({ data }) => data.filter(filterAppRoles));
+      .then(({ data }) => data.filter(filterAppRoles(includeSupervisor)));
 
     setCacheKey(ROLES_KEY, response);
 
@@ -87,7 +83,7 @@ exports.userRoles = async (id, token) => {
             Authorization: `Bearer ${token}`,
           },
         })
-      .then(({ data }) => data.realmMappings.filter(filterAppRoles));
+      .then(({ data }) => data.realmMappings.filter(filterAppRoles(false)));
 
     setCacheKey(userKey, response);
 

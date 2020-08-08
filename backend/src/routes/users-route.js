@@ -6,7 +6,6 @@ const { validate, schemas } = require('../validations');
 
 const prefixURL = '/usuarios';
 
-router.get(prefixURL, UserResource.index);
 router.get(`${prefixURL}/consulta`, UserResource.consultarUsuarios);
 router.post(
   prefixURL,

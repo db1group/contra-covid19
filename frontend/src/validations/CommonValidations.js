@@ -5,6 +5,7 @@ const DATE_FORMAT = /^[0-3]{1}[0-9]{1}\/[0-1]{1}[0-9]{1}\/[0-9]{4}$/;
 const DATE_HOUR_MINUTE_FORMAT = /^[0-3]{1}[0-9]{1}\/[0-1]{1}[0-9]{1}\/[0-9]{4} [0-2]{1}[0-9]{1}:[0-5]{1}[0-9]{1}$/;
 const ONLY_LETTERS = new RegExp(/^[a-zA-Z\s.\u00C0-\u00FC]*$/);
 const ONLY_NUMBERS = new RegExp(/^[0-9]+$/);
+const HOUR_MINUTE_FORMAT = /^[0-2]{1}[0-9]{1}:[0-5]{1}[0-9]{1}$/;
 
 export const required = (value, message = 'O campo é obrigatório.') => (
   (value && typeof value === 'string' && value.trim().length > 0)
@@ -119,3 +120,7 @@ export const mustBeEmpty = (value, message = 'O campo deve estar vazio.') => !va
 export const notBrasil = (value,
   message = 'Utilize um país diferente de "Brasil" caso seja estrangeiro.') => value.toString() !== '1'
   || message;
+
+export const hourMinuteFormat = (value) => !value
+  || (HOUR_MINUTE_FORMAT.test(value) && DateService.isDateValid(value, 'HH:mm'))
+  || 'O formato precisa ser hh:mm';

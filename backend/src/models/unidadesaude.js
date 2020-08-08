@@ -1,9 +1,10 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-undef */
 const { normalizarTexto } = require('../lib/normalizar-texto');
 
-const normalizarTextoUnidade = ({ nome, cnes = '' }) => {
-  unidade.nome = normalizarTexto(nome);
-  unidade.cnes = cnes.padStart(7, '0');
+const normalizarTextoUnidade = (unidade) => {
+  unidade.nome = normalizarTexto(unidade.nome);
+  unidade.cnes = unidade.cnes.padStart(7, '0');
 };
 
 module.exports = (sequelize, DataTypes) => {
@@ -31,7 +32,6 @@ module.exports = (sequelize, DataTypes) => {
     qtUTIAdultaPrivado: DataTypes.INTEGER,
     qtUTIPedPrivado: DataTypes.INTEGER,
     qtUTINeoPrivado: DataTypes.INTEGER,
-    tokenSecretaria: DataTypes.STRING(1000),
     tpUnidade:
     {
       type: DataTypes.ENUM('OUTRO', 'HOSPITAL', 'LABORATORIO'),

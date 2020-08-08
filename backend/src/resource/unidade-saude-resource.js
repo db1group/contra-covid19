@@ -1,10 +1,14 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
+const { UsuarioLogado } = require('../secure/usuario-logado');
+const { RegraNegocioErro } = require('../lib/erros');
+const repos = require('../repositories/repository-factory');
 
 const { Op } = Sequelize;
 
 exports.consultaPorNome = async (req, res) => {
   const { nome = '', tipo } = req.query;
+  const { tenant } = new UsuarioLogado(req);
   const filtroUnidadeNome = Sequelize.where(
     Sequelize.fn('upper', Sequelize.col('nome')),
     {
@@ -12,7 +16,7 @@ exports.consultaPorNome = async (req, res) => {
     },
   );
 
-  const filtros = [filtroUnidadeNome];
+  const filtros = [{ municipioId: tenant }, filtroUnidadeNome];
   if (tipo) {
     const filtroTipo = { tpUnidade: tipo.toUpperCase() };
     filtros.push(filtroTipo);
@@ -31,13 +35,13 @@ exports.consultaPorNome = async (req, res) => {
 
 exports.consultarPorUserEmail = async (request, response) => {
   const { email } = request.params;
-
+  const { tenant } = new UsuarioLogado(request);
   const userUnidadesSaude = await models.UserUnidadeSaude.findAll({
     include: [
       {
         model: models.User,
         where: {
-          email,
+          email, municipioId: tenant,
         },
       },
       {
@@ -46,23 +50,24 @@ exports.consultarPorUserEmail = async (request, response) => {
     ],
   });
 
-  if (userUnidadesSaude === null) return response.status(404).json({ error: 'Unidade de saúde não encontrada.' });
+  if (userUnidadesSaude.length === 0) return response.status(404).json({ error: 'Unidade de saúde não encontrada.' });
 
   const data = userUnidadesSaude.map((userUnidadeSaude) => userUnidadeSaude.UnidadeSaude);
 
   return response.json({ data });
 };
 
-const montarSelectConsultaBase = (search) => {
-  const where = search.trim() !== '' ? `where UPPER(us.nome) like UPPER('%${search}%') or us.cnes LIKE '%${search}%'` : '';
+const montarSelectConsultaBase = (search, tenant) => {
+  const where = search.trim() !== '' ? ` AND (UPPER(us.nome) like UPPER('%${search}%') or us.cnes LIKE '%${search}%')` : '';
+  const filtroTenant = tenant ? ` = ${tenant} ` : ' IS NULL';
   return `select * from  "UnidadeSaude" us
-  join "Municipio" m on m.id = us."municipioId"
-  ${where}`;
+   join "Municipio" m on m.id = us."municipioId"
+   where us."municipioId" ${filtroTenant} ${where}`;
 };
 
-const montarSelectConsulta = (page, limit, search) => {
+const montarSelectConsulta = (page, limit, search, tenant) => {
   const offset = (page - 1) * limit;
-  const sql = montarSelectConsultaBase(search);
+  const sql = montarSelectConsultaBase(search, tenant);
   return `${sql} order by m.nome, us.nome limit ${limit} offset ${offset}`;
 };
 
@@ -71,8 +76,9 @@ exports.consultaUnidades = async (req, res, next) => {
     const {
       page = 1, itemsPerPage: limit = 10, search = '',
     } = req.query;
-    const sqlCountUnidades = montarSelectConsultaBase(search).replace('*', 'count(1)');
-    const sqlUnidades = montarSelectConsulta(page, limit, search).replace('*', 'us.*, m.nome as municipio');
+    const { tenant } = new UsuarioLogado(req);
+    const sqlCountUnidades = montarSelectConsultaBase(search, tenant).replace('*', 'count(1)');
+    const sqlUnidades = montarSelectConsulta(page, limit, search, tenant).replace('*', 'us.*, m.nome as municipio');
     const [{ count: totalUnidades }] = await models.sequelize.query(sqlCountUnidades,
       { type: Sequelize.QueryTypes.SELECT });
     const unidadesSaude = await models.sequelize.query(sqlUnidades,
@@ -84,33 +90,32 @@ exports.consultaUnidades = async (req, res, next) => {
   }
 };
 
-const validarCNESUnico = async (cnes, id = null) => {
-  const where = { cnes };
-  if (id) where.id = { [Op.ne]: id };
-  const unidadeSaude = await models.UnidadeSaude.findOne({
-    attributes: ['id'],
-    where: { ...where },
-  });
-  return !!unidadeSaude;
-};
-
 exports.cadastrar = async (req, res, next) => {
   try {
-    const { cnes } = req.body;
-    if (await validarCNESUnico(cnes)) return res.status(400).json({ error: 'CNES já cadastrado para outra Unidade de Saúde.' });
-    const unidadeSaude = await models.UnidadeSaude.create({ ...req.body });
-
+    const { tenant } = new UsuarioLogado(req);
+    const unidadeSaude = await repos.unidadeSaudeRepository.cadastraUnidade(tenant, req.body);
     return res.json({ data: unidadeSaude });
   } catch (err) {
     return next(err);
   }
 };
 
+const unidadeExists = async (id, tenant) => models.UnidadeSaude
+  .findOne({ where: { id, municipioId: tenant } });
+
+const validateUnidadeExists = async (id, tenant) => {
+  const exist = await unidadeExists(id, tenant);
+  if (!exist) throw new RegraNegocioErro('Unidade não encontrada.');
+};
+
 exports.atualizar = async (req, res, next) => {
   try {
     const { id } = req.params;
     const unidade = req.body;
-    if (await validarCNESUnico(unidade.cnes, id)) return res.status(400).json({ error: 'CNES já cadastrado para outra Unidade de Saúde.' });
+    if (await repos.unidadeSaudeRepository.validarCNESUnico(unidade.cnes, id)) return res.status(400).json({ error: 'CNES já cadastrado para outra Unidade de Saúde.' });
+    const { tenant } = new UsuarioLogado(req);
+    await validateUnidadeExists(id, tenant);
+
     const unidadeSaude = await models.UnidadeSaude.update(
       { ...unidade }, {
         where: { id },
@@ -124,24 +129,32 @@ exports.atualizar = async (req, res, next) => {
   }
 };
 
-exports.consultarPorId = async (req, res) => {
-  const { id } = req.params;
-  const unidadesSaude = await models.UnidadeSaude.findOne({
-    where: { id },
-    include: [
-      {
-        attributes: ['id', ['nome', 'municipio']],
-        model: models.Municipio,
-      },
-    ],
-  });
+exports.consultarPorId = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { tenant } = new UsuarioLogado(req);
+    const unidadesSaude = await models.UnidadeSaude.findOne({
+      where: { id, municipioId: tenant },
+      include: [
+        {
+          attributes: ['id', ['nome', 'municipio']],
+          model: models.Municipio,
+        },
+      ],
+    });
+    if (!unidadesSaude) throw new RegraNegocioErro('Unidade não encontrada.');
 
-  return res.json({ data: unidadesSaude });
+    return res.json({ data: unidadesSaude });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.deletar = async (req, res, next) => {
   const { id } = req.params;
   try {
+    const { tenant } = new UsuarioLogado(req);
+    await validateUnidadeExists(id, tenant);
     await models.UnidadeSaude.destroy({ where: { id } });
     return res.status(204).send();
   } catch (err) {

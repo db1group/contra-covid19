@@ -38,3 +38,6 @@ exports.isRealSecretariaOuUnidadeSaude = async (token, req) => {
   });
   return !!unidadeSaude;
 };
+
+const isRealmSupervisor = (token) => token.hasRole('realm:SUPERVISOR');
+exports.isRealmSupervisor = isRealmSupervisor;

@@ -1,6 +1,8 @@
 const { Readable, Transform } = require('stream');
 const ExportaNotificacaoRepository = require('../repositories/exporta-notificacao-repository');
 const Stopwatch = require('../lib/stopwatch');
+const { UsuarioLogado } = require('../secure/usuario-logado');
+const { RegraNegocioErro } = require('../lib/erros');
 
 const transformCSV = () => {
   let headerSeted = false;
@@ -12,11 +14,13 @@ const transformCSV = () => {
       if (!headerSeted) {
         const cabecalhos = ExportaNotificacaoRepository
           .cabecalhosExportacao
-          .map((n) => n.header).join(',');
+          .map((n) => n.header).join(';');
         data += `${cabecalhos}\n`;
         headerSeted = true;
       }
-      const dataCSV = Object.values(chunk).join(',');
+      const dataCSV = Object.values(chunk)
+        .map((value) => value.toString().replace(',', '.'))
+        .join(',');
       data += `${dataCSV}\n`;
       callback(null, data);
     },
@@ -37,9 +41,12 @@ exports.exportarNotificacoes = async (req, res, next) => {
     const [
       dataInicialFiltro, dataFinalFiltro, dataEvolucaoInicialFiltro, dataEvolucaoFinalFiltro,
     ] = ExportaNotificacaoRepository.retornarFiltrosData(req.query);
+    const { tenant } = new UsuarioLogado(req);
     const [notificacoes] = await ExportaNotificacaoRepository.consultarNotificacoes(
       dataInicialFiltro, dataFinalFiltro, dataEvolucaoInicialFiltro, dataEvolucaoFinalFiltro,
+      tenant,
     );
+    if (notificacoes.length === 0) throw new RegraNegocioErro('Não existem notificações neste período.');
 
     const rows = ExportaNotificacaoRepository.retornarRowsNotificacaoExcel(notificacoes);
     const notificacoesStream = createReadableStream(rows);

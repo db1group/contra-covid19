@@ -2,10 +2,11 @@ const rolesAuth = require('./roles');
 
 class UsuarioLogado {
   constructor(req) {
-    const { email } = req.kauth.grant.access_token.content;
+    const { email, tenant = null } = req.kauth.grant.access_token.content;
     const { roles } = req.kauth.grant.access_token.content.realm_access;
     this.email = email;
     this.roles = roles;
+    this.tenant = tenant;
   }
 
   isRoleSecretariaSaude() {
@@ -26,6 +27,10 @@ class UsuarioLogado {
 
   isRoleEnvioSecretaria() {
     return this.roles.some((data) => data === rolesAuth.values.EnvioSecretaria);
+  }
+
+  isSupervisor() {
+    return this.roles.some((data) => data === rolesAuth.values.Supervisor);
   }
 }
 

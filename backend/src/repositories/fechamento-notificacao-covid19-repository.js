@@ -1,10 +1,13 @@
 const models = require('../models');
 
-module.exports.cadastrar = async (data, transaction) => models.FechamentoNotificacaoCovid19
+exports.cadastrar = async (data, transaction) => models.FechamentoNotificacaoCovid19
   .create(data, { transaction });
 
-module.exports.atualizar = async (id, data, transaction) => models.FechamentoNotificacaoCovid19
+exports.atualizar = async (id, data, transaction) => models.FechamentoNotificacaoCovid19
   .update(data, { where: { id }, transaction });
 
-module.exports.delete = async (id, transaction) => models.FechamentoNotificacaoCovid19
+exports.delete = async (id, transaction) => models.FechamentoNotificacaoCovid19
   .destroy({ where: { id }, transaction });
+
+exports.deleteByData = async (tenant, dataFato, transaction) => models.FechamentoNotificacaoCovid19
+  .destroy({ where: { municipioId: tenant, dtFato: dataFato }, transaction });

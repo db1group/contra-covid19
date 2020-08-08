@@ -19,12 +19,10 @@ router.put(`${prefixoRoute}/:id`,
   validate(schemas.notificacao.cadastrar),
   NotificacaoResource.atualizar);
 
-router.get(`${prefixoRoute}`, NotificacaoResource.consultarPaginado);
 router.get(`${prefixoRoute}/consulta`, NotificacaoResource.consultarNotificacoesWeb);
 router.get(`${prefixoRoute}/:id`, NotificacaoResource.consultarPorId);
 
 router.delete(`${prefixoRoute}/:id`, NotificacaoResource.excluirLogicamenteNotificacao);
-router.delete(`${prefixoRoute}`, NotificacaoResource.excluirLoteLogicamenteNotificacao);
 
 router.get(`${prefixoRoute}/:id/evolucoes`, keycloack.protect(isRealmSecretariaSaude), NotificacaoEvolucaoResource.consultar);
 router.post(`${prefixoRoute}/:id/evolucoes`, keycloack.protect(isRealmSecretariaSaude), NotificacaoEvolucaoResource.cadastrar);

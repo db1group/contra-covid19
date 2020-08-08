@@ -8,8 +8,7 @@ module.exports = (sequelize, DataTypes) => sequelize.define('FechamentoNotificac
   },
   dataFechamento: {
     allowNull: false,
-    type: DataTypes.DATE,
-    unique: true,
+    type: DataTypes.DATEONLY,
   },
   casosNotificados: {
     type: DataTypes.INTEGER,
@@ -47,4 +46,13 @@ module.exports = (sequelize, DataTypes) => sequelize.define('FechamentoNotificac
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  municipioId: {
+    type: DataTypes.UUID,
+  },
+}, {
+  indexes: [{
+    name: 'FechamentoNotificacaoCovid19_dataMunicipio_key',
+    unique: true,
+    fields: ['dataFechamento', 'municipioId'],
+  }],
 });

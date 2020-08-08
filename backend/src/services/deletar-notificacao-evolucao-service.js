@@ -5,9 +5,13 @@ const dataEvolucaoNotificacaoEnum = require('../enums/data-evolucao-notificacao-
 
 const getCampoDataEvolucao = (tpEvolucao) => dataEvolucaoNotificacaoEnum.values[tpEvolucao];
 
-exports.handle = async (notificacaoId, notificacaoEvolucaoId) => {
-  const notificacao = await repos.notificacaoRepository.getEvolucoesPorNotificacaoId(notificacaoId);
+exports.handle = async (notificacaoId, notificacaoEvolucaoId, tenant) => {
+  const notificacao = await repos.notificacaoRepository
+    .getEvolucoesPorNotificacaoId(notificacaoId, tenant);
 
+  if (!notificacao) {
+    throw new RegraNegocioErro('Evolução não encontrada.');
+  }
   if (notificacao.NotificacaoEvolucaos.length === 1) {
     throw new RegraNegocioErro('Não é permitido remover a primeira evolução.');
   }

@@ -14,6 +14,8 @@ import UsuarioForm from '../views/UsuarioForm.vue';
 import ControleLeitosCons from '../views/ControleLeitosCons.vue';
 import ControleLeitosForm from '../views/ControleLeitosForm.vue';
 import ControleLeitoPerfilCons from '../views/ControleLeitoPerfilCons.vue';
+import TenantConfigCons from '../views/TenantConfigCons.vue';
+import TenantConfigForm from '../views/TenantConfigForm.vue';
 
 Vue.use(VueRouter);
 
@@ -54,8 +56,8 @@ const routes = [
     component: NotificacaoExportar,
   },
   {
-    path: '/fechamento',
-    name: 'fechamento-diario',
+    path: '/tenant',
+    name: 'tenant-diario',
     component: FechamentoDiario,
   },
   {
@@ -115,6 +117,22 @@ const routes = [
     path: '/controle-leito/perfil/:id',
     name: 'controle-leito-perfil-cons',
     component: ControleLeitoPerfilCons,
+  },
+  {
+    path: '/config',
+    name: 'tenant-config-cons',
+    component: TenantConfigCons,
+  },
+  {
+    path: '/config/cadastro',
+    name: 'tenant-config-form',
+    component: TenantConfigForm,
+  },
+  {
+    path: '/config/:id/edit',
+    name: 'tenant-config-edit',
+    component: TenantConfigForm,
+    props: { edit: true },
   },
 ];
 

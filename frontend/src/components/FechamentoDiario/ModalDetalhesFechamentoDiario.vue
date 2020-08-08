@@ -30,10 +30,24 @@
           :footer-props="{
             pageText: '{0}-{1} de {2}',
             itemsPerPageText: 'Linhas por página',
-            itemsPerPageOptions: [10, 30, 50, 100],
+            itemsPerPageOptions: [10, 30, 50, 100, 500, 1000],
           }"
           class="elevation-1"
         >
+          <template v-slot:top>
+            <v-row justify="end">
+              <v-col cols="4">
+                <v-select
+                  :items="tiposEvolucao"
+                  :value="filtroTpEvolucao"
+                  label="Evolução"
+                  item-text="value"
+                  item-value="key"
+                  @input="updateFiltroTiposEvolucao"
+                />
+              </v-col>
+            </v-row>
+          </template>
           <template v-slot:item.createdAt="{ item }">
             <span>{{ getDateTimeFormat(item.createdAt) }}</span>
           </template>
@@ -48,6 +62,15 @@ import moment from 'moment';
 import DetalhesFechamentoDiario from '@/entities/DetalhesFechamentoDiario';
 import FechamentoService from '@/services/FechamentoService';
 import ErrorService from '@/services/ErrorService';
+
+const TIPOS_EVOLUCOES = [
+  { key: '', value: 'TODAS' },
+  { key: 'SUSPEITO', value: 'SUSPEITO' },
+  { key: 'CONFIRMADO', value: 'CONFIRMADO' },
+  { key: 'CURADO', value: 'CURADO' },
+  { key: 'OBITO', value: 'OBITO' },
+  { key: 'DESCARTADO', value: 'DESCARTADO' },
+];
 
 export default {
   props: {
@@ -75,6 +98,8 @@ export default {
       { text: 'Evolução', value: 'tpEvolucao', sortable: false },
     ],
     detalhesFechamento: [],
+    tiposEvolucao: TIPOS_EVOLUCOES,
+    filtroTpEvolucao: '',
   }),
   watch: {
     value(showing) {
@@ -94,24 +119,29 @@ export default {
       return moment(value).format('DD/MM/YYYY HH:mm');
     },
     consultarDetalhesFechamentos({
-      page, itemsPerPage, sortBy = 'dataEvolucao', sortDesc = 'true',
+      page, itemsPerPage,
     } = this.options) {
       this.loading = true;
+      const tpEvolucao = this.filtroTpEvolucao;
       FechamentoService.getDetailsProximoFechamento({
         dataFechamento: this.dataFechamento,
         page,
         itemsPerPage,
-        sortBy,
-        sortDesc,
+        tpEvolucao,
       })
         .then(({ count, data }) => {
           this.totalNotif = count;
-          this.detalhesFechamento = data.rows.map((d) => new DetalhesFechamentoDiario(d));
+          this.detalhesFechamento = data.map((d) => new DetalhesFechamentoDiario(d));
         })
         .catch((error) => {
           this.$emit('erro:consultarFechamentos', ErrorService.getMessage(error));
         })
         .finally(() => { this.loading = false; });
+    },
+    updateFiltroTiposEvolucao(tpEvolucao) {
+      this.filtroTpEvolucao = tpEvolucao;
+      this.options = { ...this.options, page: 1 };
+      this.consultarDetalhesFechamentos();
     },
   },
 };
