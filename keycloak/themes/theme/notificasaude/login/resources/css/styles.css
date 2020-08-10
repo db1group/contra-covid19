@@ -105,7 +105,7 @@ body:after {
   bottom: 0;
   right: 0;
   z-index: -999;
-  background: #0034bc url("../img/background.png") no-repeat center center fixed;
+  background: #0034bc url("../img/background.jpg") no-repeat center center fixed;
   background-size: 100vw 100vh;
   overflow: hidden;
 }
