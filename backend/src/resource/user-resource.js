@@ -156,16 +156,18 @@ exports.getAllKeycloakUsers = async (_req, res, next) => {
 exports.updateKeyckoakUsers = async (_req, res, next) => {
   try {
     const users = await UserApi.listarUsuarios();
-    users.map(async (u) => {
-      const { email } = u;
+    let user;
+    // eslint-disable-next-line no-restricted-syntax
+    for await (user of users) {
+      const { email } = user;
       const userParams = {
-        keycloakUserId: u.id,
-        nome: `${u.firstName.toUpperCase()} ${u.lastName.toUpperCase()}`.trim(),
+        keycloakUserId: user.id,
+        nome: `${user.firstName.toUpperCase()} ${user.lastName.toUpperCase()}`.trim(),
       };
       await models.User.update(userParams, {
         where: { email },
       });
-    });
+    }
     res.status(204).send();
   } catch (err) {
     console.error(err);

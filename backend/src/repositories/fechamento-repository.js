@@ -113,11 +113,12 @@ const podeReabrirFechamento = async (tenantConfig, id) => {
   const filtroBloqueio = tenantConfig.dtBloqueioFechamento
     ? ` AND fnc."dataFechamento" > '${tenantConfig.dtBloqueioFechamento}' `
     : '';
+  const filtroTenant = (alias) => `${alias}."municipioId" = :municipioId`;
   const [fatos] = await models.sequelize.query(`
   select fnc.id, fnc."dataFechamento"
-  from "FechamentoNotificacaoCovid19" fnc where fnc.id = :id ${filtroBloqueio} and fnc."municipioId" = :municipioId
-  and (not exists (select 1 from "FechamentoNotificacaoCovid19" fne where fne."dataFechamento"::date = (fnc."dataFechamento"::date + 1))
-  or exists (select 1 from "FechamentoNotificacaoCovid19" fe where fe.status = 'REABERTO' and fe."dataFechamento"::date = (fnc."dataFechamento"::date + 1)));`,
+  from "FechamentoNotificacaoCovid19" fnc where fnc.id = :id ${filtroBloqueio} and ${filtroTenant('fnc')}
+  and (not exists (select 1 from "FechamentoNotificacaoCovid19" fne where fne."dataFechamento"::date = (fnc."dataFechamento"::date + 1) AND ${filtroTenant('fne')})
+  or exists (select 1 from "FechamentoNotificacaoCovid19" fe where fe.status = 'REABERTO' and fe."dataFechamento"::date = (fnc."dataFechamento"::date + 1) AND ${filtroTenant('fe')}));`,
   {
     replacements: {
       id,

@@ -296,17 +296,23 @@ exports.getEvolucoesFechamento = async (tenantConfig, dataFechamento, options) =
   const [dtInicial, dtFinal] = tenantConfig.getPeriodoFechamento(dataFechamento);
   let pagination = '';
   let filtroTpEvolucao = '';
+  let filtroSearch = '';
   if (options) {
-    const { page = 1, limit = 10, tpEvolucao } = options;
+    const {
+      page = 1, limit = 10, tpEvolucao, search,
+    } = options;
     const offset = (page - 1) * limit;
     pagination = `limit ${limit} offset ${offset}`;
     filtroTpEvolucao = tpEvolucao ? ` AND ne."tpEvolucao" = '${tpEvolucao}' ` : '';
+    const filtroPessoa = `UPPER(p.nome) LIKE '%${search.toUpperCase()}%'`;
+    const filtroDocumento = `UPPER(p."numeroDocumento") LIKE '%${search.toUpperCase()}%'`;
+    filtroSearch = search ? ` AND (${filtroPessoa} OR ${filtroDocumento}) ` : '';
   }
 
   const evolucoes = await models.sequelize.query(`
     select ne.*,
     dp.id AS dmpacienteid,
-    p.nome as paciente, p.sexo, temcomorbidade(nc.*) AS comorbidade, faixaetaria(p."dataDeNascimento") AS faixaetaria,
+    p.nome as paciente, p."numeroDocumento", p.sexo, temcomorbidade(nc.*) AS comorbidade, faixaetaria(p."dataDeNascimento") AS faixaetaria,
     dl.id AS dmlocalizacaoid,
     b.nome AS bairro,
     m.nome AS cidade,
@@ -323,7 +329,7 @@ exports.getEvolucoesFechamento = async (tenantConfig, dataFechamento, options) =
     LEFT JOIN "DmPaciente" dp ON dp.sexo = p.sexo AND dp.comorbidade = temcomorbidade(nc.*) AND dp.faixaetaria = faixaetaria(p."dataDeNascimento")
     LEFT JOIN "DmLocalizacao" dl ON dl.bairro = b.nome AND dl.cidade = m.nome AND dl.estado = m.uf AND dl.pais = 'BRASIL'
     where n.status <> :status and n."municipioId" = :municipioId and
-    p."municipioId" IN(:municipios) and ne."createdAt" between :dtInicial and :dtFinal ${filtroTpEvolucao}
+    p."municipioId" IN(:municipios) and ne."createdAt" between :dtInicial and :dtFinal ${filtroTpEvolucao} ${filtroSearch}
     order by ne."createdAt" ASC ${pagination}`,
   {
     replacements: {

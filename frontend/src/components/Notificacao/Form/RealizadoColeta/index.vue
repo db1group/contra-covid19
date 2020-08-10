@@ -317,7 +317,7 @@ export default {
     validate() {
       this.$refs.dataDaColeta.validate();
       this.$refs.tipoLaboratorio.validate();
-      this.$refs.metodoDeExame.validate();
+      // this.$refs.metodoDeExame.validate();
       this.$refs.dataCadastroExame.validate();
       this.$refs.dataRecebimentoExame.validate();
       this.$refs.dataLiberacaoExame.validate();

@@ -16,11 +16,11 @@ export default {
     return http.get('/fechamento/proximo').then(({ data }) => data.data);
   },
   getDetailsProximoFechamento({
-    dataFechamento, page, itemsPerPage, tpEvolucao,
+    dataFechamento, page, itemsPerPage, tpEvolucao, search,
   }) {
     let url = '/fechamento/detalhes';
     url += `?dataFechamento=${dataFechamento}&page=${page}&itemsPerPage=${itemsPerPage}`;
-    url += `&tpEvolucao=${tpEvolucao}`;
+    url += `&tpEvolucao=${tpEvolucao}&search=${search}`;
     return http
       .get(url)
       .then(({ data }) => data);

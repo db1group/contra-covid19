@@ -242,7 +242,9 @@ export default {
       FechamentoService.reabrirFechamento(id)
         .then(() => {
           this.$emit('success:reabrirFechamento');
-          this.consultarFechamentos();
+          setTimeout(() => {
+            this.consultarFechamentos();
+          }, 500);
         })
         .catch((error) => {
           this.$emit('erro:reabrirFechamento', ErrorService.getMessage(error));

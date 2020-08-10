@@ -59,7 +59,7 @@ exports.consultarPorUserEmail = async (request, response) => {
 
 const montarSelectConsultaBase = (search, tenant) => {
   const where = search.trim() !== '' ? ` AND (UPPER(us.nome) like UPPER('%${search}%') or us.cnes LIKE '%${search}%')` : '';
-  const filtroTenant = tenant ? ` = ${tenant} ` : ' IS NULL';
+  const filtroTenant = tenant ? ` = '${tenant}' ` : ' IS NULL';
   return `select * from  "UnidadeSaude" us
    join "Municipio" m on m.id = us."municipioId"
    where us."municipioId" ${filtroTenant} ${where}`;

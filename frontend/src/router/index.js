@@ -56,8 +56,8 @@ const routes = [
     component: NotificacaoExportar,
   },
   {
-    path: '/tenant',
-    name: 'tenant-diario',
+    path: '/fechamento',
+    name: 'fechamento-diario',
     component: FechamentoDiario,
   },
   {

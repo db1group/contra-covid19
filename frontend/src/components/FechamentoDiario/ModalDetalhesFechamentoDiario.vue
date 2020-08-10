@@ -36,7 +36,7 @@
         >
           <template v-slot:top>
             <v-row justify="end">
-              <v-col cols="4">
+              <v-col cols="3">
                 <v-select
                   :items="tiposEvolucao"
                   :value="filtroTpEvolucao"
@@ -45,6 +45,16 @@
                   item-value="key"
                   @input="updateFiltroTiposEvolucao"
                 />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  ref="search"
+                  @input="filterSearch"
+                  append-icon="mdi-magnify"
+                  label="Pesquisar por Documento ou Nome"
+                  single-line
+                  hide-details
+                ></v-text-field>
               </v-col>
             </v-row>
           </template>
@@ -95,15 +105,22 @@ export default {
       { text: 'Data', value: 'createdAt', sortable: false },
       { text: 'Unidade de Saúde', value: 'unidadeSaude', sortable: false },
       { text: 'Nome', value: 'nome', sortable: false },
+      { text: 'Cidade', value: 'nomeCidade', sortable: false },
       { text: 'Evolução', value: 'tpEvolucao', sortable: false },
     ],
     detalhesFechamento: [],
     tiposEvolucao: TIPOS_EVOLUCOES,
     filtroTpEvolucao: '',
+    filterCons: null,
+    filter: '',
   }),
   watch: {
     value(showing) {
       if (showing) {
+        this.filtroTpEvolucao = '';
+        this.filterCons = null;
+        this.filter = '';
+        this.$refs.search.reset();
         this.consultarDetalhesFechamentos();
       }
     },
@@ -123,11 +140,13 @@ export default {
     } = this.options) {
       this.loading = true;
       const tpEvolucao = this.filtroTpEvolucao;
+      const search = this.filter || '';
       FechamentoService.getDetailsProximoFechamento({
         dataFechamento: this.dataFechamento,
         page,
         itemsPerPage,
         tpEvolucao,
+        search,
       })
         .then(({ count, data }) => {
           this.totalNotif = count;
@@ -142,6 +161,19 @@ export default {
       this.filtroTpEvolucao = tpEvolucao;
       this.options = { ...this.options, page: 1 };
       this.consultarDetalhesFechamentos();
+    },
+    filterNotificacoes() {
+      clearTimeout(this.filterCons);
+      this.filterCons = setTimeout(() => {
+        this.consultarDetalhesFechamentos({
+          page: 1,
+          itemsPerPage: this.options.itemsPerPage,
+        });
+      }, 500);
+    },
+    filterSearch(search) {
+      this.filter = search;
+      this.filterNotificacoes();
     },
   },
 };

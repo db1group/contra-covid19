@@ -45,6 +45,7 @@ exports.getDetalheProximoFechamento = async (req, res, next) => {
         dataEvolucao: data.dtEvolucao,
         nomePaciente: data.paciente,
         nomeUnidadeSaude: data.unidadeSaude,
+        nomeCidade: data.cidade,
         tpEvolucao: data.tpEvolucao,
       })),
     });
