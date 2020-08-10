@@ -3,6 +3,7 @@ const { normalizarTexto } = require('../lib/normalizar-texto');
 
 const normalizarTextoFechamento = (fechamento) => {
   fechamento.nome = normalizarTexto(fechamento.nome);
+  fechamento.email = fechamento.email.toLowerCase();
   fechamento.cnes = fechamento.cnes.padStart(7, '0');
 };
 
