@@ -1,0 +1,1 @@
+docker run -it --rm bitnami/redis:latest redis-cli -h 172.17.0.2

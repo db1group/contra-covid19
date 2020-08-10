@@ -187,7 +187,7 @@ exports.updateKeyckoakUsers = async (req, res, next) => {
     const { tenant } = req.query;
     const users = await UserApi.listarUsuarios();
     const dataErrors = await AtualizarDadosUsuario(users, tenant);
-    return res.json({ data: dataErrors });
+    return res.json({ count: dataErrors.length, data: dataErrors });
   } catch (err) {
     console.error(err);
     return next(err);
