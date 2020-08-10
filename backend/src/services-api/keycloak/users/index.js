@@ -75,15 +75,21 @@ exports.create = async (nome, email, token, tenant) => {
   }
 };
 
-exports.update = async (id, nome, token) => {
+exports.update = async ({
+  id, nome, token, tenant,
+}) => {
   try {
     token = await getToken(token);
+    const userParams = {
+      firstName: nome,
+      lastName: '',
+    };
+    if (tenant) {
+      userParams.attributes = { tenant };
+    }
 
     return KeycloakAPI.put(`admin/realms/notificasaude/users/${id}`,
-      {
-        firstName: nome,
-        lastName: '',
-      },
+      userParams,
       {
         headers: {
           Authorization: `Bearer ${token}`,

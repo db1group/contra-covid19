@@ -98,7 +98,7 @@ exports.update = async (req, res, next) => {
     const [userKeycloak] = await UserApi.listarUsuarios(email, token);
     if (!userKeycloak) return res.status(404).json({ error: 'Usuário não encontrado.' });
     const keycloakUserId = userKeycloak.id;
-    await UserApi.update(keycloakUserId, nome, token);
+    await UserApi.update({ id: keycloakUserId, nome, token });
     await UserApi.joinRoles({
       userId: keycloakUserId, permissoes, token, removeRoles: true,
     });
@@ -146,32 +146,51 @@ exports.findByEmail = async (req, res) => {
 exports.getAllKeycloakUsers = async (_req, res, next) => {
   try {
     const users = await UserApi.listarUsuarios();
-    res.json({ data: users });
+    res.json({ count: users.length, data: users });
   } catch (err) {
     console.error(err);
     next(err);
   }
 };
 
-exports.updateKeyckoakUsers = async (_req, res, next) => {
-  try {
-    const users = await UserApi.listarUsuarios();
-    let user;
-    // eslint-disable-next-line no-restricted-syntax
-    for await (user of users) {
-      const { email } = user;
+const criarPromiseAtualizacaoUser = (user, tenant) => new Promise(
+  // eslint-disable-next-line no-async-promise-executor
+  async (resolve, reject) => {
+    try {
+      const {
+        id, email, firstName = '', lastName = '',
+      } = user;
       const userParams = {
-        keycloakUserId: user.id,
-        nome: `${user.firstName.toUpperCase()} ${user.lastName.toUpperCase()}`.trim(),
+        keycloakUserId: id,
+        nome: `${firstName.toUpperCase()} ${lastName.toUpperCase()}`.trim(),
       };
       await models.User.update(userParams, {
         where: { email },
       });
+      await UserApi.update({
+        id, nome: userParams.nome, tenant,
+      });
+      return resolve({ ...userParams, tenant });
+    } catch (err) {
+      // eslint-disable-next-line prefer-promise-reject-errors
+      return reject({ id: user.id, message: err.message });
     }
-    res.status(204).send();
+  },
+);
+
+const AtualizarDadosUsuario = (users, tenant) => Promise.allSettled(
+  users.map((u) => criarPromiseAtualizacaoUser(u, tenant)),
+).then((res) => res.map((p) => (p.status === 'rejected' ? p.reason : p.value)));
+
+exports.updateKeyckoakUsers = async (req, res, next) => {
+  try {
+    const { tenant } = req.query;
+    const users = await UserApi.listarUsuarios();
+    const dataErrors = await AtualizarDadosUsuario(users, tenant);
+    return res.json({ data: dataErrors });
   } catch (err) {
     console.error(err);
-    next(err);
+    return next(err);
   }
 };
 
