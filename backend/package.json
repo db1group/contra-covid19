@@ -15,12 +15,14 @@
     "dev": "cross-env NODE_ENV=development nodemon --inspect src/server.js | pino-pretty",
     "pm2": "cross-env NODE_ENV=development pm2 start -f src/server.js -i max",
     "migrate": "cross-env NODE_ENV=development npx sequelize-cli db:migrate",
+    "migrate:undo": "cross-env NODE_ENV=development npx sequelize-cli db:migrate:undo",
     "build": "cross-env NODE_ENV=prod node src/server.js",
     "model": "npx sequelize-cli model:generate --name ",
     "migration": "npx sequelize-cli migration:generate --name ",
     "seed": "npx sequelize-cli seed:generate --name ",
     "seed:all": "npx sequelize-cli db:seed:all",
-    "seed:undo": "npx sequelize-cli db:seed:undo"
+    "seed:undo": "npx sequelize-cli db:seed:undo",
+    "create:supervisor": "node src/scripts/createSupervisor.js"
   },
   "jest": {
     "testEnvironment": "node",

@@ -9,7 +9,8 @@ const { RegraNegocioErro } = require('../lib/erros');
 module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
   validarMenorQueDataHoraAtual(notificacaoRequest.dataHoraNotificacao, 'A', 'data/hora da notificação');
 
-  const notificacaoModel = await repos.notificacaoRepository.getPorId(notificacaoRequest.id);
+  const notificacaoModel = await repos.notificacaoRepository
+    .getPorId(notificacaoRequest.id, usuarioLogado.tenant);
 
   if (notificacaoModel === null) throw new RegraNegocioErro('Notificação não existe.');
 
@@ -19,7 +20,7 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
     const { unidadeSaudeId } = notificacaoModel;
 
     const unidadesSaudeUser = await repos.unidadeSaudeRepository
-      .getPorUserEmail(usuarioLogado.email);
+      .getPorUserEmail(usuarioLogado.email, usuarioLogado.tenant);
 
     if (!unidadesSaudeUser) {
       throw new RegraNegocioErro('Você não possui autorização para atualizar esta notificação.');
@@ -31,7 +32,7 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
   }
 
   const notificacaoEvolucoes = await repos.notificacaoRepository
-    .getEvolucoesPorNotificacaoId(notificacaoRequest.id);
+    .getEvolucoesPorNotificacaoId(notificacaoRequest.id, usuarioLogado.tenant);
 
   const evolucoesSort = notificacaoEvolucoes.NotificacaoEvolucaos.sort((a, b) => {
     const dataEvolucaoItemA = new Date(a.dtEvolucao);
@@ -59,7 +60,7 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
   }
 
   const notificacaoConsolidada = await consolidacaoAtualizacaoNotificacaoService
-    .handle(notificacaoRequest);
+    .handle(notificacaoRequest, usuarioLogado.tenant);
 
   const suspeitoUpdate = Mappers.Pessoa.mapearParaModel(notificacaoRequest.suspeito);
   suspeitoUpdate.id = notificacaoConsolidada.suspeito.pessoaId;
@@ -67,7 +68,8 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
 
   const notificacaoUpdate = Mappers.Notificacao.mapearParaNotificacao(notificacaoConsolidada);
   notificacaoUpdate.id = notificacaoRequest.id;
-  await repos.notificacaoRepository.atualizar(notificacaoUpdate);
+  notificacaoUpdate.municipioId = usuarioLogado.tenant;
+  await repos.notificacaoRepository.atualizar(notificacaoUpdate, usuarioLogado.tenant);
 
   const { notificacaoCovid19 } = notificacaoUpdate;
   notificacaoCovid19.notificacaoId = notificacaoRequest.id;

@@ -1,15 +1,12 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
+const repos = require('../repositories/repository-factory');
 
 const AuthAPI = require('../services-api/keycloak/auth');
 const UserApi = require('../services-api/keycloak/users');
+const { UsuarioLogado } = require('../secure/usuario-logado');
 
-exports.index = async (req, res) => {
-  const users = await models.User.findAll();
-  return res.json({ data: users });
-};
-
-const montarSelectConsultaBase = (search) => {
+const montarSelectConsultaBase = (search, tenant) => {
   const where = search.trim() !== ''
     ? ` AND (UPPER(u.nome) like UPPER('%${search}%') or LOWER(u.email) LIKE LOWER('%${search}%')
     or UPPER(us.nome) like UPPER('%${search}%'))`
@@ -17,12 +14,12 @@ const montarSelectConsultaBase = (search) => {
   return `select * from  "User" u
   left outer join "UserUnidadeSaude" uus on uus."userId" = u.id
   left outer join "UnidadeSaude" us on us.id = uus."unidadeSaudeId"
-  where u."deletedAt" is null ${where} `;
+  where u."deletedAt" is null and u."municipioId" = '${tenant}' ${where} `;
 };
 
-const montarSelectConsulta = (page, limit, search) => {
+const montarSelectConsulta = (page, limit, search, tenant) => {
   const offset = (page - 1) * limit;
-  const sql = montarSelectConsultaBase(search);
+  const sql = montarSelectConsultaBase(search, tenant);
   return `${sql} order by us.nome, u.nome limit ${limit} offset ${offset}`;
 };
 
@@ -31,8 +28,9 @@ exports.consultarUsuarios = async (req, res, next) => {
     const {
       page = 1, itemsPerPage: limit = 10, search = '',
     } = req.query;
-    const sqlCountUsuarios = montarSelectConsultaBase(search).replace('*', 'count(1)');
-    const sqlUsuarios = montarSelectConsulta(page, limit, search)
+    const { tenant } = new UsuarioLogado(req);
+    const sqlCountUsuarios = montarSelectConsultaBase(search, tenant).replace('*', 'count(1)');
+    const sqlUsuarios = montarSelectConsulta(page, limit, search, tenant)
       .replace('*', 'u.*, us.id as "unidadeSaudeId", us.nome as "unidadeSaudeNome"');
     const [{ count: totalUsuarios }] = await models.sequelize.query(sqlCountUsuarios,
       { type: Sequelize.QueryTypes.SELECT });
@@ -47,34 +45,27 @@ exports.consultarUsuarios = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const {
-      nome, email, unidadeSaudeId, permissoes,
-    } = req.body;
-    const token = await AuthAPI.login().then((t) => t.access_token);
-
-    await UserApi.create(nome.toUpperCase(), email.toLowerCase(), token);
-    const [userKeycloak] = await UserApi.listarUsuarios(email, token);
-    if (!userKeycloak) return res.status(404).json({ error: 'Ocorreu um erro na criação do usuário.' });
-    const keycloakUserId = userKeycloak.id;
-    await UserApi.joinRoles(keycloakUserId, permissoes, token);
-    const user = await models.User.create({ nome, email, keycloakUserId });
-    await models.UserUnidadeSaude.create({ userId: user.id, unidadeSaudeId });
+    const { tenant } = new UsuarioLogado(req);
+    await repos.usuarioRepository.criarUsuario(tenant, req.body);
     return res.status(201).send();
   } catch (err) {
     return next(err);
   }
 };
 
+const getUserById = async (id, tenant) => models.sequelize.query(
+  `select u.*, us.id as "unidadeSaudeId", us.nome as "unidadeSaudeNome", '' as permissoes from  "User" u
+  left outer join "UserUnidadeSaude" uus on uus."userId" = u.id
+  left outer join "UnidadeSaude" us on us.id = uus."unidadeSaudeId"
+  where u."deletedAt" is null and u.id = '${id}' and u."municipioId" = '${tenant}'`,
+  { type: Sequelize.QueryTypes.SELECT },
+);
+
 exports.get = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const [user] = await models.sequelize.query(
-      `select u.*, us.id as "unidadeSaudeId", us.nome as "unidadeSaudeNome", '' as permissoes from  "User" u
-    left outer join "UserUnidadeSaude" uus on uus."userId" = u.id
-    left outer join "UnidadeSaude" us on us.id = uus."unidadeSaudeId"
-    where u."deletedAt" is null and u.id = '${id}'`,
-      { type: Sequelize.QueryTypes.SELECT },
-    );
+    const { tenant } = new UsuarioLogado(req);
+    const [user] = await getUserById(id, tenant);
     if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
     const userRoles = await UserApi.listarUserRoles(user.keycloakUserId);
     user.permissoes = userRoles.map((r) => r.name);
@@ -99,12 +90,19 @@ exports.update = async (req, res, next) => {
     const {
       nome, email, unidadeSaudeId, permissoes,
     } = req.body;
+    const { tenant } = new UsuarioLogado(req);
+    const [user] = await getUserById(id, tenant);
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+
     const token = await AuthAPI.login().then((t) => t.access_token);
     const [userKeycloak] = await UserApi.listarUsuarios(email, token);
     if (!userKeycloak) return res.status(404).json({ error: 'Usuário não encontrado.' });
     const keycloakUserId = userKeycloak.id;
-    await UserApi.update(keycloakUserId, nome, token);
-    await UserApi.joinRoles(keycloakUserId, permissoes, token, true);
+    await UserApi.update({ id: keycloakUserId, nome, token });
+    await UserApi.joinRoles({
+      userId: keycloakUserId, permissoes, token, removeRoles: true,
+    });
+
     await models.User.update({ nome }, {
       where: { id },
       individualHooks: true,
@@ -120,8 +118,9 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { tenant } = new UsuarioLogado(req);
     const user = await models.User.findOne({
-      where: { id },
+      where: { id, municipioId: tenant },
     });
     if (user === null) return res.status(404).json({ error: 'User not found!' });
     await UserApi.delete(user.keycloakUserId);
@@ -136,8 +135,9 @@ exports.delete = async (req, res, next) => {
 
 exports.findByEmail = async (req, res) => {
   const { email } = req.params;
+  const { tenant } = new UsuarioLogado(req);
   const user = await models.User.findOne({
-    where: { email },
+    where: { email, municipioId: tenant },
   });
   if (user === null) return res.status(404).json({ error: 'User not found!' });
   return res.json({ data: user });
@@ -146,30 +146,51 @@ exports.findByEmail = async (req, res) => {
 exports.getAllKeycloakUsers = async (_req, res, next) => {
   try {
     const users = await UserApi.listarUsuarios();
-    res.json({ data: users });
+    res.json({ count: users.length, data: users });
   } catch (err) {
     console.error(err);
     next(err);
   }
 };
 
-exports.updateKeyckoakUsers = async (_req, res, next) => {
-  try {
-    const users = await UserApi.listarUsuarios();
-    users.map(async (u) => {
-      const { email } = u;
+const criarPromiseAtualizacaoUser = (user, tenant) => new Promise(
+  // eslint-disable-next-line no-async-promise-executor
+  async (resolve, reject) => {
+    try {
+      const {
+        id, email, firstName = '', lastName = '',
+      } = user;
       const userParams = {
-        keycloakUserId: u.id,
-        nome: `${u.firstName.toUpperCase()} ${u.lastName.toUpperCase()}`.trim(),
+        keycloakUserId: id,
+        nome: `${firstName.toUpperCase()} ${lastName.toUpperCase()}`.trim(),
       };
       await models.User.update(userParams, {
         where: { email },
       });
-    });
-    res.status(204).send();
+      await UserApi.update({
+        id, nome: userParams.nome, tenant,
+      });
+      return resolve({ ...userParams, tenant });
+    } catch (err) {
+      // eslint-disable-next-line prefer-promise-reject-errors
+      return reject({ id: user.id, message: err.message });
+    }
+  },
+);
+
+const AtualizarDadosUsuario = (users, tenant) => Promise.allSettled(
+  users.map((u) => criarPromiseAtualizacaoUser(u, tenant)),
+).then((res) => res.map((p) => (p.status === 'rejected' ? p.reason : p.value)));
+
+exports.updateKeyckoakUsers = async (req, res, next) => {
+  try {
+    const { tenant } = req.query;
+    const users = await UserApi.listarUsuarios();
+    const dataErrors = await AtualizarDadosUsuario(users, tenant);
+    return res.json({ data: dataErrors });
   } catch (err) {
     console.error(err);
-    next(err);
+    return next(err);
   }
 };
 

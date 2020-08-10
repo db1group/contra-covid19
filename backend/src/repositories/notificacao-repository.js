@@ -1,14 +1,15 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
 const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secretaria-enum');
+const statusNotificacaoEnum = require('../enums/status-notificacao-enum');
 
 const { Op } = Sequelize;
 
 module.exports.cadastrarEvolucao = async (evolucao, transaction) => models.NotificacaoEvolucao
   .create(evolucao, { transaction });
 
-module.exports.getEvolucoesPorNotificacaoId = async (id) => models.Notificacao.findOne({
-  where: { id },
+module.exports.getEvolucoesPorNotificacaoId = async (id, tenant) => models.Notificacao.findOne({
+  where: { id, municipioId: tenant },
   attributes: ['id', 'status'],
   include: [{
     model: models.Pessoa,
@@ -43,8 +44,11 @@ module.exports.atualizarEvolucaoPorId = async (evolucao, transaction) => {
   );
 };
 
-module.exports.getPorId = async (id) => models.Notificacao.findOne({
-  where: { id },
+exports.notificacaoExists = async (id, tenant) => models.Notificacao
+  .findOne({ where: { id, municipioId: tenant } });
+
+module.exports.getPorId = async (id, tenant) => models.Notificacao.findOne({
+  where: { id, municipioId: tenant },
   include: [
     {
       model: models.Pessoa,
@@ -103,48 +107,51 @@ module.exports.getPorPessoaDocumento = async (where) => {
   });
 };
 
-exports.atualizar = async (notificacao) => {
+exports.atualizar = async (notificacao, tenant) => {
   const { id } = notificacao;
   models.Notificacao.update(
     { ...notificacao },
-    { where: { id } },
+    { where: { id, municipioId: tenant } },
   );
 };
 
-exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids) => models.Notificacao.findAll({
-  where: {
-    id: ids,
-  },
-  include: [
-    {
-      model: models.Pessoa,
-      include: [
-        { model: models.Bairro },
-        { model: models.Municipio },
-        { model: models.Ocupacao },
-        { model: models.Pais, as: 'Pais' },
-      ],
+exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids, tenant) => models
+  .Notificacao.findAll({
+    where: {
+      id: ids,
+      municipioId: tenant,
+      status: { [Op.ne]: statusNotificacaoEnum.values.Excluida },
     },
-    {
-      model: models.NotificacaoEvolucao,
-    },
-    {
-      model: models.NotificacaoCovid19,
-      include: [
-        { model: models.Exame },
-        { model: models.ResultadoExame },
-        {
-          model: models.UnidadeSaude,
-          as: 'Hospital',
-          include: [{ model: models.Municipio }],
-        },
-        { model: models.UnidadeSaude, as: 'Laboratorio' },
-        { model: models.UnidadeSaude, as: 'UnidadeFrequentada' },
-      ],
-      where: {
-        [Op.and]: [
+    include: [
+      {
+        model: models.Pessoa,
+        include: [
+          { model: models.Bairro },
+          { model: models.Municipio },
+          { model: models.Ocupacao },
+          { model: models.Pais, as: 'Pais' },
+        ],
+      },
+      {
+        model: models.NotificacaoEvolucao,
+      },
+      {
+        model: models.NotificacaoCovid19,
+        include: [
+          { model: models.Exame },
+          { model: models.ResultadoExame },
           {
-            [Op.or]:
+            model: models.UnidadeSaude,
+            as: 'Hospital',
+            include: [{ model: models.Municipio }],
+          },
+          { model: models.UnidadeSaude, as: 'Laboratorio' },
+          { model: models.UnidadeSaude, as: 'UnidadeFrequentada' },
+        ],
+        where: {
+          [Op.and]: [
+            {
+              [Op.or]:
                 [
                   {
                     tpTransmissaoApiSecretaria:
@@ -158,24 +165,24 @@ exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids) => models.No
                     tpTransmissaoApiSecretaria: null,
                   },
                 ],
-          },
+            },
+          ],
+        },
+      },
+      { model: models.Municipio },
+      {
+        model: models.UnidadeSaude,
+        include: [
+          { model: models.Municipio },
         ],
       },
-    },
-    { model: models.Municipio },
-    {
-      model: models.UnidadeSaude,
-      include: [
-        { model: models.Municipio },
-      ],
-    },
-    { model: models.User },
-    { model: models.ProfissionalSaude },
-    { model: models.Profissao },
-  ],
-});
+      { model: models.User },
+      { model: models.ProfissionalSaude },
+      { model: models.Profissao },
+    ],
+  });
 
-exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, search = '', unidadeId) => {
+exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, search = '', unidadeId, tenant) => {
   const offset = (page - 1) * limit;
   const filtroPadrao = {
     [Op.or]: [
@@ -190,7 +197,8 @@ exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, s
       },
     ],
   };
-  const filtros = [filtroPadrao];
+  const filtroTenant = Sequelize.where(Sequelize.col('Notificacao.municipioId'), tenant);
+  const filtros = [filtroTenant, filtroPadrao];
 
   if (unidadeId) {
     const filtroUnidade = Sequelize.where(Sequelize.col('Notificacao.UnidadeSaude.id'), unidadeId);
@@ -227,6 +235,9 @@ exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, s
     include: [
       {
         model: models.Notificacao,
+        where: {
+          status: { [Op.ne]: statusNotificacaoEnum.values.Excluida },
+        },
         attributes: ['id', 'unidadeSaudeId', 'pessoaId'],
         include: [
           {
@@ -246,9 +257,11 @@ exports.getNotificacoesPendentesEnvioSecretaria = async (page = 1, limit = 50, s
   });
 };
 
-module.exports.getNotificacoesPorPeriodo = async (periodo, page = 1, limit = 500) => {
+module.exports.getNotificacoesPorPeriodo = async (periodo, page = 1, limit = 500, tenant) => {
   const offset = (page - 1) * limit;
-  const where = periodo ? { createdAt: { [Op.gte]: periodo } } : {};
+  const where = periodo
+    ? { createdAt: { [Op.gte]: periodo }, municipioId: tenant }
+    : { municipioId: tenant };
   where.status = { [Op.ne]: 'EXCLUIDA' };
   return models.Notificacao.findAndCountAll({
     where,
@@ -277,4 +290,117 @@ module.exports.getNotificacoesPorPeriodo = async (periodo, page = 1, limit = 500
     limit,
     offset,
   });
+};
+
+exports.getEvolucoesFechamento = async (tenantConfig, dataFechamento, options) => {
+  const [dtInicial, dtFinal] = tenantConfig.getPeriodoFechamento(dataFechamento);
+  let pagination = '';
+  let filtroTpEvolucao = '';
+  let filtroSearch = '';
+  if (options) {
+    const {
+      page = 1, limit = 10, tpEvolucao, search,
+    } = options;
+    const offset = (page - 1) * limit;
+    pagination = `limit ${limit} offset ${offset}`;
+    filtroTpEvolucao = tpEvolucao ? ` AND ne."tpEvolucao" = '${tpEvolucao}' ` : '';
+    const filtroPessoa = `UPPER(p.nome) LIKE '%${search.toUpperCase()}%'`;
+    const filtroDocumento = `UPPER(p."numeroDocumento") LIKE '%${search.toUpperCase()}%'`;
+    filtroSearch = search ? ` AND (${filtroPessoa} OR ${filtroDocumento}) ` : '';
+  }
+
+  const evolucoes = await models.sequelize.query(`
+    select ne.*,
+    dp.id AS dmpacienteid,
+    p.nome as paciente, p."numeroDocumento", p.sexo, temcomorbidade(nc.*) AS comorbidade, faixaetaria(p."dataDeNascimento") AS faixaetaria,
+    dl.id AS dmlocalizacaoid,
+    b.nome AS bairro,
+    m.nome AS cidade,
+    m.uf AS estado,
+    'BRASIL' AS pais,
+    u.nome as "unidadeSaude"
+    from "Notificacao" n
+    join "NotificacaoEvolucao" ne on ne."notificacaoId" = n.id
+    JOIN "NotificacaoCovid19" nc ON nc."notificacaoId" = n.id
+    JOIN "Pessoa" p ON p.id = n."pessoaId"
+    JOIN "Bairro" b ON b.id = p."bairroId"
+    JOIN "Municipio" m ON m.id = b."municipioId"
+    join "UnidadeSaude" u ON u.id = n."unidadeSaudeId"
+    LEFT JOIN "DmPaciente" dp ON dp.sexo = p.sexo AND dp.comorbidade = temcomorbidade(nc.*) AND dp.faixaetaria = faixaetaria(p."dataDeNascimento")
+    LEFT JOIN "DmLocalizacao" dl ON dl.bairro = b.nome AND dl.cidade = m.nome AND dl.estado = m.uf AND dl.pais = 'BRASIL'
+    where n.status <> :status and n."municipioId" = :municipioId and
+    p."municipioId" IN(:municipios) and ne."createdAt" between :dtInicial and :dtFinal ${filtroTpEvolucao} ${filtroSearch}
+    order by ne."createdAt" ASC ${pagination}`,
+  {
+    replacements: {
+      status: statusNotificacaoEnum.values.Excluida,
+      municipioId: tenantConfig.municipioId,
+      municipios: tenantConfig.municipios,
+      dtInicial,
+      dtFinal,
+    },
+    type: Sequelize.QueryTypes.SELECT,
+  });
+  return { count: evolucoes.length, data: evolucoes };
+};
+
+exports.getAcompanhamentoSuspeitos = async (tenantConfig, dataFechamento, transaction) => {
+  const evolucoes = await models.sequelize.query(`
+    select ne."dtEvolucao"::date, count(ne) as qtSuspeito, count(neiso.id) as qtIsolamento, count(neleito.id) as qtEnfermaria, count(neuti.id) as qtUTI, count(neobt.id) as qtObito
+    from "NotificacaoEvolucao" ne
+    join "Notificacao" n on n.id = ne."notificacaoId"
+    join "Pessoa" p on p.id = n."pessoaId"
+    left outer join "NotificacaoEvolucao" neiso on neiso.id = ne.id and (neiso."tpLocal" = 'ALTA_ISOLAMENTO_DOMICILIAR' or neiso."tpLocal" is null)
+    left outer join "NotificacaoEvolucao" neleito on neleito.id = ne.id and neleito."tpLocal" = 'INTERNAMENTO_LEITO_COMUM'
+    left outer join "NotificacaoEvolucao" neuti on neuti.id = ne.id and neuti."tpLocal" = 'INTERNAMENTO_LEITO_UTI'
+    left outer join "NotificacaoEvolucao" neobt on neobt.id = ne.id and neobt."tpLocal" = 'EVOLUCAO_OBITO'
+    where n."municipioId" = :municipioId and p."municipioId" IN(:municipios) and
+    ne."tpEvolucao" = 'SUSPEITO' and ne."dtEvolucao" <= :dataFechamento
+    and not exists (select 1 from "NotificacaoEvolucao" ne2 where ne2."notificacaoId" = ne."notificacaoId" and ne2."tpEvolucao" in ('ENCERRADO', 'CONFIRMADO', 'CURADO', 'OBITO', 'DESCARTADO'))
+    group by ne."dtEvolucao"::date
+    order by ne."dtEvolucao"::date;`,
+  {
+    replacements: {
+      municipioId: tenantConfig.municipioId,
+      municipios: tenantConfig.municipios,
+      dataFechamento: dataFechamento.toDate(),
+    },
+    type: Sequelize.QueryTypes.SELECT,
+  }, { transaction });
+  const totalEvolucoes = {
+    qtsuspeitoisolamento: 0,
+    qtsuspeitoregular: 0,
+    qtsuspeitouti: 0,
+    qtsuspeitoobito: 0,
+  };
+  return evolucoes.reduce((acc, cur) => {
+    acc.qtsuspeitoisolamento += +cur.qtisolamento;
+    acc.qtsuspeitoregular += +cur.qtenfermaria;
+    acc.qtsuspeitouti += +cur.qtuti;
+    acc.qtsuspeitoobito += +cur.qtobito;
+    return acc;
+  }, totalEvolucoes);
+};
+
+exports.definirFechamentoEvolucoes = async (
+  tenantConfig, { dataFechamento, transaction, limparFechamento },
+) => {
+  const [dtInicial, dtFinal] = tenantConfig.getPeriodoFechamento(dataFechamento);
+  let dataFechamentoAtualizada = dtFinal;
+  if (limparFechamento) {
+    dataFechamentoAtualizada = null;
+  }
+  return models.NotificacaoEvolucao.update(
+    { dtfechamento: dataFechamentoAtualizada },
+    {
+      where: {
+        createdAt: {
+          [Op.between]: [dtInicial, dtFinal],
+        },
+      },
+    },
+    {
+      transaction,
+    },
+  );
 };

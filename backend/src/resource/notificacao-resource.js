@@ -143,8 +143,8 @@ const consolidarCadastros = async ({ suspeito, ...notificacao }) => {
 /*
   Refatorar para Repositório de Notificações ou outro local mais apropriado
 */
-const consultarNotificacaoPorId = async (id) => models.Notificacao.findOne({
-  where: { id },
+const consultarNotificacaoPorId = async (id, tenant) => models.Notificacao.findOne({
+  where: { id, municipioId: tenant },
   include: [
     {
       model: models.Pessoa,
@@ -182,26 +182,11 @@ const salvarNotificacao = async (notificacao) => {
       tpLocal: notificacao.notificacaoCovid19.situacaoNoMomentoDaNotificacao,
     }, { transaction });
     await transaction.commit();
-    return consultarNotificacaoPorId(notificacaoId);
+    return consultarNotificacaoPorId(notificacaoId, notificacao.municipioId);
   } catch (err) {
     await transaction.rollback();
     throw err;
   }
-};
-
-const consultarNotificaoesPaginado = async (page, limit) => {
-  const offset = (page - 1) * limit;
-  return models.Notificacao.findAndCountAll({
-    include: [{
-      model: models.Pessoa,
-      include: [{
-        model: models.Bairro,
-      }],
-    }, { model: models.NotificacaoCovid19 }],
-    order: [['updatedAt', 'DESC']],
-    limit,
-    offset,
-  });
 };
 
 const notificacaoAbertaJaExisteParaOPaciente = async ({ tipoDocumento, numeroDocumento }) => {
@@ -251,7 +236,7 @@ const retornarUsuarioLogado = async (email) => {
 exports.salvar = async (req, res, next) => {
   const notificacaoRequest = req.body;
   try {
-    const { email } = req.kauth.grant.access_token.content;
+    const { tenant, email } = new UsuarioLogado(req);
     notificacaoRequest.userId = await retornarUsuarioLogado(email);
     await validarNotificacaoUnicaPorPaciente(notificacaoRequest);
 
@@ -261,6 +246,7 @@ exports.salvar = async (req, res, next) => {
       notificacaoConsolidada,
     );
     notificacao.status = 'ABERTA';
+    notificacao.municipioId = tenant;
 
     const notificacaoSalva = await salvarNotificacao(notificacao);
 
@@ -293,26 +279,6 @@ exports.atualizar = async (req, res, next) => {
   }
 };
 
-exports.consultarPaginado = async (req, res, next) => {
-  try {
-    const { page = 1 } = req.query;
-    const limit = 10;
-    const notificacoes = await consultarNotificaoesPaginado(page, limit);
-
-    const notificacoesResponse = [];
-    notificacoes.rows.map((notificacao) => notificacoesResponse.push(
-      Mappers.Notificacao.mapearParaResponse(
-        notificacao,
-        notificacao.NotificacaoCovid19,
-      ),
-    ));
-
-    return res.json({ count: notificacoes.count, data: notificacoesResponse });
-  } catch (err) {
-    return next(err);
-  }
-};
-
 const obterCampoOrdenacao = async (sortBy) => {
   const ordernacaoIndice = {
     createdAt: 'Notificacao.createdAt',
@@ -330,7 +296,7 @@ const obterCampoOrdenacao = async (sortBy) => {
   return ordernacaoIndice[sortBy];
 };
 
-const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '', status = '') => {
+const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '', status = '', tenant) => {
   const campoOrdenacao = await obterCampoOrdenacao(sortBy);
   if (!campoOrdenacao) throw new RegraNegocioErro(`O campo ${sortBy} não é ordenável.`);
   const ordem = sortDesc === 'true' ? 'DESC' : 'ASC';
@@ -340,6 +306,7 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
       status: {
         [Op.ne]: statusNotificacaoEnum.values.Excluida,
       },
+      municipioId: tenant,
     },
     attributes: ['id', 'unidadeSaudeId', 'status', 'createdAt'],
     include: [{
@@ -349,7 +316,8 @@ const consultarNotificaoesWeb = async (page, limit, sortBy, sortDesc, search = '
     }, {
       model: models.NotificacaoCovid19,
       attributes: ['dataHoraNotificacao', 'situacaoNoMomentoDaNotificacao', 'apiSecretariaId'],
-    }, {
+    },
+    {
       model: models.UnidadeSaude,
       attributes: ['nome'],
     }],
@@ -402,6 +370,7 @@ exports.consultarNotificacoesWeb = async (req, res, next) => {
     const {
       page = 1, itemsPerPage = 10, search = '', sortBy, sortDesc, status,
     } = req.query;
+    const { tenant } = new UsuarioLogado(req);
     const notificacoes = await consultarNotificaoesWeb(
       page,
       itemsPerPage,
@@ -409,6 +378,7 @@ exports.consultarNotificacoesWeb = async (req, res, next) => {
       sortDesc,
       search,
       status,
+      tenant,
     );
     if (!notificacoes) return res.json(consultarNotificacoesWebVazia);
     const notificacaoConsulta = Mappers.Notificacao.mapearParaConsulta(notificacoes.rows);
@@ -421,19 +391,19 @@ exports.consultarNotificacoesWeb = async (req, res, next) => {
 exports.consultarPorId = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const notificacaoModel = await repos.notificacaoRepository.getPorId(id);
-    if (!notificacaoModel) return res.status(204).json();
+    const usuarioLogado = new UsuarioLogado(req);
+    const notificacaoModel = await repos.notificacaoRepository.getPorId(id, usuarioLogado.tenant);
+    if (!notificacaoModel) throw new RegraNegocioErro('Notificação não encontrada.');
 
     const { email } = req.kauth.grant.access_token.content;
-    const user = await repos.usuarioRepository.getPorEmail(email);
+    const user = await repos.usuarioRepository.getPorEmail(email, usuarioLogado.tenant);
     if (!user) throw new RegraNegocioErro('Usuário não encontrado.');
 
-    const usuarioLogado = new UsuarioLogado(req);
     if (!usuarioLogado.isRoleSecretariaSaude() && !usuarioLogado.isRoleVisualizaNotificacoes()) {
       const msgErro = 'Você não possui autorização para visualizar esta notificação.';
 
       const unidadesSaudeUser = await repos.unidadeSaudeRepository
-        .getPorUserEmail(email);
+        .getPorUserEmail(email, usuarioLogado.tenant);
 
       if (!unidadesSaudeUser) throw new UsuarioNaoAutorizadoErro(msgErro);
 
@@ -442,7 +412,8 @@ exports.consultarPorId = async (req, res, next) => {
       }
     }
 
-    const fechamentos = await repos.notificacaoRepository.getFechamentosPorNotificacaoId(id);
+    const fechamentos = await repos.notificacaoRepository
+      .getFechamentosPorNotificacaoId(id, usuarioLogado.tenant);
     const possuiFechamento = fechamentos.length > 0;
     const retorno = Mappers.Notificacao.mapearParaResponse(
       notificacaoModel,
@@ -457,19 +428,6 @@ exports.consultarPorId = async (req, res, next) => {
   }
 };
 
-exports.excluirLoteLogicamenteNotificacao = async (req, res, next) => {
-  try {
-    const ids = req.body;
-    await models.Notificacao.update(
-      { status: statusNotificacaoEnum.values.Excluida },
-      { where: { id: { [Op.in]: ids } } },
-    );
-    return res.status(204).json();
-  } catch (err) {
-    return next(err);
-  }
-};
-
 const alterarStatusNotificacao = async (id, status) => {
   await models.Notificacao.update(
     { status },
@@ -480,6 +438,10 @@ const alterarStatusNotificacao = async (id, status) => {
 exports.excluirLogicamenteNotificacao = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { tenant } = new UsuarioLogado(req);
+    const notificacao = await models.Notificacao
+      .findOne({ where: { id, municipioId: tenant } });
+    if (!notificacao) throw new RegraNegocioErro('Notificação não encontrada');
     await alterarStatusNotificacao(id, statusNotificacaoEnum.values.Excluida);
     return res.status(204).json();
   } catch (err) {

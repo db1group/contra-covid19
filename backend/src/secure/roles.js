@@ -4,4 +4,5 @@ exports.values = {
   Fechamento: 'FECHAMENTO',
   AlteraEvolucao: 'ALTERA_EVOLUCAO',
   EnvioSecretaria: 'ENVIO_SECRETARIA',
+  Supervisor: 'SUPERVISOR',
 };

@@ -39,6 +39,12 @@ const setCacheQuery = (req, content, expire) => {
   redis.set(getRouteURL(req), body, 'EX', expire || process.env.REDIS_EXPIRE);
 };
 
+const setCacheByKeyWithoutEx = (key, content) => {
+  if (!connected) return;
+  const body = content instanceof Buffer ? content.toString() : content;
+  redis.set(key, body);
+};
+
 
 const getByCache = async (req, res, next) => {
   if (!isMethodGet(req.method)) {
@@ -66,6 +72,7 @@ const middlewareRedis = (req, res, next) => {
   try {
     req.setCache = setCacheQuery;
     req.setCacheByKey = setCacheByKey;
+    req.setCacheByKeyWithoutEx = setCacheByKeyWithoutEx;
     req.removeCacheByKey = removeCacheByKey;
     req.getCacheByKey = getCacheByKey;
     req.redisConnected = connected;

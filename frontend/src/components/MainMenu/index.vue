@@ -88,6 +88,21 @@
           <v-list-item-title>Envio para Secretaria</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+
+      <v-subheader v-if="isSupervisor">Configuração</v-subheader>
+      <v-list-item
+        v-if="isSupervisor"
+        value="tenant-config-cons"
+        @click="onClick('tenant-config-cons')"
+      >
+        <v-list-item-icon>
+          <v-icon>mdi-account-cog</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Tenant</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-subheader>Ações</v-subheader>
       <v-list-item @click="logout">
         <v-list-item-icon>
@@ -128,6 +143,9 @@ export default {
     isUserEnvioSecretaria() {
       if (this.isSecretariaSaude) return true;
       return keycloak.realmAccess.roles.includes('ENVIO_SECRETARIA');
+    },
+    isSupervisor() {
+      return keycloak.realmAccess.roles.includes('SUPERVISOR');
     },
   },
 };

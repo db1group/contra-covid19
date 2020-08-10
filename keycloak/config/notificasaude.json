@@ -96,6 +96,14 @@
         "clientRole": false,
         "containerId": "notificasaude",
         "attributes": {}
+      },
+      {
+        "id": "300804db-2d87-4800-b8e9-ee01f493e711",
+        "name": "SUPERVISOR",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "notificasaude",
+        "attributes": {}
       }
     ],
     "client": {

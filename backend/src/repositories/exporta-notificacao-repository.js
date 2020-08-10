@@ -64,17 +64,17 @@ const getHora = (data) => (data ? moment(data).tz(TIME_ZONE.AMERICA_SAO_PAULO).f
 const getNumber = (value) => (value ? value.toString().replace('.', ',') : null);
 const getBoolean = (valor) => (valor ? 'Sim' : 'Não');
 
-const criarDataInicialParaFiltro = (data) => (data ? moment
-  .tz(data, TIME_ZONE.AMERICA_SAO_PAULO).toISOString() : null);
+const FORMATO_DATA_HORA = 'YYYY-MM-DD HH:mm:ss';
 
-const criarDataFinalParaFiltro = (data) => (data ? moment
-  .tz(data, TIME_ZONE.AMERICA_SAO_PAULO).endOf('day').toISOString() : null);
+const criarDataInicialParaFiltro = (data) => (data ? moment(data).startOf('day').format(FORMATO_DATA_HORA) : null);
 
-const criarDataInicialHoraParaFiltro = (data) => (data ? moment
-  .tz(data, TIME_ZONE.AMERICA_SAO_PAULO).toISOString() : null);
+const criarDataFinalParaFiltro = (data) => (data ? moment(data).endOf('day').format(FORMATO_DATA_HORA) : null);
 
-const criarDataFinalHoraParaFiltro = (data) => (data ? moment
-  .tz(data, TIME_ZONE.AMERICA_SAO_PAULO).toISOString() : null);
+const criarDataInicialHoraParaFiltro = (data) => (data ? moment(data)
+  .format(FORMATO_DATA_HORA) : null);
+
+const criarDataFinalHoraParaFiltro = (data) => (data ? moment(data)
+  .format(FORMATO_DATA_HORA) : null);
 
 exports.cabecalhosExportacao = [
   { header: 'Data hora da criação da Notificação', key: 'A1' },
@@ -328,8 +328,8 @@ const getSQLConsulta = (dataInicial) => {
   INNER JOIN "User" ON "Notificacao"."userId" = "User"."id"
   LEFT JOIN "ProfissionalSaude" ON "Notificacao"."notificadorId" = "ProfissionalSaude"."id"
   LEFT JOIN "Profissao" ON "Notificacao"."profissaoId" = "Profissao"."id"
-  WHERE "Notificacao"."status" != 'EXCLUIDA' AND
-  #FILTRODATA
+  WHERE "Notificacao"."status" != 'EXCLUIDA' AND "Notificacao"."municipioId" = :tenant
+  AND #FILTRODATA
   ORDER BY "Notificacao"."createdAt" DESC`;
   if (dataInicial) {
     return sql.replace('#FILTRODATA', '"Notificacao"."createdAt" BETWEEN :dtInicial AND :dtFinal');
@@ -339,7 +339,7 @@ const getSQLConsulta = (dataInicial) => {
 };
 
 exports.consultarNotificacoes = (
-  dataInicial, dataFinal, dataEvolucaoInicial, dataEvolucaoFinal,
+  dataInicial, dataFinal, dataEvolucaoInicial, dataEvolucaoFinal, tenant,
 ) => {
   const dtInicial = dataInicial || dataEvolucaoInicial;
   const dtFinal = dataFinal || dataEvolucaoFinal;
@@ -348,7 +348,7 @@ exports.consultarNotificacoes = (
     getSQLConsulta(dataInicial),
     {
       replacements: {
-        dtInicial, dtFinal,
+        dtInicial, dtFinal, tenant,
       },
     },
     { type: Sequelize.QueryTypes.SELECT },

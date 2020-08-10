@@ -47,12 +47,12 @@ const consolidarSuspeito = async (suspeito) => {
   return { ...suspeitoPrototipo, pessoaId };
 };
 
-exports.handle = async ({ suspeito, ...notificacao }) => {
+exports.handle = async ({ suspeito, ...notificacao }, tenant) => {
   const suspeitoConsolidado = await consolidarSuspeito(suspeito);
   const { municipioId } = suspeito;
   const { unidadeSaudeId } = notificacao;
 
-  const unidadeDeSaude = await repos.unidadeSaudeRepository.getPorId(unidadeSaudeId);
+  const unidadeDeSaude = await repos.unidadeSaudeRepository.getPorId(unidadeSaudeId, tenant);
 
   if (!unidadeDeSaude) {
     throw new RegraNegocioErro(`Não foi localizada a unidade de saúde com o código ${unidadeSaudeId}`);

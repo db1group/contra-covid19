@@ -63,18 +63,6 @@
             />
           </v-col>
         </v-row>
-        <v-row dense v-if="isSecretariaSaude">
-          <v-col>
-            <v-textarea
-              label="Token Secretaria de Saúde"
-              :value="unidade.tokenSecretaria"
-              @input="updateToken"
-              hint="Token gerado pela Secretaria de Saúde necessário para o envio das notificações."
-              rows="3"
-              readonly
-            ></v-textarea>
-          </v-col>
-        </v-row>
         <v-row align="center">
           <v-col>
             <h3 class="primary--text">Leitos Existentes</h3>
@@ -357,6 +345,7 @@ export default {
         UnidadeSaudeService.save(this.unidade.toRequestBody())
           .then(() => {
             this.unidade = new UnidadeSaude();
+            this.searchMunicipio = null;
             this.showSuccess = true;
             this.mensagemSucesso = 'Unidade de Saúde cadastrada com sucesso.';
           })
@@ -391,9 +380,6 @@ export default {
     },
     updateCnesMask(cnes) {
       this.unidade.cnes = cnes.padStart(7, '0');
-    },
-    updateToken(token) {
-      this.unidade.tokenSecretaria = token;
     },
     updateEnfermariaCovid(qtEnfermaria) {
       this.unidade.qtEnfermariaCovid = qtEnfermaria;

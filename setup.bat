@@ -21,4 +21,8 @@ timeout 10 > NUL
 
 ECHO RODANDO SCRIPTS POSTGRES...
 cd ../backend
-call redo.bat
+call redo.bat & ^
+
+ECHO CRIANDO USUARIO SUPERVISOR...
+timeout 3 > NUL
+call npm run create:supervisor

@@ -26,10 +26,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: true,
     },
+    municipioId: {
+      type: DataTypes.UUID,
+    },
   }, {});
   User.associate = (models) => {
     User.hasMany(models.UserUnidadeSaude, { foreignKey: 'userId' });
     User.belongsToMany(models.UnidadeSaude, { through: models.UserUnidadeSaude, foreignKey: 'unidadeSaudeId' });
+    User.belongsTo(models.Municipio, { foreignKey: 'municipioId' });
   };
   User.beforeSave((usuario, _options) => {
     normalizarTextoUsuario(usuario);

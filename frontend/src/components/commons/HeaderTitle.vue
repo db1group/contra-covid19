@@ -49,9 +49,14 @@ export default {
       type: String,
       default: '',
     },
+    cadSecretaria: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     isSecretariaSaude() {
+      if (!this.cadSecretaria) return true;
       return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
     },
   },

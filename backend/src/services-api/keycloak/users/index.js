@@ -48,14 +48,14 @@ exports.listarUserRoles = async (id, token) => {
   }
 };
 
-exports.create = async (nome, email, token) => {
+exports.create = async (nome, email, token, tenant) => {
   try {
     token = await getToken(token);
 
     return KeycloakAPI.post('admin/realms/notificasaude/users',
       {
         enabled: true,
-        attributes: {},
+        attributes: { tenant },
         username: email,
         emailVerified: true,
         email,
@@ -75,15 +75,21 @@ exports.create = async (nome, email, token) => {
   }
 };
 
-exports.update = async (id, nome, token) => {
+exports.update = async ({
+  id, nome, token, tenant,
+}) => {
   try {
     token = await getToken(token);
+    const userParams = {
+      firstName: nome,
+      lastName: '',
+    };
+    if (tenant) {
+      userParams.attributes = { tenant };
+    }
 
     return KeycloakAPI.put(`admin/realms/notificasaude/users/${id}`,
-      {
-        firstName: nome,
-        lastName: '',
-      },
+      userParams,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -105,7 +111,8 @@ exports.delete = async (id, token) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }).catch(({ response }) => response.data);
+      })
+      .catch(({ response }) => response.data);
   } catch (err) {
     console.error(err.message);
     throw err;
@@ -131,11 +138,13 @@ exports.resetPassword = async (id, token) => {
   }
 };
 
-exports.joinRoles = async (userId, permissions, token, removeRoles = false) => {
+exports.joinRoles = async ({
+  userId, permissions = [], token, removeRoles = false, includeSupervisor = false,
+}) => {
   try {
     token = await getToken(token);
 
-    const roles = await AuthAPI.roles(token);
+    const roles = await AuthAPI.roles(token, includeSupervisor);
     if (removeRoles) {
       const rolesToDelete = roles.filter((r) => !permissions.includes(r.name))
         .map((r) => ({ id: r.id, name: r.name }));

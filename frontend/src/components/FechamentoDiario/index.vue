@@ -213,18 +213,16 @@ export default {
       }
       this.fechamentos.shift();
     },
-    consultarFechamentos({
-      page, itemsPerPage, sortBy = 'dataFechamento', sortDesc = 'true',
-    } = this.options) {
+    consultarFechamentos({ page, itemsPerPage } = this.options) {
       this.loading = true;
       this.gerandoFechando = true;
       const search = this.filter;
       FechamentoService.findAll({
-        page, itemsPerPage, sortBy, sortDesc, search,
+        page, itemsPerPage, search,
       })
         .then(({ count, data }) => {
           this.totalNotif = count;
-          this.fechamentos = data.rows.map((d) => new FechamentoDiario(d));
+          this.fechamentos = data.map((d) => new FechamentoDiario(d));
         })
         .catch((error) => {
           this.$emit('erro:consultarFechamentos', ErrorService.getMessage(error));
@@ -244,7 +242,9 @@ export default {
       FechamentoService.reabrirFechamento(id)
         .then(() => {
           this.$emit('success:reabrirFechamento');
-          this.consultarFechamentos();
+          setTimeout(() => {
+            this.consultarFechamentos();
+          }, 500);
         })
         .catch((error) => {
           this.$emit('erro:reabrirFechamento', ErrorService.getMessage(error));
