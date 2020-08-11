@@ -32,16 +32,20 @@ export default {
     dataInicial, dataFinal, dataEvolucaoInicial, dataEvolucaoFinal,
   }) {
     const time = new Date().getTime();
-    return DownloadService.downloadFile(`/exportar/excel?dataInicial=${dataInicial}&dataFinal=${dataFinal}
-    &dataEvolucaoInicial=${dataEvolucaoInicial}&dataEvolucaoFinal=${dataEvolucaoFinal}`,
-    `notificacoes-${time}.xlsx`);
+    return DownloadService.downloadFile(
+      `/exportar/excel?dataInicial=${dataInicial}&dataFinal=${dataFinal}&dataEvolucaoInicial=${dataEvolucaoInicial}`
+      + `&dataEvolucaoFinal=${dataEvolucaoFinal}`,
+      `notificacoes-${time}.xlsx`,
+    );
   },
   downloadNotificacoesCSV({
     dataInicial, dataFinal, dataEvolucaoInicial, dataEvolucaoFinal,
   }) {
     const time = new Date().getTime();
-    return DownloadService.downloadFile(`/exportar/csv?dataInicial=${dataInicial}&dataFinal=${dataFinal}
-    &dataEvolucaoInicial=${dataEvolucaoInicial}&dataEvolucaoFinal=${dataEvolucaoFinal}`,
-    `notificacoes-${time}.csv`);
+    return DownloadService.downloadFile(
+      `/exportar/csv?dataInicial=${dataInicial}&dataFinal=${dataFinal}&dataEvolucaoInicial=${dataEvolucaoInicial}`
+      + `&dataEvolucaoFinal=${dataEvolucaoFinal}`,
+      `notificacoes-${time}.csv`,
+    );
   },
 };
