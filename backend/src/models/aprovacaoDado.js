@@ -1,12 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
-  const AprovacaoDados = sequelize.define('AprovacaoDado', {
+  const AprovacaoDado = sequelize.define('AprovacaoDado', {
     data: DataTypes.DATEONLY,
     aprovado: DataTypes.BOOLEAN,
     municipioId: {
       type: DataTypes.UUID,
     },
   }, {});
-  AprovacaoDados.associate = (_models) => {
+  AprovacaoDado.associate = (_models) => {
   };
-  return AprovacaoDados;
+  return AprovacaoDado;
 };
