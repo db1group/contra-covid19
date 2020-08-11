@@ -61,19 +61,6 @@
             />
           </v-col>
         </v-row>
-        <v-row dense>
-          <v-col>
-            <v-radio-group
-              :value="tipoExportacao"
-              @change="updateTipoExportacao"
-              label="Tipo de Exportação"
-              :row="true"
-            >
-              <v-radio label="EXCEL" value="XLSX"></v-radio>
-              <v-radio label="CSV" value="CSV"></v-radio>
-            </v-radio-group>
-          </v-col>
-        </v-row>
         <v-card-actions>
           <v-row align="center" justify="end">
             <v-col cols="auto">
@@ -106,7 +93,6 @@ export default {
     loading: [Boolean, null],
   },
   data: () => ({
-    tipoExportacao: 'XLSX',
     rules: {
       dataInicial: [],
       dataFinal: [],
@@ -176,9 +162,6 @@ export default {
       if (this.$refs.form.validate()) {
         this.$emit('click');
       }
-    },
-    updateTipoExportacao(tipoExportacao) {
-      this.$emit('update:tipoExportacao', tipoExportacao);
     },
   },
 };
