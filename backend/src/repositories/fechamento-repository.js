@@ -100,6 +100,10 @@ const realizarFechamento = async (tenantConfig, { dataFechamento }) => {
   return models.sequelize.transaction(async (t) => {
     await notificacaoRepository.definirFechamentoEvolucoes(tenantConfig,
       { dataFechamento, transaction: t });
+    await models.AprovacaoDado.create(
+      { data: dataFechamento, aprovado: true, municipioId: tenantConfig.municipioId },
+      { transaction: t },
+    );
     return fechamentoCovid19Repository.cadastrar(
       {
         ...dadosFechamento,
@@ -131,6 +135,7 @@ const podeReabrirFechamento = async (tenantConfig, id) => {
 
 const reabrirFechamento = async (tenantConfig, { id, dataFechamento }) => {
   models.sequelize.transaction(async (t) => {
+    await models.AprovacaoDado.destroy({ where: { data: dataFechamento }, transaction: t });
     await fechamentoCovid19Repository.delete(id, t);
     await notificacaoRepository.definirFechamentoEvolucoes(tenantConfig,
       { dataFechamento, transaction: t, limparFechamento: true });
