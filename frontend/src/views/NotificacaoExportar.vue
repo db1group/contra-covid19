@@ -41,6 +41,7 @@ export default {
   }),
   methods: {
     updateExportar(campo, valor) {
+      console.log(campo, valor, typeof valor);
       this.exportar[campo] = valor;
     },
     async tratarErro(response) {
@@ -83,7 +84,6 @@ export default {
       return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
     },
     updateTipoExportacao(tipoExportacao) {
-      console.log(tipoExportacao);
       this.tipoExportacao = tipoExportacao;
     },
   },
