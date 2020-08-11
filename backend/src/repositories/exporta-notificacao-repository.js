@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const uuid = require('uuid/v4');
 const models = require('../models');
+const tipoEvolucaoEnum = require('../enums/tipo-notificacao-evolucao-enum');
 
 const TIME_ZONE = {
   AMERICA_SAO_PAULO: 'America/Sao_Paulo',
@@ -202,6 +203,8 @@ exports.cabecalhosExportacao = [
   { header: 'dtCurado', key: 'A111' },
   { header: 'dtEncerrado', key: 'A112' },
   { header: 'dtObito', key: 'A113' },
+  { header: 'comorbidades', key: 'A114' },
+  { header: 'dtAtualizacaoConfirmado', key: 'A115' },
 ];
 
 const getSQLConsulta = (dataInicial) => {
@@ -317,7 +320,9 @@ const getSQLConsulta = (dataInicial) => {
     "Notificacao"."dtDescartado",
     "Notificacao"."dtCurado",
     "Notificacao"."dtEncerrado",
-    "Notificacao"."dtObito"
+    "Notificacao"."dtObito",
+    temcomorbidade("NotificacaoCovid19".*) as comorbidades,
+    "NotificacaoEvolucao"."dtEvolucao" as "dtAtualizacaoConfirmado"
   FROM "Notificacao"
   INNER JOIN "Pessoa" ON "Notificacao"."pessoaId" = "Pessoa"."id"
   INNER JOIN "Bairro" ON "Pessoa"."bairroId" = "Bairro"."id"
@@ -328,6 +333,7 @@ const getSQLConsulta = (dataInicial) => {
   INNER JOIN "User" ON "Notificacao"."userId" = "User"."id"
   LEFT JOIN "ProfissionalSaude" ON "Notificacao"."notificadorId" = "ProfissionalSaude"."id"
   LEFT JOIN "Profissao" ON "Notificacao"."profissaoId" = "Profissao"."id"
+  LEFT OUTER JOIN "NotificacaoEvolucao" on "NotificacaoEvolucao"."notificacaoId" = "Notificacao"."id" and "NotificacaoEvolucao"."tpEvolucao" = :tpConfirmado
   WHERE "Notificacao"."status" != 'EXCLUIDA' AND "Notificacao"."municipioId" = :tenant
   AND #FILTRODATA
   ORDER BY "Notificacao"."createdAt" DESC`;
@@ -348,7 +354,7 @@ exports.consultarNotificacoes = (
     getSQLConsulta(dataInicial),
     {
       replacements: {
-        dtInicial, dtFinal, tenant,
+        dtInicial, dtFinal, tenant, tpConfirmado: tipoEvolucaoEnum.values.Confirmado,
       },
     },
     { type: Sequelize.QueryTypes.SELECT },
@@ -469,6 +475,8 @@ exports.retornarRowsNotificacaoExcel = (notificacoes) => notificacoes.map((notif
   A111: getData(notificacao.dtCurado),
   A112: getData(notificacao.dtEncerrado),
   A113: getData(notificacao.dtObito),
+  A114: getBoolean(notificacao.comorbidades),
+  A115: getData(notificacao.dtAtualizacaoConfirmado),
 }));
 
 exports.retornarFiltrosData = ({

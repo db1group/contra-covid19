@@ -14,7 +14,7 @@ const transformCSV = () => {
       if (!headerSeted) {
         const cabecalhos = ExportaNotificacaoRepository
           .cabecalhosExportacao
-          .map((n) => n.header).join(';');
+          .map((n) => n.header).join(',');
         data += `${cabecalhos}\n`;
         headerSeted = true;
       }
