@@ -9,7 +9,6 @@
         @update:dataFinal="updateExportar('dataFinal', $event)"
         @update:dataEvolucaoInicial="updateExportar('dataEvolucaoInicial', $event)"
         @update:dataEvolucaoFinal="updateExportar('dataEvolucaoFinal', $event)"
-        @update:tipoExportacao="updateTipoExportacao($event)"
         @click="send"
       ></exportar>
       <v-snackbar v-model="showError" color="error" bottom>{{errorMessage}}</v-snackbar>
@@ -37,7 +36,6 @@ export default {
     showError: false,
     loading: false,
     errorMessage: '',
-    tipoExportacao: 'XLSX',
   }),
   methods: {
     updateExportar(campo, valor) {
@@ -58,15 +56,9 @@ export default {
       }
 
       this.loading = true;
-      if (this.tipoExportacao === 'XLSX') {
-        NotificacaoService.downloadNotificacoes(this.exportar.toRequestBody())
-          .catch(async ({ response }) => { await this.tratarErro(response); })
-          .finally(() => { this.loading = false; });
-      } else {
-        NotificacaoService.downloadNotificacoesCSV(this.exportar.toRequestBody())
-          .catch(async ({ response }) => { await this.tratarErro(response); })
-          .finally(() => { this.loading = false; });
-      }
+      NotificacaoService.downloadNotificacoesCSV(this.exportar.toRequestBody())
+        .catch(async ({ response }) => { await this.tratarErro(response); })
+        .finally(() => { this.loading = false; });
     },
     validarPeriodo() {
       const {
@@ -82,9 +74,6 @@ export default {
     },
     isSecretariaSaude() {
       return keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
-    },
-    updateTipoExportacao(tipoExportacao) {
-      this.tipoExportacao = tipoExportacao;
     },
   },
   created() {
