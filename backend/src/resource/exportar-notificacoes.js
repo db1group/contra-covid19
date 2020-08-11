@@ -18,9 +18,10 @@ const transformCSV = () => {
         data += `${cabecalhos}\n`;
         headerSeted = true;
       }
-      const dataCSV = Object.values(chunk)
-        .map((value) => (value ? value.toString().replace(',', '.') : ''))
+      const dataCSV = Object.entries(chunk)
+        .map(([_, value]) => (value ? value.toString().replace(',', '.') : ''))
         .join(',');
+
       data += `${dataCSV}\n`;
       callback(null, data);
     },
