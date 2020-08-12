@@ -20,7 +20,7 @@ const transformCSV = () => {
       }
       const dataCSV = Object.entries(chunk)
         .map(([_, value]) => (value
-          ? `"${value.toString()}"`
+          ? `"${value.toString().replace(/"/g, '\'')}"`
           : ''))
         .join(',');
 
