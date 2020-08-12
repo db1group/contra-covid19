@@ -77,7 +77,7 @@ const getFatosBoletim = async (tenantConfig, dataFato, transaction) => {
   sum(fnc.qtrecuperado) as qtconfirmadoencerrado,
   sum(fnc.qtobito) as qtobito,
   sum(fnc.qtdescartado) as qtdescartado,
-  COALESCE((sum(fnc.qtsuspeito) - sum(fnc.qtencerrado) - sum(fnc.qtrecuperado) - sum(fnc.qtobito))::numeric, 0::numeric) AS qtacompanhamento
+  COALESCE((sum(fnc.qtsuspeito) - sum(fnc.qtencerrado) - sum(fnc.qtdescartado) - sum(fnc.qtrecuperado) - sum(fnc.qtobito))::numeric, 0::numeric) AS qtacompanhamento
   from "FatoNotificacaoCovid19" fnc
   where fnc."municipioId" = :municipioId and fnc.dtfato::date <= :dataFato;`,
   {
