@@ -2,6 +2,8 @@ const Sequelize = require('sequelize');
 const models = require('../models');
 const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secretaria-enum');
 const statusNotificacaoEnum = require('../enums/status-notificacao-enum');
+const dataEvolucaoEnum = require('../enums/data-evolucao-notificacao-enum');
+const tpEvolucaoEnum = require('../enums/tipo-notificacao-evolucao-enum');
 
 const { Op } = Sequelize;
 
@@ -390,17 +392,143 @@ exports.definirFechamentoEvolucoes = async (
   if (limparFechamento) {
     dataFechamentoAtualizada = null;
   }
-  return models.NotificacaoEvolucao.update(
-    { dtfechamento: dataFechamentoAtualizada },
+
+  return models.sequelize.query(`update "NotificacaoEvolucao" set
+  dtfechamento = :dataFechamentoAtualizada
+  from "Notificacao" n
+  join "Pessoa" p on p.id = n."pessoaId"
+  where n.id = "NotificacaoEvolucao"."notificacaoId" AND
+  n.status <> :status and
+  n."municipioId" = :municipioId and
+  p."municipioId" IN(:municipios) and
+  "NotificacaoEvolucao"."createdAt" between :dtInicial and :dtFinal`,
+  {
+    type: Sequelize.QueryTypes.UPDATE,
+    replacements: {
+      dataFechamentoAtualizada,
+      status: statusNotificacaoEnum.values.Excluida,
+      municipioId: tenantConfig.municipioId,
+      municipios: tenantConfig.municipios,
+      dtInicial,
+      dtFinal,
+    },
+    transaction,
+  });
+};
+
+const getSQLUpdateDtFechamentoNotif = (tpEvolucao) => {
+  const campo = dataEvolucaoEnum.values[tpEvolucao];
+  return `update "Notificacao" set
+  "${campo}" = :dtFinal
+  from "NotificacaoEvolucao" ne,
+  "Pessoa" p
+  where ne."notificacaoId" = "Notificacao".id and
+  p.id = "Notificacao"."pessoaId" and
+  ne."tpEvolucao" = '${tpEvolucao}' and
+  "Notificacao".status <> :status and
+  "Notificacao"."municipioId" = :municipioId and
+  p."municipioId" IN(:municipios) and
+  ne.dtfechamento = :dtFinal;`;
+};
+
+const executeSQLUpdateDtFechamentoNotif = async (
+  tenantConfig, dataFechamento, tpEvolucao, transaction,
+) => {
+  const [, dtFinal] = tenantConfig.getPeriodoFechamento(dataFechamento);
+
+  await models.sequelize.query(getSQLUpdateDtFechamentoNotif(tpEvolucao),
     {
-      where: {
-        createdAt: {
-          [Op.between]: [dtInicial, dtFinal],
-        },
+      type: Sequelize.QueryTypes.UPDATE,
+      replacements: {
+        status: statusNotificacaoEnum.values.Excluida,
+        municipioId: tenantConfig.municipioId,
+        municipios: tenantConfig.municipios,
+        dtFinal,
       },
-    },
-    {
       transaction,
-    },
+    });
+};
+
+exports.definirDatasFechamentoNotificacao = async (tenantConfig, dataFechamento, transaction) => {
+  await executeSQLUpdateDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Suspeito, transaction,
+  );
+
+  await executeSQLUpdateDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Confirmado, transaction,
+  );
+
+  await executeSQLUpdateDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Curado, transaction,
+  );
+
+  await executeSQLUpdateDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Descartado, transaction,
+  );
+
+  await executeSQLUpdateDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Encerrado, transaction,
+  );
+
+  await executeSQLUpdateDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Obito, transaction,
+  );
+};
+
+const getSQLRemoveDtFechamentoNotif = (tpEvolucao) => {
+  const campo = dataEvolucaoEnum.values[tpEvolucao];
+  return `update "Notificacao" set
+  "${campo}" = NULL
+  from "NotificacaoEvolucao" ne,
+  "Pessoa" p
+  where ne."notificacaoId" = "Notificacao".id and
+  p.id = "Notificacao"."pessoaId" and
+  ne."tpEvolucao" = '${tpEvolucao}' and
+  "Notificacao".status <> :status and
+  "Notificacao"."municipioId" = :municipioId and
+  p."municipioId" IN(:municipios) and
+  ne.dtfechamento = :dtFinal;`;
+};
+
+const executeSQLRemoverDtFechamentoNotif = async (
+  tenantConfig, dataFechamento, tpEvolucao, transaction,
+) => {
+  const [, dtFinal] = tenantConfig.getPeriodoFechamento(dataFechamento);
+  await models.sequelize.query(getSQLRemoveDtFechamentoNotif(tpEvolucao),
+    {
+      type: Sequelize.QueryTypes.UPDATE,
+      replacements: {
+        status: statusNotificacaoEnum.values.Excluida,
+        municipioId: tenantConfig.municipioId,
+        municipios: tenantConfig.municipios,
+        dtFinal,
+      },
+      transaction,
+    });
+};
+
+exports.removerFechamentoNotificacao = async (tenantConfig, dataFechamento, transaction) => {
+  await executeSQLRemoverDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Suspeito, transaction,
+  );
+
+  await executeSQLRemoverDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Confirmado, transaction,
+  );
+
+  await executeSQLRemoverDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Curado, transaction,
+  );
+
+  await executeSQLRemoverDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Descartado, transaction,
+  );
+
+  await executeSQLRemoverDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Encerrado, transaction,
+  );
+
+  await executeSQLRemoverDtFechamentoNotif(
+    tenantConfig, dataFechamento, tpEvolucaoEnum.values.Obito, transaction,
   );
 };
