@@ -294,6 +294,20 @@ module.exports.getNotificacoesPorPeriodo = async (periodo, page = 1, limit = 500
   });
 };
 
+const getSQLEvolucoesFechamento = () => `
+select *
+from "Notificacao" n
+join "NotificacaoEvolucao" ne on ne."notificacaoId" = n.id
+JOIN "NotificacaoCovid19" nc ON nc."notificacaoId" = n.id
+JOIN "Pessoa" p ON p.id = n."pessoaId"
+JOIN "Bairro" b ON b.id = p."bairroId"
+JOIN "Municipio" m ON m.id = b."municipioId"
+join "UnidadeSaude" u ON u.id = n."unidadeSaudeId"
+LEFT JOIN "DmPaciente" dp ON dp.sexo = p.sexo AND dp.comorbidade = temcomorbidade(nc.*) AND dp.faixaetaria = faixaetaria(p."dataDeNascimento")
+LEFT JOIN "DmLocalizacao" dl ON dl.bairro = b.nome AND dl.cidade = m.nome AND dl.estado = m.uf AND dl.pais = 'BRASIL'
+where n.status <> :status and n."municipioId" = :municipioId and
+p."municipioId" IN(:municipios) and ne."createdAt" between :dtInicial and :dtFinal`;
+
 exports.getEvolucoesFechamento = async (tenantConfig, dataFechamento, options) => {
   const [dtInicial, dtFinal] = tenantConfig.getPeriodoFechamento(dataFechamento);
   let pagination = '';
@@ -301,9 +315,9 @@ exports.getEvolucoesFechamento = async (tenantConfig, dataFechamento, options) =
   let filtroSearch = '';
   if (options) {
     const {
-      page = 1, limit = 10, tpEvolucao, search,
+      page = 1, itemsPerPage: limit = 10, tpEvolucao, search,
     } = options;
-    const offset = (page - 1) * limit;
+    const offset = (+page - 1) * +limit;
     pagination = `limit ${limit} offset ${offset}`;
     filtroTpEvolucao = tpEvolucao ? ` AND ne."tpEvolucao" = '${tpEvolucao}' ` : '';
     const filtroPessoa = `UPPER(p.nome) LIKE '%${search.toUpperCase()}%'`;
@@ -311,39 +325,42 @@ exports.getEvolucoesFechamento = async (tenantConfig, dataFechamento, options) =
     filtroSearch = search ? ` AND (${filtroPessoa} OR ${filtroDocumento}) ` : '';
   }
 
-  const evolucoes = await models.sequelize.query(`
-    select ne.*,
-    dp.id AS dmpacienteid,
-    p.nome as paciente, p."numeroDocumento", p.sexo, temcomorbidade(nc.*) AS comorbidade, faixaetaria(p."dataDeNascimento") AS faixaetaria,
-    dl.id AS dmlocalizacaoid,
-    b.nome AS bairro,
-    m.nome AS cidade,
-    m.uf AS estado,
-    'BRASIL' AS pais,
-    u.nome as "unidadeSaude"
-    from "Notificacao" n
-    join "NotificacaoEvolucao" ne on ne."notificacaoId" = n.id
-    JOIN "NotificacaoCovid19" nc ON nc."notificacaoId" = n.id
-    JOIN "Pessoa" p ON p.id = n."pessoaId"
-    JOIN "Bairro" b ON b.id = p."bairroId"
-    JOIN "Municipio" m ON m.id = b."municipioId"
-    join "UnidadeSaude" u ON u.id = n."unidadeSaudeId"
-    LEFT JOIN "DmPaciente" dp ON dp.sexo = p.sexo AND dp.comorbidade = temcomorbidade(nc.*) AND dp.faixaetaria = faixaetaria(p."dataDeNascimento")
-    LEFT JOIN "DmLocalizacao" dl ON dl.bairro = b.nome AND dl.cidade = m.nome AND dl.estado = m.uf AND dl.pais = 'BRASIL'
-    where n.status <> :status and n."municipioId" = :municipioId and
-    p."municipioId" IN(:municipios) and ne."createdAt" between :dtInicial and :dtFinal ${filtroTpEvolucao} ${filtroSearch}
-    order by ne."createdAt" ASC ${pagination}`,
-  {
-    replacements: {
-      status: statusNotificacaoEnum.values.Excluida,
-      municipioId: tenantConfig.municipioId,
-      municipios: tenantConfig.municipios,
-      dtInicial,
-      dtFinal,
-    },
-    type: Sequelize.QueryTypes.SELECT,
-  });
-  return { count: evolucoes.length, data: evolucoes };
+  const sqlCount = getSQLEvolucoesFechamento().replace('*', 'count(1)');
+  const [{ count }] = await models.sequelize.query(sqlCount,
+    {
+      replacements: {
+        status: statusNotificacaoEnum.values.Excluida,
+        municipioId: tenantConfig.municipioId,
+        municipios: tenantConfig.municipios,
+        dtInicial,
+        dtFinal,
+      },
+      type: Sequelize.QueryTypes.SELECT,
+    });
+
+  const sqlDetalhes = getSQLEvolucoesFechamento().replace('*', `ne.*,
+  dp.id AS dmpacienteid,
+  p.nome as paciente, p."numeroDocumento", p.sexo, temcomorbidade(nc.*) AS comorbidade, faixaetaria(p."dataDeNascimento") AS faixaetaria,
+  dl.id AS dmlocalizacaoid,
+  b.nome AS bairro,
+  m.nome AS cidade,
+  m.uf AS estado,
+  'BRASIL' AS pais,
+  u.nome as "unidadeSaude"`).concat(`  ${filtroTpEvolucao} ${filtroSearch}
+  order by ne."createdAt" ASC ${pagination}`);
+
+  const evolucoes = await models.sequelize.query(sqlDetalhes,
+    {
+      replacements: {
+        status: statusNotificacaoEnum.values.Excluida,
+        municipioId: tenantConfig.municipioId,
+        municipios: tenantConfig.municipios,
+        dtInicial,
+        dtFinal,
+      },
+      type: Sequelize.QueryTypes.SELECT,
+    });
+  return { count, data: evolucoes };
 };
 
 exports.getAcompanhamentoSuspeitos = async (tenantConfig, dataFechamento, transaction) => {
