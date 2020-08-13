@@ -36,10 +36,11 @@ exports.getDetalheProximoFechamento = async (req, res, next) => {
     const { tenant } = new UsuarioLogado(req);
     const { dataFechamento } = req.query;
     const tenantConfig = await repos.tenantConfigRepository.getTenantConfig(req, tenant);
-    const detalheFechamento = await await repos.notificacaoRepository
+    const detalheFechamento = await repos.notificacaoRepository
       .getEvolucoesFechamento(tenantConfig, dataFechamento, req.query);
-    const { data: evolucoes = [] } = detalheFechamento;
+    const { data: evolucoes = [], count } = detalheFechamento;
     return res.json({
+      count,
       data: evolucoes.map((data) => ({
         createdAt: data.createdAt,
         dataEvolucao: data.dtEvolucao,
