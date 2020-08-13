@@ -294,7 +294,7 @@ module.exports.getNotificacoesPorPeriodo = async (periodo, page = 1, limit = 500
   });
 };
 
-const getSQLEvolucoesFechamento = () => `
+const getSQLEvolucoesFechamento = (filtroTpEvolucao, filtroSearch) => `
 select *
 from "Notificacao" n
 join "NotificacaoEvolucao" ne on ne."notificacaoId" = n.id
@@ -306,7 +306,8 @@ join "UnidadeSaude" u ON u.id = n."unidadeSaudeId"
 LEFT JOIN "DmPaciente" dp ON dp.sexo = p.sexo AND dp.comorbidade = temcomorbidade(nc.*) AND dp.faixaetaria = faixaetaria(p."dataDeNascimento")
 LEFT JOIN "DmLocalizacao" dl ON dl.bairro = b.nome AND dl.cidade = m.nome AND dl.estado = m.uf AND dl.pais = 'BRASIL'
 where n.status <> :status and n."municipioId" = :municipioId and
-p."municipioId" IN(:municipios) and ne."createdAt" between :dtInicial and :dtFinal`;
+p."municipioId" IN(:municipios) and ne."createdAt" between :dtInicial and :dtFinal
+${filtroTpEvolucao} ${filtroSearch}`;
 
 exports.getEvolucoesFechamento = async (tenantConfig, dataFechamento, options) => {
   const [dtInicial, dtFinal] = tenantConfig.getPeriodoFechamento(dataFechamento);
@@ -325,7 +326,7 @@ exports.getEvolucoesFechamento = async (tenantConfig, dataFechamento, options) =
     filtroSearch = search ? ` AND (${filtroPessoa} OR ${filtroDocumento}) ` : '';
   }
 
-  const sqlCount = getSQLEvolucoesFechamento().replace('*', 'count(1)');
+  const sqlCount = getSQLEvolucoesFechamento(filtroTpEvolucao, filtroSearch).replace('*', 'count(1)');
   const [{ count }] = await models.sequelize.query(sqlCount,
     {
       replacements: {
@@ -338,7 +339,7 @@ exports.getEvolucoesFechamento = async (tenantConfig, dataFechamento, options) =
       type: Sequelize.QueryTypes.SELECT,
     });
 
-  const sqlDetalhes = getSQLEvolucoesFechamento().replace('*', `ne.*,
+  const sqlDetalhes = getSQLEvolucoesFechamento(filtroTpEvolucao, filtroSearch).replace('*', `ne.*,
   dp.id AS dmpacienteid,
   p.nome as paciente, p."numeroDocumento", p.sexo, temcomorbidade(nc.*) AS comorbidade, faixaetaria(p."dataDeNascimento") AS faixaetaria,
   dl.id AS dmlocalizacaoid,
@@ -346,8 +347,7 @@ exports.getEvolucoesFechamento = async (tenantConfig, dataFechamento, options) =
   m.nome AS cidade,
   m.uf AS estado,
   'BRASIL' AS pais,
-  u.nome as "unidadeSaude"`).concat(`  ${filtroTpEvolucao} ${filtroSearch}
-  order by ne."createdAt" ASC ${pagination}`);
+  u.nome as "unidadeSaude"`).concat(` order by ne."createdAt" ASC ${pagination}`);
 
   const evolucoes = await models.sequelize.query(sqlDetalhes,
     {
