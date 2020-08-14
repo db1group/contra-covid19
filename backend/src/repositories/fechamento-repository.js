@@ -93,6 +93,7 @@ const removerCacheGraficos = (req) => {
   req.removeCacheByKey('/public/boletim/grafico-diario');
   req.removeCacheByKey('/public/boletim/graficoPaginado');
   req.removeCacheByKey('/public/boletim/cards');
+  req.removeCacheByKey('/public/boletim/media-movel');
 };
 
 const realizarFechamento = async (tenantConfig, { dataFechamento }) => {

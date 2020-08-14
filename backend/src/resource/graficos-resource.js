@@ -70,3 +70,17 @@ exports.consultarBoletimGraficoDiarioUltimos30Dias = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.consultarMediaMovelUltimos30Dias = async (req, res, next) => {
+  try {
+    const medias = await models.sequelize.query('select * from public.vwtaxamovel30dias', {
+      type: Sequelize.QueryTypes.SELECT,
+    });
+
+    const response = { data: medias };
+    req.setCache(req, JSON.stringify(response));
+    return res.json(response);
+  } catch (err) {
+    return next(err);
+  }
+};
