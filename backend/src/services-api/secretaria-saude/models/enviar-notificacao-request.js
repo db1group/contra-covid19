@@ -354,7 +354,7 @@ class EnviarNotificacaoRequest {
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   preencherSintomas(notificacao) {
-    this.febre = notificacao.NotificacaoCovid19.temperaturaFebre
+    this.febre = notificacao.NotificacaoCovid19.febreAferidaReferida
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
     this.doenca_cardiovascular = notificacao.NotificacaoCovid19.doencaCardioVascularCronica
       ? dicionarioValores.boleano.Sim : dicionarioValores.boleano.Nao;
