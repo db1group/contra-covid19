@@ -89,7 +89,9 @@ export default {
   }),
   watch: {
     notificacao(notificacao) {
-      this.notificacao.unidadeSaudeId = notificacao.unidadeSaudeId;
+      this.notificacao.unidadeSaudeId = notificacao.unidadeSaudeIdSalva;
+      this.updateUnidadeSaude(notificacao.unidadeSaudeIdSalva);
+      this.searchUnidade = null;
       this.findUnidadesDeSaude(notificacao.unidadeSaudeNome);
     },
   },
@@ -128,10 +130,13 @@ export default {
         });
     },
     loadUnidadesDeSaudeUserLogged() {
+      if (this.$route.params.id) return;
       if (this.unidadesSaude.loading) return;
+      if (this.notificacao.unidadeSaudeId) return;
       this.unidadesSaude.loading = true;
       UnidadeSaudeService.findByUserEmail(keycloak.tokenParsed.email)
         .then(({ data }) => {
+          this.updateUnidadeSaude(data[0].id);
           this.notificacao.unidadeSaudeId = data[0].id;
           this.searchUnidade = data[0].nome;
           this.unidadesSaude.items = data;
