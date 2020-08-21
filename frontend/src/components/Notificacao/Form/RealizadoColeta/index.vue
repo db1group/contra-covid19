@@ -107,7 +107,6 @@
           />
         </v-col>
       </v-row>
-      <!--
       <v-row dense>
         <v-col>
           <v-select
@@ -126,6 +125,7 @@
       <v-row dense>
         <v-col cols="12" sm="6" md="6">
           <v-autocomplete
+            return-object
             :value="conclusaoAtendimento.exameId"
             label="Exame"
             :items="exames.items"
@@ -155,7 +155,6 @@
           />
         </v-col>
       </v-row>
-      -->
       <v-row dense>
         <v-col cols="12" sm="6" md="6">
           <v-autocomplete
@@ -202,6 +201,8 @@ import ExameService from '@/services/ExameService';
 import ResultadoExameService from '@/services/ResultadoExameService';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
 
+const CODIGO_NAO_INFORMADO = '3';
+
 export default {
   directives: { mask },
   props: {
@@ -245,12 +246,14 @@ export default {
       loading: false,
     },
     itemsMetodoExame: [
-      { label: 'RT-PCR', value: 'RT-PCR' },
-      { label: 'Teste rápido', value: 'TESTE_RAPIDO' },
-      { label: 'ELISA', value: 'ELISA' },
-      { label: 'Quimioluminescência', value: 'QUIMIOLUMINESCENCIA' },
-      { label: 'Imunofluorescência', value: 'IMUNOFLUORESCENCIA' },
+      { label: 'RT-PCR', value: 'RT-PCR', codigo: 1 },
+      { label: 'Teste rápido', value: 'TESTE_RAPIDO', codigo: 2 },
+      { label: 'ELISA', value: 'ELISA', codigo: 4 },
+      { label: 'Quimioluminescência', value: 'QUIMIOLUMINESCENCIA', codigo: 5 },
+      { label: 'Imunofluorescência', value: 'IMUNOFLUORESCENCIA', codigo: 6 },
     ],
+    codigoMetodo: CODIGO_NAO_INFORMADO,
+    codigoExameEstado: CODIGO_NAO_INFORMADO,
   }),
   watch: {
     conclusaoAtendimento(conclusaoAtendimento) {
@@ -305,8 +308,16 @@ export default {
     updateDataDaColeta(dataDaColeta) {
       this.$emit('update:dataDaColeta', dataDaColeta);
     },
+    definirCodigoMetodo(metodoDeExame) {
+      const metodo = this.itemsMetodoExame.find((m) => m.value === metodoDeExame);
+      this.codigoMetodo = metodo ? metodo.codigo : CODIGO_NAO_INFORMADO;
+    },
     updateMetodoDeExame(metodoDeExame) {
+      this.definirCodigoMetodo(metodoDeExame);
       this.$emit('update:metodoDeExame', metodoDeExame);
+      this.updateExameId(null);
+      this.updateResultadoExameId(null);
+      this.findExames();
     },
     updatePesquisaGal(pesquisaGal) {
       this.$emit('update:pesquisaGal', pesquisaGal);
@@ -317,7 +328,7 @@ export default {
     validate() {
       this.$refs.dataDaColeta.validate();
       this.$refs.tipoLaboratorio.validate();
-      // this.$refs.metodoDeExame.validate();
+      this.$refs.metodoDeExame.validate();
       this.$refs.dataCadastroExame.validate();
       this.$refs.dataRecebimentoExame.validate();
       this.$refs.dataLiberacaoExame.validate();
@@ -356,8 +367,19 @@ export default {
     updateRequisicao(requisicao) {
       this.$emit('update:requisicao', requisicao);
     },
-    updateExameId(exameId) {
-      this.$emit('update:exameId', exameId);
+    definirCodigoExameEstado(exameId, codigo) {
+      this.codigoExameEstado = CODIGO_NAO_INFORMADO;
+      if (!exameId) return;
+      if (codigo) this.codigoExameEstado = codigo || CODIGO_NAO_INFORMADO;
+      const exame = this.exames.items.find((e) => e.id === exameId);
+      this.codigoExameEstado = exame ? exame.codigo : CODIGO_NAO_INFORMADO;
+    },
+    updateExameId(exame) {
+      const { id, codigo } = exame || {};
+      this.$emit('update:exameId', id);
+      this.updateResultadoExameId(null);
+      this.definirCodigoExameEstado(id, codigo);
+      this.findResultados();
     },
     updateResultadoExameId(resultadoExameId) {
       this.$emit('update:resultadoExameId', resultadoExameId);
@@ -370,12 +392,19 @@ export default {
       this.searchExame = search ? search.trim() : undefined;
       this.findExames(this.searchExame);
     },
-    findExames(searchExame) {
+    findExames(searchExame, callback) {
+      if (!searchExame) this.searchExame = null;
       if (this.exames.loading) return;
       this.exames.loading = true;
-      ExameService.findAll(searchExame)
+      ExameService.findAll(this.codigoMetodo, searchExame)
         .then(({ data }) => {
           this.exames.items = data;
+        })
+        .then(() => {
+          if (callback) {
+            this.definirCodigoExameEstado(this.conclusaoAtendimento.exameId);
+            callback();
+          }
         })
         .finally(() => {
           this.exames.loading = false;
@@ -387,9 +416,10 @@ export default {
       this.findResultados(this.searchResultado);
     },
     findResultados(searchResultado) {
+      if (!searchResultado) this.searchResultado = null;
       if (this.resultados.loading) return;
       this.resultados.loading = true;
-      ResultadoExameService.findAll(searchResultado)
+      ResultadoExameService.findAll(this.codigoExameEstado, searchResultado)
         .then(({ data }) => {
           this.resultados.items = data;
         })
@@ -415,8 +445,8 @@ export default {
     },
     carregarDadosConclusao(conclusaoAtendimento) {
       this.updateRealizadaColeta(conclusaoAtendimento.coletaMaterialParaDiagnostico);
-      this.findExames(conclusaoAtendimento.nomeExame);
-      this.findResultados(conclusaoAtendimento.nomeResultado);
+      this.definirCodigoMetodo(conclusaoAtendimento.metodoDeExame);
+      this.findExames(conclusaoAtendimento.nomeExame, () => this.findResultados(conclusaoAtendimento.nomeResultado));
       this.findLaboratorios(conclusaoAtendimento.nomeLabAmostra);
     },
     validarDataMaiorColeta(value) {

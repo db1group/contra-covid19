@@ -150,19 +150,6 @@ class EnviarNotificacaoRequest {
   preencherClassificacao(notificacao) {
     const evolucoes = notificacao.NotificacaoEvolucaos;
     const { numeroDo } = notificacao.NotificacaoCovid19;
-    // this.criterio_classificacao = dicionarioValores.criterioClassificacao.EmInvestigacao;
-
-    if (evolucoes.some((data) => (data.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Descartado)
-        || (data.tpEvolucao === tipoNotificacaoEvolucaoEnum.values.Encerrado))) {
-      this.classificacao_final = dicionarioValores.classificacaoFinal.CasoDescartado;
-      // this.criterio_classificacao = dicionarioValores.criterioClassificacao.NaoSeAplica;
-    } else if (evolucoes.some((data) => data.tpEvolucao
-            === tipoNotificacaoEvolucaoEnum.values.Confirmado)) {
-      this.classificacao_final = dicionarioValores.classificacaoFinal.CasoConfirmado;
-      // this.criterio_classificacao = dicionarioValores.criterioClassificacao.Laboratorial;
-    } else {
-      this.classificacao_final = dicionarioValores.classificacaoFinal.CasoSuspeito;
-    }
 
     const evolucaoCurado = evolucoes.find((data) => data.tpEvolucao
             === tipoNotificacaoEvolucaoEnum.values.Curado);
@@ -260,20 +247,20 @@ class EnviarNotificacaoRequest {
     if (!coletaMaterialParaDiagnostico) return;
 
     const {
-      dataDaColeta, nomeLaboratorioEnvioMaterial, metodoExame,
+      dataDaColeta, nomeLaboratorioEnvioMaterial, metodoDeExame,
       codigoExame, requisicao, dataCadastroExame, dataRecebimentoExame, dataLiberacaoExame,
-      // Exame, ResultadoExame,
+      Exame, ResultadoExame,
       Laboratorio, pesquisaGal,
     } = notificacao.NotificacaoCovid19;
 
-    /* if (Exame) {
+    if (Exame) {
       const { codigo: codExame } = Exame;
-      this.exame = codExame;
+      this.exame = toInt(codExame);
     }
     if (ResultadoExame) {
       const { codigo: codResultado } = ResultadoExame;
-      this.resultado = codResultado;
-    } */
+      this.resultado = toInt(codResultado);
+    }
     if (Laboratorio) {
       const { cnes: cnesLab } = Laboratorio;
       this.unidade_solicitante_gal = cnesLab;
@@ -292,7 +279,7 @@ class EnviarNotificacaoRequest {
       ? moment(dataLiberacaoExame).format(FORMATO_DATA) : null;
 
     this.pesquisa_gal = toInt(pesquisaGal);
-    switch (metodoExame) {
+    switch (metodoDeExame) {
       case metodoExameEnum.values.RTPCR:
         this.metodo = dicionarioValores.metodoExame.RTPCR;
         break;
