@@ -4,6 +4,8 @@ const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secret
 const statusNotificacaoEnum = require('../enums/status-notificacao-enum');
 const dataEvolucaoEnum = require('../enums/data-evolucao-notificacao-enum');
 const tpEvolucaoEnum = require('../enums/tipo-notificacao-evolucao-enum');
+const { normalizarTexto } = require('../lib/normalizar-texto');
+const { RegraNegocioErro } = require('../lib/erros');
 
 const { Op } = Sequelize;
 
@@ -548,4 +550,63 @@ exports.removerFechamentoNotificacao = async (tenantConfig, dataFechamento, tran
   await executeSQLRemoverDtFechamentoNotif(
     tenantConfig, dataFechamento, tpEvolucaoEnum.values.Obito, transaction,
   );
+};
+
+const buscarPessoasDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findAll({
+  where: {
+    nome: normalizarTexto(nome),
+    nomeDaMae: normalizarTexto(nomeDaMae),
+  },
+});
+
+const buscarPessoaPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
+  if (!tipoDocumento || tipoDocumento.trim() === '') return null;
+  if (!numeroDocumento || numeroDocumento.trim() === '') return null;
+  return models.Pessoa.findOne({
+    where: {
+      tipoDocumento,
+      numeroDocumento,
+    },
+  });
+};
+
+const buscarPessoaId = async (suspeito, impedirCriacao = true) => {
+  const { nome, nomeDaMae } = suspeito;
+
+  if (suspeito.numeroDocumento !== '') {
+    let pessoaId;
+    const pessoaLocalizada = await buscarPessoaPorDocumento(suspeito);
+    if (pessoaLocalizada) pessoaId = pessoaLocalizada.id;
+    return pessoaId;
+  }
+
+  const pessoasLocalizadas = await buscarPessoasDadosBasicos(nome, nomeDaMae);
+  if (pessoasLocalizadas.length >= 1) {
+    if (impedirCriacao) {
+      throw new RegraNegocioErro(`A pessoa ${nome} (sem documento informado) já possui cadastro no sistema e não poderá ser criado um novo.`);
+    }
+    return pessoasLocalizadas[0].id;
+  }
+  return null;
+};
+
+exports.buscarPessoaId = buscarPessoaId;
+
+exports.notificacaoPacienteObito = async (suspeito) => {
+  const pessoaId = await buscarPessoaId(suspeito, false);
+  if (!pessoaId) return false;
+
+  const notificacao = await models.Notificacao.count({
+    where: {
+      status: { [Op.ne]: statusNotificacaoEnum.values.Excluida },
+      pessoaId,
+    },
+    include: {
+      model: models.NotificacaoEvolucao,
+      where: { tpEvolucao: tpEvolucaoEnum.values.Obito },
+      attributes: ['id', 'tpEvolucao'],
+    },
+  });
+
+  return notificacao > 0;
 };
