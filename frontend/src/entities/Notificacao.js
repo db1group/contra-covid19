@@ -18,6 +18,7 @@ export default class Notificacao {
       'DD/MM/YYYY HH:mm',
     ) || DateService.formatNowAsStringDateTime();
     this.unidadeSaudeId = data.unidadeSaudeId || null;
+    this.unidadeSaudeIdSalva = data.unidadeSaudeId || null;
     this.notificadorId = data.notificadorId || 'ac3227a1-8a09-4b5f-93cd-d6ca43b637a4';
     this.sintomatico = data.sintomatico || false;
     this.realizouExamesImagem = data.realizouExamesImagem || false;
@@ -69,6 +70,7 @@ export default class Notificacao {
     delete notificacao.suspeito.bairroNome;
     delete notificacao.suspeito.municipioNome;
     delete notificacao.possuiFechamento;
+    delete notificacao.unidadeSaudeIdSalva;
     return notificacao;
   }
 }
