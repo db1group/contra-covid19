@@ -191,7 +191,7 @@
 </template>
 <script>
 import {
-  required, dateFormat, dateHourMinuteFormat, minLengthNumbersWithMask, dateMustBeLesserThanToday,
+  required, dateFormat, dateHourMinuteFormat, exactLengthNumbersWithMask, dateMustBeLesserThanToday,
   maxLength, minLength, onlyLetters, maxAge, dateMustBeLesserEqualsThanTodayWithMinutes,
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
@@ -239,7 +239,7 @@ export default {
     rules: {
       dataHoraNotificacao: [required, dateHourMinuteFormat, dateMustBeLesserEqualsThanTodayWithMinutes],
       tipoDocumento: [required],
-      numeroCpf: [minLengthNumbersWithMask(11)],
+      numeroCpf: [exactLengthNumbersWithMask(11)],
       nome: [required, onlyLetters, maxLength(150), minLength(3)],
       nomeDaMae: [required, onlyLetters, maxLength(150), minLength(3)],
       dataDeNascimento: [required, dateFormat],
