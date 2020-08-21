@@ -5,7 +5,6 @@ const Mappers = require('../mapper');
 const { RegraNegocioErro, UsuarioNaoAutorizadoErro } = require('../lib/erros');
 const { UsuarioLogado } = require('../secure/usuario-logado');
 
-const { normalizarTexto } = require('../lib/normalizar-texto');
 const DocumentValidator = require('../validations/custom/document-validator');
 const TipoClassificacaoPessoaEnum = require('../enums/tipo-classificacao-pessoa-enum');
 const atualizacaoNotificacaoService = require('../services/atualizar-notificacao-service');
@@ -32,46 +31,11 @@ const cadastrarSuspeito = async (suspeito) => {
   );
 };
 
-const buscarPessoasDadosBasicos = async (nome, nomeDaMae) => models.Pessoa.findAll({
-  where: {
-    nome: normalizarTexto(nome),
-    nomeDaMae: normalizarTexto(nomeDaMae),
-  },
-});
-
 const obterGestante = (sexo, gestante) => {
   if (sexo === 'M') {
     return 'NAO_APLICADO';
   }
   return gestante;
-};
-
-const buscarPessoaPorDocumento = async ({ tipoDocumento, numeroDocumento }) => {
-  if (!tipoDocumento || tipoDocumento.trim() === '') return null;
-  if (!numeroDocumento || numeroDocumento.trim() === '') return null;
-  return models.Pessoa.findOne({
-    where: {
-      tipoDocumento,
-      numeroDocumento,
-    },
-  });
-};
-
-const buscarPessoaId = async (suspeito) => {
-  const { nome, nomeDaMae } = suspeito;
-
-  if (suspeito.numeroDocumento !== '') {
-    let pessoaId;
-    const pessoaLocalizada = await buscarPessoaPorDocumento(suspeito);
-    if (pessoaLocalizada) pessoaId = pessoaLocalizada.id;
-    return pessoaId;
-  }
-
-  const pessoasLocalizadas = await buscarPessoasDadosBasicos(nome, nomeDaMae);
-  if (pessoasLocalizadas.length >= 1) {
-    throw new RegraNegocioErro(`A pessoa ${nome} (sem documento informado) já possui cadastro no sistema e não poderá ser criado um novo.`);
-  }
-  return null;
 };
 
 const validarDocumento = ({ tipoClassificacaoPessoa, tipoDocumento, numeroDocumento }) => {
@@ -101,7 +65,7 @@ const consolidarSuspeito = async (suspeito) => {
   suspeitoAlterado.gestante = obterGestante(sexo, gestante);
   suspeitoPrototipo = { ...suspeitoPrototipo, gestante };
 
-  const pessoaIdLocalizada = await buscarPessoaId(suspeito);
+  const pessoaIdLocalizada = await repos.notificacaoRepository.buscarPessoaId(suspeito);
   if (pessoaIdLocalizada) {
     return { ...suspeitoPrototipo, pessoaId: pessoaIdLocalizada };
   }
@@ -224,6 +188,16 @@ const validarNotificacaoUnicaPorPaciente = async (notificacaoRequest) => {
   }
 };
 
+const validarNotificacaoPacienteObito = async (notificacaoRequest) => {
+  const existeNotificacao = await repos.notificacaoRepository.notificacaoPacienteObito(
+    notificacaoRequest.suspeito,
+  );
+
+  if (existeNotificacao) {
+    throw new RegraNegocioErro('Já existe uma notificação para este paciente que foi a óbito.');
+  }
+};
+
 const retornarUsuarioLogado = async (email) => {
   const user = await models.User.findOne({
     attributes: ['id'],
@@ -238,6 +212,7 @@ exports.salvar = async (req, res, next) => {
   try {
     const { tenant, email } = new UsuarioLogado(req);
     notificacaoRequest.userId = await retornarUsuarioLogado(email);
+    await validarNotificacaoPacienteObito(notificacaoRequest);
     await validarNotificacaoUnicaPorPaciente(notificacaoRequest);
 
     const notificacaoConsolidada = await consolidarCadastros(notificacaoRequest);
