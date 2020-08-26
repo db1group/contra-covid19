@@ -144,6 +144,7 @@
             :value="conclusaoAtendimento.resultadoExameId"
             label="Resultado"
             :items="resultados.items"
+            :rules="rules.resultadoExameId"
             @update:search-input="searchResultados"
             item-text="nome"
             item-value="id"
@@ -220,6 +221,7 @@ export default {
       dataDaColeta: [],
       tipoLaboratorio: [],
       metodoDeExame: [],
+      resultadoExameId: [],
       dataCadastroExame: [dateMustBeLesserEqualsThanToday],
       dataRecebimentoExame: [],
       dataLiberacaoExame: [],
@@ -339,6 +341,7 @@ export default {
       this.rules.metodoDeExame = [];
       this.rules.dataRecebimentoExame = [];
       this.rules.dataLiberacaoExame = [];
+      this.rules.resultadoExameId = [];
       this.validate();
     },
     addRequiredInFields() {
@@ -350,6 +353,7 @@ export default {
         this.validarDataMaiorCadastro);
       this.rules.dataLiberacaoExame.push(dateMustBeLesserEqualsThanToday,
         this.validarDataMaiorCadastro);
+      this.rules.resultadoExameId.push(this.requiredIfExame);
       this.validate();
     },
     updateDataCadastroExame(dataCadastroExame) {
@@ -456,6 +460,12 @@ export default {
     validarDataMaiorCadastro(value) {
       return greaterThanMinimumDate(value,
         this.conclusaoAtendimento.dataCadastroExame, 'Informe uma data maior ou igual a de cadastro.');
+    },
+    requiredIfExame(value) {
+      if (!this.conclusaoAtendimento.exameId) {
+        return true;
+      }
+      return required(value);
     },
   },
   created() {
