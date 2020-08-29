@@ -11,6 +11,8 @@ const contatoSuspeitoEnum = require('../../../enums/contato-suspeito-enum');
 const localContatoSuspeitoEnum = require('../../../enums/local-contato-suspeito-enum');
 const tipoNotificacaoEvolucaoEnum = require('../../../enums/tipo-notificacao-evolucao-enum');
 const tipoInternacaoEnum = require('../../../enums/tipo-internacao-enum');
+const pacienteInstitucionalizadoEnum = require('../../../enums/paciente-institucionalizado-enum');
+const tpPacienteInstitucionalizadoEnum = require('../../../enums/tipo-paciente-institucionalizado-enum');
 
 const FORMATO_DATA = 'YYYY-MM-DD';
 
@@ -74,6 +76,7 @@ class EnviarNotificacaoRequest {
     this.preencherOcupacao(notificacao);
     this.preencherHospitalizacao(notificacao);
     this.preencherFrequentouUnidade(notificacao);
+    this.preencherPacienteInstitucionalizado(notificacao);
   }
 
   getPeriodoGestacional(notificacao) {
@@ -124,16 +127,19 @@ class EnviarNotificacaoRequest {
   }
 
   preencherTelefone(notificacao) {
-    const { telefoneResidencial, telefoneCelular, telefoneContato } = notificacao.Pessoa;
-    let telefone = '';
-    if (telefoneResidencial !== '') {
-      telefone = telefoneResidencial;
-    } else if (telefoneContato !== '') {
-      telefone = telefoneContato;
-    } else {
-      telefone = telefoneCelular;
+    const { telefoneResidencial, telefoneCelular } = notificacao.Pessoa;
+    const tpPaciente = this.getTipoPaciente(notificacao);
+    const institucionalizado = this.getPacienteInstitucionalizado(
+      notificacao.Pessoa.institucionalizado,
+    );
+
+    this.telefone_paciente = telefoneCelular;
+    if (tpPaciente === dicionarioValores.tipoPaciente.EmSituacaoRua
+      || tpPaciente === dicionarioValores.tipoPaciente.PrivadoDeLiberdade
+      || institucionalizado) {
+      this.telefone_paciente = null;
     }
-    this.telefone_paciente = toInt(telefone);
+    this.telefone_residencial_paciente = toInt(telefoneResidencial);
   }
 
   preencherOcupacao(notificacao) {
@@ -476,7 +482,7 @@ class EnviarNotificacaoRequest {
       case racaCorEnum.values.Indigena:
         return dicionarioValores.racaCor.Indigena;
       default:
-        return dicionarioValores.racaCor.Ignorado;
+        return null;
     }
   }
 
@@ -573,6 +579,42 @@ class EnviarNotificacaoRequest {
     if (!frequentouUnidade) return;
     this.frequentou_unidade_cnes = cnes;
     this.frequentou_unidade_descricao = nome;
+  }
+
+  getPacienteInstitucionalizado(institucionalizado) {
+    if (!institucionalizado) return null;
+    switch (institucionalizado) {
+      case pacienteInstitucionalizadoEnum.values.CasaRepousoAsilo:
+        return dicionarioValores.pacienteInstitucionalizado.CasaRepousoAsilo;
+      case pacienteInstitucionalizadoEnum.values.CentroSocioEducacao:
+        return dicionarioValores.pacienteInstitucionalizado.CentroSocioEducacao;
+      case pacienteInstitucionalizadoEnum.values.ClinicasReabilitacao:
+        return dicionarioValores.pacienteInstitucionalizado.ClinicasReabilitacao;
+      case pacienteInstitucionalizadoEnum.values.SeminarioConvento:
+        return dicionarioValores.pacienteInstitucionalizado.SeminarioConvento;
+      case pacienteInstitucionalizadoEnum.values.ServicosAcolhimento:
+        return pacienteInstitucionalizadoEnum.values.ServicosAcolhimento;
+      default:
+        return dicionarioValores.pacienteInstitucionalizado.UnidadesPrisionais;
+    }
+  }
+
+  getTipoPacienteInstitucionalizado(tpInstitucionalizado) {
+    if (!tpInstitucionalizado) return null;
+    return tpInstitucionalizado === tpPacienteInstitucionalizadoEnum.values.Trabalhador
+      ? dicionarioValores.tipoPacienteInstitucionalizado.Trabalhador
+      : dicionarioValores.tipoPacienteInstitucionalizado.Coabitante;
+  }
+
+  preencherPacienteInstitucionalizado(notificacao) {
+    const { institucionalizado, tpInstitucionalizado, Instituicao } = notificacao.Pessoa;
+    if (!institucionalizado) return;
+    const { codigo } = Instituicao;
+    this.paciente_institucionalizado = this.getPacienteInstitucionalizado(institucionalizado);
+    this.tipo_paciente_institucionalizado = this.getTipoPacienteInstitucionalizado(
+      tpInstitucionalizado,
+    );
+    this.instituicao = toInt(codigo);
   }
 }
 

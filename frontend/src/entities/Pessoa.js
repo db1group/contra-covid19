@@ -47,6 +47,10 @@ export default class Pessoa {
     this.paisId = data.paisId || 1;
     this.paisNome = data.pais || 'Brasil';
     this.gestanteAltoRisco = data.gestanteAltoRisco || false;
+    this.institucionalizado = data.institucionalizado || null;
+    this.tpInstitucionalizado = data.tpInstitucionalizado || null;
+    this.instituicaoId = data.instituicaoId || null;
+    this.instituicaoNome = data.instituicaoNome || '';
   }
 
   toRequestBody() {
@@ -62,6 +66,7 @@ export default class Pessoa {
     };
     delete body.numeroCpf;
     delete body.paisNome;
+    delete body.instituicaoNome;
     return body;
   }
 

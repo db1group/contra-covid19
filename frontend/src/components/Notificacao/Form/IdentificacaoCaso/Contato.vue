@@ -1,10 +1,6 @@
 <template>
   <v-row dense>
-    <v-col
-      cols="12"
-      sm="6"
-      md="4"
-    >
+    <v-col cols="12" sm="6" md="4">
       <v-text-field
         :value="suspeito.telefoneResidencial"
         ref="residencial"
@@ -16,11 +12,7 @@
         :disabled="disabled"
       />
     </v-col>
-    <v-col
-      cols="12"
-      sm="6"
-      md="4"
-    >
+    <v-col cols="12" sm="6" md="4">
       <v-text-field
         :value="suspeito.telefoneCelular"
         ref="celular"
@@ -30,13 +22,10 @@
         :rules="rules.telefoneCelular"
         @input="updateTelefoneCelular"
         :disabled="disabled"
+        @blur="validateCelular"
       />
     </v-col>
-    <v-col
-      cols="12"
-      sm="6"
-      md="4"
-    >
+    <v-col cols="12" sm="6" md="4">
       <v-text-field
         :value="suspeito.telefoneContato"
         ref="contato"
@@ -51,7 +40,11 @@
   </v-row>
 </template>
 <script>
-import { minLengthNumbersWithMask } from '@/validations/CommonValidations';
+import {
+  minLengthNumbersWithMask,
+  required,
+  cellphoneNumberValid,
+} from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
 
@@ -102,10 +95,26 @@ export default {
       }
       return 'Pelo menos um telefone é obrigatório';
     },
+    requiredIfInstitucionalizado(value) {
+      const { tipoClassificacaoPessoa, institucionalizado } = this.suspeito;
+      if (tipoClassificacaoPessoa === 'EM_SITUACAO_RUA'
+        || tipoClassificacaoPessoa === 'PRIVADO_LIBERDADE'
+        || institucionalizado) {
+        return true;
+      }
+      return required(value, 'Celular é obrigatório, exceto presidiário, institucionalizado e em situação de rua.');
+    },
+    validateCelular() {
+      this.$refs.celular.validate();
+    },
   },
   created() {
     this.rules.telefoneResidencial.push(this.requiredAtLeastOnePhoneNumber);
-    this.rules.telefoneCelular.push(this.requiredAtLeastOnePhoneNumber);
+    this.rules.telefoneCelular.push(
+      this.requiredAtLeastOnePhoneNumber,
+      this.requiredIfInstitucionalizado,
+      cellphoneNumberValid,
+    );
     this.rules.telefoneContato.push(this.requiredAtLeastOnePhoneNumber);
   },
 };

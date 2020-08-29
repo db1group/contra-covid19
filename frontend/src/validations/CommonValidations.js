@@ -124,3 +124,8 @@ export const notBrasil = (value,
 export const hourMinuteFormat = (value) => !value
   || (HOUR_MINUTE_FORMAT.test(value) && DateService.isDateValid(value, 'HH:mm'))
   || 'O formato precisa ser hh:mm';
+
+export const cellphoneNumberValid = (value, message = 'Celular após o DDD deve iniciar com 9.') => {
+  const valueWithoutMask = value.replace(/[^0-9]/g, '');
+  return !valueWithoutMask || /^[0-9]{2}9/.test(valueWithoutMask) || message;
+};

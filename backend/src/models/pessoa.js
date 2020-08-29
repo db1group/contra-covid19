@@ -68,12 +68,16 @@ module.exports = (sequelize, DataTypes) => {
     passaporte: DataTypes.STRING(20),
     paisId: DataTypes.UUID,
     gestanteAltoRisco: DataTypes.BOOLEAN,
+    institucionalizado: DataTypes.STRING(25),
+    tpInstitucionalizado: DataTypes.STRING(18),
+    instituicaoId: DataTypes.UUID,
   });
   Pessoa.associate = (models) => {
     Pessoa.belongsTo(models.Bairro, { foreignKey: 'bairroId' });
     Pessoa.belongsTo(models.Municipio, { foreignKey: 'municipioId' });
     Pessoa.belongsTo(models.Ocupacao, { foreignKey: 'ocupacaoId' });
     Pessoa.belongsTo(models.Pais, { foreignKey: 'paisId', as: 'Pais' });
+    Pessoa.belongsTo(models.Instituicao, { foreignKey: 'instituicaoId' });
   };
   Pessoa.beforeCreate(async (pessoa) => {
     normalizarTextoPessoa(pessoa);
