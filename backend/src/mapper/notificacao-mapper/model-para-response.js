@@ -102,6 +102,10 @@ class NotificacaoResponseMapper {
     paisId,
     Pais,
     gestanteAltoRisco,
+    institucionalizado,
+    tpInstitucionalizado,
+    instituicaoId,
+    Instituicao,
   }) {
     return {
       pessoaId: id,
@@ -134,6 +138,10 @@ class NotificacaoResponseMapper {
       passaporte,
       paisId,
       pais: Pais ? Pais.nome : 'Brasil',
+      institucionalizado,
+      tpInstitucionalizado,
+      instituicaoId,
+      instituicaoNome: Instituicao ? Instituicao.nome : '',
     };
   }
 

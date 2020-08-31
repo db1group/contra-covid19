@@ -19,6 +19,9 @@
       @update:tipoClassificacaoPessoa="updateTipoClassificacaoPessoa"
       @update:passaporte="updatePassaporte"
       @update:gestanteAltoRisco="updateGestanteAltoRisco"
+      @update:institucionalizado="updatePacienteInstitucionalizado"
+      @update:tpInstitucionalizado="updateTpPacienteInstitucionalizado"
+      @update:instituicaoId="updateInstituicao"
       :disabled="disabled"
     />
     <endereco
@@ -158,6 +161,15 @@ export default {
     },
     updateGestanteAltoRisco(gestanteAltoRisco) {
       this.$emit('update:gestanteAltoRisco', gestanteAltoRisco);
+    },
+    updatePacienteInstitucionalizado(institucionalizado) {
+      this.$emit('update:institucionalizado', institucionalizado);
+    },
+    updateTpPacienteInstitucionalizado(tpInstitucionalizado) {
+      this.$emit('update:tpInstitucionalizado', tpInstitucionalizado);
+    },
+    updateInstituicao(instituicaoId) {
+      this.$emit('update:instituicaoId', instituicaoId);
     },
   },
 };

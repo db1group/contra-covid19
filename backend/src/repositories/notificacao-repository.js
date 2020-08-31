@@ -61,6 +61,7 @@ module.exports.getPorId = async (id, tenant) => models.Notificacao.findOne({
         { model: models.Municipio },
         { model: models.Ocupacao },
         { model: models.Pais, as: 'Pais' },
+        { model: models.Instituicao },
       ],
     },
     {
@@ -134,6 +135,7 @@ exports.getNotificacoesPendentesEnvioSecretariaPorIds = async (ids, tenant) => m
           { model: models.Municipio },
           { model: models.Ocupacao },
           { model: models.Pais, as: 'Pais' },
+          { model: models.Instituicao },
         ],
       },
       {

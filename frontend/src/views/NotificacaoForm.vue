@@ -53,6 +53,9 @@
           @update:passaporte="updateSuspeito('passaporte', $event)"
           @update:paisId="updateSuspeito('paisId', $event)"
           @update:gestanteAltoRisco="updateSuspeito('gestanteAltoRisco', $event)"
+          @update:institucionalizado="updateSuspeito('institucionalizado', $event)"
+          @update:tpInstitucionalizado="updateSuspeito('tpInstitucionalizado', $event)"
+          @update:instituicaoId="updateSuspeito('instituicaoId', $event)"
         />
         <sinais-e-sintomas
           :sintomatico="notificacao.sintomatico"

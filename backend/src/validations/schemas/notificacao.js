@@ -23,6 +23,11 @@ const schemas = {
     descricaoLocal: Joi.string().allow('', null).max(255),
     observacoes: Joi.string().allow('', null),
     suspeito: Joi.object().keys({
+      institucionalizado: Joi.string()
+        .allow('', null),
+      tpInstitucionalizado: Joi.string()
+        .allow('', null),
+      instituicaoId: Joi.string().guid({ version: 'uuidv4' }).allow(null),
       numeroDocumento: Joi.string()
         .allow('', null),
       bairroId: Joi.string().guid({ version: 'uuidv4' }).required(),

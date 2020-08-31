@@ -17,10 +17,10 @@ exports.tipoPaciente = {
 exports.racaCor = {
   Branca: 1,
   Preta: 2,
-  Amarela: 3,
-  Parda: 4,
+  Amarela: 4,
+  Parda: 3,
   Indigena: 5,
-  Ignorado: 6,
+  Ignorado: 99,
 };
 
 exports.sexo = {
@@ -133,4 +133,18 @@ exports.tipoInternacao = {
   Enfermaria: 1,
   UTI: 2,
   NaoInformado: 3,
+};
+
+exports.pacienteInstitucionalizado = {
+  UnidadesPrisionais: 1,
+  CasaRepousoAsilo: 2,
+  ServicoAcolhimento: 3,
+  CentroSocioEducacao: 4,
+  ClinicasReabilitacao: 5,
+  SeminarioConvento: 6,
+};
+
+exports.tipoPacienteInstitucionalizado = {
+  Trabalhador: 1,
+  Coabitante: 2,
 };

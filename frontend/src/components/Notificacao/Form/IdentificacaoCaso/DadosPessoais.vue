@@ -33,6 +33,59 @@
       </v-col>
     </v-row>
     <v-row dense>
+      <v-col cols="12">
+        <v-autocomplete
+          :value="suspeito.institucionalizado"
+          label="Paciente institucionalizado"
+          :items="institucionalizados"
+          item-text="value"
+          item-value="key"
+          :disabled="disabled"
+          @input="updatePacienteInstitucionalizado"
+        />
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="12">
+        <v-autocomplete
+          v-if="suspeito.institucionalizado !== null"
+          :value="suspeito.tpInstitucionalizado"
+          :rules="rules.tpInstitucionalizado"
+          :items="tpInstitucionalizados"
+          item-text="value"
+          item-value="key"
+          label="Tipo institucionalizado"
+          :disabled="disabled"
+          @input="updateTpPacienteInstitucionalizado"
+        />
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="12">
+        <v-autocomplete
+          v-if="suspeito.institucionalizado !== null"
+          :value="suspeito.instituicaoId"
+          :rules="rules.instituicaoId"
+          label="Instituição"
+          :items="instituicoes.items"
+          @update:search-input="searchInstituicoes"
+          item-value="id"
+          item-text="nome"
+          :loading="instituicoes.loading"
+          no-data-text="Instituição não encontrada"
+          @input="updateInstituicao"
+          :disabled="disabled"
+        >
+          <template slot="item" slot-scope="{ item }">
+            <div
+              class="v-list-item__title"
+              :title="`${item.nome} - ${item.municipio}`"
+            >{{ item.nome }} - {{ item.municipio }}</div>
+          </template>
+        </v-autocomplete>
+      </v-col>
+    </v-row>
+    <v-row dense>
       <v-col cols="12" sm="3" md="3">
         <v-select
           :value="suspeito.tipoDocumento"
@@ -196,6 +249,7 @@ import {
 } from '@/validations/CommonValidations';
 import { mask } from 'vue-the-mask';
 import Pessoa from '@/entities/Pessoa';
+import InstituicaoService from '@/services/InstituicaoService';
 
 const TIPOS_DOCUMENTO = [
   { key: 'CPF', value: 'CPF' },
@@ -211,6 +265,24 @@ const RACAS_CORES = [
   { key: 'PARDA', value: 'Parda' },
   { key: 'INDIGENA', value: 'Indígena' },
   { key: 'IGNORADO', value: 'Ignorado' },
+];
+
+const INSTITUCIONALIOZADOS = [
+  { key: null, value: 'Não informado' },
+  { key: 'UNIDADES_PRISIONAIS', value: 'Unidades Prisionais (Presídios e Cadeias)' },
+  { key: 'CASA_REPOUSO_ASILO', value: 'ILPI/Casa de Repouso/Asilo' },
+  { key: 'SERVICOS_ACOLHIMENTO', value: 'Serviços de Acolhimento Institucional SUAS' },
+  { key: 'CENTRO_SOCIO_EDUCACAO', value: 'Centro de Sócio Educação (CENSE e Casas de Semiliberdade' },
+  {
+    key: 'CLINICAS_REABILITACAO',
+    value: 'Clínicas de recuperação ou reabilitação (psiquiatria e dependência química)',
+  },
+  { key: 'SEMINARIO_CONVENTO', value: 'Seminário / Convento' },
+];
+
+const TPINSTITUCIONALIZADOS = [
+  { key: 'TRABALHADOR', value: 'Trabalhador da instituição' },
+  { key: 'COABITANTE', value: 'Coabitante da instituição' },
 ];
 
 export default {
@@ -236,6 +308,8 @@ export default {
   data: () => ({
     tiposDocumento: TIPOS_DOCUMENTO,
     racasCores: RACAS_CORES,
+    institucionalizados: INSTITUCIONALIOZADOS,
+    tpInstitucionalizados: TPINSTITUCIONALIZADOS,
     rules: {
       dataHoraNotificacao: [required, dateHourMinuteFormat, dateMustBeLesserEqualsThanTodayWithMinutes],
       tipoDocumento: [required],
@@ -249,9 +323,16 @@ export default {
       racaCor: [required],
       tipoClassificacaoPessoa: [required],
       passaporte: [],
+      tpInstitucionalizado: [],
+      instituicaoId: [],
     },
     disabledTipoDocumento: true,
     labelNumeroDocumento: 'Número do documento *',
+    instituicoes: {
+      items: [],
+      loading: false,
+    },
+    searchInstituicao: null,
   }),
   methods: {
     updateDataHoraNotificacao(dataHoraNotificacao) {
@@ -358,8 +439,42 @@ export default {
     updatePassaporte(passaporte) {
       this.$emit('update:passaporte', passaporte);
     },
+    updateTpPacienteInstitucionalizado(tpInstitucionalizado) {
+      this.$emit('update:tpInstitucionalizado', tpInstitucionalizado);
+    },
+    updateInstituicao(instituicaoId) {
+      this.$emit('update:instituicaoId', instituicaoId);
+      this.searchInstituicao = null;
+    },
+    updatePacienteInstitucionalizado(institucionalizado) {
+      if (!institucionalizado) {
+        this.updateTpPacienteInstitucionalizado(null);
+        this.updateInstituicao(null);
+      }
+      this.$emit('update:institucionalizado', institucionalizado);
+    },
+    searchInstituicoes(search) {
+      if (search === this.searchInstituicao) return;
+      if (Array.isArray(this.searchInstituicao) && this.searchInstituicao[0] === search) return;
+      this.searchInstituicao = search ? search.trim().toUpperCase().split() : '';
+      this.findInstituicoes(this.searchInstituicao);
+    },
+    findInstituicoes(searchInstituicao = '') {
+      this.instituicoes.loading = true;
+      InstituicaoService.findAll(searchInstituicao)
+        .then(({ data }) => {
+          this.instituicoes.items = data;
+        })
+        .finally(() => { this.instituicoes.loading = false; });
+    },
+    requiredIfInstitucionalizado(value) {
+      return this.suspeito.institucionalizado === null ? true : required(value);
+    },
   },
   watch: {
+    suspeito(suspeito) {
+      this.findInstituicoes(suspeito.instituicaoNome);
+    },
     'suspeito.tipoClassificacaoPessoa': function classificacaoPessoa(novoValor) {
       this.updateTipoClassificacaoPessoa(novoValor);
     },
@@ -370,6 +485,9 @@ export default {
     this.rules.tipoPeriodoGestacional.push(this.requiredIfGestante);
     this.rules.dataDeNascimento.push(this.validateFutureDate);
     this.rules.passaporte.push(this.requiredIfEstrangeiro);
+    this.rules.tpInstitucionalizado.push(this.requiredIfInstitucionalizado);
+    this.rules.instituicaoId.push(this.requiredIfInstitucionalizado);
+    this.findInstituicoes();
   },
 };
 </script>
