@@ -205,8 +205,7 @@ export default {
         || this.isVisualizarTodasNotificacaoes;
     },
     isPermiteEditar(item) {
-      return item.status !== 'ENCERRADA'
-        && (this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude);
+      return (this.isUnidadeSaudePermitidaUserLogged(item.unidadeSaudeId) || this.isSecretariaSaude);
     },
     isPermiteExcluir() {
       return this.isSecretariaSaude;

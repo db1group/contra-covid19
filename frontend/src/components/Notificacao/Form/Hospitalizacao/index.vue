@@ -96,6 +96,32 @@
           />
         </v-col>
       </v-row>
+      <v-row dense>
+        <v-col cols="6" sm="6" md="6">
+          <v-text-field
+            :value="hospitalizacao.dataObito"
+            ref="dataObito"
+            label="Data do Óbito"
+            append-icon="mdi-calendar-blank"
+            v-mask="'##/##/####'"
+            :rules="rules.dataObito"
+            validate-on-blur
+            @input="updateDataObito"
+            :disabled="disableFields"
+          />
+        </v-col>
+        <v-col cols="6" sm="6" md="6">
+          <v-text-field
+            :value="hospitalizacao.numeroDo"
+            label="Número da DO"
+            v-mask="'##################'"
+            :disabled="disableFields"
+            :rules="rules.numeroDo"
+            ref="numeroDo"
+            @input="updateNumeroDo"
+          />
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -108,6 +134,7 @@ import {
   dateFormat,
   dateMustBeLesserEqualsThanToday,
   greaterThanMinimumDate,
+  maxLength,
 } from '@/validations/CommonValidations';
 
 export default {
@@ -142,6 +169,8 @@ export default {
       tipoLeito: [],
       dataIsolamento: [],
       dataAlta: [],
+      dataObito: [],
+      numeroDo: [maxLength(18)],
     },
   }),
   computed: {
@@ -161,6 +190,8 @@ export default {
         this.updateDataInternamento(null);
         this.updateDataIsolamento(null);
         this.updateDataAlta(null);
+        this.updateDataObito(null);
+        this.updateNumeroDo(null);
         this.removeRequiredInFields();
         return;
       }
@@ -173,6 +204,8 @@ export default {
       this.$refs.dataInternamento.resetValidation();
       this.$refs.dataIsolamento.resetValidation();
       this.$refs.dataAlta.resetValidation();
+      this.$refs.dataObito.resetValidation();
+      this.$refs.numeroDo.resetValidation();
     },
     validate() {
       this.$refs.cnesHospitalId.validate();
@@ -180,6 +213,8 @@ export default {
       this.$refs.dataInternamento.validate();
       this.$refs.dataIsolamento.validate();
       this.$refs.dataAlta.validate();
+      this.$refs.dataObito.validate();
+      this.$refs.numeroDo.validate();
     },
     removeRequiredInFields() {
       this.rules.dataInternamento = [];
@@ -187,6 +222,7 @@ export default {
       this.rules.tipoLeito = [];
       this.rules.dataIsolamento = [];
       this.rules.dataAlta = [];
+      this.rules.dataObito = [];
       this.resetarValidacoes();
       this.validate();
     },
@@ -200,6 +236,7 @@ export default {
       this.rules.dataInternamento.push(required, dateFormat, dateMustBeLesserEqualsThanToday);
       this.rules.dataIsolamento.push(dateMustBeLesserEqualsThanToday);
       this.rules.dataAlta.push(dateMustBeLesserEqualsThanToday, this.validarDataAlta);
+      this.rules.dataObito.push(dateMustBeLesserEqualsThanToday);
       this.validate();
     },
     updateCnesHospitalId(cnesHospitalId) {
@@ -242,6 +279,12 @@ export default {
       if (hospitalizacao.hospitalizado) {
         this.addRequiredInFields();
       }
+    },
+    updateDataObito(dataObito) {
+      this.$emit('update:dataObito', dataObito);
+    },
+    updateNumeroDo(numeroDo) {
+      this.$emit('update:numeroDo', numeroDo);
     },
   },
   created() {

@@ -22,6 +22,12 @@ export default class Hospitalizacao {
       'YYYY-MM-DD',
       'DD/MM/YYYY',
     ) || '';
+    this.dataObito = DateService.changeFormat(
+      data.dataObito,
+      'YYYY-MM-DD',
+      'DD/MM/YYYY',
+    ) || '';
+    this.numeroDo = data.numeroDo || null;
   }
 
   toRequestBody() {
@@ -30,6 +36,7 @@ export default class Hospitalizacao {
       dataInternamento: DateService.changeFormat(this.dataInternamento, 'DD/MM/YYYY', 'YYYY-MM-DD'),
       dataIsolamento: DateService.changeFormat(this.dataIsolamento, 'DD/MM/YYYY', 'YYYY-MM-DD'),
       dataAlta: DateService.changeFormat(this.dataAlta, 'DD/MM/YYYY', 'YYYY-MM-DD'),
+      dataObito: DateService.changeFormat(this.dataObito, 'DD/MM/YYYY', 'YYYY-MM-DD'),
     };
   }
 }
