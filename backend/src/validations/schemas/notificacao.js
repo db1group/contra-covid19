@@ -306,8 +306,6 @@ const schemas = {
         .allow(null),
       pesquisaGal: Joi.string().allow('', null)
         .max(18),
-      numeroDo: Joi.string().allow('', null)
-        .max(18),
     }),
     hospitalizacao: Joi.object().keys({
       hospitalizado: Joi.bool().allow(null),
@@ -327,6 +325,12 @@ const schemas = {
         .max('now')
         .message('Data da alta deve ser menor ou igual de hoje.')
         .allow(null),
+      dataObito: Joi.date().iso()
+        .max('now')
+        .message('Data do Óbito deve ser menor ou igual de hoje.')
+        .allow(null),
+      numeroDo: Joi.string().allow('', null)
+        .max(18),
     }),
     frequentouCnes: Joi.object().keys({
       frequentouUnidade: Joi.bool().allow(null),

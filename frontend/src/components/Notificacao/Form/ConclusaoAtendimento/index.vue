@@ -54,27 +54,13 @@
           </p>
         </v-col>
       </v-row>
-      <v-row dense>
-        <v-col>
-          <v-text-field
-            v-if="conclusaoAtendimento.situacaoNoMomentoDaNotificacao === 'EVOLUCAO_OBITO'"
-            :value="conclusaoAtendimento.numeroDo"
-            label="Número da DO *"
-            v-mask="'##################'"
-            :disabled="disabled"
-            :rules="rules.numeroDo"
-            ref="numeroDo"
-            @input="updateNumeroDo"
-          />
-        </v-col>
-      </v-row>
     </v-container>
   </div>
 </template>
 <script>
 import { mask } from 'vue-the-mask';
 import Configuration from '@/configuration';
-import { required, maxLength } from '@/validations/CommonValidations';
+import { required } from '@/validations/CommonValidations';
 import ConclusaoAtendimento from '@/entities/ConclusaoAtendimento';
 
 export default {
@@ -92,21 +78,11 @@ export default {
   data: () => ({
     rules: {
       situacaoNoMomentoDaNotificacao: [required],
-      numeroDo: [],
     },
   }),
   methods: {
     updateSituacaoNoMomentoDaNotificacao(situacaoNoMomentoDaNotificacao) {
       this.$emit('update:situacaoNoMomentoDaNotificacao', situacaoNoMomentoDaNotificacao);
-      this.rules.numeroDo = [];
-      if (situacaoNoMomentoDaNotificacao === 'EVOLUCAO_OBITO') {
-        this.rules.numeroDo.push(required, maxLength(18));
-      } else {
-        this.updateNumeroDo(null);
-      }
-    },
-    updateNumeroDo(numeroDo) {
-      this.$emit('update:numeroDo', numeroDo);
     },
     goToOrientations() {
       const url = Configuration.value('VUE_APP_ORIENTATIONS_PDF');

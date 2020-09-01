@@ -4,6 +4,7 @@ const { validarMenorQueDataHoraAtual } = require('../lib/validacoes-comuns/data'
 const repos = require('../repositories/repository-factory');
 const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
+const statusNotificacaoEnum = require('../enums/status-notificacao-enum');
 // const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secretaria-enum');
 
 module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
@@ -14,7 +15,7 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
 
   if (notificacaoModel === null) throw new RegraNegocioErro('Notificação não existe.');
 
-  if (notificacaoModel.status !== 'ABERTA') throw new RegraNegocioErro('Notificação não está mais aberta.');
+  if (notificacaoModel.status === statusNotificacaoEnum.values.Excluida) throw new RegraNegocioErro('Notificação já foi excluída.');
 
   if (!usuarioLogado.isRoleSecretariaSaude()) {
     const { unidadeSaudeId } = notificacaoModel;
@@ -29,6 +30,23 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
     if (!unidadesSaudeUser.some((data) => data.id === unidadeSaudeId)) {
       throw new RegraNegocioErro('Você não possui autorização para atualizar esta notificação.');
     }
+  }
+
+  const notificacaoConsolidada = await consolidacaoAtualizacaoNotificacaoService
+    .handle(notificacaoRequest, usuarioLogado.tenant);
+  const notificacaoUpdate = Mappers.Notificacao.mapearParaNotificacao(notificacaoConsolidada);
+  notificacaoUpdate.id = notificacaoRequest.id;
+  notificacaoUpdate.municipioId = usuarioLogado.tenant;
+  const { notificacaoCovid19 } = notificacaoUpdate;
+  notificacaoCovid19.notificacaoId = notificacaoRequest.id;
+
+  if (notificacaoModel.status === statusNotificacaoEnum.values.Encerrada) {
+    const notifCovid = {
+      notificacaoId: notificacaoRequest.id,
+      ...notificacaoConsolidada.hospitalizacao,
+    };
+    await repos.notificacaoCovid19Repository.atualizar(notifCovid);
+    return;
   }
 
   const notificacaoEvolucoes = await repos.notificacaoRepository
@@ -59,20 +77,11 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
     }
   }
 
-  const notificacaoConsolidada = await consolidacaoAtualizacaoNotificacaoService
-    .handle(notificacaoRequest, usuarioLogado.tenant);
-
   const suspeitoUpdate = Mappers.Pessoa.mapearParaModel(notificacaoRequest.suspeito);
   suspeitoUpdate.id = notificacaoConsolidada.suspeito.pessoaId;
   await repos.pessoaRepository.atualizar(suspeitoUpdate);
-
-  const notificacaoUpdate = Mappers.Notificacao.mapearParaNotificacao(notificacaoConsolidada);
-  notificacaoUpdate.id = notificacaoRequest.id;
-  notificacaoUpdate.municipioId = usuarioLogado.tenant;
   await repos.notificacaoRepository.atualizar(notificacaoUpdate, usuarioLogado.tenant);
 
-  const { notificacaoCovid19 } = notificacaoUpdate;
-  notificacaoCovid19.notificacaoId = notificacaoRequest.id;
   /*
   notificacaoCovid19.tpTransmissaoApiSecretaria = tpTransmissaoApiSecretaria
     .values.PendenteAtualizacao;

@@ -158,7 +158,9 @@
           @update:dataInternamento="updateHospitalizacao('dataInternamento', $event)"
           @update:dataIsolamento="updateHospitalizacao('dataIsolamento', $event)"
           @update:dataAlta="updateHospitalizacao('dataAlta', $event)"
-          :disabled="disableFields"
+          @update:dataObito="updateHospitalizacao('dataObito', $event)"
+          @update:numeroDo="updateHospitalizacao('numeroDo', $event)"
+          :disabled="disableHospitalizacao"
         />
         <frequentou-cnes
           :frequentou-cnes="notificacao.frequentouCnes"
@@ -213,7 +215,6 @@
         <conclusao-atendimento
           :conclusao-atendimento="notificacao.conclusaoAtendimento"
           @update:situacaoNoMomentoDaNotificacao="updateConclusaoAtendimento('situacaoNoMomentoDaNotificacao', $event)"
-          @update:numeroDo="updateConclusaoAtendimento('numeroDo', $event)"
           :disabled="disableFields"
         />
         <observacoes v-model="notificacao.observacoes" :disabled="disableFields" />
@@ -293,11 +294,14 @@ export default {
       }
     },
     disableFields() {
-      return this.stateForm === StateForm.VIEW;
+      return (this.stateForm === StateForm.VIEW) || (this.notificacao.status === 'ENCERRADA');
     },
     disableComorbidades() {
       if (this.notificacao.possuiFechamento) return true;
-      return this.stateForm === StateForm.VIEW;
+      return this.stateForm === StateForm.VIEW || (this.notificacao.status === 'ENCERRADA');
+    },
+    disableHospitalizacao() {
+      return (this.stateForm === StateForm.VIEW);
     },
   },
   methods: {

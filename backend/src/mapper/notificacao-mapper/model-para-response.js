@@ -35,7 +35,7 @@ class NotificacaoResponseMapper {
   _notificacaoParaResponse() {
     const {
       nomeNotificador, unidadeSaudeId, notificadorId, userId, profissaoId,
-      UnidadeSaude, possuiFechamento = false,
+      UnidadeSaude, possuiFechamento = false, status,
     } = this.notificacao;
     const {
       dataHoraNotificacao, dataInicioDosSintomas, sintomatico, realizouExameDeImagem,
@@ -59,6 +59,7 @@ class NotificacaoResponseMapper {
       descricaoLocal,
       observacoes,
       possuiFechamento,
+      status,
     };
   }
 
@@ -311,7 +312,6 @@ class NotificacaoResponseMapper {
       labAmostraId,
       Laboratorio,
       pesquisaGal,
-      numeroDo,
     } = this.notificacaoCovid19;
     return {
       situacaoNoMomentoDaNotificacao,
@@ -332,7 +332,6 @@ class NotificacaoResponseMapper {
       labAmostraId,
       nomeLabAmostra: Laboratorio ? Laboratorio.nome : '',
       pesquisaGal,
-      numeroDo,
     };
   }
 
@@ -345,6 +344,8 @@ class NotificacaoResponseMapper {
       dataInternamento,
       dataIsolamento,
       dataAlta,
+      dataObito,
+      numeroDo,
       Hospital = {},
     } = this.notificacaoCovid19;
     const { nome = '' } = Hospital || {};
@@ -357,6 +358,8 @@ class NotificacaoResponseMapper {
       dataInternamento,
       dataIsolamento,
       dataAlta,
+      dataObito,
+      numeroDo,
     };
   }
 

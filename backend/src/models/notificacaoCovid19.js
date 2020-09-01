@@ -125,6 +125,7 @@ module.exports = (sequelize, DataTypes) => {
     dataInternamento: DataTypes.DATEONLY,
     dataIsolamento: DataTypes.DATEONLY,
     dataAlta: DataTypes.DATEONLY,
+    dataObito: DataTypes.DATEONLY,
     codigoExame: DataTypes.STRING(18),
     exameId: DataTypes.UUID,
     requisicao: DataTypes.STRING(150),
