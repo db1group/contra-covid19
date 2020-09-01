@@ -1,9 +1,9 @@
 const Sequelize = require('sequelize');
 const models = require('../models');
 
-exports.consultarBoletimGraficoUltimos30Dias = async (req, res, next) => {
+exports.consultarBoletimGrafico = async (req, res, next) => {
   try {
-    const boletims = await models.sequelize.query('select * from public.vwboletimpopulacao where dtaprovacao >= (current_timestamp - interval \'30 days\')', {
+    const boletims = await models.sequelize.query('select * from public.vwboletimpopulacao', {
       type: Sequelize.QueryTypes.SELECT,
     });
 
@@ -57,9 +57,9 @@ exports.consultarBoletimCards = async (req, res, next) => {
   }
 };
 
-exports.consultarBoletimGraficoDiarioUltimos30Dias = async (req, res, next) => {
+exports.consultarBoletimGraficoDiario = async (req, res, next) => {
   try {
-    const boletims = await models.sequelize.query('select * from public.vwboletimpopulacaodiario where dtaprovacao >= (current_timestamp - interval \'30 days\')', {
+    const boletims = await models.sequelize.query('select * from public.vwboletimpopulacaodiario', {
       type: Sequelize.QueryTypes.SELECT,
     });
 
@@ -71,7 +71,7 @@ exports.consultarBoletimGraficoDiarioUltimos30Dias = async (req, res, next) => {
   }
 };
 
-exports.consultarMediaMovelUltimos30Dias = async (req, res, next) => {
+exports.consultarMediaMovel = async (req, res, next) => {
   try {
     const medias = await models.sequelize.query('select * from public.vwtaxamovel30dias', {
       type: Sequelize.QueryTypes.SELECT,
