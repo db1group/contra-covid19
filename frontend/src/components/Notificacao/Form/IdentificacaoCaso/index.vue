@@ -3,9 +3,11 @@
     <h4 class="primary--text font-weight-medium title">3. IDENTIFICAÇÃO DO PACIENTE</h4>
     <dados-pessoais
       :data-hora-notificacao="dataHoraNotificacao"
+      :data-encerramento="dataEncerramento"
       :suspeito="suspeito"
       :possui-fechamento="possuiFechamento"
       @update:dataHoraNotificacao="updateDataHoraNotificacao"
+      @update:dataEncerramento="updateDataEncerramento"
       @update:tipoDocumento="updateTipoDocumento"
       @update:numeroCpf="updateNumeroCpf"
       @update:numeroDocumento="updateNumeroDocumento"
@@ -67,6 +69,10 @@ export default {
   },
   props: {
     dataHoraNotificacao: {
+      type: String,
+      default: '',
+    },
+    dataEncerramento: {
       type: String,
       default: '',
     },
@@ -170,6 +176,9 @@ export default {
     },
     updateInstituicao(instituicaoId) {
       this.$emit('update:instituicaoId', instituicaoId);
+    },
+    updateDataEncerramento(dataEncerramento) {
+      this.$emit('update:dataEncerramento', dataEncerramento);
     },
   },
 };

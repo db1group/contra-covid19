@@ -25,9 +25,13 @@ const toInt = (value) => {
 class EnviarNotificacaoRequest {
   constructor(notificacao) {
     const { dataHoraNotificacao, dataInicioDosSintomas } = notificacao.NotificacaoCovid19;
+    const { dtEncerramento } = notificacao;
     this.possui_cpf = this.getPossuiCpf(notificacao);
     this.data_notificacao = moment(dataHoraNotificacao)
       .format(FORMATO_DATA);
+    this.data_encerramento = dtEncerramento
+      ? moment(dataHoraNotificacao).format(FORMATO_DATA)
+      : null;
     this.tipo_paciente = this.getTipoPaciente(notificacao);
     this.paciente = notificacao.Pessoa.nome;
     this.sexo = this.getSexo(notificacao);

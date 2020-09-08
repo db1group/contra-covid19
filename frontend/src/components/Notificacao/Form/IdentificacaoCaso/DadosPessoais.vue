@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row dense>
-      <v-col cols="5" sm="4">
+      <v-col cols="6" sm="6" md="6">
         <v-text-field
           :value="dataHoraNotificacao"
           label="Data e hora da notificação *"
@@ -9,6 +9,16 @@
           validate-on-blur
           :rules="rules.dataHoraNotificacao"
           @input="updateDataHoraNotificacao"
+          :disabled="disabled"
+        />
+      </v-col>
+      <v-col cols="6" sm="6" md="6">
+        <v-text-field
+          :value="dataEncerramento"
+          label="Data de encerramento"
+          v-mask="'##/##/####'"
+          :rules="rules.dataEncerramento"
+          @input="updateDataEncerramento"
           :disabled="disabled"
         />
       </v-col>
@@ -292,6 +302,10 @@ export default {
       type: String,
       default: '',
     },
+    dataEncerramento: {
+      type: String,
+      default: '',
+    },
     suspeito: {
       type: Pessoa,
       required: true,
@@ -325,6 +339,7 @@ export default {
       passaporte: [],
       tpInstitucionalizado: [],
       instituicaoId: [],
+      dataEncerramento: [dateFormat],
     },
     disabledTipoDocumento: true,
     labelNumeroDocumento: 'Número do documento *',
@@ -337,6 +352,9 @@ export default {
   methods: {
     updateDataHoraNotificacao(dataHoraNotificacao) {
       this.$emit('update:dataHoraNotificacao', dataHoraNotificacao);
+    },
+    updateDataEncerramento(dataEncerramento) {
+      this.$emit('update:dataEncerramento', dataEncerramento);
     },
     updateTipoDocumento(tipoDocumento) {
       if (this.suspeito.tipoDocumento !== tipoDocumento) {

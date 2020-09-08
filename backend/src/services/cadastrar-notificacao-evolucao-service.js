@@ -1,3 +1,4 @@
+const moment = require('moment');
 const repos = require('../repositories/repository-factory');
 const models = require('../models');
 const statusNotificacaoEnum = require('../enums/status-notificacao-enum');
@@ -88,9 +89,10 @@ const atualizarStatusNotificacao = async (evolucao, transaction) => {
 
   const status = deveEncerrar ? statusNotificacaoEnum.values.Encerrada
     : statusNotificacaoEnum.values.Aberta;
+  const dtEncerramento = deveEncerrar ? moment().toDate() : null;
 
   await models.Notificacao.update(
-    { status },
+    { status, dtEncerramento },
     {
       where:
       {

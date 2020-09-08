@@ -13,3 +13,6 @@ exports.isClassificacaoEvolucaoEncerrada = (error) => (
   (error.classificacao_final && /Notificação encerrada/.test(error.classificacao_final))
   || (error.evolucao && /Notificação encerrada/.test(error.evolucao))
 );
+
+exports.isFichaEncerrada = (error) => error.excluir_ficha
+  && /Notificação encerrada só pode ser excluída/.test(error.excluir_ficha);

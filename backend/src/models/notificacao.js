@@ -38,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       dtCurado: DataTypes.DATE,
       dtEncerrado: DataTypes.DATE,
       dtObito: DataTypes.DATE,
+      dtEncerramento: DataTypes.DATEONLY,
     },
     {},
   );
