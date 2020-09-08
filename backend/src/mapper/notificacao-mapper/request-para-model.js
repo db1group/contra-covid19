@@ -1,7 +1,7 @@
 const requestParaModeloNotificacao = (objetoRequest) => {
   const {
     unidadeSaudeId, notificadorId, userId, profissaoId, suspeito,
-    nomeNotificador, status, unidadeDeSaude,
+    nomeNotificador, status, unidadeDeSaude, dataEncerramento,
   } = objetoRequest;
 
   return {
@@ -13,6 +13,7 @@ const requestParaModeloNotificacao = (objetoRequest) => {
     profissaoId,
     nomeNotificador,
     status,
+    dtEncerramento: dataEncerramento,
   };
 };
 

@@ -26,4 +26,8 @@ router.post(`${prefixoRoute}/sincronizar`,
   keycloack.protect(isRealmEnvioSecretaria),
   NotificacaoSecretariaSaudeResource.sincronizarNotificacoes);
 
+router.post(`${prefixoRoute}/:id/sincronizar`,
+  keycloack.protect(isRealmEnvioSecretaria),
+  NotificacaoSecretariaSaudeResource.sincronizarNotificacao);
+
 module.exports = router;

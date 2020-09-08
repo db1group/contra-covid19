@@ -59,6 +59,21 @@
       </template>
       <template v-slot:item.actions="{ item }">
         <v-row justify="end" align="center" dense>
+          <v-col v-if="isPermiteSincronizar(item)">
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  text
+                  small
+                  color="green"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="sincronizarNotificacao(item)"
+                >SINCRONIZAR</v-btn>
+              </template>
+              <span>Sincronizar notificação com o Estado</span>
+            </v-tooltip>
+          </v-col>
           <v-col v-if="isPermiteVisualizar(item)">
             <v-btn
               text
@@ -103,6 +118,7 @@ import keycloak from '@/services/KeycloakService';
 import NotificacaoConsulta from '@/entities/NotificacaoConsulta';
 import UnidadeSaudeService from '@/services/UnidadeSaudeService';
 import ErrorService from '@/services/ErrorService';
+import NotificacaoSecretariaService from '@/services/NotificacaoPendenteEnvioService';
 
 const SITUACAO_NOTIFICACAO = [
   { key: '', value: 'TODAS' },
@@ -210,6 +226,9 @@ export default {
     isPermiteExcluir() {
       return this.isSecretariaSaude;
     },
+    isPermiteSincronizar(item) {
+      return this.isSecretariaSaude && !item.apiSecretariaId;
+    },
     updateFiltroSituacao(status) {
       this.filtroStatus = status;
       this.options = { ...this.options, page: 1 };
@@ -227,6 +246,23 @@ export default {
         })
         .finally(() => {
           this.consultarNotificacoes();
+        });
+    },
+    sincronizarNotificacao({ id }) {
+      NotificacaoSecretariaService
+        .sincronizarNotificacao(id)
+        .then(({ data }) => {
+          const notificacao = data[0];
+          if (!notificacao.secretariaId) {
+            this.$emit('erro:notificacao', ErrorService.getMessage(notificacao));
+            return;
+          }
+          this.notificacoes = this.notificacoes
+            .map((n) => (n.id === id ? ({ ...n, apiSecretariaId: notificacao.secretariaId }) : n));
+          this.$emit('success:notificacao', 'Notificação sincronizada com sucesso.');
+        })
+        .catch((error) => {
+          this.$emit('erro:notificacao', ErrorService.getMessage(error));
         });
     },
   },

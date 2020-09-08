@@ -35,7 +35,7 @@ class NotificacaoResponseMapper {
   _notificacaoParaResponse() {
     const {
       nomeNotificador, unidadeSaudeId, notificadorId, userId, profissaoId,
-      UnidadeSaude, possuiFechamento = false, status,
+      UnidadeSaude, possuiFechamento = false, status, dtEncerramento,
     } = this.notificacao;
     const {
       dataHoraNotificacao, dataInicioDosSintomas, sintomatico, realizouExameDeImagem,
@@ -60,6 +60,7 @@ class NotificacaoResponseMapper {
       observacoes,
       possuiFechamento,
       status,
+      dtEncerramento,
     };
   }
 

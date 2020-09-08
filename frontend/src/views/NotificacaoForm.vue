@@ -24,9 +24,11 @@
         />
         <identificacao-caso
           :data-hora-notificacao="notificacao.dataHoraNotificacao"
+          :data-encerramento="notificacao.dataEncerramento"
           :suspeito="notificacao.suspeito"
           :possui-fechamento="notificacao.possuiFechamento"
           @update:dataHoraNotificacao="updateDataHoraNotificacao"
+          @update:dataEncerramento="updateDataEncerramento"
           @update:tipoDocumento="updateSuspeito('tipoDocumento', $event)"
           @update:numeroCpf="updateSuspeito('numeroCpf', $event)"
           @update:numeroDocumento="updateSuspeito('numeroDocumento', $event)"
@@ -160,7 +162,7 @@
           @update:dataAlta="updateHospitalizacao('dataAlta', $event)"
           @update:dataObito="updateHospitalizacao('dataObito', $event)"
           @update:numeroDo="updateHospitalizacao('numeroDo', $event)"
-          :disabled="disableHospitalizacao"
+          :disabled="disableOnlyInViewState"
         />
         <frequentou-cnes
           :frequentou-cnes="notificacao.frequentouCnes"
@@ -300,7 +302,7 @@ export default {
       if (this.notificacao.possuiFechamento) return true;
       return this.stateForm === StateForm.VIEW || (this.notificacao.status === 'ENCERRADA');
     },
-    disableHospitalizacao() {
+    disableOnlyInViewState() {
       return (this.stateForm === StateForm.VIEW);
     },
   },
@@ -319,6 +321,9 @@ export default {
     },
     updateDataHoraNotificacao(dataHoraNotificacao) {
       this.notificacao.dataHoraNotificacao = dataHoraNotificacao;
+    },
+    updateDataEncerramento(dataEncerramento) {
+      this.notificacao.dataEncerramento = dataEncerramento;
     },
     limparSintomas() {
       if (this.notificacao.sintomatico) return;

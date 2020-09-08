@@ -274,7 +274,6 @@ module.exports.getNotificacoesPorPeriodo = async (periodo, page = 1, limit = 500
     include: [
       {
         model: models.Pessoa,
-        where: { tipoDocumento: { [Op.eq]: 'CPF' } },
         include: [
           { model: models.Bairro },
           { model: models.Municipio },
@@ -295,6 +294,7 @@ module.exports.getNotificacoesPorPeriodo = async (periodo, page = 1, limit = 500
     ],
     limit,
     offset,
+    order: [['createdAt', 'DESC']],
   });
 };
 

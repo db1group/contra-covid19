@@ -220,8 +220,12 @@ exports.salvar = async (req, res, next) => {
     const notificacao = Mappers.Notificacao.mapearParaNotificacao(
       notificacaoConsolidada,
     );
-    notificacao.status = 'ABERTA';
+
     notificacao.municipioId = tenant;
+    notificacao.status = statusNotificacaoEnum.values.Aberta;
+    if (notificacao.dtEncerramento) {
+      notificacao.status = statusNotificacaoEnum.values.Encerrada;
+    }
 
     const notificacaoSalva = await salvarNotificacao(notificacao);
 

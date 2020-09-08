@@ -104,6 +104,7 @@ export default {
       { text: 'Paciente', value: 'nomePaciente' },
       { text: 'Documento', value: 'numeroDocumento' },
       { text: 'Unidade Saúde', value: 'nomeUnidadeSaude' },
+      { text: 'Tipo Transmissão', value: 'tpTransmissao' },
       { text: 'Retorno Envio', value: 'mensagem' },
     ],
     itensPendentesEnvioSecretaria: [],

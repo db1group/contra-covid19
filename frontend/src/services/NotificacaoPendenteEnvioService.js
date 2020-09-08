@@ -10,4 +10,8 @@ export default {
   sendAll(notificacoes) {
     return http.post('/notificacoes-secretaria/enviar', notificacoes).then(({ data }) => data);
   },
+  sincronizarNotificacao(id) {
+    return http.post(`/notificacoes-secretaria/${id}/sincronizar`, {})
+      .then(({ data }) => data);
+  },
 };

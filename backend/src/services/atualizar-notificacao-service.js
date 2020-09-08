@@ -5,7 +5,7 @@ const repos = require('../repositories/repository-factory');
 const Mappers = require('../mapper');
 const { RegraNegocioErro } = require('../lib/erros');
 const statusNotificacaoEnum = require('../enums/status-notificacao-enum');
-// const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secretaria-enum');
+const tpTransmissaoApiSecretaria = require('../enums/tipo-transmissao-api-secretaria-enum');
 
 module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
   validarMenorQueDataHoraAtual(notificacaoRequest.dataHoraNotificacao, 'A', 'data/hora da notificação');
@@ -40,6 +40,8 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
   const { notificacaoCovid19 } = notificacaoUpdate;
   notificacaoCovid19.notificacaoId = notificacaoRequest.id;
 
+  notificacaoCovid19.tpTransmissaoApiSecretaria = tpTransmissaoApiSecretaria
+    .values.PendenteAtualizacao;
   if (notificacaoModel.status === statusNotificacaoEnum.values.Encerrada) {
     const notifCovid = {
       notificacaoId: notificacaoRequest.id,
@@ -77,15 +79,15 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
     }
   }
 
+  if (notificacaoUpdate.dtEncerramento) {
+    notificacaoUpdate.status = statusNotificacaoEnum.values.Encerrada;
+  }
+
   const suspeitoUpdate = Mappers.Pessoa.mapearParaModel(notificacaoRequest.suspeito);
   suspeitoUpdate.id = notificacaoConsolidada.suspeito.pessoaId;
   await repos.pessoaRepository.atualizar(suspeitoUpdate);
   await repos.notificacaoRepository.atualizar(notificacaoUpdate, usuarioLogado.tenant);
 
-  /*
-  notificacaoCovid19.tpTransmissaoApiSecretaria = tpTransmissaoApiSecretaria
-    .values.PendenteAtualizacao;
-    */
   await repos.notificacaoCovid19Repository.atualizar(notificacaoCovid19);
 
   const primeiraEvolucao = evolucoesSort.first();

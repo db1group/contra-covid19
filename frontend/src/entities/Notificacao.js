@@ -27,6 +27,11 @@ export default class Notificacao {
       'YYYY-MM-DD',
       'DD/MM/YYYY',
     ) || '';
+    this.dataEncerramento = DateService.changeFormat(
+      data.dtEncerramento,
+      'YYYY-MM-DD',
+      'DD/MM/YYYY',
+    ) || '';
     this.userId = data.userId || '2e439917-3f2a-45b2-9143-aac3bea760d6';
     this.nomeNotificador = data.nomeNotificador || '';
     this.profissaoId = data.profissaoId || null;
@@ -53,6 +58,7 @@ export default class Notificacao {
       ...this,
       dataInicioDosSintomas: DateService.changeFormat(this.dataInicioDosSintomas, 'DD/MM/YYYY', 'YYYY-MM-DD'),
       dataHoraNotificacao: DateService.toMomentObject(this.dataHoraNotificacao, 'DD/MM/YYYY HH:mm').toISOString(),
+      dataEncerramento: DateService.toMomentObject(this.dataEncerramento, 'DD/MM/YYYY HH:mm').toISOString(),
       suspeito: this.suspeito.toRequestBody(),
       informacaoComplementar: this.informacaoComplementar.toRequestBody(),
       conclusaoAtendimento: this.conclusaoAtendimento.toRequestBody(),
