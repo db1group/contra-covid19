@@ -19,7 +19,7 @@
           v-mask="'##/##/####'"
           :rules="rules.dataEncerramento"
           @input="updateDataEncerramento"
-          :disabled="disabled"
+          :disabled="true"
         />
       </v-col>
     </v-row>
