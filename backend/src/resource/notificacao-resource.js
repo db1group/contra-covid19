@@ -223,10 +223,6 @@ exports.salvar = async (req, res, next) => {
 
     notificacao.municipioId = tenant;
     notificacao.status = statusNotificacaoEnum.values.Aberta;
-    if (notificacao.dtEncerramento) {
-      notificacao.status = statusNotificacaoEnum.values.Encerrada;
-    }
-
     const notificacaoSalva = await salvarNotificacao(notificacao);
 
     const retorno = Mappers.Notificacao.mapearParaResponse(

@@ -79,10 +79,6 @@ module.exports.handle = async (notificacaoRequest, usuarioLogado) => {
     }
   }
 
-  if (notificacaoUpdate.dtEncerramento) {
-    notificacaoUpdate.status = statusNotificacaoEnum.values.Encerrada;
-  }
-
   const suspeitoUpdate = Mappers.Pessoa.mapearParaModel(notificacaoRequest.suspeito);
   suspeitoUpdate.id = notificacaoConsolidada.suspeito.pessoaId;
   await repos.pessoaRepository.atualizar(suspeitoUpdate);
