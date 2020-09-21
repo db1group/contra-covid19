@@ -100,7 +100,7 @@ exports.update = async (req, res, next) => {
     const keycloakUserId = userKeycloak.id;
     await UserApi.update({ id: keycloakUserId, nome, token });
     await UserApi.joinRoles({
-      userId: keycloakUserId, permissoes, token, removeRoles: true,
+      userId: keycloakUserId, permissions: permissoes, token, removeRoles: true,
     });
 
     await models.User.update({ nome }, {
