@@ -84,7 +84,7 @@ exports.getPendentesEnvio = async (req, res, next) => {
     const usuarioLogado = new UsuarioLogado(req);
     let unidadeSaudeId;
     if (!usuarioLogado.isRoleSecretariaSaude()) {
-      const [unidadeSaude] = await retornarUnidadeUsuarioLogado(email);
+      const [unidadeSaude] = await retornarUnidadeUsuarioLogado(email, usuarioLogado.tenant);
       if (!unidadeSaude) throw new RegraNegocioErro(MENSAGEM_UNIDADE_NOTFOUND);
       unidadeSaudeId = unidadeSaude.id;
     }
