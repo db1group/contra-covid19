@@ -1,6 +1,6 @@
 <template>
   <v-row dense>
-    <v-col cols="12" sm="6" md="4">
+    <v-col cols="12" sm="6" md="6">
       <v-text-field
         :value="suspeito.telefoneResidencial"
         ref="residencial"
@@ -12,29 +12,17 @@
         :disabled="disabled"
       />
     </v-col>
-    <v-col cols="12" sm="6" md="4">
+    <v-col cols="12" sm="6" md="6">
       <v-text-field
         :value="suspeito.telefoneCelular"
         ref="celular"
         type="tel"
-        label="Telefone celular"
+        label="Telefone celular *"
         v-mask="'(##) #####-####'"
         :rules="rules.telefoneCelular"
         @input="updateTelefoneCelular"
         :disabled="disabled"
         @blur="validateCelular"
-      />
-    </v-col>
-    <v-col cols="12" sm="6" md="4">
-      <v-text-field
-        :value="suspeito.telefoneContato"
-        ref="contato"
-        type="tel"
-        label="Telefone contato"
-        v-mask="['(##) ####-####', '(##) #####-####']"
-        :rules="rules.telefoneContato"
-        @input="updateTelefoneContato"
-        :disabled="disabled"
       />
     </v-col>
   </v-row>
@@ -63,8 +51,7 @@ export default {
   data: () => ({
     rules: {
       telefoneResidencial: [minLengthNumbersWithMask(10)],
-      telefoneCelular: [minLengthNumbersWithMask(11)],
-      telefoneContato: [minLengthNumbersWithMask(10)],
+      telefoneCelular: [required, minLengthNumbersWithMask(11)],
     },
   }),
   methods: {
@@ -77,23 +64,6 @@ export default {
       this.$emit('update:telefoneCelular', telefoneCelular);
       this.$refs.residencial.validate();
       this.$refs.contato.validate();
-    },
-    updateTelefoneContato(telefoneContato) {
-      this.$emit('update:telefoneContato', telefoneContato);
-      this.$refs.residencial.validate();
-      this.$refs.celular.validate();
-    },
-    requiredAtLeastOnePhoneNumber() {
-      if (this.suspeito.telefoneResidencial) {
-        return true;
-      }
-      if (this.suspeito.telefoneCelular) {
-        return true;
-      }
-      if (this.suspeito.telefoneContato) {
-        return true;
-      }
-      return 'Pelo menos um telefone é obrigatório';
     },
     requiredIfInstitucionalizado(value) {
       const { tipoClassificacaoPessoa, institucionalizado } = this.suspeito;
@@ -109,13 +79,10 @@ export default {
     },
   },
   created() {
-    this.rules.telefoneResidencial.push(this.requiredAtLeastOnePhoneNumber);
     this.rules.telefoneCelular.push(
-      this.requiredAtLeastOnePhoneNumber,
       this.requiredIfInstitucionalizado,
       cellphoneNumberValid,
     );
-    this.rules.telefoneContato.push(this.requiredAtLeastOnePhoneNumber);
   },
 };
 </script>
