@@ -247,7 +247,7 @@ export default {
       this.permissions.loading = true;
       UserService.findAllPermissions()
         .then(({ data }) => {
-          this.permissions.items = data;
+          this.permissions.items = data.filter((d) => d.name !== 'ENVIO_SECRETARIA');
         })
         .catch((error) => {
           this.showError = true;
