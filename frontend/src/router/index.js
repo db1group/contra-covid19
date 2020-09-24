@@ -16,6 +16,7 @@ import ControleLeitosForm from '../views/ControleLeitosForm.vue';
 import ControleLeitoPerfilCons from '../views/ControleLeitoPerfilCons.vue';
 import TenantConfigCons from '../views/TenantConfigCons.vue';
 import TenantConfigForm from '../views/TenantConfigForm.vue';
+import VinculaNotificacaoForm from '../views/VinculaNotificacaoForm.vue';
 
 Vue.use(VueRouter);
 
@@ -133,6 +134,11 @@ const routes = [
     name: 'tenant-config-edit',
     component: TenantConfigForm,
     props: { edit: true },
+  },
+  {
+    path: '/vincula-notificacao',
+    name: 'vincula-notificacao',
+    component: VinculaNotificacaoForm,
   },
 ];
 

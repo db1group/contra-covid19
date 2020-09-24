@@ -423,3 +423,20 @@ exports.excluirLogicamenteNotificacao = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.vincular = async (req, res, next) => {
+  const { id, estadoId } = req.params;
+  try {
+    const { tenant } = new UsuarioLogado(req);
+    const notificacao = await models.Notificacao
+      .findOne({ where: { id, municipioId: tenant } });
+    if (!notificacao) throw new RegraNegocioErro('Notificação não encontrada');
+    await models.NotificacaoCovid19.update({
+      apiSecretariaId: estadoId,
+      tpTransmissaoApiSecretaria: tpTransmissaoApiSecretaria.values.Enviada,
+    }, { where: { notificacaoId: id } });
+    return res.status(204).json();
+  } catch (error) {
+    return next(error);
+  }
+};

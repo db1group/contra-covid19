@@ -19,6 +19,10 @@ router.put(`${prefixoRoute}/:id`,
   validate(schemas.notificacao.cadastrar),
   NotificacaoResource.atualizar);
 
+router.put(`${prefixoRoute}/:id/vincular/:estadoId`,
+  validate(schemas.notificacao.vincular),
+  NotificacaoResource.vincular);
+
 router.get(`${prefixoRoute}/consulta`, NotificacaoResource.consultarNotificacoesWeb);
 router.get(`${prefixoRoute}/:id`, NotificacaoResource.consultarPorId);
 

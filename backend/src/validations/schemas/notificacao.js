@@ -341,5 +341,9 @@ const schemas = {
   consultarId: Joi.object().keys({
     id: Joi.string().guid({ version: 'uuidv4' }).required,
   }),
+  vincular: Joi.object().keys({
+    id: Joi.string().guid({ version: 'uuidv4' }).required,
+    estadoId: [Joi.string().required(), Joi.number().required()],
+  }),
 };
 module.exports = schemas;

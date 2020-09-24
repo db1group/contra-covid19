@@ -30,4 +30,8 @@ router.post(`${prefixoRoute}/:id/sincronizar`,
   keycloack.protect(isRealmEnvioSecretaria),
   NotificacaoSecretariaSaudeResource.sincronizarNotificacao);
 
+router.get(`${prefixoRoute}/:id/buscar`,
+  keycloack.protect(isRealmEnvioSecretaria),
+  NotificacaoSecretariaSaudeResource.realizarBuscaNotificacaoEstado);
+
 module.exports = router;

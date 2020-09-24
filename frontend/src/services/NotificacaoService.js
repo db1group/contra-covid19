@@ -48,4 +48,12 @@ export default {
       `notificacoes-${time}.csv`,
     );
   },
+  findNotificacoesEstado(notificacaoId) {
+    return http
+      .get(`/notificacoes-secretaria/${notificacaoId}/buscar`)
+      .then(({ data }) => data);
+  },
+  vinculaNotificacaoEstado(id, estadoId) {
+    return http.put(`/notificacoes/${id}/vincular/${estadoId}`);
+  },
 };

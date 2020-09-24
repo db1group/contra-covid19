@@ -9,6 +9,8 @@ const { UsuarioLogado } = require('../secure/usuario-logado');
 
 const MENSAGEM_UNIDADE_NOTFOUND = 'Unidade de saúde do usuário não encontrada.';
 
+const NOTIFICACAO_NAO_ENCONTRADA = 'Notificação não encontrada.';
+
 const retornarUnidadeUsuarioLogado = async (email, tenant) => repos
   .unidadeSaudeRepository.getPorUserEmail(email, tenant);
 
@@ -54,7 +56,7 @@ const tratarRespostaEnvio = (response, nome) => {
 
 const enviarNotificacao = async (id, tenant, tenantConfig) => {
   const notificacao = await repos.notificacaoRepository.getPorId(id, tenant);
-  if (!notificacao) throw new RegraNegocioErro('Notificação não encontrada.');
+  if (!notificacao) throw new RegraNegocioErro(NOTIFICACAO_NAO_ENCONTRADA);
   const request = new EnviarNotificacaoRequest(notificacao);
   const response = await secretariaApi.enviarNotificacao(request, tenantConfig.tokenSecretaria);
 
@@ -185,34 +187,46 @@ const reenviarNotificacao = async (notificacao, tenantConfig, secretariaId) => {
   return retorno;
 };
 
+const buscarNotificacaoEstado = async (notificacao, tenantConfig) => {
+  const {
+    nome, tipoDocumento,
+    numeroDocumento: cpf = '', dataDeNascimento, nomeDaMae,
+  } = notificacao.Pessoa;
+  if (!tenantConfig.tokenSecretaria) {
+    throw new Error('Não foi gerado o Token de Envio para o municípo informado.');
+  }
+
+  let response;
+  if (tipoDocumento === 'CPF' && cpf.trim() !== '') {
+    response = await secretariaApi.buscarNotificacao(
+      cpf, tenantConfig.tokenSecretaria,
+    );
+  } else {
+    const nascimento = moment(dataDeNascimento).format('YYYY-MM-DD');
+    response = await secretariaApi.buscarNotificacaoSemCPF(
+      nome, nascimento, nomeDaMae, tenantConfig.tokenSecretaria,
+    );
+  }
+
+  const found = response
+  && response.registros ? response.registros >= 1 : false;
+
+  if (!found || !response.data) {
+    return [];
+  }
+  return response.data;
+};
+
 const criarPromiseSincronizacaoNotificacao = (notificacao, tenantConfig, reenviar) => new Promise(
   // eslint-disable-next-line no-async-promise-executor
   async (resolve, reject) => {
     const {
-      nome, tipoDocumento,
-      numeroDocumento: cpf = '', dataDeNascimento, nomeDaMae,
+      nome,
+      numeroDocumento: cpf = '',
     } = notificacao.Pessoa;
     try {
-      if (!tenantConfig.tokenSecretaria) {
-        throw new Error('Não foi gerado o Token de Envio para o municípo informado.');
-      }
-
-      let response;
-      if (tipoDocumento === 'CPF' && cpf.trim() !== '') {
-        response = await secretariaApi.buscarNotificacao(
-          cpf, tenantConfig.tokenSecretaria,
-        );
-      } else {
-        const nascimento = moment(dataDeNascimento).format('YYYY-MM-DD');
-        response = await secretariaApi.buscarNotificacaoSemCPF(
-          nome, nascimento, nomeDaMae, tenantConfig.tokenSecretaria,
-        );
-      }
-
-      const found = response
-      && response.registros ? response.registros >= 1 : false;
-
-      if (!found || !response.data) {
+      let response = await buscarNotificacaoEstado(notificacao, tenantConfig);
+      if (!response.length === 0) {
         const responseEnvio = await enviarNotificacao(
           notificacao.id, tenantConfig.municipioId, tenantConfig,
         );
@@ -221,6 +235,11 @@ const criarPromiseSincronizacaoNotificacao = (notificacao, tenantConfig, reenvia
         }
         response = responseEnvio;
       }
+
+      if (Array.isArray(response.data) && response.data.length > 1) {
+        throw new Error('Existe mais de uma notificação para o paciente. Utilize a página de vincular notificações nestes casos.');
+      }
+
       const notificacaoSecretaria = response.data
       && Array.isArray(response.data)
         ? response.data[0] : response.data;
@@ -275,11 +294,25 @@ exports.sincronizarNotificacao = async (req, res, next) => {
     const { tenant } = new UsuarioLogado(req);
     const tenantConfig = await repos.tenantConfigRepository.getTenantConfig(req, tenant);
     const notificacao = await repos.notificacaoRepository.getPorId(id, tenant);
-    if (!notificacao) throw new RegraNegocioErro('Notificação não encontrada.');
+    if (!notificacao) throw new RegraNegocioErro(NOTIFICACAO_NAO_ENCONTRADA);
     const dataErrors = await SincronizarNotificacoesSecretariaSaude(
       [notificacao], tenantConfig, false,
     );
     return res.json({ count: 1, data: dataErrors });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.realizarBuscaNotificacaoEstado = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { tenant } = new UsuarioLogado(req);
+    const tenantConfig = await repos.tenantConfigRepository.getTenantConfig(req, tenant);
+    const notificacao = await repos.notificacaoRepository.getPorId(id, tenant);
+    if (!notificacao) throw new RegraNegocioErro(NOTIFICACAO_NAO_ENCONTRADA);
+    const notificacoes = await buscarNotificacaoEstado(notificacao, tenantConfig);
+    return res.json({ data: [...notificacoes] });
   } catch (err) {
     return next(err);
   }
