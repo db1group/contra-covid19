@@ -45,12 +45,18 @@ exports.consultarBoletimGraficoPaginado = async (req, res, next) => {
 
 exports.consultarBoletimCards = async (req, res, next) => {
   try {
+    const CARDS_CACHE_KEY = 'vwboletimcards';
+    const isGerandoCache = await req.getCacheByKey(CARDS_CACHE_KEY);
+    if (isGerandoCache) return res.status(204).json();
+    req.setCacheByKey(CARDS_CACHE_KEY, 'OK');
+
     const [cards = {}] = await models.sequelize.query('select * from public.vwboletimcards', {
       type: Sequelize.QueryTypes.SELECT,
     });
 
     const response = { data: cards };
     req.setCache(req, JSON.stringify(response));
+    req.removeCacheByKey(CARDS_CACHE_KEY);
     return res.json(response);
   } catch (err) {
     return next(err);
