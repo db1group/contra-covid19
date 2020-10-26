@@ -4,7 +4,7 @@ const router = express.Router();
 const UserResource = require('../resource/user-resource');
 const { validate, schemas } = require('../validations');
 const secure = require('../secure');
-const { isRealmSupervisor, isRealmSecretariaSaude } = require('../lib/secureRealm');
+const { isRealmSecretariaSaude, isRealmSecretariaSupervisor } = require('../lib/secureRealm');
 
 const keycloack = secure();
 const prefixURL = '/usuarios';
@@ -45,19 +45,19 @@ router.delete(
 );
 
 router.get('/keycloak/usuarios',
-  keycloack.protect(isRealmSupervisor),
+  keycloack.protect(isRealmSecretariaSupervisor),
   UserResource.getAllKeycloakUsers);
 
 router.get('/keycloak/usuarios/:id/roles',
-  keycloack.protect(isRealmSupervisor),
+  keycloack.protect(isRealmSecretariaSupervisor),
   UserResource.getUserRoles);
 
 router.post('/keycloak/usuarios',
-  keycloack.protect(isRealmSupervisor),
+  keycloack.protect(isRealmSecretariaSupervisor),
   UserResource.updateKeyckoakUsers);
 
 router.get('/keycloak/roles',
-  keycloack.protect(isRealmSupervisor),
+  keycloack.protect(isRealmSecretariaSupervisor),
   UserResource.getRoles);
 
 module.exports = router;

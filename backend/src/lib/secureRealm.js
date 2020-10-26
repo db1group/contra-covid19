@@ -41,3 +41,7 @@ exports.isRealSecretariaOuUnidadeSaude = async (token, req) => {
 
 const isRealmSupervisor = (token) => token.hasRole('realm:SUPERVISOR');
 exports.isRealmSupervisor = isRealmSupervisor;
+
+exports.isRealmSecretariaSupervisor = (token) => (
+  isRealmSecretariaSaude(token) || isRealmSupervisor(token)
+);
