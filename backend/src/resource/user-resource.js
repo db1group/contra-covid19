@@ -108,7 +108,7 @@ exports.update = async (req, res, next) => {
       individualHooks: true,
     });
     await atualizaVinculoUnidade(id, unidadeSaudeId);
-    req.removeCacheByKey(`USER_ROLES_KEY_${user.id}`);
+    req.removeCacheByKey(`USER_ROLES_KEY_${keycloakUserId}`);
 
     return res.status(204).send();
   } catch (err) {
