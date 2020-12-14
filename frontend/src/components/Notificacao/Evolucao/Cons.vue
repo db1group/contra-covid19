@@ -55,7 +55,21 @@
             </v-col>
             <v-col>
               <span class="font-weight-bold">Documento</span>
-              <p>{{ evolucao.documento | FormatDocument(evolucao.tipoDocumento) }}</p>
+              <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  text
+                  small
+                  color="#A8A8A8"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                <v-icon @click="copy">mdi-content-copy</v-icon>
+                </v-btn>
+              </template>
+              <span id="label-copy">Clique para copiar</span>
+            </v-tooltip>
+              <p id="doc">{{ evolucao.documento | FormatDocument(evolucao.tipoDocumento) }}</p>
             </v-col>
             <v-col>
               <span class="font-weight-bold">Telefone</span>
@@ -210,6 +224,21 @@ export default {
           this.dialog = false;
           this.updating = false;
         });
+    },
+    copy() {
+      const copyText = document.querySelector('#doc');
+      const input = document.createElement('input');
+      input.value = copyText.innerHTML.replace(/[^0-9]/g, '');
+      document.body.appendChild(input);
+      input.focus();
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      const labelCopy = document.querySelector('#label-copy');
+      labelCopy.innerHTML = 'Copiado';
+      setTimeout(() => {
+        labelCopy.innerHTML = 'Clique para copiar';
+      }, 1000);
     },
   },
   computed: {
