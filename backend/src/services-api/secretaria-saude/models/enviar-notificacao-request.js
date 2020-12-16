@@ -165,6 +165,11 @@ class EnviarNotificacaoRequest {
             === tipoNotificacaoEvolucaoEnum.values.Curado);
     const evolucaoObito = evolucoes.find((data) => data.tpEvolucao
             === tipoNotificacaoEvolucaoEnum.values.Obito);
+    const evolucaoDescartado = evolucoes.find((data) => data.tpEvolucao
+            === tipoNotificacaoEvolucaoEnum.values.Descartado);
+    const evolucaoEncerrado = evolucoes.find((data) => data.tpEvolucao
+            === tipoNotificacaoEvolucaoEnum.values.Encerrado);
+
     if (evolucaoCurado) {
       this.evolucao = dicionarioValores.evolucao.Cura;
       this.data_cura_obito = moment(evolucaoCurado.dtEvolucao).format(FORMATO_DATA);
@@ -172,6 +177,12 @@ class EnviarNotificacaoRequest {
       this.evolucao = dicionarioValores.evolucao.Obito;
       this.data_cura_obito = moment(evolucaoObito.dtEvolucao).format(FORMATO_DATA);
       this.numero_do = toInt(numeroDo);
+    } else if (evolucaoDescartado) {
+      this.evolucao = dicionarioValores.evolucao.Cura;
+      this.data_cura_obito = moment(evolucaoDescartado.dtEvolucao).format(FORMATO_DATA);
+    } else if (evolucaoEncerrado) {
+      this.evolucao = dicionarioValores.evolucao.Cura;
+      this.data_cura_obito = moment(evolucaoEncerrado.dtEvolucao).format(FORMATO_DATA);
     } else {
       this.evolucao = dicionarioValores.evolucao.Ignorado;
     }
