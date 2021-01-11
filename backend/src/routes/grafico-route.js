@@ -8,5 +8,6 @@ router.get('/boletim/grafico', GraficosResource.consultarBoletimGrafico);
 router.get('/boletim/graficoPaginado', GraficosResource.consultarBoletimGraficoPaginado);
 router.get('/boletim/cards', GraficosResource.consultarBoletimCards);
 router.get('/boletim/media-movel', GraficosResource.consultarMediaMovel);
+router.get('/boletim/grafico-faixaetaria', GraficosResource.consultaBoletimFaixaEtaria);
 
 module.exports = router;

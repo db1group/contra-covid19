@@ -259,6 +259,7 @@ const removerCacheGraficos = (req) => {
   req.removeCacheByKey('/public/boletim/grafico-diario');
   req.removeCacheByKey('/public/boletim/graficoPaginado');
   req.removeCacheByKey('/public/boletim/cards');
+  req.removeCacheByKey('/public/boletim/grafico-faixaetaria');
 };
 
 exports.cadastrarProximoFechamento = async (req, res, next) => {
