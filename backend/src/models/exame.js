@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     codigo: DataTypes.STRING(18),
+    codigoMetodo: DataTypes.STRING(18),
   }, {});
   Exame.associate = (models) => {
     Exame.hasMany(models.NotificacaoCovid19, { foreignKey: 'exameId' });
