@@ -3,13 +3,11 @@ const models = require('../models');
 
 const { Op } = Sequelize;
 
-const METODO_NAO_INFORMADO = '3';
-
 exports.consultaPorNome = async (req, res) => {
-  const { metodo = METODO_NAO_INFORMADO, nome } = req.query;
+  const { nome } = req.query;
   const exames = await models.Exame.findAll({
     where: {
-      [Op.and]: [{ codigoMetodo: metodo },
+      [Op.and]: [{ ativo: true },
         Sequelize.where(
           Sequelize.fn('upper', Sequelize.col('nome')),
           {

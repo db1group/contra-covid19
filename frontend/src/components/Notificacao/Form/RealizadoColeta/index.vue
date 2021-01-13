@@ -110,21 +110,6 @@
       <v-row dense>
         <v-col>
           <v-select
-            v-model="conclusaoAtendimento.metodoDeExame"
-            :items="itemsMetodoExame"
-            item-text="label"
-            item-value="value"
-            :rules="rules.metodoDeExame"
-            ref="metodoDeExame"
-            label="Método do exame"
-            :disabled="disableFields"
-            @input="updateMetodoDeExame"
-          />
-        </v-col>
-      </v-row>
-      <v-row dense>
-        <v-col cols="12" sm="6" md="6">
-          <v-autocomplete
             return-object
             :value="conclusaoAtendimento.exameId"
             label="Exame"
@@ -137,6 +122,21 @@
             ref="exameId"
             @input="updateExameId"
             :disabled="disableFields"
+          />
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col cols="12" sm="6" md="6">
+          <v-autocomplete
+            v-model="conclusaoAtendimento.metodoDeExame"
+            :items="itemsMetodoExame"
+            item-text="label"
+            item-value="value"
+            :rules="rules.metodoDeExame"
+            ref="metodoDeExame"
+            label="Método do exame"
+            :disabled="disableFields"
+            @input="updateMetodoDeExame"
           />
         </v-col>
         <v-col cols="12" sm="6" md="6">
@@ -253,6 +253,8 @@ export default {
       { label: 'ELISA', value: 'ELISA', codigo: 4 },
       { label: 'Quimioluminescência', value: 'QUIMIOLUMINESCENCIA', codigo: 5 },
       { label: 'Imunofluorescência', value: 'IMUNOFLUORESCENCIA', codigo: 6 },
+      { label: 'Eletroquimioluminescência', value: 'ELETROQUIMIOLUMINESCENCIA', codigo: 7 },
+      { label: 'Imunoensaio Fluorescente', value: 'IMUNOENSAIO_FLUORESCENTE', codigo: 8 },
     ],
     codigoMetodo: CODIGO_NAO_INFORMADO,
     codigoExameEstado: CODIGO_NAO_INFORMADO,
@@ -310,16 +312,14 @@ export default {
     updateDataDaColeta(dataDaColeta) {
       this.$emit('update:dataDaColeta', dataDaColeta);
     },
-    definirCodigoMetodo(metodoDeExame) {
-      const metodo = this.itemsMetodoExame.find((m) => m.value === metodoDeExame);
+    definirCodigoMetodo(metodoExame) {
+      const metodo = this.itemsMetodoExame.find((m) => m.value === metodoExame);
       this.codigoMetodo = metodo ? metodo.codigo : CODIGO_NAO_INFORMADO;
     },
     updateMetodoDeExame(metodoDeExame) {
       this.definirCodigoMetodo(metodoDeExame);
       this.$emit('update:metodoDeExame', metodoDeExame);
-      this.updateExameId(null);
       this.updateResultadoExameId(null);
-      this.findExames();
     },
     updatePesquisaGal(pesquisaGal) {
       this.$emit('update:pesquisaGal', pesquisaGal);
@@ -383,6 +383,9 @@ export default {
       this.$emit('update:exameId', id);
       this.updateResultadoExameId(null);
       this.definirCodigoExameEstado(id, codigo);
+      const metodoExame = this.itemsMetodoExame.find((m) => m.codigo === parseInt(exame.codigoMetodo, 10));
+      // this.definirCodigoMetodo(metodoExame.value);
+      this.updateMetodoDeExame(metodoExame.value);
       this.findResultados();
     },
     updateResultadoExameId(resultadoExameId) {
