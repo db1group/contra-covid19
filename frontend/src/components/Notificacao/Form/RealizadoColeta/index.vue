@@ -384,7 +384,6 @@ export default {
       this.updateResultadoExameId(null);
       this.definirCodigoExameEstado(id, codigo);
       const metodoExame = this.itemsMetodoExame.find((m) => m.codigo === parseInt(exame.codigoMetodo, 10));
-      // this.definirCodigoMetodo(metodoExame.value);
       this.updateMetodoDeExame(metodoExame.value);
       this.findResultados();
     },
@@ -403,7 +402,7 @@ export default {
       if (!searchExame) this.searchExame = null;
       if (this.exames.loading) return;
       this.exames.loading = true;
-      ExameService.findAll(this.codigoMetodo, searchExame)
+      ExameService.findAll(searchExame)
         .then(({ data }) => {
           this.exames.items = data;
         })
