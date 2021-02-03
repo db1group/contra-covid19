@@ -109,7 +109,7 @@
       </v-row>
       <v-row dense>
         <v-col>
-          <v-select
+          <v-autocomplete
             return-object
             :value="conclusaoAtendimento.exameId"
             label="Exame"
