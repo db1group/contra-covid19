@@ -14,3 +14,9 @@ exports.salvar = async (req, res) => {
   const saved = await repos.taxaRepository.salvar(taxaRequest);
   return res.json({ taxa: saved });
 };
+
+exports.update = async (req, res) => {
+  const taxaRequest = req.body;
+  const updated = await repos.taxaRepository.update(taxaRequest);
+  return res.json({ taxa: updated });
+};

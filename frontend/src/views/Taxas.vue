@@ -27,7 +27,8 @@
               validate-on-blur
               required
               autofocus
-              :disabled="possuiTaxa"
+              :disabled="existeTaxa && !clicouEmEditar"
+              v-on:keyup="verificaPreenchimentoDeTaxas"
             />
           </v-col>
         </v-row>
@@ -41,14 +42,27 @@
               :rules="rules.ocupacao"
               validate-on-blur
               required
-              :disabled="possuiTaxa"
+              :disabled="existeTaxa && !clicouEmEditar"
+              v-on:keyup="verificaPreenchimentoDeTaxas"
             />
           </v-col>
         </v-row>
         <v-card-actions>
-          <v-row align="center" justify="end">
+          <v-row align="center" justify="space-between">
             <v-col cols="auto">
-              <v-btn color="primary" rounded @click="salvar" :loading="loading" :disabled="possuiTaxa">Salvar</v-btn>
+              <v-btn color="primary"
+                rounded
+                @click="editar"
+                :loading="loading"
+                :disabled="(existeTaxa && clicouEmEditar) || !existeTaxa"
+              >Editar</v-btn>
+            </v-col>
+            <v-col cols="auto">
+              <v-btn color="primary"
+                rounded @click="salvar"
+                :loading="loading"
+                :disabled="(existeTaxa && !clicouEmEditar) || camposNaoPreenchidos"
+              >Salvar</v-btn>
             </v-col>
           </v-row>
         </v-card-actions>
@@ -94,14 +108,34 @@ export default {
       ocupacao: [required],
     },
     isSecretariaSaude: false,
+    clicouEmEditar: false,
+    camposNaoPreenchidos: false,
   }),
   methods: {
+    acessoSecretaria() {
+      this.isSecretariaSaude = keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
+    },
+    verificaPreenchimentoDeTaxas() {
+      this.camposNaoPreenchidos = !this.taxa.positividade || !this.taxa.ocupacao;
+    },
+    editar() {
+      this.clicouEmEditar = true;
+    },
     getDateFormat(value) {
       return moment.utc(value).format('DD/MM/YYYY');
     },
+    desabilitaForm() {
+      this.clicouEmEditar = false;
+    },
     salvar() {
       if (this.taxa.id) {
-        TaxaService.update(this.taxa.id, this.taxa);
+        TaxaService.update(this.taxa).then((res) => {
+          if (res.status === 200) {
+            this.showSuccess = true;
+            this.mensagemSucesso = 'Atualização feita com sucesso!';
+            this.desabilitaForm();
+          }
+        });
       } else {
         const { dtfechamento, ocupacao, positividade } = this.taxa;
         TaxaService.save({ dtfechamento, ocupacao, positividade }).then(() => {
@@ -124,6 +158,9 @@ export default {
       this.taxa = new Taxa({ dtfechamento });
       TaxaService.findByDataFechamento(moment(dtfechamento).format('YYYY-MM-DD')).then((res) => {
         this.taxa = res.data.taxa;
+      }, () => {
+        this.taxa = new Taxa();
+        this.camposNaoPreenchidos = true;
       });
     },
   },
@@ -134,10 +171,10 @@ export default {
     next(enter);
   },
   created() {
-    this.isSecretariaSaude = keycloak.realmAccess.roles.includes('SECRETARIA_SAUDE');
+    this.acessoSecretaria();
   },
   computed: {
-    possuiTaxa() {
+    existeTaxa() {
       return this.taxa.id !== null;
     },
   },

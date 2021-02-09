@@ -16,4 +16,6 @@ router.post(`${prefixoRoute}`,
   validate(schemas.taxa.cadastrar),
   TaxaResource.salvar);
 
+router.put(`${prefixoRoute}/:id`, TaxaResource.update);
+
 module.exports = router;
