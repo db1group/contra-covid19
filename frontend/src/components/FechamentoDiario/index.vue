@@ -54,15 +54,31 @@
         <v-row justify="start" align="center" dense>
           <v-col>
             <div v-if="item.status === 'FECHADO'">
+              <v-row>
+              <div
+                v-if="podeReabrirFechamento(item)" >
+
               <v-btn
-                v-if="podeReabrirFechamento(item)"
                 small
                 text
                 color="#4CAF50"
                 @click="reabrirFechamento(item)"
                 :loading="reabrindo"
               >ABRIR</v-btn>
-              <span v-else class="primary--text">FECHADO</span>
+              </div>
+              <div v-else>
+              <span  class="primary--text">FECHADO</span>
+              </div>
+                <v-btn
+                small
+                text
+                rounded
+                color="#F54D09"
+                class="ml-5"
+                :loading="fechando"
+                :to="{ name: 'taxas', params: encodeDataFechamento(item.dataFechamento)}"
+              >TAXAS</v-btn>
+              </v-row>
             </div>
             <div v-else>
               <v-btn
@@ -94,6 +110,9 @@
               >DETALHES</v-btn>
             </div>
           </v-col>
+          <div>
+
+          </div>
         </v-row>
       </template>
     </v-data-table>
@@ -250,6 +269,9 @@ export default {
           this.$emit('erro:reabrirFechamento', ErrorService.getMessage(error));
         })
         .finally(() => { this.reabrindo = false; });
+    },
+    encodeDataFechamento(dataFechamento) {
+      return { dataFechamento: btoa(dataFechamento) };
     },
   },
   computed: {

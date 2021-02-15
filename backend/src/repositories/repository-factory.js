@@ -9,6 +9,7 @@ const municipioRepository = require('./municipio-repository');
 const tenantConfigRepository = require('./tenant-config-repository');
 const fechamentoRepository = require('./fechamento-repository');
 const fatoRepository = require('./fato-repository');
+const taxaRepository = require('./taxa-repository');
 
 class Repository {
   constructor() {
@@ -24,6 +25,7 @@ class Repository {
     repos.tenantConfigRepository = tenantConfigRepository;
     repos.fechamentoRepository = fechamentoRepository;
     repos.fatoRepository = fatoRepository;
+    repos.taxaRepository = taxaRepository;
   }
 }
 

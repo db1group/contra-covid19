@@ -8,6 +8,7 @@ const perfil = require('./perfil');
 const notificaLeito = require('./notificaLeito');
 const notificaLeitoPerfil = require('./notificaLeitoPerfil');
 const evolucao = require('./evolucao');
+const taxa = require('./taxa');
 
 module.exports = {
   pessoa,
@@ -20,4 +21,5 @@ module.exports = {
   notificaLeito,
   notificaLeitoPerfil,
   evolucao,
+  taxa,
 };
