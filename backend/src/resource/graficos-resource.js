@@ -120,36 +120,12 @@ exports.consultaBoletimTestesCovid = async (req, res, next) => {
 
     const exames = await models
       .sequelize
-      .query('select dtexame, "tpEvolucao" from vwexamecovid19 where "tpEvolucao" in (\'CONFIRMADO\', \'DESCARTADO\') order by "createdAt"',
+      .query('select * from public.vwresultadocovid19',
         {
           type: Sequelize.QueryTypes.SELECT,
         });
 
-    const resultados = exames.reduce((acc, { dtexame, tpEvolucao }) => {
-      acc[dtexame] = {
-        positivo: 0, negativo: 0, total: 0, ...acc[dtexame],
-      };
-      acc[dtexame].positivo = +acc[dtexame].positivo + (tpEvolucao === 'CONFIRMADO' ? 1 : 0);
-      acc[dtexame].negativo = +acc[dtexame].negativo + (tpEvolucao === 'DESCARTADO' ? 1 : 0);
-      acc[dtexame].total += 1;
-      return acc;
-    }, {});
-
-    const testes = {
-      labels: [], positivos: [], negativos: [], totalPositivos: [], totalNegativos: [],
-    };
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [prop, value] of Object.entries(resultados)) {
-      testes.labels = [...testes.labels, prop];
-      testes.positivos = [...testes.positivos, value.positivo === 0
-        ? 0 : Math.round(((+value.positivo / +value.total) * 100))];
-      testes.negativos = [...testes.negativos, value.negativo === 0
-        ? 0 : Math.round(((+value.negativo / +value.total) * 100))];
-      testes.totalPositivos = [...testes.totalPositivos, +value.positivo];
-      testes.totalNegativos = [...testes.totalNegativos, +value.negativo];
-    }
-
-    const response = { data: testes };
+    const response = { data: exames };
     req.setCache(req, JSON.stringify(response));
     req.removeCacheByKey(CARDS_CACHE_KEY);
     return res.json(response);
