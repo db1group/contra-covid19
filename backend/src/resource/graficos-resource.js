@@ -133,3 +133,26 @@ exports.consultaBoletimTestesCovid = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.consultaBoletimObitosFaixa = async (req, res, next) => {
+  try {
+    const OBITOS_CACHE_KEY = 'vwObitosFaixa';
+    const isGerandoCache = await req.getCacheByKey(OBITOS_CACHE_KEY);
+    if (isGerandoCache) return res.status(204).json();
+    req.setCacheByKey(OBITOS_CACHE_KEY, 'OK');
+
+    const obitos = await models
+      .sequelize
+      .query('select * from public.vwobitosfaixa',
+        {
+          type: Sequelize.QueryTypes.SELECT,
+        });
+
+    const response = { data: obitos };
+    req.setCache(req, JSON.stringify(response));
+    req.removeCacheByKey(OBITOS_CACHE_KEY);
+    return res.json(response);
+  } catch (err) {
+    return next(err);
+  }
+};

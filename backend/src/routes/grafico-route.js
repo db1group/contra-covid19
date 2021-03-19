@@ -10,5 +10,6 @@ router.get('/boletim/cards', GraficosResource.consultarBoletimCards);
 router.get('/boletim/media-movel', GraficosResource.consultarMediaMovel);
 router.get('/boletim/grafico-faixaetaria', GraficosResource.consultaBoletimFaixaEtaria);
 router.get('/boletim/resultado-testes', GraficosResource.consultaBoletimTestesCovid);
+router.get('/boletim/grafico-obitos', GraficosResource.consultaBoletimObitosFaixa);
 
 module.exports = router;
