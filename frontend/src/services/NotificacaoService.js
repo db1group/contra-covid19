@@ -39,12 +39,12 @@ export default {
     );
   },
   downloadNotificacoesCSV({
-    dataInicial, dataFinal, dataEvolucaoInicial, dataEvolucaoFinal,
+    dataInicial, dataFinal, dataEvolucaoInicial, dataEvolucaoFinal, previa,
   }) {
     const time = new Date().getTime();
     return DownloadService.downloadFile(
       `/exportar/csv?dataInicial=${dataInicial}&dataFinal=${dataFinal}&dataEvolucaoInicial=${dataEvolucaoInicial}`
-      + `&dataEvolucaoFinal=${dataEvolucaoFinal}`,
+      + `&dataEvolucaoFinal=${dataEvolucaoFinal}&previa=${previa}`,
       `notificacoes-${time}.csv`,
     );
   },

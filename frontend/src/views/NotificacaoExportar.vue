@@ -9,6 +9,7 @@
         @update:dataFinal="updateExportar('dataFinal', $event)"
         @update:dataEvolucaoInicial="updateExportar('dataEvolucaoInicial', $event)"
         @update:dataEvolucaoFinal="updateExportar('dataEvolucaoFinal', $event)"
+        @update:previa="updateExportar('previa', $event)"
         @click="send"
       ></exportar>
       <v-snackbar v-model="showError" color="error" bottom>{{errorMessage}}</v-snackbar>
