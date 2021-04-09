@@ -12,6 +12,7 @@ const TIME_ZONE = {
 };
 const DIRETORIO = 'excel';
 const PAIS = { BRASIL: 'Brasil' };
+const FILTRODATA = '#FILTRODATA';
 
 const retornarProfissionalDoNotificador = (notificacao) => {
   const { nomeDaProfissao } = notificacao;
@@ -207,6 +208,26 @@ exports.cabecalhosExportacao = [
   { header: 'dtAtualizacaoConfirmado', key: 'A115' },
 ];
 
+exports.cabecalhosExportacaoPrevia = [
+  { header: 'Data hora da criação da Notificação', key: 'A1' },
+  { header: 'statusNotificacao', key: 'A5' },
+  { header: 'nomeDoNotificador', key: 'A8' },
+  { header: 'nomeDoPaciente', key: 'A12' },
+  { header: 'sexoDoPaciente', key: 'A15' },
+  { header: 'dataDeNascimentoDoPaciente', key: 'A17' },
+  { header: 'municipioDoPaciente', key: 'A25' },
+  { header: 'ufDoPaciente', key: 'A26' },
+  { header: 'paisDoPaciente', key: 'A27' },
+  { header: 'ocupacaoDoPaciente', key: 'A30' },
+  { header: 'tipoOcupacaoDoPaciente', key: 'A31' },
+  { header: 'dtSuspeito', key: 'A108' },
+  { header: 'dtConfirmado', key: 'A109' },
+  { header: 'dtDescartado', key: 'A110' },
+  { header: 'dtCurado', key: 'A111' },
+  { header: 'dtEncerrado', key: 'A112' },
+  { header: 'dtObito', key: 'A113' },
+];
+
 const getSQLConsulta = (dataInicial) => {
   const sql = `SELECT "Notificacao"."nomeNotificador" AS nomeDoNotificador,
     "Notificacao"."status" AS statusnotificacao,
@@ -335,12 +356,70 @@ const getSQLConsulta = (dataInicial) => {
   LEFT JOIN "Profissao" ON "Notificacao"."profissaoId" = "Profissao"."id"
   LEFT OUTER JOIN "NotificacaoEvolucao" on "NotificacaoEvolucao"."notificacaoId" = "Notificacao"."id" and "NotificacaoEvolucao"."tpEvolucao" = :tpConfirmado
   WHERE "Notificacao"."status" != 'EXCLUIDA' AND "Notificacao"."municipioId" = :tenant
-  AND #FILTRODATA
+  AND ${FILTRODATA}
   ORDER BY "Notificacao"."createdAt" DESC`;
   if (dataInicial) {
-    return sql.replace('#FILTRODATA', '"Notificacao"."createdAt" BETWEEN :dtInicial AND :dtFinal');
+    return sql.replace(`${FILTRODATA}`, '"Notificacao"."createdAt" BETWEEN :dtInicial AND :dtFinal');
   }
-  return sql.replace('#FILTRODATA', `EXISTS (SELECT 1 FROM "NotificacaoEvolucao" ne WHERE ne."notificacaoId" = "Notificacao"."id"
+  return sql.replace(`${FILTRODATA}`, `EXISTS (SELECT 1 FROM "NotificacaoEvolucao" ne WHERE ne."notificacaoId" = "Notificacao"."id"
+    AND ne."createdAt" BETWEEN :dtInicial AND :dtFinal)`);
+};
+
+const getSQLConsultaPrevia = (dataInicial) => {
+  const sql = `SELECT distinct "Notificacao"."nomeNotificador" AS nomeDoNotificador,
+    "Notificacao"."status" AS statusnotificacao,
+    "Notificacao"."createdAt" As criacaoDaNotificacao,
+    "Pessoa"."nome" AS "nomeDoPaciente",
+    "Pessoa"."dataDeNascimento" AS "dataDeNascimentoDoPaciente",
+    "Pessoa"."sexo" AS "sexoDoPaciente",
+    "Pessoa"."ocupacao" AS "ocupacaoDoPaciente",
+    "Ocupacao"."descricao" AS "tipoOcupacaoDoPaciente",
+    "Municipio"."nome" AS "municipioDoPaciente",
+    "Municipio"."uf" AS "uFDoMunicipioDoPaciente",
+    "Profissao"."nome" AS "nomeDaProfissao",
+    "EVOLUCAO"."dtSuspeito",
+    "EVOLUCAO"."dtConfirmado",
+    "EVOLUCAO"."dtDescartado",
+    "EVOLUCAO"."dtCurado",
+    "EVOLUCAO"."dtEncerrado",
+    "EVOLUCAO"."dtObito"
+  FROM "Notificacao"
+  INNER JOIN "Pessoa" ON "Notificacao"."pessoaId" = "Pessoa"."id"
+  INNER JOIN "Bairro" ON "Pessoa"."bairroId" = "Bairro"."id"
+  INNER JOIN "Ocupacao" ON "Pessoa"."ocupacaoId" = "Ocupacao"."id"
+  INNER JOIN "Municipio" ON "Pessoa"."municipioId" = "Municipio"."id"
+  INNER JOIN "NotificacaoCovid19" ON "Notificacao"."id" = "NotificacaoCovid19"."notificacaoId"
+  INNER JOIN "UnidadeSaude" ON "Notificacao"."unidadeSaudeId" = "UnidadeSaude"."id"
+  INNER JOIN "User" ON "Notificacao"."userId" = "User"."id"
+  LEFT JOIN "ProfissionalSaude" ON "Notificacao"."notificadorId" = "ProfissionalSaude"."id"
+  LEFT JOIN "Profissao" ON "Notificacao"."profissaoId" = "Profissao"."id"
+  LEFT OUTER JOIN "NotificacaoEvolucao" on "NotificacaoEvolucao"."notificacaoId" = "Notificacao"."id"
+  INNER JOIN (
+    SELECT
+    ne."notificacaoId",
+    max(ne."dtEvolucao") as "dtSuspeito",
+    max(neconfirmado."dtEvolucao") as "dtConfirmado",
+    max(necurado."dtEvolucao") as "dtCurado",
+    max(neobito."dtEvolucao") as "dtObito",
+    max(nedescartado."dtEvolucao") as "dtDescartado",
+    max(neencerrado."dtEvolucao") as "dtEncerrado"
+    FROM "NotificacaoEvolucao" ne
+  LEFT JOIN "NotificacaoEvolucao" neconfirmado on neconfirmado."notificacaoId" = ne."notificacaoId" and neconfirmado."dtEvolucao" is not null and neconfirmado."tpEvolucao" = 'CONFIRMADO'
+  LEFT JOIN "NotificacaoEvolucao" necurado on necurado."notificacaoId" = ne."notificacaoId" and necurado."dtEvolucao" is not null and necurado."tpEvolucao" = 'CURADO'
+  LEFT JOIN "NotificacaoEvolucao" neobito on neobito."notificacaoId" = ne."notificacaoId" and neobito."dtEvolucao"  is not null and neobito."tpEvolucao" = 'OBITO'
+  LEFT JOIN "NotificacaoEvolucao" nedescartado on nedescartado."notificacaoId" = ne."notificacaoId" and nedescartado."dtEvolucao"  is not null and nedescartado."tpEvolucao" = 'DESCARTADO'
+  LEFT JOIN "NotificacaoEvolucao" neencerrado on neencerrado."notificacaoId" = ne."notificacaoId" and neencerrado."dtEvolucao"  is not null and neencerrado."tpEvolucao" = 'ENCERRADO'
+  LEFT JOIN "NotificacaoEvolucao" ne2 on ne2."notificacaoId" = ne."notificacaoId"
+  WHERE ne."tpEvolucao" = 'SUSPEITO'
+  GROUP by ne."notificacaoId"
+  ) "EVOLUCAO" on "EVOLUCAO"."notificacaoId" = "Notificacao".id and "EVOLUCAO"."dtConfirmado" is not null
+  WHERE "Notificacao"."status" != 'EXCLUIDA' AND "Notificacao"."municipioId" = :tenant
+  AND ${FILTRODATA}
+  ORDER BY "Notificacao"."createdAt" DESC`;
+  if (dataInicial) {
+    return sql.replace(`${FILTRODATA}`, '"Notificacao"."createdAt" BETWEEN :dtInicial AND :dtFinal');
+  }
+  return sql.replace(`${FILTRODATA}`, `EXISTS (SELECT 1 FROM "NotificacaoEvolucao" ne WHERE ne."notificacaoId" = "Notificacao"."id"
     AND ne."createdAt" BETWEEN :dtInicial AND :dtFinal)`);
 };
 
@@ -352,6 +431,23 @@ exports.consultarNotificacoes = (
 
   return models.sequelize.query(
     getSQLConsulta(dataInicial),
+    {
+      replacements: {
+        dtInicial, dtFinal, tenant, tpConfirmado: tipoEvolucaoEnum.values.Confirmado,
+      },
+    },
+    { type: Sequelize.QueryTypes.SELECT },
+  );
+};
+
+exports.consultarNotificacoesResumoPrevia = (
+  dataInicial, dataFinal, dataEvolucaoInicial, dataEvolucaoFinal, tenant,
+) => {
+  const dtInicial = dataInicial || dataEvolucaoInicial;
+  const dtFinal = dataFinal || dataEvolucaoFinal;
+
+  return models.sequelize.query(
+    getSQLConsultaPrevia(dataInicial),
     {
       replacements: {
         dtInicial, dtFinal, tenant, tpConfirmado: tipoEvolucaoEnum.values.Confirmado,
@@ -477,6 +573,26 @@ exports.retornarRowsNotificacaoExcel = (notificacoes) => notificacoes.map((notif
   A113: getData(notificacao.dtObito),
   A114: getBoolean(notificacao.comorbidades),
   A115: getData(notificacao.dtAtualizacaoConfirmado),
+}));
+
+exports.retornarRowsNotificacaoExcelPrevia = (notificacoes) => notificacoes.map((notificacao) => ({
+  A1: getDataHora(notificacao.criacaodanotificacao),
+  A5: notificacao.statusnotificacao,
+  A8: notificacao.nomedonotificador,
+  A12: notificacao.nomeDoPaciente,
+  A15: notificacao.sexoDoPaciente,
+  A17: getData(notificacao.dataDeNascimentoDoPaciente),
+  A25: notificacao.municipioDoPaciente,
+  A26: notificacao.uFDoMunicipioDoPaciente,
+  A27: PAIS.BRASIL,
+  A30: notificacao.ocupacaoDoPaciente,
+  A31: notificacao.tipoOcupacaoDoPaciente,
+  A108: getData(notificacao.dtSuspeito),
+  A109: getData(notificacao.dtConfirmado),
+  A110: getData(notificacao.dtDescartado),
+  A111: getData(notificacao.dtCurado),
+  A112: getData(notificacao.dtEncerrado),
+  A113: getData(notificacao.dtObito),
 }));
 
 exports.retornarFiltrosData = ({
