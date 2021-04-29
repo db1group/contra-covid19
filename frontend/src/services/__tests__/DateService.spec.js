@@ -71,7 +71,7 @@ describe('Serviço de comparação de datas. Verifica se é menor que o dia atua
     expect(result).toBeFalsy();
   });
   test('Deve ser maior, retornando false', () => {
-    const result = DateService.isLesserThanToday('27/04/2021');
+    const result = DateService.isLesserThanToday(moment().add(1, 'day'));
     expect(result).toBeFalsy();
   });
   test('Deve ser maior com mesmo dia em outro mês, retornando false', () => {
