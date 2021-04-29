@@ -7,6 +7,17 @@
       <v-form ref="form" class="ma-2">
         <v-row dense>
           <v-col>
+            <v-checkbox
+              :value="exportar.previa"
+              label="Prévia"
+              color="black"
+              hide-details
+              @change="updatePrevia"
+            ></v-checkbox>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
             <v-text-field
               :value="exportar.dataInicial"
               label="Data criação inicial"
@@ -101,6 +112,10 @@ export default {
     },
   }),
   methods: {
+    updatePrevia(previa) {
+      console.log('previa', previa);
+      this.$emit('update:previa', previa);
+    },
     updateDataInicial(dataInicial) {
       this.resetarValidacoes();
       this.$emit('update:dataInicial', dataInicial);

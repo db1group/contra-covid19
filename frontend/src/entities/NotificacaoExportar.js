@@ -6,6 +6,7 @@ export default class NotificacaoExportar {
     this.dataFinal = data.dataFinal || null;
     this.dataEvolucaoInicial = data.dataEvolucaoInicial || null;
     this.dataEvolucaoFinal = data.dataEvolucaoFinal || null;
+    this.previa = data.previa || null;
   }
 
   toRequestBody() {
@@ -18,6 +19,7 @@ export default class NotificacaoExportar {
       dataEvolucaoFinal: this.dataEvolucaoFinal
         ? DateService.toMomentObject(this.dataEvolucaoFinal, 'DD/MM/YYYY HH:mm').toISOString()
         : '',
+      previa: this.previa ? 'SIM' : 'NAO',
     };
   }
 }
