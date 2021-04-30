@@ -20,6 +20,9 @@ app.use(pino());
 app.use(express.json());
 app.use(cors());
 
+// Enable pre-flight across-the-board
+app.options('*', cors());
+
 redis(app);
 router(app);
 
