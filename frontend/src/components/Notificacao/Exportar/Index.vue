@@ -113,7 +113,6 @@ export default {
   }),
   methods: {
     updatePrevia(previa) {
-      console.log('previa', previa);
       this.$emit('update:previa', previa);
     },
     updateDataInicial(dataInicial) {

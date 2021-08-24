@@ -37,4 +37,8 @@ router.put(`${prefixoRoute}/:id`,
   keycloack.protect(isRealmFechamento),
   FechamentoResource.reabrirFechamento);
 
+router.post(`${prefixoRoute}/manual`,
+  keycloack.protect(isRealmFechamento),
+  FechamentoResource.realizarFechamentoManual);
+
 module.exports = router;

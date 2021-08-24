@@ -10,4 +10,7 @@ exports.delete = async (id, transaction) => models.FechamentoNotificacaoCovid19
   .destroy({ where: { id }, transaction });
 
 exports.deleteByData = async (tenant, dataFato, transaction) => models.FechamentoNotificacaoCovid19
-  .destroy({ where: { municipioId: tenant, dtFato: dataFato }, transaction });
+  .destroy({ where: { municipioId: tenant, dataFechamento: dataFato }, transaction });
+
+exports.findByData = async (tenant, dataFato, transaction) => models.FechamentoNotificacaoCovid19
+  .findOne({ where: { municipioId: tenant, dataFechamento: dataFato }, transaction });
