@@ -12,38 +12,58 @@ const BAIRRO_GERAL = 'GERAL';
 const PAIS_BRASIL = 'BRASIL';
 const MASCARA_DATA = 'YYYY-MM-DD';
 
-const definirDimensaoPacienteId = async (transaction) => {
+const FATO_PADRAO = {
+  qtsuspeito: 0,
+  qtsuspeitoisolamento: 0,
+  qtsuspeitoregular: 0,
+  qtsuspeitouti: 0,
+  qtencerrado: 0,
+  qtconfirmado: 0,
+  qtconfirmadoisolamento: 0,
+  qtconfirmadoregular: 0,
+  qtconfirmadouti: 0,
+  qtrecuperado: 0,
+  qtobito: 0,
+  qtdescartado: 0,
+};
+
+const definirDimensaoPacienteId = async (transaction,
+  { sexo, faixaetaria, comorbidade = false }) => {
   let paciente = await models.DmPaciente.findOne({
     attributes: ['id'],
     where: {
-      sexo: sexoEnum.values.Masculino,
-      faixaetaria: FAIXA_ETARIA_PADRAO,
-      comorbidade: false,
+      sexo,
+      faixaetaria,
+      comorbidade,
     },
   });
   if (!paciente) {
     paciente = await models.DmPaciente.create({
-      sexo: sexoEnum.values.Masculino,
-      faixaetaria: FAIXA_ETARIA_PADRAO,
-      comorbidade: false,
+      sexo,
+      faixaetaria,
+      comorbidade,
     }, { transaction });
   }
   return paciente.id;
 };
 
-const definirDimensaoLocalizacaoId = async (tenantConfig, transaction) => {
+const definirDimensaoPacienteDefault = async (transaction) => definirDimensaoPacienteId(
+  transaction, { sexo: sexoEnum.values.Masculino, faixaetaria: FAIXA_ETARIA_PADRAO },
+);
+
+const definirDimensaoLocalizacaoId = async (tenantConfig, transaction, bairro) => {
   let [localizacao] = await models.sequelize.query(`
   select m.nome, m.uf, dl.id from "Municipio" m
   left outer join "DmLocalizacao" dl on dl.cidade = m.nome and dl.estado = m.uf
   and dl.bairro = :geral and dl.pais = :pais
   where m.id = :municipioId limit 1`,
   {
-    replacements: { geral: BAIRRO_GERAL, pais: PAIS_BRASIL, municipioId: tenantConfig.municipioId },
+    replacements: { geral: bairro, pais: PAIS_BRASIL, municipioId: tenantConfig.municipioId },
     type: Sequelize.QueryTypes.SELECT,
   });
   if (!localizacao.id) {
     localizacao = await models.DmLocalizacao.create({
-      bairro: BAIRRO_GERAL,
+      bairro,
       cidade: localizacao.nome,
       estado: localizacao.uf,
       pais: PAIS_BRASIL,
@@ -52,12 +72,17 @@ const definirDimensaoLocalizacaoId = async (tenantConfig, transaction) => {
   return localizacao.id;
 };
 
+const definirDimensaoLocalizacaoDefault = async (
+  tenantConfig, transaction) => definirDimensaoLocalizacaoId(
+  tenantConfig, transaction, BAIRRO_GERAL,
+);
+
 const deleteByData = async (tenant, dataFato, transaction) => models.FatoNotificacaoCovid19
   .destroy({ where: { municipioId: tenant, dtfato: dataFato } }, { transaction });
 
 const gerarFatoVazio = async (tenantConfig, dataFato, transaction) => {
-  const pacienteId = await definirDimensaoPacienteId(transaction);
-  const localizacaoId = await definirDimensaoLocalizacaoId(tenantConfig, transaction);
+  const pacienteId = await definirDimensaoPacienteDefault(transaction);
+  const localizacaoId = await definirDimensaoLocalizacaoDefault(tenantConfig, transaction);
   return models.FatoNotificacaoCovid19.create({
     dtfato: dataFato,
     dmpacienteid: pacienteId,
@@ -68,15 +93,15 @@ const gerarFatoVazio = async (tenantConfig, dataFato, transaction) => {
 
 const getFatosBoletim = async (tenantConfig, dataFato, transaction) => {
   const [fatos] = await models.sequelize.query(`
-  select sum(fnc.qtsuspeito) as qtnotificado,
-  sum(fnc.qtencerrado) as qtencerrado,
-  sum(fnc.qtconfirmado) as qtconfirmado,
-  sum(fnc.qtconfirmadoisolamento) as qtconfirmadoisolamento,
-  sum(fnc.qtconfirmadoregular) as qtconfirmadoregular,
-  sum(fnc.qtconfirmadouti) as qtconfirmadouti,
-  sum(fnc.qtrecuperado) as qtconfirmadoencerrado,
-  sum(fnc.qtobito) as qtobito,
-  sum(fnc.qtdescartado) as qtdescartado,
+  select coalesce(sum(fnc.qtsuspeito), 0) as qtnotificado,
+  coalesce(sum(fnc.qtencerrado), 0) as qtencerrado,
+  coalesce(sum(fnc.qtconfirmado), 0) as qtconfirmado,
+  coalesce(sum(fnc.qtconfirmadoisolamento), 0) as qtconfirmadoisolamento,
+  coalesce(sum(fnc.qtconfirmadoregular), 0) as qtconfirmadoregular,
+  coalesce(sum(fnc.qtconfirmadouti), 0) as qtconfirmadouti,
+  coalesce(sum(fnc.qtrecuperado), 0) as qtconfirmadoencerrado,
+  coalesce(sum(fnc.qtobito), 0) as qtobito,
+  coalesce(sum(fnc.qtdescartado), 0) as qtdescartado,
   COALESCE((sum(fnc.qtsuspeito) - sum(fnc.qtencerrado) - sum(fnc.qtdescartado) - sum(fnc.qtrecuperado) - sum(fnc.qtobito))::numeric, 0::numeric) AS qtacompanhamento
   from "FatoNotificacaoCovid19" fnc
   where fnc."municipioId" = :municipioId and fnc.dtfato::date <= :dataFato;`,
@@ -251,3 +276,7 @@ exports.deleteByData = deleteByData;
 exports.gerarFatoVazio = gerarFatoVazio;
 exports.getFatosBoletim = getFatosBoletim;
 exports.gerarFatos = gerarFatos;
+exports.definirDimensaoPacienteId = definirDimensaoPacienteId;
+exports.definirDimensaoLocalizacaoId = definirDimensaoLocalizacaoId;
+exports.FATO_PADRAO = FATO_PADRAO;
+exports.definirFatoEvolucao = definirFatoEvolucao;

@@ -63,25 +63,32 @@ const getProximaDataFechamento = async (tenantConfig) => {
   return moment(dataFechamento);
 };
 
+const getDadosProximoFechamento = async (tenantConfig, dataProximoFechamento, transaction) => {
+  const boletim = await fatoRepository
+    .getFatosBoletim(tenantConfig, dataProximoFechamento, transaction);
+  return {
+    dataFechamento: dataProximoFechamento,
+    casosNotificados: parseInt(boletim.qtnotificado, 10),
+    acompanhados: parseInt(boletim.qtacompanhamento, 10),
+    casosEncerrados: parseInt(boletim.qtencerrado, 10),
+    confirmados: parseInt(boletim.qtconfirmado, 10),
+    curados: parseInt(boletim.qtconfirmadoencerrado, 10),
+    obitos: parseInt(boletim.qtobito, 10),
+    emIsolamentoDomiciliar: parseInt(boletim.qtconfirmadoisolamento, 10),
+    status: 'FECHADO',
+    descartados: parseInt(boletim.qtdescartado, 10),
+  };
+};
+
 const getDadosFechamento = async (tenantConfig, dataProximoFechamento) => {
   const transaction = await models.sequelize.transaction();
   try {
     await fatoRepository.gerarFatos(tenantConfig, dataProximoFechamento, transaction);
-    const boletim = await fatoRepository
-      .getFatosBoletim(tenantConfig, dataProximoFechamento, transaction);
+    const proximoFechamento = await getDadosProximoFechamento(
+      tenantConfig, dataProximoFechamento, transaction,
+    );
     await transaction.commit();
-    return {
-      dataFechamento: dataProximoFechamento,
-      casosNotificados: parseInt(boletim.qtnotificado, 10),
-      acompanhados: parseInt(boletim.qtacompanhamento, 10),
-      casosEncerrados: parseInt(boletim.qtencerrado, 10),
-      confirmados: parseInt(boletim.qtconfirmado, 10),
-      curados: parseInt(boletim.qtconfirmadoencerrado, 10),
-      obitos: parseInt(boletim.qtobito, 10),
-      emIsolamentoDomiciliar: parseInt(boletim.qtconfirmadoisolamento, 10),
-      status: 'FECHADO',
-      descartados: parseInt(boletim.qtdescartado, 10),
-    };
+    return proximoFechamento;
   } catch (err) {
     await transaction.rollback();
     throw err;
@@ -116,6 +123,23 @@ const realizarFechamento = async (tenantConfig, { dataFechamento }) => {
   });
 };
 
+const realizarFechamentoManual = async (
+  tenantConfig, { dataFechamento }, transaction) => {
+  const dadosFechamento = await getDadosProximoFechamento(
+    tenantConfig, moment(dataFechamento), transaction,
+  );
+  await models.AprovacaoDado.create(
+    { data: dataFechamento, aprovado: true, municipioId: tenantConfig.municipioId },
+    { transaction },
+  );
+  return fechamentoCovid19Repository.cadastrar(
+    {
+      ...dadosFechamento,
+      municipioId: tenantConfig.municipioId,
+    }, transaction,
+  );
+};
+
 const podeReabrirFechamento = async (tenantConfig, id) => {
   const filtroBloqueio = tenantConfig.dtBloqueioFechamento
     ? ` AND fnc."dataFechamento" > '${tenantConfig.dtBloqueioFechamento}' `
@@ -138,6 +162,7 @@ const podeReabrirFechamento = async (tenantConfig, id) => {
 
 const reabrirFechamento = async (tenantConfig, { id, dataFechamento }) => {
   models.sequelize.transaction(async (t) => {
+    await fatoRepository.deleteByData(tenantConfig.municipioId, dataFechamento, t);
     await models.AprovacaoDado.destroy({ where: { data: dataFechamento }, transaction: t });
     await fechamentoCovid19Repository.delete(id, t);
     await notificacaoRepository.removerFechamentoNotificacao(tenantConfig, dataFechamento, t);
@@ -180,6 +205,10 @@ const getFechamentos = async (tenant,
   );
 };
 
+const buscarFechamentoPorData = async (
+  { municipioId }, { dataFechamento }, transaction) => fechamentoCovid19Repository
+  .findByData(municipioId, dataFechamento, transaction);
+
 exports.removerCacheGraficos = removerCacheGraficos;
 exports.getDadosFechamento = getDadosFechamento;
 exports.getProximaDataFechamento = getProximaDataFechamento;
@@ -187,3 +216,6 @@ exports.realizarFechamento = realizarFechamento;
 exports.podeReabrirFechamento = podeReabrirFechamento;
 exports.reabrirFechamento = reabrirFechamento;
 exports.getFechamentos = getFechamentos;
+exports.getDadosProximoFechamento = getDadosProximoFechamento;
+exports.realizarFechamentoManual = realizarFechamentoManual;
+exports.buscarFechamentoPorData = buscarFechamentoPorData;

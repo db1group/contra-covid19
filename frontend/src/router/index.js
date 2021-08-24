@@ -17,6 +17,8 @@ import ControleLeitosForm from '../views/ControleLeitosForm.vue';
 import ControleLeitoPerfilCons from '../views/ControleLeitoPerfilCons.vue';
 import TenantConfigCons from '../views/TenantConfigCons.vue';
 import TenantConfigForm from '../views/TenantConfigForm.vue';
+import FechamentoManualCons from '../views/FechamentoManualCons.vue';
+import FechamentoManualForm from '../views/FechamentoManualForm.vue';
 
 Vue.use(VueRouter);
 
@@ -60,6 +62,16 @@ const routes = [
     path: '/fechamento',
     name: 'fechamento-diario',
     component: FechamentoDiario,
+  },
+  {
+    path: '/fechamento-manual',
+    name: 'fechamento-manual',
+    component: FechamentoManualCons,
+  },
+  {
+    path: '/fechamento-manual-new',
+    name: 'fechamento-manual-new',
+    component: FechamentoManualForm,
   },
   {
     path: '/taxas/:dataFechamento',

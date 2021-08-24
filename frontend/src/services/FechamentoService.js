@@ -31,4 +31,7 @@ export default {
   reabrirFechamento(id) {
     return http.put(`/fechamento/${id}`);
   },
+  realizarFechamentoManual(fechamento) {
+    return http.post('/fechamento/manual', fechamento);
+  },
 };
